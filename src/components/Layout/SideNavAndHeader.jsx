@@ -1,0 +1,375 @@
+import React, { useState, useEffect, useContext } from 'react';
+import {
+  Drawer,
+  AppBar,
+  Toolbar,
+  IconButton,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Typography,
+  useMediaQuery,
+  Box,
+  Avatar,
+  Menu,
+  MenuItem,
+  Divider,
+  Collapse,
+  Card,
+  CardContent,
+  Grid,
+  styled
+} from '@mui/material';
+import {
+  Menu as MenuIcon,
+  ChevronLeft as ChevronLeftIcon,
+  ExpandLess as ExpandLessIcon,
+  ExpandMore as ExpandMoreIcon,
+  Person as PersonIcon,
+  Logout as LogoutIcon,
+  Settings as SettingsIcon,
+  Dashboard as DashboardIcon,
+  Download as DownloadIcon,
+  People as PeopleIcon,
+  Receipt as ReceiptIcon
+} from '@mui/icons-material';
+import { useNavigate, useLocation, Outlet } from 'react-router-dom';
+import { Admin_nav, customer_nav, nav } from './navConfig';
+import AuthContext from '../../contexts/AuthContext';
+
+// Navigation configuration
+
+const roleNavigation = {
+  'user': nav,
+  'Admin': Admin_nav,
+  'Ret': customer_nav,
+   'Dd': customer_nav,
+};
+
+const themeSettings = {
+  drawerWidth: 240,
+  palette: {
+    primary: {
+      main: '#1976d2',
+    },
+    secondary: {
+      main: '#dc004e',
+    },
+    background: {
+      default: '#f5f5f5',
+      paper: '#ffffff',
+    },
+  },
+};
+
+const SideNavAndHeader = ({ userRole , userName = "User Name", userAvatar }) => {
+  console.log("inroute",userRole);
+  
+
+   const authCtx=useContext(AuthContext);
+  const isMobile = useMediaQuery('(max-width: 900px)');
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [desktopOpen, setDesktopOpen] = useState(true);
+  const [userMenuAnchor, setUserMenuAnchor] = useState(null);
+  const [expandedItems, setExpandedItems] = useState({});
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  const MainContent = styled(Box)(({ theme }) => ({
+    flexGrow: 1,
+    padding: theme.spacing(3),
+    backgroundColor: theme.palette.background.default,
+    minHeight: "100vh",
+    marginLeft: 0,
+    transition: theme.transitions.create("margin", {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+    [theme.breakpoints.down("sm")]: {
+      minWidth: "90%", 
+      padding: theme.spacing(1.5),
+    },
+    [theme.breakpoints.between("sm", "md")]: {
+      minWidth: "768px",
+    },
+    [theme.breakpoints.up("md")]: {
+      minWidth: "1024px",
+    },
+    [theme.breakpoints.up("lg")]: {
+      minWidth: desktopOpen ? "1310px" : "1550px", 
+    },
+  }));
+
+  const navigationItems = roleNavigation[userRole] || nav;
+
+  const handleDrawerToggle = () => {
+    if (isMobile) {
+      setMobileOpen(!mobileOpen);
+    } else {
+      setDesktopOpen(!desktopOpen);
+    }
+  };
+
+  const handleUserMenuOpen = (event) => {
+    setUserMenuAnchor(event.currentTarget);
+  };
+
+  const handleUserMenuClose = () => {
+    setUserMenuAnchor(null);
+  };
+
+  const handleNavigation = (path, hasSubmenus) => {
+    if (hasSubmenus) {
+      setExpandedItems(prev => ({ ...prev, [path]: !prev[path] }));
+    } else {
+      navigate(path);
+      if (isMobile) {
+        setMobileOpen(false);
+      }
+    }
+  };
+
+  const handleLogout = () => {
+    handleUserMenuClose();
+    authCtx.logout();
+   
+  };
+
+  const isActive = (path, submenus) => {
+    if (submenus) {
+      return submenus.some(submenu => submenu.to === location.pathname);
+    }
+    return path === location.pathname;
+  };
+
+  // Render navigation items recursively
+  const renderNavItems = (items, level = 0) => {
+    return items.map((item, index) => {
+      const hasSubmenus = item.submenus && item.submenus.length > 0;
+      const isItemActive = isActive(item.to, item.submenus);
+      const isExpanded = expandedItems[item.to] || false;
+
+      return (
+        <Box key={index} className="nav-item">
+          <ListItem
+            button
+            onClick={() => handleNavigation(item.to, hasSubmenus)}
+            sx={{
+              pl: 2 + level * 2,
+              backgroundColor: isItemActive ? themeSettings.palette.primary.main : 'transparent',
+              color: isItemActive ? '#fff' : 'text.primary',
+              '&:hover': {
+                backgroundColor: isItemActive 
+                  ? themeSettings.palette.primary.main 
+                  : 'action.hover'
+              },
+              mb: 0.5
+            }}
+            className={isItemActive ? "nav-link active" : "nav-link"}
+          >
+            <ListItemIcon sx={{ color: isItemActive ? '#fff' : 'text.primary' }} className="nav-icon">
+              {isItemActive ? item.icon2 : item.icon}
+            </ListItemIcon>
+            
+            {(desktopOpen || isMobile) && (
+              <>
+                <ListItemText primary={item.title} />
+                {hasSubmenus && (isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />)}
+              </>
+            )}
+          </ListItem>
+          
+          {hasSubmenus && (
+            <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding className="sub-nav">
+                {renderNavItems(item.submenus, level + 1)}
+              </List>
+            </Collapse>
+          )}
+        </Box>
+      );
+    });
+  };
+
+  // Drawer content
+  const drawerContent = (
+    <Box className="side-nav" sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      {/* Logo area with white background */}
+      <Box 
+        className="nav-header"
+        sx={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: desktopOpen ? 'space-between' : 'center',
+          p: 1.5, // Reduced padding to decrease height
+          backgroundColor: '#ffffff',
+           height: '64px',
+          borderBottom: `1px solid rgba(0, 0, 0, 0.12)`,
+          minHeight: '64px' // Matching the header height
+        }}
+      >
+        {desktopOpen && (
+          <Typography variant="h6" noWrap component="div" className="nav-title" sx={{ fontWeight: 'bold' }}>
+            App Name
+          </Typography>
+        )}
+        
+        {!isMobile && (
+          <IconButton onClick={handleDrawerToggle} className="text-primary" size="small">
+            <ChevronLeftIcon />
+          </IconButton>
+        )}
+      </Box>
+      
+      <List className="nav-list" sx={{ flexGrow: 1, overflowY: 'auto' }}>
+        {renderNavItems(navigationItems)}
+      </List>
+    </Box>
+  );
+
+  return (
+    <Box sx={{ display: 'flex', backgroundColor: '#f5f5f5' }} className="container">
+      {/* App Bar with reduced height */}
+      <AppBar
+        position="fixed"
+        sx={{
+          width: { md: desktopOpen ? `calc(100% - ${themeSettings.drawerWidth}px)` : '100%' },
+          ml: { md: desktopOpen ? `${themeSettings.drawerWidth}px` : 0 },
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+          transition: (theme) => theme.transitions.create(['width', 'margin'], {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.leavingScreen,
+          }),
+          height: '64px', // Reduced header height
+          justifyContent: 'center'
+        }}
+        className="header"
+      >
+        <Toolbar sx={{ minHeight: '64px !important' }}> {/* Reduced toolbar height */}
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={handleDrawerToggle}
+            sx={{ mr: 2 }}
+          >
+            <MenuIcon />
+          </IconButton>
+          
+          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }} className="text-xl font-semibold">
+            Dashboard
+          </Typography>
+          
+          <IconButton color="inherit" onClick={handleUserMenuOpen}>
+            <Avatar 
+              src={userAvatar} 
+              sx={{ width: 32, height: 32 }}
+            >
+              {!userAvatar && <PersonIcon />}
+            </Avatar>
+          </IconButton>
+          
+          <Menu
+            anchorEl={userMenuAnchor}
+            open={Boolean(userMenuAnchor)}
+            onClose={handleUserMenuClose}
+            onClick={handleUserMenuClose}
+            transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+          >
+            <MenuItem disabled>
+              <ListItemIcon>
+                <PersonIcon fontSize="small" />
+              </ListItemIcon>
+              <span className="text-base font-medium">{userName}</span>
+            </MenuItem>
+            
+            <Divider />
+            
+            <MenuItem>
+              <ListItemIcon>
+                <SettingsIcon fontSize="small" />
+              </ListItemIcon>
+              <span className="text-base">Settings</span>
+            </MenuItem>
+            
+            <MenuItem onClick={handleLogout}>
+              <ListItemIcon>
+                <LogoutIcon fontSize="small" />
+              </ListItemIcon>
+              <span className="text-base">Logout</span>
+            </MenuItem>
+          </Menu>
+        </Toolbar>
+      </AppBar>
+
+      {/* Navigation Drawer */}
+      <Box
+        component="nav"
+        sx={{ width: { md: desktopOpen ? themeSettings.drawerWidth : 0 }, flexShrink: { md: 0 } }}
+        className="main-layout"
+      >
+        {/* Mobile Drawer */}
+        <Drawer
+          variant="temporary"
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+          ModalProps={{
+            keepMounted: true,
+          }}
+          sx={{
+            display: { xs: 'block', md: 'none' },
+            '& .MuiDrawer-paper': { 
+              boxSizing: 'border-box', 
+              width: themeSettings.drawerWidth 
+            },
+          }}
+        >
+          {drawerContent}
+        </Drawer>
+
+        {/* Desktop Drawer */}
+        <Drawer
+          variant="permanent"
+          sx={{
+            display: { xs: 'none', md: 'block' },
+            '& .MuiDrawer-paper': {
+              boxSizing: 'border-box',
+              width: themeSettings.drawerWidth,
+              transition: (theme) => theme.transitions.create('width', {
+                easing: theme.transitions.easing.sharp,
+                duration: theme.transitions.duration.enteringScreen,
+              }),
+              ...(!desktopOpen && {
+                overflowX: 'hidden',
+                transition: (theme) => theme.transitions.create('width', {
+                  easing: theme.transitions.easing.sharp,
+                  duration: theme.transitions.duration.leavingScreen,
+                }),
+                width: (theme) => theme.spacing(7),
+              }),
+            },
+          }}
+          open={desktopOpen}
+        >
+          {drawerContent}
+        </Drawer>
+      </Box>
+
+      {/* Main Content */}
+      <MainContent 
+        sx={{ 
+          ml: { md: desktopOpen ? 0 : 7 },
+          width: { md: desktopOpen ? `calc(100% - ${themeSettings.drawerWidth}px)` : '100%' }
+        }}
+        className="content"
+      >
+        <Toolbar sx={{ minHeight: '64px !important' }} /> {/* Reduced toolbar spacing */}
+        <Outlet />
+      </MainContent>
+    </Box>
+  );
+};
+
+export default SideNavAndHeader;
