@@ -1,7 +1,7 @@
 // api/apiClient.js
 import axios from "axios";
 import { BASE_URL } from "./ApiEndpoints";
-import { getToken, clearToken } from "../contexts/AuthContext";
+import { getToken, clearToken } from "../contexts/AuthContext"; // import logout if exists
 
 const apiClient = axios.create({
   baseURL: BASE_URL,
@@ -11,10 +11,17 @@ const apiClient = axios.create({
   },
 });
 
+// ------------------
+// Request Deduplication + Memoization
+// ------------------
+const pendingRequests = new Map(); // track inflight requests
+const cache = new Map();
+const CACHE_TTL = 2000; // 2 seconds
+
 // Attach token to every request
 apiClient.interceptors.request.use(
   (config) => {
-    const token = getToken(); // always read from localStorage via utility
+    const token = getToken();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -27,33 +34,72 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    // if (error.response?.status === 401) {
-    //   clearToken();
-    //   window.location.href = "/login";
-    // }
+    if (error.response?.status === 401) {
+      // 1. Clear the token
+      clearToken();
+
+      // 2. Call logout function if exists
+      // if (typeof logout === "function") {
+      //   logout();
+      // }
+
+      // 3. Redirect to login page
+      window.location.href = "/login";
+    }
+
     return Promise.reject(error);
   }
 );
 
-// Unified API caller
+// Unified API caller with dedup + memo
 export const apiCall = async (method, url, data = null, params = null) => {
   try {
+    const key = JSON.stringify({ method, url, data, params });
+
+    // 1. If in cache (within TTL), return it immediately
+    if (cache.has(key)) {
+      const { timestamp, response } = cache.get(key);
+      if (Date.now() - timestamp < CACHE_TTL) {
+        return { error: null, response }; // serve from cache
+      } else {
+        cache.delete(key); // remove expired
+      }
+    }
+
+    // 2. If request is already pending, return the same promise
+    if (pendingRequests.has(key)) {
+      return pendingRequests.get(key);
+    }
+
     const isFormData = data instanceof FormData;
 
-    const response = await apiClient({
+    const requestPromise = apiClient({
       method,
       url,
       data,
       params,
       headers: isFormData
         ? { "Content-Type": "multipart/form-data" }
-        : undefined, // default JSON handled by axios
-    });
+        : undefined,
+    })
+      .then((res) => {
+        const response = res.data;
+        cache.set(key, { response, timestamp: Date.now() }); // save in cache
+        pendingRequests.delete(key);
+        return { error: null, response };
+      })
+      .catch((err) => {
+        pendingRequests.delete(key);
+        return { error: err.response?.data || err.message, response: null };
+      });
 
-    return { error: null, response: response.data };
+    // 3. Store pending request
+    pendingRequests.set(key, requestPromise);
+
+    return requestPromise;
   } catch (error) {
     console.error("API Error:", error);
-    return { error: error.response?.data || error.message, response: null };
+    return { error: error.message, response: null };
   }
 };
 

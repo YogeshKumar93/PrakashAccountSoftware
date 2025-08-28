@@ -19,7 +19,8 @@ import {
   Card,
   CardContent,
   Grid,
-  styled
+  styled,
+  Button
 } from '@mui/material';
 import {
   Menu as MenuIcon,
@@ -37,6 +38,8 @@ import {
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { Admin_nav, customer_nav, nav } from './navConfig';
 import AuthContext from '../../contexts/AuthContext';
+      {/* App Bar with reduced height */}
+ import RefreshIcon from '@mui/icons-material/Refresh';
 
 // Navigation configuration
 
@@ -68,6 +71,7 @@ const SideNavAndHeader = ({ userRole , userName = "User Name", userAvatar }) => 
   
 
    const authCtx=useContext(AuthContext);
+   const refreshUser=authCtx.loadUserProfile
   const isMobile = useMediaQuery('(max-width: 900px)');
   const [mobileOpen, setMobileOpen] = useState(false);
   const [desktopOpen, setDesktopOpen] = useState(true);
@@ -230,79 +234,89 @@ const SideNavAndHeader = ({ userRole , userName = "User Name", userAvatar }) => 
 
   return (
     <Box sx={{ display: 'flex', backgroundColor: '#f5f5f5' }} className="container">
-      {/* App Bar with reduced height */}
-      <AppBar
-        position="fixed"
-        sx={{
-          width: { md: desktopOpen ? `calc(100% - ${themeSettings.drawerWidth}px)` : '100%' },
-          ml: { md: desktopOpen ? `${themeSettings.drawerWidth}px` : 0 },
-          zIndex: (theme) => theme.zIndex.drawer + 1,
-          transition: (theme) => theme.transitions.create(['width', 'margin'], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen,
-          }),
-          height: '64px', // Reduced header height
-          justifyContent: 'center'
-        }}
-        className="header"
-      >
-        <Toolbar sx={{ minHeight: '64px !important' }}> {/* Reduced toolbar height */}
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={handleDrawerToggle}
-            sx={{ mr: 2 }}
-          >
-            <MenuIcon />
-          </IconButton>
-          
-          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }} className="text-xl font-semibold">
-            Dashboard
-          </Typography>
-          
-          <IconButton color="inherit" onClick={handleUserMenuOpen}>
-            <Avatar 
-              src={userAvatar} 
-              sx={{ width: 32, height: 32 }}
-            >
-              {!userAvatar && <PersonIcon />}
-            </Avatar>
-          </IconButton>
-          
-          <Menu
-            anchorEl={userMenuAnchor}
-            open={Boolean(userMenuAnchor)}
-            onClose={handleUserMenuClose}
-            onClick={handleUserMenuClose}
-            transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-          >
-            <MenuItem disabled>
-              <ListItemIcon>
-                <PersonIcon fontSize="small" />
-              </ListItemIcon>
-              <span className="text-base font-medium">{userName}</span>
-            </MenuItem>
-            
-            <Divider />
-            
-            <MenuItem>
-              <ListItemIcon>
-                <SettingsIcon fontSize="small" />
-              </ListItemIcon>
-              <span className="text-base">Settings</span>
-            </MenuItem>
-            
-            <MenuItem onClick={handleLogout}>
-              <ListItemIcon>
-                <LogoutIcon fontSize="small" />
-              </ListItemIcon>
-              <span className="text-base">Logout</span>
-            </MenuItem>
-          </Menu>
-        </Toolbar>
-      </AppBar>
+
+<AppBar
+  position="fixed"
+  sx={{
+    width: { md: desktopOpen ? `calc(100% - ${themeSettings.drawerWidth}px)` : '100%' },
+    ml: { md: desktopOpen ? `${themeSettings.drawerWidth}px` : 0 },
+    zIndex: (theme) => theme.zIndex.drawer + 1,
+    transition: (theme) =>
+      theme.transitions.create(['width', 'margin'], {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.leavingScreen,
+      }),
+    height: '64px', // Reduced header height
+    justifyContent: 'center',
+  }}
+  className="header"
+>
+  <Toolbar sx={{ minHeight: '64px !important' }}>
+    <IconButton
+      color="inherit"
+      aria-label="open drawer"
+      edge="start"
+      onClick={handleDrawerToggle}
+      sx={{ mr: 2 }}
+    >
+      <MenuIcon />
+    </IconButton>
+
+    <Typography
+      variant="h6"
+      noWrap
+      component="div"
+      sx={{ flexGrow: 1 }}
+      className="text-xl font-semibold"
+    >
+      Dashboard
+    </Typography>
+
+    {/* ✅ Refresh icon button with black color */}
+    <IconButton onClick={refreshUser}>
+      <RefreshIcon sx={{ color: 'black' }} />
+    </IconButton>
+
+    <IconButton color="inherit" onClick={handleUserMenuOpen}>
+      <Avatar src={userAvatar} sx={{ width: 32, height: 32 }}>
+        {!userAvatar && <PersonIcon />}
+      </Avatar>
+    </IconButton>
+
+    <Menu
+      anchorEl={userMenuAnchor}
+      open={Boolean(userMenuAnchor)}
+      onClose={handleUserMenuClose}
+      onClick={handleUserMenuClose}
+      transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+      anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+    >
+      <MenuItem disabled>
+        <ListItemIcon>
+          <PersonIcon fontSize="small" />
+        </ListItemIcon>
+        <span className="text-base font-medium">{userName}</span>
+      </MenuItem>
+
+      <Divider />
+
+      <MenuItem>
+        <ListItemIcon>
+          <SettingsIcon fontSize="small" />
+        </ListItemIcon>
+        <span className="text-base">Settings</span>
+      </MenuItem>
+
+      <MenuItem onClick={handleLogout}>
+        <ListItemIcon>
+          <LogoutIcon fontSize="small" />
+        </ListItemIcon>
+        <span className="text-base">Logout</span>
+      </MenuItem>
+    </Menu>
+  </Toolbar>
+</AppBar>
+
 
       {/* Navigation Drawer */}
       <Box
@@ -360,7 +374,7 @@ const SideNavAndHeader = ({ userRole , userName = "User Name", userAvatar }) => 
       {/* Main Content */}
       <MainContent 
         sx={{ 
-          ml: { md: desktopOpen ? 0 : 7 },
+    
           width: { md: desktopOpen ? `calc(100% - ${themeSettings.drawerWidth}px)` : '100%' }
         }}
         className="content"

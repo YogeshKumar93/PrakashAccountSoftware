@@ -80,11 +80,12 @@ const VerifyMpinLogin = ({
           password,
           mpin: fullCode
         };
-      } else {
-        endpoint = '/auth/verify-otp';
+      } else {  
+         endpoint = ApiEndpoints.LOGIN_OTP_VALIDATE;  
         payload = {
           username,
-          otp: fullCode
+          otp: fullCode,
+          password
         };
       }
 
@@ -107,7 +108,7 @@ const VerifyMpinLogin = ({
         }
         
         // Navigate to dashboard
-        navigate('/dashboard');
+        navigate('/customer/dashboard');
       }
     } catch (err) {
       setError(err.message || "Verification failed");

@@ -6,15 +6,17 @@ export const nav = [
 ];
 
 export const Admin_nav = [
-  { title: "Dashboard", icon: "📊", icon2: "📊", to: "/dashboard" }, // Changed from /admin/dashboard
-  { title: "Users", icon: "👥", icon2: "👥", to: "/users" }, // Changed from /admin/users
-  { title: "Transactions", icon: "💳", icon2: "💳", to: "/transactions" }
+  { title: "Dashboard", icon: "📊", icon2: "📊", to: "/admin/dashboard" },
+  { title: "Users", icon: "👥", icon2: "👥", to: "/admin/users" },
+  { title: "Transactions", icon: "💳", icon2: "💳", to: "/admin/transactions" }
 ];
 
 export const customer_nav = [
-  { title: "Dashboard", icon: "📊", icon2: "📊", to: "/dashboard" },
-  { title: "Services", icon: "🛠️", icon2: "🛠️", to: "/services" },
-  { title: "Account Ledger", icon: "📒", icon2: "📒", to: "/account-ledger" },
-    { title: "Services", icon: "🛠️", icon2: "🛠️", to: "/services" },
-  { title: "Account Ledger", icon: "📒", icon2: "📒", to: "/account-ledger" }
+  { title: "Dashboard", icon: "📊", icon2: "📊", to: "/customer/dashboard" },
+  { title: "Fund Request", icon: "🛠️", icon2: "🛠️", to: "/customer/fund-request" },
+  { title: "Money transfer", icon: "🛠️", icon2: "🛠️", to: "/customer/money-transfer" },
+  { title: "Recharge and bill", icon: "🛠️", icon2: "🛠️", to: "/customer/recharge-bill" },
+  { title: "Account Ledger", icon: "📒", icon2: "📒", to: "/customer/account-ledger" },
+  { title: "My Purchase", icon: "🛠️", icon2: "🛠️", to: "/customer/purchase" },
+  { title: "My Sale", icon: "📒", icon2: "📒", to: "/customer/sale" }
 ];

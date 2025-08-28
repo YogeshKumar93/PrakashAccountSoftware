@@ -1,5 +1,5 @@
 // Login.js (final version with all corrections)
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Paper,
   Typography,
@@ -22,6 +22,7 @@ import { apiCall } from "../api/apiClient";
 import { ReTextField } from "../components/common/ReTextField";
 import { ReButton } from "../components/common/ReButton";
 import VerifyMpinLogin from "../components/UI/VerifyMpinLogin";
+import { getGeoLocation } from "../utils/GeoLocationUtil";
 
 
 const validationSchema = Yup.object({
@@ -45,7 +46,20 @@ const Login = () => {
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(validationSchema),
   });
+  useEffect(() => {
+    locationVal();
+    return () => {};
+  }, []);
 
+  const locationVal = getGeoLocation(
+    (lat, long) => {
+      authCtx.setLocation(lat, long);
+      return [lat, long];
+    },
+    (err) => {
+      okErrorToast("Location", err);
+    }
+  );
   const onSubmit = async (data) => {
     setLoading(true);
     setLoginError("");
