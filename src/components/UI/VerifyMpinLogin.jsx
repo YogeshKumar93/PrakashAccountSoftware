@@ -107,7 +107,7 @@ const VerifyMpinLogin = ({
           onVerificationSuccess();
         }
         
-        // Navigate to dashboard
+  
         navigate('/customer/dashboard');
       }
     } catch (err) {

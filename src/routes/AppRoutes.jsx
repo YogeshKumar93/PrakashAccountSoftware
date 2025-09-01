@@ -58,7 +58,7 @@ const RoleBasedRoutes = ({ user }) => {
 
 export default function AppRoutes() {
   const { user } = useContext(AuthContext);
-  console.log("user data", user);
+  // console.log("user data", user);
 
   return (
     <BrowserRouter>

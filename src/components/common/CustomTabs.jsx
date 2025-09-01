@@ -6,67 +6,68 @@ function CustomTabs({ tabs, value, onChange, heading }) {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
   return (
-    <Box sx={{ bgcolor: "background.paper" }}>
-      <AppBar position="static">
-      <Tabs
-  value={value}
-  onChange={onChange}
-  variant={isSmallScreen ? "scrollable" : "fullWidth"}
-  scrollButtons={isSmallScreen ? "auto" : false}
-  aria-label="full width tabs example"
-  sx={{
-    "& .MuiTabs-indicator": {
-      backgroundColor: "#8B8000",
-    },
-    "& .MuiTab-root": {
-      color: "#000",
-      fontSize: isSmallScreen ? "0.6rem" : "0.7rem", 
-      minHeight: isSmallScreen ? "24px" : "30px", 
-      padding: isSmallScreen ? "4px 8px" : "6px 12px",
-      flexDirection: isSmallScreen ? "column" : "row", 
-      gap: "4px",
-      "& .MuiSvgIcon-root": {
-        color: "#E8960C",
-        fontSize: isSmallScreen ? "18px" : "24px", 
-      },
-    },
-    "& .MuiTab-root.Mui-selected": {
-      color: "#9B870C",
-      "& .MuiSvgIcon-root": {
-        color: "#9B870C",
-      },
-    },
-    minHeight: isSmallScreen ? "26px" : "30px",
-  }}
->
+    <Box
+      sx={{
+        bgcolor: "background.paper",
+        borderRadius: 2,
+        overflow: 'hidden',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+        border: '1px solid #e0e0e0',
+      }}
+    >
+      <AppBar position="static" elevation={0} sx={{ bgcolor: 'transparent', borderBottom: '1px solid #f0f0f0' }}>
+        <Tabs
+          value={value}
+          onChange={onChange}
+          variant="scrollable"
+          scrollButtons="auto"
+          aria-label="custom tabs"
+          sx={{
+            "& .MuiTabs-scroller": { overflowX: "auto !important" },
+            "& .MuiTabs-indicator": { display: "none" }, // hide default indicator
+          }}
+        >
           {tabs.map((tab, index) => (
             <Tab
               key={index}
               label={tab.label}
               icon={tab.icon}
+              iconPosition="start"
               {...a11yProps(index)}
               sx={{
-                bgcolor: "white",
-                color: "black",
-                minHeight: "30px",
-                fontSize: "0.800rem",
-                padding: "6px 12px",
-                flexDirection: "row",
-                gap: "8px",
+                minHeight: 60,
+                minWidth: 140,
+                marginRight: 1.5,
+                borderRadius: 2,
+                textTransform: 'none',
+                fontWeight: 500,
+                fontSize: isSmallScreen ? "0.75rem" : "0.9rem",
+                backgroundColor: value === index ? "#d28e19ff" : "#f0f0f0", 
+                color: value === index ? "#fff" : "#555",
+                boxShadow: value === index ? "0 4px 12px rgba(25, 118, 210, 0.2)" : "none",
+                transition: "all 0.3s ease",
+                "&:hover": {
+                  backgroundColor: value === index ? "#935211ff" : "#e0e0e0",
+                },
+                "& .MuiSvgIcon-root": {
+                  marginRight: 6,
+                  color: value === index ? "#fff" : "#555",
+                  fontSize: isSmallScreen ? 18 : 20,
+                },
               }}
             />
           ))}
         </Tabs>
       </AppBar>
+
       {heading && (
-        <Box sx={{ p: 1, pb: 0.5 }}>
-          {" "}
-          {/* Further reduced padding, especially bottom padding */}
-          <Typography variant="h5" component="h1" gutterBottom>
+        <Box sx={{ p: 2.5, pb: 1.5 }}>
+          <Typography variant="h5" component="h1" sx={{ fontWeight: 600, color: '#202124' }}>
             {heading}
           </Typography>
         </Box>
       )}
+
       {tabs.map((tab, index) => (
         <TabPanel key={index} value={value} index={index}>
           {tab.content}
@@ -89,9 +90,7 @@ function TabPanel(props) {
       {...other}
     >
       {value === index && (
-        <Box sx={{ p: 1, overflow: "auto" }}>
-          {" "}
-          {/* Further reduced padding */}
+        <Box sx={{ p: 3 }}>
           {children}
         </Box>
       )}
@@ -105,7 +104,6 @@ TabPanel.propTypes = {
   value: PropTypes.number.isRequired,
 };
 
-// Accessibility props
 function a11yProps(index) {
   return {
     id: `full-width-tab-${index}`,
@@ -118,6 +116,7 @@ CustomTabs.propTypes = {
     PropTypes.shape({
       label: PropTypes.string.isRequired,
       content: PropTypes.node.isRequired,
+      icon: PropTypes.node,
     })
   ).isRequired,
   value: PropTypes.number.isRequired,

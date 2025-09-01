@@ -6,10 +6,10 @@ import { fetchWithCache } from "./cache";
 export const getUserProfile = async (authCtx, navigate) => {
   return fetchWithCache("profile", async () => {
     try {
-      const userRes = await apiCall("GET", ApiEndpoints.GET_ME_USERss);
+      const userRes = await apiCall("GET", ApiEndpoints.GET_ME_USER);
       if (!userRes.error) {
         authCtx.saveUser(userRes.response.data);
-        navigate("/dashboard");
+        navigate("/customer/dashboard");
         return userRes.response.data;
       } else {
         throw new Error("Failed to fetch user profile");

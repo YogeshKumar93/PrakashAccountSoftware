@@ -1,7 +1,9 @@
 // api/apiClient.js
 import axios from "axios";
 import { BASE_URL } from "./ApiEndpoints";
-import { getToken, clearToken } from "../contexts/AuthContext"; // import logout if exists
+import AuthContext, { getToken, clearToken } from "../contexts/AuthContext"; // import logout if exists
+import { useContext } from "react";
+import { forceLogout } from "../utils/forceLogout";
 
 const apiClient = axios.create({
   baseURL: BASE_URL,
@@ -14,11 +16,11 @@ const apiClient = axios.create({
 // ------------------
 // Request Deduplication + Memoization
 // ------------------
-const pendingRequests = new Map(); // track inflight requests
+const pendingRequests = new Map(); 
 const cache = new Map();
-const CACHE_TTL = 2000; // 2 seconds
+const CACHE_TTL = 2000; 
 
-// Attach token to every request
+
 apiClient.interceptors.request.use(
   (config) => {
     const token = getToken();
@@ -27,42 +29,36 @@ apiClient.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
-// Handle unauthorized responses
+
 apiClient.interceptors.response.use(
+  
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // 1. Clear the token
-      clearToken();
-
-      // 2. Call logout function if exists
-      // if (typeof logout === "function") {
-      //   logout();
-      // }
-
-      // 3. Redirect to login page
-      window.location.href = "/login";
+    
+forceLogout()
+   
     }
 
     return Promise.reject(error);
   }
 );
 
-// Unified API caller with dedup + memo
+
 export const apiCall = async (method, url, data = null, params = null) => {
   try {
     const key = JSON.stringify({ method, url, data, params });
 
-    // 1. If in cache (within TTL), return it immediately
+   
     if (cache.has(key)) {
       const { timestamp, response } = cache.get(key);
       if (Date.now() - timestamp < CACHE_TTL) {
         return { error: null, response }; // serve from cache
       } else {
-        cache.delete(key); // remove expired
+        cache.delete(key);
       }
     }
 

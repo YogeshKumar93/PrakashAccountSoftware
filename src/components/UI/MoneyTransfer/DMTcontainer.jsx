@@ -24,7 +24,9 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions
+  DialogActions,
+  useMediaQuery,
+  useTheme
 } from "@mui/material";
 import {
   ArrowBack as ArrowBackIcon,
@@ -50,6 +52,7 @@ import CustomTabs from "../../common/CustomTabs";
 import CommonCardServices from "./CommonCardServices";
 import DmtAddRemModal from "./DmtAddRemModal";
 import DmrVrifyNewUser from "./DmrVrifyNewUser";
+import { MoneyTransferForm } from "./MoneyTransferForm";
 
 // Bank logos mapping
 const bankImageMapping = {
@@ -136,12 +139,17 @@ const DMT_TYPES = {
   }
 };
 
+// Money Transfer Component
+
+
 // Main component
 const DmtContainer = ({ setMoney = false, id, resetView, dataCategories, handleCardClick }) => {
   const navigate = useNavigate();
   const authCtx = useContext(AuthContext);
   const { user, location } = authCtx;
   const { lat: userLat, long: userLong } = location;
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   
   const scrollContainerRef = useRef(null);
   const [activeDmtType, setActiveDmtType] = useState(
@@ -167,6 +175,8 @@ const DmtContainer = ({ setMoney = false, id, resetView, dataCategories, handleC
   const [tabValue, setTabValue] = useState(0);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedBeneficiary, setSelectedBeneficiary] = useState(null);
+  const [transferDialogOpen, setTransferDialogOpen] = useState(false);
+  const [selectedTransferType, setSelectedTransferType] = useState("");
 
   // Filter available DMT types based on user permissions
   const availableDmtTypes = Object.keys(DMT_TYPES).filter(
@@ -219,22 +229,19 @@ const DmtContainer = ({ setMoney = false, id, resetView, dataCategories, handleC
     handleRemitterSuccess(response, number);
   }, [activeDmtType, userLat, userLong]);
 
-  // Handle successful remitter status response
   const handleRemitterSuccess = (response, number) => {
     const isDmt1OrSt = activeDmtType === "DMT1" ;
 
-    // Pick remitter data
     const remitterData = isDmt1OrSt ? response.remitter :activeDmtType === "WALLET"?response.remitter: response?.remitter;
 
     setMobile(number);
     setRemitterStatus(remitterData);
 
-    // Pick beneficiaries
     const beneData = activeDmtType === "DMT1" ? remitterData?.beneficiaries :activeDmtType === "WALLET"?response.data: response?.data;
     setBeneficiaries(beneData || []);
   };
 
-  // Handle remitter status error
+
   const handleRemitterError = (error, number) => {
     if (error) {
       switch (error.message) {
@@ -308,8 +315,16 @@ const DmtContainer = ({ setMoney = false, id, resetView, dataCategories, handleC
 
   // Handle money transfer
   const handleMoneyTransfer = (beneficiary, transferType) => {
-    console.log(`Initiate ${transferType} transfer to:`, beneficiary);
-    // Implement money transfer logic based on transferType (NEFT, IMPS, PORT)
+    setSelectedBeneficiary(beneficiary);
+    setSelectedTransferType(transferType);
+    setTransferDialogOpen(true);
+  };
+
+  // Handle transfer completion
+  const handleTransferComplete = () => {
+    setTransferDialogOpen(false);
+    setSelectedBeneficiary(null);
+    setSelectedTransferType("");
   };
 
   // Handle delete beneficiary
@@ -359,8 +374,8 @@ const DmtContainer = ({ setMoney = false, id, resetView, dataCategories, handleC
         <Box width={100} /> {/* Spacer for balance */}
       </Box>
       
-      <TableContainer component={Paper} sx={{ mb: 2 }}>
-        <Table>
+      <TableContainer component={Paper} sx={{ mb: 2, overflowX: 'auto' }}>
+        <Table sx={{ minWidth: isMobile ? 600 : 'auto' }}>
           <TableHead>
             <TableRow sx={{ backgroundColor: 'primary.main' }}>
               <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Name</TableCell>
@@ -401,17 +416,17 @@ const DmtContainer = ({ setMoney = false, id, resetView, dataCategories, handleC
   // Render beneficiary table
   const renderBeneficiaryTable = () => (
     <Card sx={{ p: 2, borderRadius: 2 }}>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2} flexDirection={isMobile ? "column" : "row"} gap={isMobile ? 2 : 0}>
         <Typography variant="h6" color="primary" fontWeight="bold">
           Beneficiaries
         </Typography>
-        <Box display="flex" alignItems="center" gap={1}>
+        <Box display="flex" alignItems="center" gap={1} width={isMobile ? "100%" : "auto"}>
           <TextField
             placeholder="Search beneficiaries..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             size="small"
-            sx={{ width: 250 }}
+            sx={{ width: isMobile ? "100%" : 250 }}
             InputProps={{
               startAdornment: <SearchIcon sx={{ mr: 1, color: 'text.secondary' }} />
             }}
@@ -423,8 +438,8 @@ const DmtContainer = ({ setMoney = false, id, resetView, dataCategories, handleC
       </Box>
       
       {filteredBeneficiaries.length > 0 ? (
-        <TableContainer component={Paper}>
-          <Table>
+        <TableContainer component={Paper} sx={{ overflowX: 'auto' }}>
+          <Table sx={{ minWidth: isMobile ? 800 : 'auto' }}>
             <TableHead>
               <TableRow sx={{ backgroundColor: 'primary.main' }}>
                 <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Bank</TableCell>
@@ -470,11 +485,12 @@ const DmtContainer = ({ setMoney = false, id, resetView, dataCategories, handleC
                       )}
                     </TableCell>
                     <TableCell>
-                      <Box display="flex" gap={1}>
+                      <Box display="flex" gap={1} flexWrap={isMobile ? "wrap" : "nowrap"}>
                         <Button 
                           variant="outlined" 
                           size="small"
                           onClick={() => handleMoneyTransfer(beneficiary, "NEFT")}
+                          sx={{ mb: isMobile ? 1 : 0 }}
                         >
                           NEFT
                         </Button>
@@ -482,6 +498,7 @@ const DmtContainer = ({ setMoney = false, id, resetView, dataCategories, handleC
                           variant="outlined" 
                           size="small"
                           onClick={() => handleMoneyTransfer(beneficiary, "IMPS")}
+                          sx={{ mb: isMobile ? 1 : 0 }}
                         >
                           IMPS
                         </Button>
@@ -489,6 +506,7 @@ const DmtContainer = ({ setMoney = false, id, resetView, dataCategories, handleC
                           variant="outlined" 
                           size="small"
                           onClick={() => handleMoneyTransfer(beneficiary, "PORT")}
+                          sx={{ mb: isMobile ? 1 : 0 }}
                         >
                           PORT
                         </Button>
@@ -612,16 +630,17 @@ const DmtContainer = ({ setMoney = false, id, resetView, dataCategories, handleC
   );
 
   return (
-    <Box sx={{ p: 2, maxWidth: 1200, margin: "0 auto" }}>
+    <Box sx={{ p: isMobile ? 1 : 2, maxWidth: 1200, margin: "0 auto" }}>
       
       {renderServicesCarousel()}
       
       {!remitterStatus && availableDmtTypes.length > 1 && (
-        <Box sx={{ mb: 2 }}>
+        <Box sx={{ mb: 2, overflowX: 'auto' }}>
           <Tabs
             value={tabValue}
             onChange={handleTabChange}
-            variant="fullWidth"
+            variant={isMobile ? "scrollable" : "fullWidth"}
+            scrollButtons="auto"
             indicatorColor="primary"
             textColor="primary"
           >
@@ -649,7 +668,7 @@ const DmtContainer = ({ setMoney = false, id, resetView, dataCategories, handleC
       )}
       
       {/* Delete Confirmation Dialog */}
-      <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
+      <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)} fullScreen={isMobile}>
         <DialogTitle>Confirm Delete</DialogTitle>
         <DialogContent>
           <Typography>
@@ -663,6 +682,18 @@ const DmtContainer = ({ setMoney = false, id, resetView, dataCategories, handleC
           </Button>
         </DialogActions>
       </Dialog>
+      
+      {/* Money Transfer Dialog */}
+      {transferDialogOpen && selectedBeneficiary && (
+        <MoneyTransferForm
+          beneficiary={selectedBeneficiary}
+          transferType={selectedTransferType}
+          onClose={() => setTransferDialogOpen(false)}
+          remitterStatus={remitterStatus}
+          mobile={mobile}
+          onTransfer={handleTransferComplete}
+        />
+      )}
       
       {/* Modals */}
       {showAddRemitter && (

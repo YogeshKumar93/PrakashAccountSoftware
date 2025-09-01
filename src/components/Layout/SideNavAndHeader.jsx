@@ -67,7 +67,7 @@ const themeSettings = {
 };
 
 const SideNavAndHeader = ({ userRole , userName = "User Name", userAvatar }) => {
-  console.log("inroute",userRole);
+  // console.log("inroute",userRole);
   
 
    const authCtx=useContext(AuthContext);
