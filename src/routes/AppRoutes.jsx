@@ -16,9 +16,10 @@ import RechargeAndBill from "../components/UI/rechange and bill/RechargeAndBill"
 // PrivateRoute wrapper
 const PrivateRoute = ({ children }) => {
   const authCtx = useContext(AuthContext);
-  const user = authCtx?.user;
+  const isAuthenticated = authCtx?.isAuthenticated;
+console.log("isAuthenticated",isAuthenticated);
 
-  return user ? children : <Navigate to="/login" />;
+  return isAuthenticated ? children : <Navigate to="/login" />;
 };
 
 

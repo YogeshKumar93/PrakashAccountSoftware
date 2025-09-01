@@ -43,6 +43,8 @@ export const AuthProvider = ({ children }) => {
       if (error) throw new Error(error.message || "Failed to load user profile");
 
       if (response?.data) {
+        console.log("response data is ",response.data);
+        
         setUser(response.data);
         localStorage.setItem("user", JSON.stringify(response.data));
         return response.data;
@@ -185,7 +187,7 @@ export const AuthProvider = ({ children }) => {
     login,
     logout,
     saveUser,
-    isAuthenticated: !!user && !!getToken(),
+    isAuthenticated: token,
     
     // New keys from second context
     token: token,

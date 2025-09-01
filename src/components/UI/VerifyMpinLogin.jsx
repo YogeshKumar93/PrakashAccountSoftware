@@ -99,6 +99,7 @@ const VerifyMpinLogin = ({
       if (response.data?.access_token) {
         const token = response.data.access_token;
         
+        navigate('/customer/dashboard');
      
          authCtx.login(token);
         
@@ -108,7 +109,6 @@ const VerifyMpinLogin = ({
         }
         
   
-        navigate('/customer/dashboard');
       }
     } catch (err) {
       setError(err.message || "Verification failed");
