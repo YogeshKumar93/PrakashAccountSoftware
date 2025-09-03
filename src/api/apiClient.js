@@ -44,7 +44,6 @@ export const apiCall = async (method, url, data = null, params = null) => {
   try {
     const token = getToken();
 
-    // ✅ Always append api_token to payload (if exists)
     if (data) {
       if (data instanceof FormData) {
         data.append("api_token", token || "");
@@ -53,7 +52,6 @@ export const apiCall = async (method, url, data = null, params = null) => {
       }
     }
 
-    // ✅ Always send api_token in params (even if params is null)
     params = { ...(params || {}), api_token: token || "" };
 
     const key = JSON.stringify({ method, url, data, params });
