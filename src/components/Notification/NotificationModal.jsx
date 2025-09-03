@@ -39,7 +39,7 @@ const NotificationModal = () => {
       const { response, error } = await apiCall(
         "POST",
         ApiEndpoints.MARK_READ_NOTI,
-        { id, user_id: 2, is_read: 1 }
+        { id,  is_read: {} }
       );
 
       if (response) {
@@ -123,7 +123,7 @@ const NotificationModal = () => {
               <React.Fragment key={row.id}>
                 <ListItem
                   alignItems="flex-start"
-                  onClick={() => handleMarkAsRead(row.id)} // ✅ clean call
+                  onClick={() => handleMarkAsRead()} // ✅ clean call
                   sx={{
                     bgcolor: row.is_read ? "background.paper" : "#f0f8ff",
                     borderRadius: 1,
