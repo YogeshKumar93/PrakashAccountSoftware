@@ -1,7 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
-  Grid,
-   
   MenuItem,
   Typography,
   CircularProgress,
@@ -11,12 +9,12 @@ import { apiCall } from "../api/apiClient";
 import ApiEndpoints from "../api/ApiEndpoints";
 import CommonModal from "../components/common/CommonModal";
 import { ReTextField } from "../components/common/ReTextField";
- 
 
 const accountTypes = ["Current", "Savings", "Credit"];
 
-const CreateAccount = ({ open, handleClose, handleSave }) => {
+const UpdateAccount = ({ open, handleClose, handleSave, selectedAccount }) => {
   const [formData, setFormData] = useState({
+    id: "",
     name: "",
     user_id: "",
     establishment: "",
@@ -31,6 +29,24 @@ const CreateAccount = ({ open, handleClose, handleSave }) => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
+  // Prefill data when modal opens
+  useEffect(() => {
+    if (selectedAccount) {
+      setFormData({
+        id: selectedAccount.id || "",
+        name: selectedAccount.name || "",
+        user_id: selectedAccount.user_id || "",
+        establishment: selectedAccount.establishment || "",
+        mobile: selectedAccount.mobile || "",
+        type: selectedAccount.type || "",
+        asm: selectedAccount.asm || "",
+        credit_limit: selectedAccount.credit_limit || "",
+        balance: selectedAccount.balance || "",
+        status: selectedAccount.status || "1",
+      });
+    }
+  }, [selectedAccount]);
+
   const validate = () => {
     let newErrors = {};
 
@@ -39,7 +55,7 @@ const CreateAccount = ({ open, handleClose, handleSave }) => {
     if (!formData.establishment.trim())
       newErrors.establishment = "Establishment is required";
     if (!formData.asm.trim()) newErrors.asm = "Asm is required";
-    if (!/^\d{10}$/.test(formData.mobile))
+    if (!/^[0-9]{10}$/.test(formData.mobile))
       newErrors.mobile = "Enter a valid 10-digit mobile number";
     if (formData.credit_limit < 0)
       newErrors.credit_limit = "Credit limit cannot be negative";
@@ -64,59 +80,46 @@ const CreateAccount = ({ open, handleClose, handleSave }) => {
     setLoading(true);
     try {
       const { error, response } = await apiCall(
-        "POST",
-        ApiEndpoints.CREATE_ACCOUNT,
+        "POST", // update method
+        ApiEndpoints.UPDATE_ACCOUNT, // your API endpoint for update
         formData
       );
 
       if (!error && response?.status === "SUCCESS") {
-        handleSave(response.data); // pass newly created account back
+        handleSave(response.data); // pass updated account back
         handleClose();
-        setFormData({
-          name: "",
-          user_id: "",
-          establishment: "",
-          mobile: "",
-          type: "",
-          asm: "",
-          credit_limit: "",
-          balance: "",
-          status: "1",
-        });
       } else {
-        console.error("Failed to create account:", error || response);
-        // alert(response?.message || "Failed to create account");
+        console.error("Failed to update account:", error || response);
       }
     } catch (err) {
-      console.error("Error creating account:", err);
-      alert("Something went wrong while creating account.");
+      console.error("Error updating account:", err);
+      alert("Something went wrong while updating account.");
     } finally {
       setLoading(false);
     }
   };
 
-  // Footer buttons for the modal
   const footerButtons = [
     {
       text: "Cancel",
       variant: "outlined",
       onClick: handleClose,
-      disabled: loading
+      disabled: loading,
     },
     {
-      text: "Save",
+      text: "Update",
       variant: "contained",
       onClick: onSubmit,
       disabled: loading,
-      startIcon: loading ? <CircularProgress size={20} color="inherit" /> : null
-    }
+      startIcon: loading ? <CircularProgress size={20} color="inherit" /> : null,
+    },
   ];
 
   return (
     <CommonModal
       open={open}
       onClose={handleClose}
-      title="Create Account"
+      title="Update Account"
       footerButtons={footerButtons}
       size="medium"
       iconType="info"
@@ -124,9 +127,9 @@ const CreateAccount = ({ open, handleClose, handleSave }) => {
       closeOnBackdropClick={!loading}
       dividers={true}
     >
-       {/* Row 1 */}
+      {/* Row 1 */}
       <Box display="flex" gap={2} mb={2}>
-           < ReTextField
+        <ReTextField
           label="Name"
           name="name"
           fullWidth
@@ -137,7 +140,7 @@ const CreateAccount = ({ open, handleClose, handleSave }) => {
           disabled={loading}
         />
 
-            <ReTextField
+        <ReTextField
           label="User ID"
           name="user_id"
           type="number"
@@ -152,7 +155,7 @@ const CreateAccount = ({ open, handleClose, handleSave }) => {
 
       {/* Row 2 */}
       <Box display="flex" gap={2} mb={2}>
-            <ReTextField
+        <ReTextField
           label="Establishment"
           name="establishment"
           fullWidth
@@ -163,7 +166,7 @@ const CreateAccount = ({ open, handleClose, handleSave }) => {
           disabled={loading}
         />
 
-            <ReTextField
+        <ReTextField
           label="Mobile"
           name="mobile"
           fullWidth
@@ -177,7 +180,7 @@ const CreateAccount = ({ open, handleClose, handleSave }) => {
 
       {/* Row 3 */}
       <Box display="flex" gap={2} mb={2}>
-           <ReTextField
+        <ReTextField
           select
           label="Type"
           name="type"
@@ -193,9 +196,9 @@ const CreateAccount = ({ open, handleClose, handleSave }) => {
               {option}
             </MenuItem>
           ))}
-        </ ReTextField>
+        </ReTextField>
 
-         < ReTextField
+        <ReTextField
           label="ASM"
           name="asm"
           fullWidth
@@ -205,12 +208,11 @@ const CreateAccount = ({ open, handleClose, handleSave }) => {
           helperText={errors.asm}
           disabled={loading}
         />
-
       </Box>
 
       {/* Row 4 */}
       <Box display="flex" gap={2} mb={2}>
-          <ReTextField
+        <ReTextField
           label="Credit Limit"
           name="credit_limit"
           type="number"
@@ -222,7 +224,7 @@ const CreateAccount = ({ open, handleClose, handleSave }) => {
           disabled={loading}
         />
 
-         < ReTextField
+        <ReTextField
           label="Balance"
           name="balance"
           type="number"
@@ -235,18 +237,15 @@ const CreateAccount = ({ open, handleClose, handleSave }) => {
         />
       </Box>
 
-      {/* Status Note */}
       <Typography
         variant="caption"
         color="text.secondary"
         sx={{ mt: 2, display: "block" }}
       >
-        * Status will be set to Active (1) by default
+        * Status will be preserved from existing account
       </Typography>
-
-      
     </CommonModal>
   );
 };
 
-export default CreateAccount;
+export default UpdateAccount;
