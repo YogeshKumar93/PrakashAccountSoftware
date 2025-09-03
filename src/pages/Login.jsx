@@ -23,12 +23,14 @@ import { ReTextField } from "../components/common/ReTextField";
 import { ReButton } from "../components/common/ReButton";
 import VerifyMpinLogin from "../components/UI/VerifyMpinLogin";
 import { getGeoLocation } from "../utils/GeoLocationUtil";
+import { okErrorToast } from "../utils/ToastUtil";
 
 
 const validationSchema = Yup.object({
-  mobile: Yup.string()
-    .matches(/^[0-9]{10}$/, "Enter a valid 10-digit mobile number")
-    .required("Mobile number is required"),
+mobile: Yup.string()
+  .matches(/^[a-zA-Z0-9]+$/, "Only letters and numbers are allowed")
+  .required("Mobile is required"),
+
   password: Yup.string().required("Password is required"),
 });
 
@@ -40,8 +42,10 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [secureValidate, setSecureValidate] = useState("");
   const [loginError, setLoginError] = useState("");
+  const [otpRef,setOtpRef]=useState("")
   const navigate = useNavigate();
   const authCtx = useContext(AuthContext);
+  const user = authCtx.user;
 
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(validationSchema),
@@ -60,44 +64,70 @@ const Login = () => {
       okErrorToast("Location", err);
     }
   );
-  const onSubmit = async (data) => {
-    setLoading(true);
-    setLoginError("");
-    setUsername(data.mobile);
-    setPassword(data.password);
-    
-    try {
-      const { error, response } = await apiCall("POST", ApiEndpoints.SIGN_IN, {
-        username: data.mobile,
-        password: data.password,
-      });
 
-      if (error) {
-        setLoginError(error.message || "Login failed");
-        setLoading(false);
-        return;
-      }
-    console.log("response is ",response);
-    
-      if (response?.data === "MPIN") {
-        setSecureValidate("MPIN");
-        setIsMpinRequired(true);
-      } else if (response?.data === "OTP") {
-        setSecureValidate("OTP");
-        setIsMpinRequired(true);
-      } else if (response?.data?.access_token) {
-        const token = response.data.access_token;
-        await authCtx.login(token);
-        // Navigation will be handled by AuthContext based on user role
-      } else {
-        setLoginError("Unexpected response from server");
-      }
-    } catch (err) {
-      setLoginError(err.message || "Login failed");
-    } finally {
+
+  const onSubmit = async (data) => {
+  setLoading(true);
+  setLoginError("");
+  setUsername(data.mobile);
+  setPassword(data.password);
+
+  try {
+    const { error, response } = await apiCall("POST", ApiEndpoints.SIGN_IN, {
+      username: data.mobile,
+      password: data.password,
+    });
+
+    if (error) {
+      setLoginError(error.message || "Login failed");
       setLoading(false);
+      return;
     }
-  };
+
+    console.log("response is ", response);
+
+    //  if (response.data?.access_token) {
+    //     const token = response.data.access_token;
+        
+    //     navigate('/customer/dashboard');
+     
+    //      authCtx.login(token);
+        
+
+    if (response?.data === "MPIN") {
+      setSecureValidate("MPIN");
+      setIsMpinRequired(true);
+    } else if (response?.data === "OTP") {
+      setSecureValidate("OTP");
+      setOtpRef(response.message)
+      setIsMpinRequired(true);
+    } else if (response?.data?.access_token) {
+      const token = response.data.access_token;
+      await authCtx.login(token);
+
+      // 🔹 Extract role from response (depends on your API response structure)
+      // const role = response.data.role || response.data.user?.role;
+
+      // 🔹 Navigate based on role
+      
+      if (user?.role === "adm") {
+        navigate("/admin/dashboard");
+      } else if (user?.role === "ret") {
+        navigate("/customer/dashboard");
+      } else if (user?.role === "user") {
+        navigate("/user/home");
+      } else {
+        navigate("/"); // fallback
+      }
+    } else {
+      setLoginError("Unexpected response from server");
+    }
+  } catch (err) {
+    setLoginError(err.message || "Login failed");
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleMpinVerificationSuccess = () => {
     setIsMpinRequired(false);
@@ -225,6 +255,7 @@ const Login = () => {
           <VerifyMpinLogin
             username={username}
             password={password}
+            otpRef={otpRef}
             secureValidate={secureValidate}
             setIsOtpField={setIsMpinRequired}
             onVerificationSuccess={handleMpinVerificationSuccess}

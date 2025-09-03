@@ -12,7 +12,11 @@ import MySale from "../components/UI/MySale";
 import FundRequest from "../components/UI/FundRequest";
 import DmtContainer from "../components/UI/MoneyTransfer/DMTcontainer";
 import RechargeAndBill from "../components/UI/rechange and bill/RechargeAndBill";
+<<<<<<< HEAD
 import Notification from "../components/Notification/Notification";
+=======
+import Accounts from "../pages/Accounts";
+>>>>>>> 724d275813d218b06b301e8b32e4179a5b587e4d
 
 // PrivateRoute wrapper
 const PrivateRoute = ({ children }) => {
@@ -24,23 +28,30 @@ const PrivateRoute = ({ children }) => {
 };
 
 const RoleBasedRoutes = ({ user }) => {
+  console.log("user role is ",user.role);
+  
   return (
     <Routes>
       {/* Admin routes */}
-      {user?.role === "Admin" && (
+      {user?.role === "adm" && (
         <>
           <Route path="admin/dashboard" element={<AdminTransactions />} />
           <Route path="admin/users" element={<Users />} />
           <Route path="admin/transactions" element={<Dashboard />} />
+<<<<<<< HEAD
           <Route
             path="admin/*"
             element={<Navigate to="/admin/dashboard" replace />}
           />
+=======
+          <Route path="admin/*" element={<Navigate to="/admin/dashboard" replace />} />
+           
+>>>>>>> 724d275813d218b06b301e8b32e4179a5b587e4d
         </>
       )}
 
       {/* Retailer and DD routes */}
-      {(user?.role === "Ret" || user?.role === "Dd") && (
+      {(user?.role === "ret" || user?.role === "dd") && (
         <>
           <Route path="customer/dashboard" element={<AdminTransactions />} />
           <Route path="customer/services" element={<Dashboard />} />
@@ -50,10 +61,15 @@ const RoleBasedRoutes = ({ user }) => {
           <Route path="customer/purchase" element={<MyPurchase />} />
           <Route path="customer/fund-request" element={<FundRequest />} />
           <Route path="customer/sale" element={<MySale />} />
+<<<<<<< HEAD
           <Route
             path="customer/*"
             element={<Navigate to="/customer/dashboard" replace />}
           />
+=======
+          <Route path="customer/*" element={<Navigate to="/customer/dashboard" replace />} />
+       
+>>>>>>> 724d275813d218b06b301e8b32e4179a5b587e4d
         </>
       )}
 
@@ -84,8 +100,12 @@ export default function AppRoutes() {
       <Routes>
         {/* Public route */}
         <Route path="/login" element={<Login />} />
+<<<<<<< HEAD
         <Route path="/notification" element={<Notification />} />
 
+=======
+           <Route path="customer/accounts" element={<Accounts />} />
+>>>>>>> 724d275813d218b06b301e8b32e4179a5b587e4d
         {/* Protected routes with layout */}
         <Route
           path="/*"
@@ -101,6 +121,7 @@ export default function AppRoutes() {
         >
           {/* This is where the nested routes will be rendered */}
           <Route path="*" element={<RoleBasedRoutes user={user} />} />
+          
         </Route>
 
         {/* Catch-all for non-existent routes */}

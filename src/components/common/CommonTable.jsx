@@ -321,15 +321,11 @@ const CommonTable = ({
     [availableFilters, fetchData]
   );
 
-  // Memoized pagination handlers
-  const handleChangePage = useCallback(
-    (event, newPage) => {
-      setPage(newPage);
-      pageRef.current = newPage;
-      fetchData();
-    },
-    [fetchData]
-  );
+  const handleChangePage = useCallback((event, newPage) => {
+    setPage(newPage);
+    pageRef.current = newPage;
+    fetchData();
+  }, [fetchData]);
 
   const handleChangeRowsPerPage = useCallback(
     (event) => {
