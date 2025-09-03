@@ -12,11 +12,7 @@ import MySale from "../components/UI/MySale";
 import FundRequest from "../components/UI/FundRequest";
 import DmtContainer from "../components/UI/MoneyTransfer/DMTcontainer";
 import RechargeAndBill from "../components/UI/rechange and bill/RechargeAndBill";
-<<<<<<< HEAD
-import Notification from "../components/Notification/Notification";
-=======
 import Accounts from "../pages/Accounts";
->>>>>>> 724d275813d218b06b301e8b32e4179a5b587e4d
 
 // PrivateRoute wrapper
 const PrivateRoute = ({ children }) => {
@@ -38,15 +34,8 @@ const RoleBasedRoutes = ({ user }) => {
           <Route path="admin/dashboard" element={<AdminTransactions />} />
           <Route path="admin/users" element={<Users />} />
           <Route path="admin/transactions" element={<Dashboard />} />
-<<<<<<< HEAD
-          <Route
-            path="admin/*"
-            element={<Navigate to="/admin/dashboard" replace />}
-          />
-=======
           <Route path="admin/*" element={<Navigate to="/admin/dashboard" replace />} />
            
->>>>>>> 724d275813d218b06b301e8b32e4179a5b587e4d
         </>
       )}
 
@@ -61,15 +50,8 @@ const RoleBasedRoutes = ({ user }) => {
           <Route path="customer/purchase" element={<MyPurchase />} />
           <Route path="customer/fund-request" element={<FundRequest />} />
           <Route path="customer/sale" element={<MySale />} />
-<<<<<<< HEAD
-          <Route
-            path="customer/*"
-            element={<Navigate to="/customer/dashboard" replace />}
-          />
-=======
           <Route path="customer/*" element={<Navigate to="/customer/dashboard" replace />} />
        
->>>>>>> 724d275813d218b06b301e8b32e4179a5b587e4d
         </>
       )}
 
@@ -100,12 +82,7 @@ export default function AppRoutes() {
       <Routes>
         {/* Public route */}
         <Route path="/login" element={<Login />} />
-<<<<<<< HEAD
-        <Route path="/notification" element={<Notification />} />
-
-=======
            <Route path="customer/accounts" element={<Accounts />} />
->>>>>>> 724d275813d218b06b301e8b32e4179a5b587e4d
         {/* Protected routes with layout */}
         <Route
           path="/*"
