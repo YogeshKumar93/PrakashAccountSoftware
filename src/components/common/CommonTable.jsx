@@ -344,11 +344,14 @@ const CommonTable = ({
     [availableFilters, fetchData]
   );
 
-  const handleChangePage = useCallback((event, newPage) => {
-    setPage(newPage);
-    pageRef.current = newPage;
-    fetchData();
-  }, [fetchData]);
+  const handleChangePage = useCallback(
+    (event, newPage) => {
+      setPage(newPage);
+      pageRef.current = newPage;
+      fetchData();
+    },
+    [fetchData]
+  );
 
   const handleChangeRowsPerPage = useCallback(
     (event) => {
