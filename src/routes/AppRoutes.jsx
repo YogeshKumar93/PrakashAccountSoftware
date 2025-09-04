@@ -14,6 +14,7 @@ import DmtContainer from "../components/UI/MoneyTransfer/DMTcontainer";
 import RechargeAndBill from "../components/UI/rechange and bill/RechargeAndBill";
 import Accounts from "../pages/Accounts";
 import Notification from "../components/Notification/Notification";
+import ProfilePage from "../components/MyProfile/Profile";
 
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated, loading } = useContext(AuthContext);
@@ -56,6 +57,7 @@ export default function AppRoutes() {
               <Route path="admin/transactions" element={<Dashboard />} />
               <Route path="admin/notification" element={<Notification />} />
               <Route path="admin/accounts" element={<Accounts />} />
+               <Route path="admin/profile" element={<ProfilePage />} /> 
               <Route
                 path="admin/*"
                 element={<Navigate to="/admin/dashboard" replace />}
@@ -87,6 +89,7 @@ export default function AppRoutes() {
               <Route path="customer/fund-request" element={<FundRequest />} />
               <Route path="customer/sale" element={<MySale />} />
               <Route path="customer/notification" element={<Notification />} />
+                <Route path="customer/profile" element={<ProfilePage />} /> 
               <Route
                 path="customer/*"
                 element={<Navigate to="/customer/dashboard" replace />}

@@ -67,7 +67,7 @@ const ApiEndpoints = {
   // ****************************** NEW API'S ******************************
   SIGN_IN: "auth/signIn",
   LOGIN_OTP_VALIDATE: "auth/secureLogin",
-  LOGOUT: "auth/logout",
+  LOGOUT: "auth/Logout",
   FORGOT_PASS: "auth/forgetPassword",
   RESET_MPIN: "auth/resetMpin",
   CHANGE_PASS: "auth/changePassword",
