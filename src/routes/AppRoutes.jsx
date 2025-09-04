@@ -15,106 +15,90 @@ import RechargeAndBill from "../components/UI/rechange and bill/RechargeAndBill"
 import Accounts from "../pages/Accounts";
 import Notification from "../components/Notification/Notification";
 
-// PrivateRoute wrapper
 const PrivateRoute = ({ children }) => {
-  const authCtx = useContext(AuthContext);
-  const isAuthenticated = authCtx?.isAuthenticated;
-  console.log("isAuthenticated", isAuthenticated);
-
-  return isAuthenticated ? children : <Navigate to="/login" />;
-};
-
-const RoleBasedRoutes = ({ user }) => {
-  return (
-    <Routes>
-      {/* Admin routes */}
-      {user?.role === "adm" ||
-        (user?.role === "sadm" && (
-          <>
-            <Route path="admin/dashboard" element={<AdminTransactions />} />
-            <Route path="admin/users" element={<Users />} />
-            <Route path="admin/transactions" element={<Dashboard />} />
-            <Route path="admin/notification" element={<Notification />} />
-            {/* Default redirect for admin */}
-            <Route
-              path="admin/*"
-              element={<Navigate to="/admin/dashboard" replace />}
-            />
-          </>
-        ))}
-
-      {/* Retailer & DD routes */}
-      {user?.role === "adm" && (
-        <>
-          <Route path="admin/dashboard" element={<AdminTransactions />} />
-          <Route path="admin/users" element={<Users />} />
-          <Route path="admin/transactions" element={<Dashboard />} />
-          <Route path="admin/*" element={<Navigate to="/admin/dashboard" replace />} />
-             <Route path="admin/accounts" element={<Accounts />} />
-           
-        </>
-      )}
-      
-      {/* Retailer and DD routes */}
-      {(user?.role === "ret" || user?.role === "dd") && (
-        <>
-          <Route path="customer/dashboard" element={<AdminTransactions />} />
-          <Route path="customer/services" element={<Dashboard />} />
-          <Route path="customer/account-ledger" element={<AccountLadger />} />
-          <Route path="customer/money-transfer" element={<DmtContainer />} />
-          <Route path="customer/recharge-bill" element={<RechargeAndBill />} />
-          <Route path="customer/purchase" element={<MyPurchase />} />
-          <Route path="customer/fund-request" element={<FundRequest />} />
-          <Route path="customer/sale" element={<MySale />} />
-          <Route path="customer/notification" element={<Notification />} />
-          {/* Default redirect for customer */}
-          <Route
-            path="customer/*"
-            element={<Navigate to="/customer/dashboard" replace />}
-          />
-          <Route path="customer/*" element={<Navigate to="/customer/dashboard" replace />} />
-            <Route path="customer/accounts" element={<Accounts />} />
-       
-        </>
-      )}
-    </Routes>
-  );
+  const { isAuthenticated } = useContext(AuthContext) || {};
+  return isAuthenticated ? children : <Navigate to="/login" replace />;
 };
 
 export default function AppRoutes() {
-  const { user } = useContext(AuthContext);
-  // console.log("user data", user);
+  const { user } = useContext(AuthContext) || {};
+  const role = user?.role;
+  const isAdmin = role === "adm" || role === "sadm";
+  const isCustomer = role === "ret" || role === "dd";
 
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public route */}
         <Route path="/login" element={<Login />} />
-        <Route path="customer/accounts" element={<Accounts />} />
 
-         
-        {/* Protected routes with layout */}
+        {/* Protected layout */}
         <Route
           path="/*"
           element={
             <PrivateRoute>
               <SideNavAndHeader
-                userRole={user?.role}
+                userRole={role}
                 userName={user?.name || "Guest"}
                 userAvatar="/path/to/avatar.jpg"
               />
             </PrivateRoute>
           }
         >
-          {/* This is where the nested routes will be rendered */}
-          <Route path="*" element={<RoleBasedRoutes user={user} />} />
+          {/* ADMIN */}
+          {isAdmin && (
+            <>
+              <Route path="admin/dashboard" element={<AdminTransactions />} />
+              <Route path="admin/users" element={<Users />} />
+              <Route path="admin/transactions" element={<Dashboard />} />
+              <Route path="admin/notification" element={<Notification />} />
+              <Route path="admin/accounts" element={<Accounts />} />
+              <Route
+                path="admin/*"
+                element={<Navigate to="/admin/dashboard" replace />}
+              />
+            </>
+          )}
+
+          {/* CUSTOMER (ret, dd) */}
+          {isCustomer && (
+            <>
+              <Route path="customer/dashboard" element={<AdminTransactions />} />
+              <Route path="customer/services" element={<Dashboard />} />
+              <Route path="customer/account-ledger" element={<AccountLadger />} />
+              <Route path="customer/money-transfer" element={<DmtContainer />} />
+              <Route path="customer/recharge-bill" element={<RechargeAndBill />} />
+              <Route path="customer/purchase" element={<MyPurchase />} />
+              <Route path="customer/fund-request" element={<FundRequest />} />
+              <Route path="customer/sale" element={<MySale />} />
+              <Route path="customer/notification" element={<Notification />} />
+              <Route
+                path="customer/*"
+                element={<Navigate to="/customer/dashboard" replace />}
+              />
+              <Route path="customer/accounts" element={<Accounts />} />
+            </>
+          )}
+
+          {/* Fallback inside protected area */}
+          <Route
+            path="*"
+            element={
+              <Navigate
+                replace
+                to={
+                  isAdmin
+                    ? "/admin/dashboard"
+                    : isCustomer
+                    ? "/customer/dashboard"
+                    : "/login"
+                }
+              />
+            }
+          />
         </Route>
 
-        {/* Catch-all for non-existent routes */}
-        <Route
-          path="*"
-          element={<Navigate to={user ? "/dashboard" : "/login"} replace />}
-        />
+        {/* Final catch-all for non-matching + not authed */}
+        <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </BrowserRouter>
   );
