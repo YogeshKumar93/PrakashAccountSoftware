@@ -205,7 +205,7 @@ const ApiEndpoints = {
   ADD_REM: "dmr/registerRemitter",
   NEW_ADD_REM: "dmr/registerExpRemitter",
   GET_BLOCKED_AC: "admin/blockedAccounts",
-  GET_BLOCKED_AC: "admin/blockedAccounts",
+
   DMT2_ADD_REM: "dmr/registerRemitterDmt2",
   ADD_BENE_EXPRESS: "dmr/addBenExpress",
   ADD_BENE_SUPER: "dmr/addBenExpress",
