@@ -181,7 +181,9 @@ const Login = () => {
               <ReTextField
                 fullWidth
                 label="User Id"
-                {...register("mobile")}
+                {...register("mobile", {
+                  onChange: (e) => setUsername(e.target.value), // 🔹 keep username state updated
+                })}
                 margin="normal"
                 error={!!errors.mobile}
                 helperText={errors.mobile?.message}

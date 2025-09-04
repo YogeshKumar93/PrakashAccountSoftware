@@ -83,10 +83,12 @@ const ApiEndpoints = {
   MARK_READ_NOTI: "notification/updateNotification",
   ADMIN_NOTIFICATION: "notification/createNotification",
 
+
+  // GET_BANKS:"BANK/G"
   // ****************************** NEW API'S ABOVE ******************************
 
   GET_ACC_ACCOUNTS: "",
-  GET_BANKS: "admin/getBanks",
+
   GET_ACC_BANKS: "",
   UPDATE_BANKS: "admin/changeBankStatus",
   ADD_ACCOUNT: "admin/createNewAcc",

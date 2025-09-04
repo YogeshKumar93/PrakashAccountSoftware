@@ -37,14 +37,17 @@ const ForgotPassword = ({ open, onClose, initialUsername = "" }) => {
       setIsValid(true);
     }
   }, [open, initialUsername]);
-
   const handleSubmit = async (e) => {
+    e?.preventDefault?.(); // safe if called from a form submit
     setLoading(true);
-    const username = username;
+
+    // use state directly (or rename)
+    const payload = username.trim();
+
     const { response, error } = await apiCall(
       "post",
       ApiEndpoints.FORGOT_PASS,
-      { username }
+      { username: payload }
     );
 
     if (response) {
@@ -56,6 +59,7 @@ const ForgotPassword = ({ open, onClose, initialUsername = "" }) => {
 
     setLoading(false);
   };
+
   console.log("the use nma r ia in a", username);
   return (
     <Modal open={open} onClose={onClose}>
