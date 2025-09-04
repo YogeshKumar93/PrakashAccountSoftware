@@ -104,6 +104,14 @@ const ApiEndpoints = {
   CREATE_BANK: "bank/createBank",
   UPDATE_BANK: "bank/updateBank",
   DELETE_BANK: "bank/deleteBank",
+
+  GET_DMT_TXN: "dmttxn/getDmtTxns",
+  GET_BBPS_TXN: "bbpstxn/getBbpsTxns",
+  GET_AEPS_TXN: "aepstxn/getAepsTxns",
+  GET_MATM_TXN: "matmtxn/getMatmTxns",
+  GET_PAYOUT_TXN: "payouttxn/getPayoutTxns",
+  GET_RECHARGE_TXN: "rechargetxn/getRechargeTxns",
+  GET_IRCTC_TXN: "irctctxn/getIrctcTxns",
   // ****************************** NEW API'S ABOVE ******************************
 
   // GET_ACC_ACCOUNTS: "",

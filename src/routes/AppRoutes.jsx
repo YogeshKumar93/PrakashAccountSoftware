@@ -20,6 +20,7 @@ import Logs from "../pages/Logs";
 import RetailerLogs from "../pages/RetailerLogs";
 import ProfilePage from "../components/MyProfile/Profile";
 import Banks from "../pages/Banks";
+import { Transaction } from "../pages/Transaction";
 
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated, loading } = useContext(AuthContext);
@@ -59,7 +60,7 @@ export default function AppRoutes() {
             <>
               <Route path="admin/dashboard" element={<AdminTransactions />} />
               <Route path="admin/users" element={<Users />} />
-              <Route path="admin/transactions" element={<Dashboard />} />
+              <Route path="admin/transactions" element={<Transaction />} />
               <Route path="admin/notification" element={<Notification />} />
               <Route path="admin/fund-request" element={<FundRequest />} />
               <Route path="admin/accounts" element={<Accounts />} />
