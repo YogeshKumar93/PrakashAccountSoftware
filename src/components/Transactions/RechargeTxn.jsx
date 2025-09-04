@@ -9,52 +9,49 @@ const RechargeTxn = ({ filters = [], query }) => {
   const authCtx = useContext(AuthContext);
   const user = authCtx?.user;
   const [openCreate, setOpenCreate] = useState(false);
-
   const columns = useMemo(
     () => [
       {
-        name: "Txn ID",
-        selector: (row) => (
-          <div style={{ textAlign: "left" }}>{row.txn_id}</div>
-        ),
-        wrap: true,
-      },
-      {
-        name: "Client Ref",
-        selector: (row) => (
-          <div style={{ textAlign: "left" }}>{row.client_ref}</div>
-        ),
-        wrap: true,
-      },
-      {
-        name: "Sender Mobile",
-        selector: (row) => (
-          <div style={{ textAlign: "left" }}>{row.sender_mobile}</div>
-        ),
-        wrap: true,
-      },
-      {
-        name: "Beneficiary",
-        selector: (row) => (
-          <div style={{ textAlign: "left", fontWeight: 500 }}>
-            {row.beneficiary_name}
-          </div>
-        ),
-        wrap: true,
-      },
-      {
-        name: "Bank Details",
+        name: "Txn Details",
         selector: (row) => (
           <div style={{ textAlign: "left" }}>
-            {row.bank_name?.toUpperCase()} <br />
-            ****{row.account_number.slice(-4)} <br />
-            {row.ifsc_code}
+            <strong>ID:</strong> {row.txn_id} <br />
+            <strong>Ref:</strong> {row.client_ref}
           </div>
         ),
         wrap: true,
       },
       {
-        name: "Amount",
+        name: "User / Route",
+        selector: (row) => (
+          <div style={{ textAlign: "left" }}>
+            User ID: {row.user_id} <br />
+            Route: {row.route}
+          </div>
+        ),
+        wrap: true,
+      },
+      {
+        name: "Platform",
+        selector: (row) => (
+          <div style={{ textAlign: "center", fontWeight: 500 }}>
+            {row.pf?.toUpperCase()}
+          </div>
+        ),
+        center: true,
+      },
+      {
+        name: "Mobile & Operator",
+        selector: (row) => (
+          <div style={{ textAlign: "left" }}>
+            <strong>{row.mobile_number}</strong> <br />
+            Operator: {row.operator}
+          </div>
+        ),
+        wrap: true,
+      },
+      {
+        name: "Amount (₹)",
         selector: (row) => (
           <div
             style={{ color: "green", fontWeight: "600", textAlign: "right" }}
@@ -69,10 +66,8 @@ const RechargeTxn = ({ filters = [], query }) => {
         name: "Charges",
         selector: (row) => (
           <div style={{ textAlign: "right" }}>
-            CCF: ₹{parseFloat(row.ccf).toFixed(2)} <br />
             GST: ₹{parseFloat(row.gst).toFixed(2)} <br />
-            Comm: ₹{parseFloat(row.comm).toFixed(2)} <br />
-            TDS: ₹{parseFloat(row.tds).toFixed(2)}
+            Comm: ₹{parseFloat(row.comm).toFixed(2)}
           </div>
         ),
         wrap: true,
@@ -99,19 +94,20 @@ const RechargeTxn = ({ filters = [], query }) => {
         center: true,
       },
       {
-        name: "Created At",
+        name: "API Response",
         selector: (row) => (
-          <div style={{ textAlign: "left" }}>
-            {ddmmyy(row.created_at)} {dateToTime1(row.created_at)}
-          </div>
+          <div style={{ textAlign: "left" }}>{row.api_response}</div>
         ),
         wrap: true,
       },
       {
-        name: "Updated At",
+        name: "Timestamps",
         selector: (row) => (
           <div style={{ textAlign: "left" }}>
-            {ddmmyy(row.updated_at)} {dateToTime1(row.updated_at)}
+            <strong>Created:</strong> {ddmmyy(row.created_at)}{" "}
+            {dateToTime1(row.created_at)} <br />
+            <strong>Updated:</strong> {ddmmyy(row.updated_at)}{" "}
+            {dateToTime1(row.updated_at)}
           </div>
         ),
         wrap: true,
