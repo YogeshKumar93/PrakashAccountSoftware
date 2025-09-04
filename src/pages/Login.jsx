@@ -29,6 +29,7 @@ import { ReButton } from "../components/common/ReButton";
 import VerifyMpinLogin from "../components/UI/VerifyMpinLogin";
 import { getGeoLocation } from "../utils/GeoLocationUtil";
 import { okErrorToast } from "../utils/ToastUtil";
+import ForgotPassword from "../components/common/ForgotPassword";
 
 const validationSchema = Yup.object({
   mobile: Yup.string()
@@ -48,6 +49,7 @@ const Login = () => {
   const [loginError, setLoginError] = useState("");
   const [otpRef, setOtpRef] = useState("");
   const navigate = useNavigate();
+  const [forgotModal, setForgotModalOpen] = useState(false);
   const authCtx = useContext(AuthContext);
   const user = authCtx.user;
 
@@ -143,6 +145,9 @@ const Login = () => {
   const handleMpinVerificationClose = () => {
     setIsMpinRequired(false);
   };
+  const handleForgotPassword = () => {
+    setForgotModalOpen(true);
+  };
 
   return (
     <>
@@ -175,7 +180,7 @@ const Login = () => {
             <Box component="form" onSubmit={handleSubmit(onSubmit)}>
               <ReTextField
                 fullWidth
-                label="Mobile Number"
+                label="User Id"
                 {...register("mobile")}
                 margin="normal"
                 error={!!errors.mobile}
@@ -188,7 +193,6 @@ const Login = () => {
                   ),
                 }}
               />
-
               <ReTextField
                 fullWidth
                 label="Password"
@@ -214,8 +218,17 @@ const Login = () => {
                     </InputAdornment>
                   ),
                 }}
-              />
-
+              />{" "}
+              <Box display="flex" justifyContent="flex-end" mt={1} mb={2}>
+                <Button
+                  variant="text"
+                  size="small"
+                  sx={{ textTransform: "none", color: "primary.main" }}
+                  onClick={() => handleForgotPassword()}
+                >
+                  Forgot Password?
+                </Button>
+              </Box>
               <ReButton
                 type="submit"
                 fullWidth
@@ -227,7 +240,6 @@ const Login = () => {
               >
                 {loading ? <CircularProgress size={24} /> : "Login"}
               </ReButton>
-
               <Button
                 fullWidth
                 variant="outlined"
@@ -272,6 +284,11 @@ const Login = () => {
           />
         </Box>
       </Modal>
+      <ForgotPassword
+        open={forgotModal}
+        onClose={() => setForgotModalOpen(false)}
+        initialUsername={username}
+      />
     </>
   );
 };
