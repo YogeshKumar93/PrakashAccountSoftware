@@ -64,6 +64,13 @@ const ApiEndpoints = {
   GET_ROUTE: "admin/getRoutes",
   GET_CATEGORIES: "admin/getCategories",
 
+
+
+
+
+
+
+
   // ****************************** NEW API'S ******************************
   SIGN_IN: "auth/signIn",
   LOGIN_OTP_VALIDATE: "auth/secureLogin",
@@ -83,16 +90,19 @@ GET_SERVICES:"service/getServices",
 CREATE_SERVICE:"service/createService",
 UPDATE_SERVICE:"service/updateService",
 
-// ****************************** NEW API'S ABOVE ******************************
-
-
-  DELETE_ACCOUNT: "account/deleteAccount",
-  UPDATE_ACCOUNT: "account/updateAccount",
   GET_NOTIFICATION: "notification/getNotification",
   MARK_READ_NOTI: "notification/updateNotification",
   ADMIN_NOTIFICATION: "notification/createNotification",
 
   // ****************************** NEW API'S ABOVE ******************************
+
+
+
+
+
+
+
+
 
   GET_ACC_ACCOUNTS: "",
   GET_BANKS: "admin/getBanks",
@@ -111,7 +121,7 @@ UPDATE_SERVICE:"service/updateService",
   GET_PENDING_ACCOUNT_TRANSACTION: "admin/getPendingBankTxn",
   GET_STATUS: "admin/checkTxnStatus",
   CHANGE_STATUS: "admin/changeTxnStatus",
-  UPDATE_ACCOUNT: "admin/updateAccounts",
+  
   GET_PLANS: "admin/getPlans",
   BLOCK_UNBLOCK_PLANS: "",
   ADD_PLAN: "admin/createPlan",
