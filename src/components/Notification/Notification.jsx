@@ -92,11 +92,13 @@ const Notification = ({ filters = [], query }) => {
   return (
     <Box>
       {/* Create Notification Button */}
-      <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
-        <Button variant="contained" onClick={() => setOpenCreate(true)}>
-          Create Notification
-        </Button>
-      </Box>
+      {(user?.role === "sadm" || user?.role === "adm") && (
+        <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
+          <Button variant="contained" onClick={() => setOpenCreate(true)}>
+            Create Notification
+          </Button>
+        </Box>
+      )}
 
       {/* Notification Table */}
       <CommonTable

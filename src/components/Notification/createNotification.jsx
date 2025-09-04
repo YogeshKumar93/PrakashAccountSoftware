@@ -66,9 +66,7 @@ const CreateNotification = ({ open, onClose }) => {
       setLoading(false);
       return;
     }
-    if (selectedUser !== "all") {
-      formData.user_id = selectedUser;
-    }
+ 
 
     const formData = {
       title,
@@ -76,7 +74,9 @@ const CreateNotification = ({ open, onClose }) => {
       message,
       user_id: selectedUser, // selected user from dropdown
     };
-
+   if (selectedUser !== "all") {
+      formData.user_id = selectedUser;
+    }
     try {
       const { response, error } = await apiCall(
         "post",

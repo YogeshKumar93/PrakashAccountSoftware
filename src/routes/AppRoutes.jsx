@@ -54,6 +54,7 @@ const RoleBasedRoutes = ({ user }) => {
           <Route path="customer/purchase" element={<MyPurchase />} />
           <Route path="customer/fund-request" element={<FundRequest />} />
           <Route path="customer/sale" element={<MySale />} />
+          <Route path="customer/notification" element={<Notification />} />
           {/* Default redirect for customer */}
           <Route
             path="customer/*"

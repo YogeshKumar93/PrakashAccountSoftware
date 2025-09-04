@@ -33,6 +33,12 @@ export const customer_nav = [
     to: "/customer/recharge-bill",
   },
   {
+    title: "Notification",
+    icon: "💳",
+    icon2: "💳",
+    to: "/customer/notification",
+  },
+  {
     title: "Account Ledger",
     icon: "📒",
     icon2: "📒",
