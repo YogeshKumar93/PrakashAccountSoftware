@@ -14,6 +14,7 @@ import DmtContainer from "../components/UI/MoneyTransfer/DMTcontainer";
 import RechargeAndBill from "../components/UI/rechange and bill/RechargeAndBill";
 import Accounts from "../pages/Accounts";
 import Notification from "../components/Notification/Notification";
+import Services from "../pages/Services";
 
 // PrivateRoute wrapper
 const PrivateRoute = ({ children }) => {
@@ -34,7 +35,7 @@ const RoleBasedRoutes = ({ user }) => {
             <Route path="admin/dashboard" element={<AdminTransactions />} />
             <Route path="admin/users" element={<Users />} />
             <Route path="admin/transactions" element={<Dashboard />} />
-            <Route path="admin/notification" element={<Notification />} />
+            <Route path="admin/services" element={<Services />} />
             {/* Default redirect for admin */}
             <Route
               path="admin/*"
