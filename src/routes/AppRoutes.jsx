@@ -44,6 +44,18 @@ const RoleBasedRoutes = ({ user }) => {
         ))}
 
       {/* Retailer & DD routes */}
+      {user?.role === "adm" && (
+        <>
+          <Route path="admin/dashboard" element={<AdminTransactions />} />
+          <Route path="admin/users" element={<Users />} />
+          <Route path="admin/transactions" element={<Dashboard />} />
+          <Route path="admin/*" element={<Navigate to="/admin/dashboard" replace />} />
+             <Route path="admin/accounts" element={<Accounts />} />
+           
+        </>
+      )}
+      
+      {/* Retailer and DD routes */}
       {(user?.role === "ret" || user?.role === "dd") && (
         <>
           <Route path="customer/dashboard" element={<AdminTransactions />} />
@@ -60,6 +72,9 @@ const RoleBasedRoutes = ({ user }) => {
             path="customer/*"
             element={<Navigate to="/customer/dashboard" replace />}
           />
+          <Route path="customer/*" element={<Navigate to="/customer/dashboard" replace />} />
+            <Route path="customer/accounts" element={<Accounts />} />
+       
         </>
       )}
     </Routes>
@@ -77,6 +92,7 @@ export default function AppRoutes() {
         <Route path="/login" element={<Login />} />
         <Route path="customer/accounts" element={<Accounts />} />
 
+         
         {/* Protected routes with layout */}
         <Route
           path="/*"
