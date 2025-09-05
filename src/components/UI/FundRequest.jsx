@@ -210,6 +210,7 @@ const handleOpen = (row, statusType) => {
           { value: "approved", label: "Approved" },
             { value: "rejected", label: "Rejected" },
         ],
+         defaultValue: "pending", 
       },
       { id: "name", label: "Name", type: "textfield" },
       { id: "bank_name", label: "Bank Name", type: "textfield" },
