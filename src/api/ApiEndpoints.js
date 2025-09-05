@@ -138,6 +138,17 @@ GET_WALLETLEDGER:"walletledger/getWalletLedgers",
   GET_RECHARGE_TXN: "rechargetxn/getRechargeTxns",
   GET_IRCTC_TXN: "irctctxn/getIrctcTxns",
 
+  GET_DMT_TXN: "dmt/getDmtTxns",
+  GET_BBPS_TXN: "bbps/getBbpsTxns",
+  GET_AEPS_TXN: "aeps/getAepsTxns",
+  GET_MATM_TXN: "matm/getMatmTxns",
+  GET_PAYOUT_TXN: "payout/getPayoutTxns",
+  GET_RECHARGE_TXN: "recharge/getRechargeTxns",
+  GET_IRCTC_TXN: "irctc/getIrctcTxns",
+  GET_FUNDREQUEST_SCHEMA:"fundrequest/getFundRequestsSchema",
+  GET_ACCOUNT_SCHEMA:"account/getAccountSchema",
+  GET_BANK_SCHEMA:"bank/getBankSchema",
+  GET_NOTIFICATION_SCHEMA:"notification/getNotificationSchema",
   // ****************************** NEW API'S ABOVE ******************************
 
 
