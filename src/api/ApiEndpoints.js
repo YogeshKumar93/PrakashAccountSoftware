@@ -116,6 +116,8 @@ GET_WALLETLEDGER:"walletledger/getWalletLedgers",
   CREATE_FUND_REQUEST: "fundrequest/createFundRequest",
   UPDATE_FUND_REQUEST: "fundrequest/updateFundRequest",
   DELETE_FUND_REQUEST: "fundrequest/deleteFundRequest",
+  GET_BANKS: "bank/getBanks",
+   
 
   // ****************************** NEW API'S ABOVE ******************************
 
@@ -123,10 +125,18 @@ GET_WALLETLEDGER:"walletledger/getWalletLedgers",
   MARK_READ_NOTI: "notification/updateNotification",
   ADMIN_NOTIFICATION: "notification/createNotification",
 
-  GET_BANKS: "bank/getBanks",
+
   CREATE_BANK: "bank/createBank",
   UPDATE_BANK: "bank/updateBank",
   DELETE_BANK: "bank/deleteBank",
+
+  GET_DMT_TXN: "dmttxn/getDmtTxns",
+  GET_BBPS_TXN: "bbpstxn/getBbpsTxns",
+  GET_AEPS_TXN: "aepstxn/getAepsTxns",
+  GET_MATM_TXN: "matmtxn/getMatmTxns",
+  GET_PAYOUT_TXN: "payouttxn/getPayoutTxns",
+  GET_RECHARGE_TXN: "rechargetxn/getRechargeTxns",
+  GET_IRCTC_TXN: "irctctxn/getIrctcTxns",
 
   GET_DMT_TXN: "dmt/getDmtTxns",
   GET_BBPS_TXN: "bbps/getBbpsTxns",
