@@ -84,6 +84,22 @@ const ApiEndpoints = {
 
   GET_ACCOUNTS: "account/getAccounts",
   CREATE_ACCOUNT: "account/createAccount",
+  DELETE_ACCOUNT : "account/deleteAccount",
+  UPDATE_ACCOUNT : "account/updateAccount",
+GET_SERVICES:"service/getServices",
+CREATE_SERVICE:"service/createService",
+UPDATE_SERVICE:"service/updateService",
+GET_TEMPLATES:"template/getTemplates",
+CREATE_TEMPLATE:"template/createTemplate",
+UPDATE_TEMPLATE:"template/updateTemplate",
+DELETE_TEMPLATE:"template/deleteTemplate",
+GET_LOGS:"auditlog/getAuditLogs",
+DELETE_LOG:"auditlog/deleteAuditLog",
+GET_LOG:"auditlog/getAuditLog",
+GET_WALLETLEDGER:"walletledger/getWalletLedgers",
+// ****************************** NEW API'S ABOVE ******************************
+
+
   DELETE_ACCOUNT: "account/deleteAccount",
   UPDATE_ACCOUNT: "account/updateAccount",
   GET_SERVICES: "service/getServices",
