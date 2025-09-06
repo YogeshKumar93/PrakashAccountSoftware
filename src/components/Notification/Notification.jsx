@@ -11,7 +11,11 @@ import UpdateNotification from "./UpdateNotification";
 import CommonTable from "../common/CommonTable";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DeleteNotification from "./DeleteNotification";
+<<<<<<< HEAD
 import AddIcon from "@mui/icons-material/Add";
+=======
+import CommonStatus from "../common/CommonStatus";
+>>>>>>> 30c4859b502102d4ac100e9965abd995b4a30dd9
 
 const Notification = ({ filters = [], query }) => {
   const authCtx = useContext(AuthContext);
@@ -79,28 +83,11 @@ const handleDelete = (row) => {
         wrap: true,
         center: false,
       },
-      {
-        name: "Status",
-        selector: (row) => (
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              fontSize: "16px",
-              textAlign: "justify",
-              fontWeight: "500",
-            }}
-          >
-            {row.is_read === 0 ? (
-              <Typography>Not Read</Typography>
-            ) : (
-              <Typography>Already Read</Typography>
-            )}
-          </Box>
-        ),
-        wrap: true,
-        center: false,
-      },
+          {
+  name: "Status",
+  selector: (row) => <CommonStatus value={row.status} />,
+  center: true,
+},
        {
             name: "Actions",
             selector: (row) => (

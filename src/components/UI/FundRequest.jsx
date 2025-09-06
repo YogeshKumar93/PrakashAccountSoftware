@@ -1,4 +1,4 @@
-import { useMemo, useCallback, useState, useContext } from "react";
+import { useMemo, useState, useContext } from "react";
 import { Box, Button, Tooltip, Typography } from "@mui/material";
 import CommonTable from "../common/CommonTable";
 import ApiEndpoints from "../../api/ApiEndpoints";
@@ -12,10 +12,12 @@ import AuthContext from "../../contexts/AuthContext";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import ReButton from "../common/ReButton";
+import CommonStatus from "../common/CommonStatus";
+ 
+ 
 
 const FundRequest = () => {
   const [openCreate, setOpenCreate] = useState(false);
-  const [openUpdate, setOpenUpdate] = useState(false);
   // const [selectedFund, setSelectedFund] = useState(null);
   const authCtx = useContext(AuthContext);
   const user = authCtx.user;
@@ -29,22 +31,22 @@ const FundRequest = () => {
     setOpenModal(true);
   };
 
-  const getStatusColor = useCallback((status) => {
-    switch (status?.toUpperCase()) {
-      case "SUCCESS":
-        return "#2e7d32"; // green
-      case "FAILED":
-        return "#d32f2f"; // red
-      case "REFUND":
-        return "#ed6c02"; // orange
-      case "PENDING":
-        return "#0288d1"; // blue
-      case "REJECTED":
-        return "#9e9e9e"; // grey
-      default:
-        return "#616161"; // default grey
-    }
-  }, []);
+  // const getStatusColor = useCallback((status) => {
+  //   switch (status?.toUpperCase()) {
+  //     case "SUCCESS":
+  //       return "#2e7d32"; // green
+  //     case "FAILED":
+  //       return "#d32f2f"; // red
+  //     case "REFUND":
+  //       return "#ed6c02"; // orange
+  //     case "PENDING":
+  //       return "#0288d1"; // blue
+  //     case "REJECTED":
+  //       return "#9e9e9e"; // grey
+  //     default:
+  //       return "#616161"; // default grey
+  //   }
+  // }, []);
 
   // ✅ After create
   const handleSaveCreate = () => {
@@ -63,130 +65,120 @@ const FundRequest = () => {
   // };
 
   // ✅ Columns
-  const columns = useMemo(() => [
-    {
-      name: "Created At",
-      selector: (row) => (
-        <div style={{ textAlign: "left" }}>
-          {ddmmyy(row.created_at)} {dateToTime(row.created_at)}
-        </div>
-      ),
-      wrap: true,
-    },
-    {
-      name: "Updated At",
-      selector: (row) => (
-        <div style={{ textAlign: "left" }}>
-          {ddmmyy(row.updated_at)} {dateToTime(row.updated_at)}
-        </div>
-      ),
-      wrap: true,
-    },
-    {
-      name: "ID",
-      selector: (row) => row?.id,
-      width: "70px",
-    },
-    {
-      name: "Name",
-      selector: (row) => <Typography>{row?.name}</Typography>,
-      wrap: true,
-    },
-    {
-      name: "Bank",
-      selector: (row) => <Typography>{row?.bank_name}</Typography>,
-      wrap: true,
-    },
-    {
-      name: "Account / Mode",
-      selector: (row) => <Typography>{row?.mode}</Typography>,
-      wrap: true,
-    },
-    {
-      name: "Bank Ref ID",
-      selector: (row) => <Typography>{row?.bank_ref_id}</Typography>,
-      wrap: true,
-    },
-    {
-      name: "Remark",
-      selector: (row) => (
-        <Tooltip title={row?.remark}>
-          <Typography noWrap>{row?.remark}</Typography>
-        </Tooltip>
-      ),
-      grow: 2,
-    },
-    // {
-    //   name: "Ledger Balance",
-    //   selector: (row) => (
-    //     <Typography>
-    //       {currencySetter(parseFloat(row?.ledger_bal).toFixed(2))}
-    //     </Typography>
-    //   ),
-    // },
-    {
-      name: "Txn ID",
-      selector: (row) => row?.txn_id,
-    },
-    {
-      name: "Amount",
-      selector: (row) => (
-        <Typography sx={{ fontWeight: "bold" }}>
-          {currencySetter(parseFloat(row?.amount).toFixed(2))}
-        </Typography>
-      ),
-    },
-    {
-      name: "Status",
-      selector: (row) => (
-        <Box
-          sx={{
-            px: 1,
-            py: 0.5,
-            borderRadius: "6px",
-            bgcolor: getStatusColor(row?.status),
-            color: "white",
-            fontSize: "12px",
-            textTransform: "capitalize",
-            textAlign: "center",
-          }}
-        >
-          {row?.status}
-        </Box>
-      ),
-    },
+  const columns = useMemo(
+    () => [
+        {
+        name: "Created At",
+        selector: (row) => (
+          <div style={{ textAlign: "left" }}>
+            {ddmmyy(row.created_at)} {dateToTime(row.created_at)}
+          </div>
+        ),
+        wrap: true,
+      },
+      {
+        name: "Updated At",
+        selector: (row) => (
+          <div style={{ textAlign: "left" }}>
+            {ddmmyy(row.updated_at)} {dateToTime(row.updated_at)}
+          </div>
+        ),
+        wrap: true,
+      },
+      {
+        name: "ID",
+        selector: (row) => row?.id,
+        width: "70px",
+      },
+      {
+        name: "Name",
+        selector: (row) => <Typography>{row?.name}</Typography>,
+        wrap: true,
+      },
+      {
+        name: "Bank",
+        selector: (row) => <Typography>{row?.bank_name}</Typography>,
+        wrap: true,
+      },
+      {
+        name: "Account / Mode",
+        selector: (row) => <Typography>{row?.mode}</Typography>,
+        wrap: true,
+      },
+      {
+        name: "Bank Ref ID",
+        selector: (row) => <Typography>{row?.bank_ref_id}</Typography>,
+        wrap: true,
+      },
+      {
+        name: "Remark",
+        selector: (row) => (
+          <Tooltip title={row?.remark}>
+            <Typography noWrap>{row?.remark}</Typography>
+          </Tooltip>
+        ),
+        grow: 2,
+      },
+      // {
+      //   name: "Ledger Balance",
+      //   selector: (row) => (
+      //     <Typography>
+      //       {currencySetter(parseFloat(row?.ledger_bal).toFixed(2))}
+      //     </Typography>
+      //   ),
+      // },
+      {
+        name: "Txn ID",
+        selector: (row) => row?.txn_id,
+      },
+      {
+        name: "Amount",
+        selector: (row) => (
+          <Typography sx={{ fontWeight: "bold" }}>
+            {currencySetter(parseFloat(row?.amount).toFixed(2))}
+          </Typography>
+        ),
+      },
+       {
+  name: "Status",
+  selector: (row) => <CommonStatus value={row.status} />,
+  center: true,
+},
+    
 
-    ...(user?.role === "adm"
-      ? [
-          {
-            name: "Actions",
-            selector: (row) => (
-              <Box sx={{ display: "flex", gap: 1 }}>
-                <Tooltip title="approved">
-                  <Button
-                    color="success"
-                    size="small"
-                    onClick={() => handleOpen(row, "approved")}
-                  >
-                    <CheckCircleIcon fontSize="small" />
-                  </Button>
-                </Tooltip>
-                <Tooltip title="reject">
-                  <Button
-                    color="error"
-                    size="small"
-                    onClick={() => handleOpen(row, "rejected")}
-                  >
-                    <CancelIcon fontSize="small" />
-                  </Button>
-                </Tooltip>
-              </Box>
-            ),
-            width: "120px",
-          },
-        ]
-      : []),
-  ]);
+   ...(user?.role === "adm"
+    ? [
+        {
+          name: "Actions",
+          selector: (row) => (
+            <Box sx={{ display: "flex", gap: 1 }}>
+              <Tooltip title="approved">
+                <Button
+                  color="success"
+                  size="small"
+                  onClick={() => handleOpen(row, "approved")}
+                >
+                  <CheckCircleIcon fontSize="small" />
+                </Button>
+              </Tooltip>
+              <Tooltip title="reject">
+                <Button
+                  color="error"
+                  size="small"
+                  onClick={() => handleOpen(row, "rejected")}
+                >
+                  <CancelIcon fontSize="small" />
+                </Button>
+              </Tooltip>
+            </Box>
+          ),
+          width: "120px",
+        },
+      ]
+    : []),
+    ]
+  );
+  
 
   // ✅ Filters
   const filters = useMemo(
