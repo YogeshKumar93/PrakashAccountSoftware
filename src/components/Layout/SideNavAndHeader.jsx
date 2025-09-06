@@ -252,7 +252,7 @@ const MainContent = styled(Box)(({ theme }) => ({
       <AppBar
         position="fixed"
         sx={{
-          backgroundColor: "#0037D7",
+          backgroundColor:"#0037D7",
           width: {
             md: desktopOpen
               ? `calc(100% - ${themeSettings.drawerWidth}px)`
@@ -355,7 +355,6 @@ const MainContent = styled(Box)(({ theme }) => ({
                     navigate("/admin/profile");
                   } else if (user && user.role === "sadm") {
                     navigate("/admin/profile");
-                  } else if (user && user.role === "Zsm") {
                   } else if (user && user.role === "Asm") {
                     navigate("/asm/profile");
                   } else if (user && user.role === "Zsm") {
@@ -403,7 +402,7 @@ const MainContent = styled(Box)(({ theme }) => ({
         component="nav"
         sx={{
           width: { md: desktopOpen ? themeSettings.drawerWidth : 0 },
-        
+          flexShrink: { md: 0 },
         }}
         className="main-layout"
       >
@@ -440,7 +439,7 @@ const MainContent = styled(Box)(({ theme }) => ({
                   duration: theme.transitions.duration.enteringScreen,
                 }),
               ...(!desktopOpen && {
-           
+                overflowX: "hidden",
                 transition: (theme) =>
                   theme.transitions.create("width", {
                     easing: theme.transitions.easing.sharp,
