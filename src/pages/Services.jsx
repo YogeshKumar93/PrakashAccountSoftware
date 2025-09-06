@@ -89,13 +89,7 @@ const Services = ({ filters = [], query }) => {
   return (
     <Box>
       {/* Create Service Button */}
-      {(user?.role === "sadm" || user?.role === "adm") && (
-        <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 0 }}>
-          <Button variant="contained" onClick={() => setOpenCreate(true)}>
-            Create Service
-          </Button>
-        </Box>
-      )}
+  
 
       {/* Services Table */}
       <CommonTable
@@ -104,6 +98,15 @@ const Services = ({ filters = [], query }) => {
         endpoint={ApiEndpoints.GET_SERVICES}
         filters={filters}
         queryParam={query}
+        customHeader={
+              (user?.role === "sadm" || user?.role === "adm") && (
+        <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 0 }}>
+          <Button variant="contained" onClick={() => setOpenCreate(true)}>
+            Create Service
+          </Button>
+        </Box>
+      )
+        }
       />
 
       {/* Create Service Modal */}

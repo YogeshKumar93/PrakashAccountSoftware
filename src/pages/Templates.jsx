@@ -144,13 +144,13 @@ const Templates = ({ filters = [], query }) => {
   return (
     <Box>
       {/* Create Template Button */}
-      {(user?.role === "sadm" || user?.role === "adm") && (
+      {/* {(user?.role === "sadm" || user?.role === "adm") && (
         <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 0 }}>
           <Button variant="contained" onClick={() => setOpenCreate(true)}>
             Create Template
           </Button>
         </Box>
-      )}
+      )} */}
 
       {/* Templates Table */}
       <CommonTable
@@ -159,6 +159,16 @@ const Templates = ({ filters = [], query }) => {
         endpoint={ApiEndpoints.GET_TEMPLATES}
         filters={filters}
         queryParam={query}
+        customHeader={
+               (user?.role === "sadm" || user?.role === "adm") && (
+        <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 0 }}>
+          <Button variant="contained" onClick={() => setOpenCreate(true)}>
+            Create Template
+          </Button>
+        </Box>
+      )
+
+        }
       />
 
       {/* Create Template Modal */}
