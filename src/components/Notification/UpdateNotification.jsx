@@ -1,59 +1,69 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+ 
+import { CircularProgress } from "@mui/material";
+ 
+import CommonModal from "../common/CommonModal";
 import { apiCall } from "../../api/apiClient";
 import ApiEndpoints from "../../api/ApiEndpoints";
-import CommonModal from "../common/CommonModal";
-import { useSchemaForm } from "../../hooks/useSchemaForm";
-import { useToast } from "../../utils/ToastContext";
+import { apiErrorToast, okSuccessToast } from "../../utils/ToastUtil";
 
-const UpdateNotification = ({ open, onClose, notification }) => {
-  const {
-    schema,
-    formData,
-    handleChange,
-    errors,
-    setErrors,
-    setFormData,
-    loading,
-  } = useSchemaForm(ApiEndpoints.GET_NOTIFICATION_SCHEMA, open);
+const UpdateNotification = ({ open, onClose,  row }) => {
+  const [formData, setFormData] = useState({
+    id: "",
+    title: "",
+    type: "",
+    info: "",
+    message: "",
+    user_id: "",
+  });
 
-  const { showToast } = useToast();
-  const [submitting, setSubmitting] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState([]);
 
-  // Fetch users when modal opens
+  // ✅ Fetch users when modal opens
   useEffect(() => {
     if (!open) return;
     const fetchUsers = async () => {
-      const { response, error } = await apiCall("get", ApiEndpoints.GET_USERS);
-      if (response?.data) {
-        const userList = Array.isArray(response.data)
-          ? response.data
-          : [response.data];
-        setUsers(userList);
-      } else {
-        console.error("Failed to fetch users:", error);
+      try {
+        const { response, error } = await apiCall("POST", ApiEndpoints.GET_USERS);
+        if (response?.data) {
+          const userList = Array.isArray(response.data) ? response.data : [response.data];
+          setUsers(userList);
+        } else {
+          console.error("Failed to fetch users:", error);
+        }
+      } catch (err) {
+        console.error("Error fetching users:", err);
       }
     };
     fetchUsers();
   }, [open]);
 
-  // Pre-fill form when notification, schema, and users are ready
+  // ✅ Prefill when modal opens
   useEffect(() => {
-    if (notification && open && schema.length && users.length) {
+    if (open && row) {
       setFormData({
-        id: notification.id?.toString() || "",
-        title: ["System Update", "Maintenance", "Reminder"].includes(notification.title)
-          ? notification.title
-          : "",
-        type: notification.type || "",
-        info: notification.info || "",
-        message: notification.message || "",
-        user_id: notification.user_id?.toString() || "",
+        id: row.id?.toString() || "",
+        title: row.title || "",
+        type: row.type || "",
+        
+        message: row.message || "",
+        user_id: row.user_id?.toString() || "",
       });
     }
-  }, [notification, open, schema, users, setFormData]);
+  }, [open, row]);
 
-  // Validation
+  // ✅ Handle input change
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  // ✅ Validate form
   const validateForm = () => {
     const newErrors = {};
     if (!formData.title) newErrors.title = "Title is required";
@@ -64,107 +74,113 @@ const UpdateNotification = ({ open, onClose, notification }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Submit handler
-  const handleSubmit = async () => {
+  // ✅ Submit update
+  const onSubmit = async () => {
     if (!validateForm()) return;
 
-    setSubmitting(true);
-
-    const payload = {
-      id: formData.id,
-      title: formData.title,
-      info: formData.info,
-      message: formData.message,
-      user_id: formData.user_id === "all" ? "all" : formData.user_id,
-    };
-
+    setLoading(true);
     try {
-      const { response, error } = await apiCall(
-        "POST",
-        `${ApiEndpoints.UPDATE_NOTIFICATION}`,
-        payload
-      );
+      const payload = {
+        id: formData.id,
+        title: formData.title,
+        
+        message: formData.message,
+        user_id: formData.user_id === "all" ? "all" : formData.user_id,
+      };
+
+      const { response, error } = await apiCall("POST", ApiEndpoints.UPDATE_NOTIFICATION, payload);
 
       if (response) {
-        showToast(response.message || "Notification updated successfully", "success");
+        okSuccessToast(response.message || "Notification updated successfully!");
         onClose();
       } else {
-        showToast(error?.message || "Failed to update notification", "error");
+        apiErrorToast(error?.message || "Failed to update notification");
       }
     } catch (err) {
-      console.error("Unexpected API error:", err);
-      showToast("Something went wrong", "error");
+      console.error(err);
+      apiErrorToast("Something went wrong while updating notification");
+    } finally {
+      setLoading(false);
     }
-
-    setSubmitting(false);
   };
 
-  // Filter schema fields
-  const visibleFields = schema.filter((field) =>
-    ["title", "type", "message", "user_id"].includes(field.name)
-  );
+  // ✅ Footer Buttons
+  const footerButtons = [
+    {
+      text: "Cancel",
+      variant: "outlined",
+      onClick: onClose,
+      disabled: loading,
+    },
+    {
+      text: loading ? "Updating..." : "Update",
+      variant: "contained",
+      onClick: onSubmit,
+      disabled: loading,
+      startIcon: loading ? <CircularProgress size={20} color="inherit" /> : null,
+    },
+  ];
 
-  // Enrich fields with select/autocomplete options
-  const enrichedFields = visibleFields.map((field) => {
-    if (field.name === "user_id") {
-      return {
-        ...field,
-        type: "select",
-        options: [
-          { label: "All Users", value: "all" },
-          ...users.map((u) => ({ label: u.name, value: u.id.toString() })),
-        ],
-      };
-    }
-    if (field.name === "title") {
-      return {
-        ...field,
-        type: "autocomplete",
-        options: ["System Update", "Maintenance", "Reminder"],
-      };
-    }
-    if (field.name === "type") {
-      return {
-        ...field,
-        type: "select",
-        options: [
-          { label: "Info", value: "info" },
-          { label: "Warning", value: "warning" },
-          { label: "Error", value: "error" },
-        ],
-      };
-    }
-    return field;
-  });
+  // ✅ Field Config
+  const fieldConfig = [
+    {
+      name: "title",
+      label: "Title",
+      type: "select",
+      options: [
+        { label: "System Update", value: "System Update" },
+        { label: "Maintenance", value: "Maintenance" },
+        { label: "Reminder", value: "Reminder" },
+      ],
+      validation: { required: true },
+    },
+    {
+      name: "type",
+      label: "Type",
+      type: "select",
+      options: [
+        { label: "Info", value: "info" },
+        { label: "Warning", value: "warning" },
+        { label: "Error", value: "error" },
+      ],
+      validation: { required: true },
+    },
+    
+    {
+      name: "message",
+      label: "Message",
+      type: "textarea",
+      validation: { required: true },
+    },
+    {
+      name: "user_id",
+      label: "User",
+      type: "select",
+      options: [
+        { label: "All Users", value: "all" },
+        ...users.map((u) => ({ label: u.name, value: u.id.toString() })),
+      ],
+      validation: { required: true },
+    },
+  ];
 
   return (
     <CommonModal
       open={open}
       onClose={onClose}
       title="Update Notification"
+      footerButtons={footerButtons}
+      size="medium"
       iconType="edit"
-      size="small"
-      dividers
-      fieldConfig={enrichedFields}
+      layout="two-column"
+      showCloseButton={true}
+      closeOnBackdropClick={!loading}
+      dividers={true}
+      fieldConfig={fieldConfig}
       formData={formData}
       handleChange={handleChange}
       errors={errors}
-      loading={loading || submitting}
-      footerButtons={[
-        {
-          text: "Cancel",
-          variant: "outlined",
-          onClick: onClose,
-          disabled: submitting,
-        },
-        {
-          text: submitting ? "Updating..." : "Update",
-          variant: "contained",
-          color: "primary",
-          onClick: handleSubmit,
-          disabled: submitting,
-        },
-      ]}
+      loading={loading}
     />
   );
 };

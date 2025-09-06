@@ -14,17 +14,31 @@ import DeleteNotification from "./DeleteNotification";
 import AddIcon from "@mui/icons-material/Add";
 import CommonStatus from "../common/CommonStatus";
 import ReButton from "../common/ReButton";
+import CommonLoader from "../common/CommonLoader";
 
 const Notification = ({ filters = [], query }) => {
   const authCtx = useContext(AuthContext);
   const user = authCtx?.user;
+  const [selectedNotification, setSelectedNotification] = useState([])
+
+const [loading, setLoading] = useState(true); // initially true
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false); // stop loader after data is ready
+    }, 1000); // 1 second delay just as an example
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const [openCreate, setOpenCreate] = useState(false);
   const [openUpdate, setOpenUpdate] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
-  const handleEdit = (row) => {
-    setSelectedId(row.id);
+
+  const handleEdit = (notification) => {
+    // setSelectedId(row.id);
+    setSelectedNotification(notification)
     setOpenUpdate(true);
   };
   const handleDelete = (row) => {
@@ -109,11 +123,9 @@ const Notification = ({ filters = [], query }) => {
 
   return (
 <>
-  {/* Loader */}
   <CommonLoader loading={loading} text="Loading Fund Requests" />
 
-  {/* Table and Modals */}
-  {!loading && (
+      {!loading && (
     <Box>
       {/* Create Notification Button */}
 
@@ -145,6 +157,7 @@ const Notification = ({ filters = [], query }) => {
       {openUpdate && (
         <UpdateNotification
           open={openUpdate}
+          row = {selectedNotification}
           onClose={() => setOpenUpdate(false)}
           notification={selectedId}
         />

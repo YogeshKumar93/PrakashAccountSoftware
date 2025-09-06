@@ -54,7 +54,7 @@ const Dot = styled.div`
   margin: -7.5px;
   border-radius: 50%;
   background: ${(props) => props.color || "#6BCBFF"};
-  animation: ${orbit} 2s linear infinite;
+  animation: ${orbit} 0.6s linear infinite;
   animation-delay: ${(props) => props.delay || "0s"};
 `;
 
