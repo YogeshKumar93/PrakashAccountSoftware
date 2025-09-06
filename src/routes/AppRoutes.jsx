@@ -38,6 +38,7 @@ export default function AppRoutes() {
   const role = user?.role;
   const isAdmin = role === "adm" || role === "sadm";
   const isCustomer = role === "ret" || role === "dd";
+  const isDi = role === "di";
 
   return (
     <BrowserRouter>
@@ -88,6 +89,39 @@ export default function AppRoutes() {
                 element={<AdminTransactions />}
               />
               <Route path="customer/services" element={<Dashboard />} />
+              <Route
+                path="customer/account-ledger"
+                element={<AccountLadger />}
+              />
+              <Route path="customer/logs" element={<RetailerLogs />} />
+              <Route
+                path="customer/money-transfer"
+                element={<DmtContainer />}
+              />
+              <Route
+                path="customer/recharge-bill"
+                element={<RechargeAndBill />}
+              />
+              <Route path="customer/purchase" element={<MyPurchase />} />
+              <Route path="customer/fund-request" element={<FundRequest />} />
+              <Route path="customer/sale" element={<MySale />} />
+              <Route path="customer/notification" element={<Notification />} />
+              <Route path="customer/profile" element={<ProfilePage />} />
+              <Route path="customer/banks" element={<Banks />} />
+              <Route
+                path="customer/*"
+                element={<Navigate to="/customer/dashboard" replace />}
+              />
+              <Route path="customer/accounts" element={<Accounts />} />
+            </>
+          )}
+          {isDi && (
+            <>
+              <Route
+                path="di/dashboard"
+                element={<AdminTransactions />}
+              />
+              <Route path="di/services" element={<Dashboard />} />
               <Route
                 path="customer/account-ledger"
                 element={<AccountLadger />}
