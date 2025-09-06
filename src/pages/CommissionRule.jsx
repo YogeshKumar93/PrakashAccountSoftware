@@ -74,16 +74,43 @@ const CommissionRule = ({ filters = [], query }) => {
         width: "150px",
       },
       {
-        name: "Value",
+        name: "DD Comm",
         selector: (row) => (
-          <Tooltip title={row?.value}>
-            <div style={{ textAlign: "left" }}>{row?.value || "-"}</div>
+          <Tooltip title={row?.comm_dd}>
+            <div style={{ textAlign: "left" }}>{row?.comm_dd || "-"}</div>
           </Tooltip>
         ),
-        width: "150px",
+        width: "100px",
       },
       {
-        name: "Min Amount",
+        name: "Ret Comm",
+        selector: (row) => (
+          <Tooltip title={row?.comm_ret}>
+            <div style={{ textAlign: "left" }}>{row?.comm_ret || "-"}</div>
+          </Tooltip>
+        ),
+        width: "100px",
+      },
+      {
+        name: "Di Comm",
+        selector: (row) => (
+          <Tooltip title={row?.comm_di}>
+            <div style={{ textAlign: "left" }}>{row?.comm_di || "-"}</div>
+          </Tooltip>
+        ),
+        width: "100px",
+      },
+      {
+        name: "Md Comm",
+        selector: (row) => (
+          <Tooltip title={row?.comm_md}>
+            <div style={{ textAlign: "left" }}>{row?.comm_md || "-"}</div>
+          </Tooltip>
+        ),
+        width: "100px",
+      },
+      {
+        name: "Min Amt",
         selector: (row) => (
           <Tooltip title={row?.min_amount}>
             <div style={{ textAlign: "left" }}>{row?.min_amount || "-"}</div>
@@ -92,7 +119,7 @@ const CommissionRule = ({ filters = [], query }) => {
         width: "150px",
       },
       {
-        name: "Max Amount",
+        name: "Max Amt",
         selector: (row) => (
           <Tooltip title={row?.max_amount}>
             <div style={{ textAlign: "left" }}>{row?.max_amount || "-"}</div>
