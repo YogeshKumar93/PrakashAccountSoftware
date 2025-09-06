@@ -1,42 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { apiCall } from "../api/apiClient";
 import ApiEndpoints from "../api/ApiEndpoints";
 import CommonModal from "../components/common/CommonModal";
 import { useSchemaForm } from "../hooks/useSchemaForm";
-import { PATTERNS, isValid } from "../utils/validators"; // ✅ validators
+import { PATTERNS, isValid } from "../utils/validators";
 import { useToast } from "../utils/ToastContext";
 
 const CreateFundRequest = ({ open, handleClose, handleSave }) => {
-  const {
-    schema,
-    formData,
-    handleChange,
-    errors,
-    setErrors,
-    loading,
-  } = useSchemaForm(ApiEndpoints.GET_FUNDREQUEST_SCHEMA, open); // 👈 dynamic schema
+  const { schema, formData, handleChange, errors, setErrors, loading } =
+    useSchemaForm(ApiEndpoints.GET_FUNDREQUEST_SCHEMA, open);
 
-  const [banks, setBanks] = useState([]);
   const [submitting, setSubmitting] = useState(false);
   const { showToast } = useToast();
-
-  // ✅ Fetch banks for dropdown
-  useEffect(() => {
-    const fetchBanks = async () => {
-      try {
-        const response = await apiCall("POST", ApiEndpoints.GET_BANKS);
-        if (response?.data) {
-          setBanks(response.data);
-        } else {
-          console.error("Unexpected response:", response);
-        }
-      } catch (err) {
-        console.error("Error fetching banks", err);
-      }
-    };
-
-    if (open) fetchBanks();
-  }, [open]);
 
   // ✅ Validation
   const validateForm = () => {
@@ -101,25 +76,47 @@ const CreateFundRequest = ({ open, handleClose, handleSave }) => {
     }
   };
 
-  // ✅ Show only required fields from schema
-  const visibleFields = schema.filter((field) =>
-    ["txn_id", "bank_name", "mode", "bank_ref_id", "date", "amount", "remark"].includes(field.name)
-  );
-  console.log("jhrhs",visibleFields)
+  // ✅ Required fields
+  const requiredFields = [
+    "txn_id",
+    "bank_name",
+    "mode",
+    "bank_ref_id",
+    "date",
+    "amount",
+    "remark",
+  ];
 
-  // ✅ Inject bank options
-  const enrichedFields = visibleFields.map((field) =>
-    field.name === "bank_name"
-      ? {
-          ...field,
-          type: "select",
-          options: banks.map((bank) => ({
-            value: bank.id, // what we post
-            label: bank.name, // what we display
-          })),
-        }
-      : field
-  );
+  // ✅ Pick only required fields from schema
+  let visibleFields = schema.filter((field) => requiredFields.includes(field.name));
+
+// ✅ Correct bank field configuration
+const bankField = {
+  name: "bank_name",
+  label: "Bank Name",
+  type: "select",
+  apiOptions: {
+    endpoint: ApiEndpoints.GET_BANKS,
+    method: "post",
+    mapOptions: (responseData) => {
+      // The API returns { status: true, message: "...", data: [...] }
+      // So we need to extract the banks array from responseData.data
+      const banks = responseData.data || [];
+      
+      return banks.map((bank) => ({
+        value: bank.id.toString(), // Convert to string for consistency
+        label: bank.bank_name,
+      }));
+    },
+  },
+};
+  // Replace or insert bank_name field
+  const hasBank = visibleFields.find((f) => f.name === "bank_name");
+  if (hasBank) {
+    visibleFields = visibleFields.map((f) => (f.name === "bank_name" ? bankField : f));
+  } else {
+    visibleFields.splice(1, 0, bankField); // insert after txn_id
+  }
 
   return (
     <CommonModal
@@ -130,7 +127,7 @@ const CreateFundRequest = ({ open, handleClose, handleSave }) => {
       size="medium"
       layout="two-column"
       dividers
-      fieldConfig={enrichedFields}
+      fieldConfig={visibleFields}
       formData={formData}
       handleChange={handleChange}
       errors={errors}
