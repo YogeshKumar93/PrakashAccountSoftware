@@ -11,6 +11,8 @@ import UpdateNotification from "./UpdateNotification";
 import CommonTable from "../common/CommonTable";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DeleteNotification from "./DeleteNotification";
+import AddIcon from "@mui/icons-material/Add";
+import CommonStatus from "../common/CommonStatus";
 
 const Notification = ({ filters = [], query }) => {
   const authCtx = useContext(AuthContext);
@@ -78,28 +80,11 @@ const handleDelete = (row) => {
         wrap: true,
         center: false,
       },
-      {
-        name: "Status",
-        selector: (row) => (
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              fontSize: "16px",
-              textAlign: "justify",
-              fontWeight: "500",
-            }}
-          >
-            {row.is_read === 0 ? (
-              <Typography>Not Read</Typography>
-            ) : (
-              <Typography>Already Read</Typography>
-            )}
-          </Box>
-        ),
-        wrap: true,
-        center: false,
-      },
+          {
+  name: "Status",
+  selector: (row) => <CommonStatus value={row.status} />,
+  center: true,
+},
        {
             name: "Actions",
             selector: (row) => (
@@ -132,11 +117,16 @@ const handleDelete = (row) => {
         filters={filters}
         customHeader={
            (user?.role === "sadm" || user?.role === "adm") && (
-        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-          <Button variant="contained" onClick={() => setOpenCreate(true)}>
-            Create Notification
-          </Button>
-        </Box>
+        <Button
+      variant="contained"
+      startIcon={<AddIcon />}
+      sx={{ bgcolor: "#1CA895", mr: 2 }}
+      onClick={() => setOpenCreate(true)}
+    >
+      Notification
+    </Button>
+      
+        
       )
 
         }

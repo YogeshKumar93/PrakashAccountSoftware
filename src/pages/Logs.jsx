@@ -7,6 +7,7 @@ import CommonTable from "../components/common/CommonTable";
 import ApiEndpoints from "../api/ApiEndpoints";
 import DeleteLogModal from "../components/DeleteLogModal";
 import DrawerDetails from "../components/common/DrawerDetails";
+import CommonStatus from "../components/common/CommonStatus";
 
 const Logs = ({ filters = [], query }) => {
   const authCtx = useContext(AuthContext);
@@ -36,18 +37,10 @@ const Logs = ({ filters = [], query }) => {
       { name: "Role", selector: (row) => row?.role, wrap: true },
       { name: "Action", selector: (row) => row?.action, width: "100px" },
       {
-        name: "Status",
-        selector: (row) => {
-          if (row?.status === "Success") {
-            return <Chip label="Success" color="success" size="small" />;
-          } else if (row?.status === "Failed" || row?.status === "Error") {
-            return <Chip label="Failed" color="error" size="small" />;
-          } else {
-            return <Chip label={row?.status || "Pending"} color="warning" size="small" />;
-          }
-        },
-        width: "120px",
-      },
+  name: "Status",
+  selector: (row) => <CommonStatus value={row.status} />,
+  center: true,
+},
       {
         name: "Actions",
         selector: (row) => (

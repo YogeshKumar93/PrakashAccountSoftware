@@ -6,6 +6,7 @@ import { currencySetter } from "../../utils/Currencyutil";
 import { dateToTime, ddmmyy } from "../../utils/DateUtils";
 import { capitalize1 } from "../../utils/TextUtil";
 import AuthContext from "../../contexts/AuthContext";
+import CommonStatus from "../common/CommonStatus";
 
 
 const AccountLadger = ({ filters=[], query }) => {
@@ -13,20 +14,20 @@ const AccountLadger = ({ filters=[], query }) => {
 
  const authCtx=useContext(AuthContext)
  const user=authCtx?.user
-  const getStatusColor = useCallback((status) => {
-    switch (status?.toUpperCase()) {
-      case "SUCCESS":
-        return "success";
-      case "FAILED":
-        return "error";
-      case "REFUND":
-        return "warning";
-      case "PENDING":
-        return "info";
-      default:
-        return "default";
-    }
-  }, []);
+  // const getStatusColor = useCallback((status) => {
+  //   switch (status?.toUpperCase()) {
+  //     case "SUCCESS":
+  //       return "success";
+  //     case "FAILED":
+  //       return "error";
+  //     case "REFUND":
+  //       return "warning";
+  //     case "PENDING":
+  //       return "info";
+  //     default:
+  //       return "default";
+  //   }
+  // }, []);
 
   // memoized columns
   const columns = useMemo(() => [
@@ -147,13 +148,13 @@ const AccountLadger = ({ filters=[], query }) => {
       },
       width: "190px",
     },
-    {
-      name: "Status",
-      selector: (row) => (
-      getStatusColor(row.status)
-      ),
-      center: true,
-    },
+  {
+  name: "Status",
+  selector: (row) => <CommonStatus value={row.status} />,
+  center: true,
+},
+
+
   ], [user]);
 
   const queryParam = "type_txn=LEDGER";

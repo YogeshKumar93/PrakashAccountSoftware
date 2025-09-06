@@ -6,6 +6,7 @@ import { currencySetter } from "../../utils/Currencyutil";
 import { dateToTime, ddmmyy } from "../../utils/DateUtils";
 import { capitalize1 } from "../../utils/TextUtil";
 import AuthContext from "../../contexts/AuthContext";
+import CommonStatus from "../common/CommonStatus";
 
 
 const MyPurchase = ({ filters, query }) => {
@@ -13,20 +14,20 @@ const MyPurchase = ({ filters, query }) => {
 
  const authCtx=useContext(AuthContext)
  const user=authCtx?.user
-  const getStatusColor = useCallback((status) => {
-    switch (status?.toUpperCase()) {
-      case "SUCCESS":
-        return "success";
-      case "FAILED":
-        return "error";
-      case "REFUND":
-        return "warning";
-      case "PENDING":
-        return "info";
-      default:
-        return "default";
-    }
-  }, []);
+  // const getStatusColor = useCallback((status) => {
+  //   switch (status?.toUpperCase()) {
+  //     case "SUCCESS":
+  //       return "success";
+  //     case "FAILED":
+  //       return "error";
+  //     case "REFUND":
+  //       return "warning";
+  //     case "PENDING":
+  //       return "info";
+  //     default:
+  //       return "default";
+  //   }
+  // }, []);
 
   // memoized columns
   const columns = useMemo(
@@ -214,21 +215,11 @@ const MyPurchase = ({ filters, query }) => {
         },
         width: "190px",
       },
-      {
-        name: "Status",
-        selector: (row) => (
-          <Box sx={{ display: "flex", justifyContent: "center" }}>
-            {/* <CommonStatus
-              status={row.status}
-              approvedStatusText="Success"
-              pendingStatusText="Pending"
-              rejectedStatusText="Failed"
-              refundStatusText="Refund"
-              fontSize="13px"
-            /> */}
-          </Box>
-        ),
-      },
+          {
+  name: "Status",
+  selector: (row) => <CommonStatus value={row.status} />,
+  center: true,
+},
     ],
     [user]
   );
