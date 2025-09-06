@@ -13,23 +13,24 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import DeleteNotification from "./DeleteNotification";
 import AddIcon from "@mui/icons-material/Add";
 import CommonStatus from "../common/CommonStatus";
+import ReButton from "../common/ReButton";
 
 const Notification = ({ filters = [], query }) => {
   const authCtx = useContext(AuthContext);
   const user = authCtx?.user;
 
-  const [openCreate, setOpenCreate] = useState(false); 
-  const [openUpdate, setOpenUpdate] = useState(false); 
-  const [openDelete, setOpenDelete] = useState(false); 
-const [selectedId, setSelectedId] = useState(null);
-const handleEdit = (row) => {
-  setSelectedId(row.id);
-  setOpenUpdate(true);
-};
-const handleDelete = (row) => {
-  setSelectedId(row.id);
-  setOpenDelete(true);
-};
+  const [openCreate, setOpenCreate] = useState(false);
+  const [openUpdate, setOpenUpdate] = useState(false);
+  const [openDelete, setOpenDelete] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
+  const handleEdit = (row) => {
+    setSelectedId(row.id);
+    setOpenUpdate(true);
+  };
+  const handleDelete = (row) => {
+    setSelectedId(row.id);
+    setOpenDelete(true);
+  };
 
   const columns = useMemo(
     () => [
@@ -80,28 +81,28 @@ const handleDelete = (row) => {
         wrap: true,
         center: false,
       },
-          {
-  name: "Status",
-  selector: (row) => <CommonStatus value={row.status} />,
-  center: true,
-},
-       {
-            name: "Actions",
-            selector: (row) => (
-              <Box sx={{ display: "flex", gap: 1 }}>
-                <Tooltip title="Edit">
-                  <IconButton color="primary" onClick={() => handleEdit(row)}>
-                    <EditIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Delete">
-                  <IconButton color="error" onClick={() => handleDelete(row)}>
-                    <DeleteIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-              </Box>
-            ),
-          },
+      {
+        name: "Status",
+        selector: (row) => <CommonStatus value={row.status} />,
+        center: true,
+      },
+      {
+        name: "Actions",
+        selector: (row) => (
+          <Box sx={{ display: "flex", gap: 1 }}>
+            <Tooltip title="Edit">
+              <IconButton color="primary" onClick={() => handleEdit(row)}>
+                <EditIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Delete">
+              <IconButton color="error" onClick={() => handleDelete(row)}>
+                <DeleteIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        ),
+      },
     ],
     []
   );
@@ -109,26 +110,19 @@ const handleDelete = (row) => {
   return (
     <Box>
       {/* Create Notification Button */}
-     
+
       {/* Notification Table */}
       <CommonTable
         columns={columns}
         endpoint={ApiEndpoints.GET_NOTIFICATION}
         filters={filters}
         customHeader={
-           (user?.role === "sadm" || user?.role === "adm") && (
-        <Button
-      variant="contained"
-      startIcon={<AddIcon />}
-      sx={{ bgcolor: "#1CA895", mr: 2 }}
-      onClick={() => setOpenCreate(true)}
-    >
-      Notification
-    </Button>
-      
-        
-      )
-
+          (user?.role === "sadm" || user?.role === "adm") && (
+            <ReButton
+              label="Notification"
+              onClick={() => setOpenCreate(true)}
+            />
+          )
         }
         // queryParam={query}
         // refreshInterval={30000}
@@ -141,19 +135,19 @@ const handleDelete = (row) => {
           onClose={() => setOpenCreate(false)}
         />
       )}
-          {/* Create Notification Modal */}
+      {/* Create Notification Modal */}
       {openUpdate && (
         <UpdateNotification
           open={openUpdate}
           onClose={() => setOpenUpdate(false)}
-            notification={selectedId}
+          notification={selectedId}
         />
       )}
-        {openDelete && (
+      {openDelete && (
         <DeleteNotification
           open={openDelete}
           onClose={() => setOpenDelete(false)}
-            notificationId={selectedId}
+          notificationId={selectedId}
         />
       )}
     </Box>
