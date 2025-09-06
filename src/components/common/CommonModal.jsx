@@ -249,61 +249,69 @@ useEffect(() => {
   switch (type) {
     case "datepicker":
       return (
-        <DatePicker
-          label={label}
-          value={formData[name] ? dayjs(Number(formData[name])) : null}
-          onChange={(newValue) =>
-            handleChange({
-              target: {
-                name,
-                value: newValue ? newValue.valueOf() : null,
-              },
-            })
-          }
-          slotProps={{
-            textField: {
-              fullWidth: true,
-              ...getErrorProps(),
-            },
-          }}
-          disabled={loading}
-          {...props}
-        />
+      <DatePicker
+  label={label}
+  value={formData[name] ? dayjs(formData[name]) : null}
+  onChange={(newValue) =>
+    handleChange({
+      target: {
+        name,
+        // ✅ send formatted date instead of timestamp
+        value: newValue ? dayjs(newValue).format("YYYY-MM-DD") : "",
+      },
+    })
+  }
+  slotProps={{
+    textField: {
+      fullWidth: true,
+      ...getErrorProps(),
+    },
+  }}
+  disabled={loading}
+  {...props}
+/>
       );
       
-    case "select":
-    case "dropdown":
-      return (
-        <ReTextField
-          select
-          fullWidth
-          label={label}
-          name={name}
-          value={formData[name] || ""}
-          onChange={handleChange}
-          disabled={loading || optionsLoading}
-          error={!!errors[name]}
-          helperText={errors[name]}
-        >
-          {optionsLoading ? (
-            <MenuItem disabled>Loading options...</MenuItem>
-          ) : finalOptions && finalOptions.length > 0 ? (
-            finalOptions.map((opt, i) =>
-              typeof opt === "string" ? (
-                <MenuItem key={i} value={opt}>
-                  {opt}
-                </MenuItem>
-              ) : (
-                <MenuItem key={opt.value || i} value={opt.value}>
-                  {opt.label}
-                </MenuItem>
-              )
-            )
-          ) : (
-            <MenuItem disabled>No options available</MenuItem>
-          )}
-        </ReTextField>
-      );
+   case "select":
+case "dropdown":
+  return (
+    <ReTextField
+      select
+      fullWidth
+      label={label}
+      name={name}
+      value={formData[name] || ""}
+      onChange={handleChange}
+      disabled={loading || optionsLoading}
+      error={!!errors[name]}
+      helperText={errors[name]}
+    >
+      {optionsLoading ? (
+        <MenuItem disabled>Loading options...</MenuItem>
+      ) : finalOptions && finalOptions.length > 0 ? (
+        finalOptions.map((opt, i) => {
+          // ✅ Normalize both object & string options
+          if (typeof opt === "string") {
+            return (
+              <MenuItem key={i} value={opt}>
+                {opt}
+              </MenuItem>
+            );
+          }
+          // if object with id/bank_name
+          const value = opt.value ?? opt.id ?? opt.bank_id ?? i;
+          const label = opt.label ?? opt.bank_name ?? opt.name ?? String(value);
+          return (
+            <MenuItem key={value} value={value}>
+              {label}
+            </MenuItem>
+          );
+        })
+      ) : (
+        <MenuItem disabled>No options available</MenuItem>
+      )}
+    </ReTextField>
+  );
 
     case "timepicker":
       return (

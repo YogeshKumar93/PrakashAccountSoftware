@@ -7,6 +7,7 @@ import AuthContext from "../contexts/AuthContext";
 import { dateToTime, dateToTime1, ddmmyy } from "../utils/DateUtils";
 import { capitalize1 } from "../utils/TextUtil";
 import CreateBankModal from "../components/Bank/CreateBanks";
+import AddIcon from "@mui/icons-material/Add";
 
 const Banks = ({ filters = [], query }) => {
   const authCtx = useContext(AuthContext);
@@ -92,7 +93,7 @@ const Banks = ({ filters = [], query }) => {
   return (
     <>
       {/* Top Bar with Create Button */}
-      <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
+      {/* <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
         <Button
           variant="contained"
           color="primary"
@@ -100,13 +101,23 @@ const Banks = ({ filters = [], query }) => {
         >
           + Create Bank
         </Button>
-      </Box>
+      </Box> */}
 
       <CommonTable
         columns={columns}
         endpoint={ApiEndpoints.GET_BANKS}
         filters={filters}
         queryParam={queryParam}
+         customHeader={
+    <Button
+      variant="contained"
+      startIcon={<AddIcon />}
+      sx={{ bgcolor: "#1CA895", mr: 2 }}
+      onClick={() => setOpenCreate(true)}
+    >
+      Bank
+    </Button>
+  }
       />
 
       {/* Create Bank Modal */}

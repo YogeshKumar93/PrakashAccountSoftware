@@ -86,6 +86,19 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
+const MainContent = styled(Box)(({ theme }) => ({
+  flexGrow: 1,
+  padding: theme.spacing(3),
+  backgroundColor: theme.palette.background.default,
+  minHeight: "100vh",
+  marginLeft: 0,
+  transition: theme.transitions.create("margin", {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+}));
+
+
   const navigationItems = roleNavigation[userRole] || nav;
 
   const handleDrawerToggle = () => {
@@ -258,7 +271,7 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
         className="header"
       >
         <Toolbar sx={{ minHeight: "64px !important" }}>
-          <IconButton
+          {/* <IconButton
             color="inherit"
             aria-label="open drawer"
             edge="start"
@@ -266,7 +279,7 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
             sx={{ mr: 2 }}
           >
             <MenuIcon />
-          </IconButton>
+          </IconButton> */}
           <Typography
             variant="h6"
             noWrap
@@ -442,6 +455,28 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
           {drawerContent}
         </Drawer>
       </Box>
+
+      {/* Main Content */}
+<MainContent
+  sx={{
+      width: {
+      xs: "100%",
+      md: desktopOpen
+        ? `calc(100% - ${themeSettings.drawerWidth}px)`
+        : "100%",
+    },
+    position: "fixed",
+    top: 0,
+    right: 0,
+    height: "100vh",
+    overflowY: "auto",
+  }}
+  className="content"
+>
+  <Toolbar sx={{ minHeight: "64px !important" }} />
+  <Outlet />
+</MainContent>
+
     </Box>
   );
 };

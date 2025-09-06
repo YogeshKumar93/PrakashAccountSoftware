@@ -124,19 +124,22 @@ const handleDelete = (row) => {
   return (
     <Box>
       {/* Create Notification Button */}
-      {(user?.role === "sadm" || user?.role === "adm") && (
-        <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
-          <Button variant="contained" onClick={() => setOpenCreate(true)}>
-            Create Notification
-          </Button>
-        </Box>
-      )}
-
+     
       {/* Notification Table */}
       <CommonTable
         columns={columns}
         endpoint={ApiEndpoints.GET_NOTIFICATION}
         filters={filters}
+        customHeader={
+           (user?.role === "sadm" || user?.role === "adm") && (
+        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+          <Button variant="contained" onClick={() => setOpenCreate(true)}>
+            Create Notification
+          </Button>
+        </Box>
+      )
+
+        }
         // queryParam={query}
         // refreshInterval={30000}
       />
