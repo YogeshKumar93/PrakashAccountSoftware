@@ -240,6 +240,7 @@ const handleOpen = (row, statusType) => {
   endpoint={ApiEndpoints.GET_FUND_REQUESTS}
   filters={filters}
   customHeader={
+               (user?.role !== "sadm" || user?.role !== "adm") && (
     <Button
       variant="contained"
       startIcon={<AddIcon />}
@@ -248,6 +249,7 @@ const handleOpen = (row, statusType) => {
     >
       Request
     </Button>
+               )
   }
 />
 
