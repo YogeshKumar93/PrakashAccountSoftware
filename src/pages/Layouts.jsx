@@ -5,15 +5,37 @@ import AuthContext from "../contexts/AuthContext";
 import { dateToTime, ddmmyy } from "../utils/DateUtils";
 import CommonTable from "../components/common/CommonTable";
 import ApiEndpoints from "../api/ApiEndpoints";
-import CreateServiceModal from "../components/CreateServiceModal";
-import EditServiceModal from "../components/EditServiceModaL";
+import AddIcon from "@mui/icons-material/Add";
+import EditIcon from "@mui/icons-material/Edit";
+// import CreateServiceModal from "../components/CreateServiceModal";
+// import EditServiceModal from "../components/EditServiceModaL";
+
+import CreateLayouts from "../pages/CreateLayouts";
+import UpdateLayouts from "./UpdateLayouts";
+
 
 const Layouts = ({ filters = [], query }) => {
+  const[openCreate, setOpenCreate] = useState(false);
+   const [openUpdate, setOpenUpdate] = useState(false);
+   const [selectedColor, setSelectedColor] = useState(null);
   const authCtx = useContext(AuthContext);
   const user = authCtx?.user;
-  const [openEdit, setOpenEdit] = useState(false);
-  const [selectedService, setSelectedService] = useState(null);
+  // const [openEdit, setOpenEdit] = useState(false);
+  // const [selectedService, setSelectedService] = useState(null);
   const [refreshKey, setRefreshKey] = useState(0);
+
+  const handleSaveCreate = () => {
+    setOpenCreate(false);
+  }
+
+  const handleSaveUpdate = () => {
+    setOpenUpdate(false);
+  }
+
+  const handleEdit = (row) => {
+  setSelectedColor(row);
+  setOpenUpdate(true);
+};
 
   const columns = useMemo(
     () => [
@@ -45,26 +67,40 @@ const Layouts = ({ filters = [], query }) => {
         width: "150px",
       },
       {
-        name: "Actions",
-        selector: (row) => (
-          <IconButton
-            color="primary"
-            onClick={() => {
-              setSelectedService(row);
-              setOpenEdit(true);
-            }}
-          >
-            <Edit />
-          </IconButton>
-        ),
-        width: "100px",
-      },
+      name: "Actions",
+      selector: (row) => (
+        <Box sx={{ display: "flex", gap: 1 }}>
+          <Tooltip title="Edit">
+            <IconButton color="primary" onClick={() => handleEdit(row)}>
+              <EditIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          {/* <Tooltip title="Delete">
+            <IconButton color="error" onClick={() => handleDelete(row)}>
+              <DeleteIcon fontSize="small" />
+            </IconButton>
+          </Tooltip> */}
+        </Box>
+      ),
+    },
     ],
     []
   );
 
   return (
-    <Box>
+      <Box sx={{ p: 3 }}>
+          {/* ✅ Header */}
+          <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
+            <Button
+              variant="contained"
+              startIcon={<AddIcon />}
+              sx={{ bgcolor: "#1CA895" }}
+              onClick={() => setOpenCreate(true)}
+            >
+               Colours
+            </Button>
+         </Box>
+     
       {/* Services Table */}
       <CommonTable
         key={refreshKey} // 🔄 refresh on changes
@@ -72,7 +108,26 @@ const Layouts = ({ filters = [], query }) => {
         endpoint={ApiEndpoints.GET_COLOURS}
         filters={filters}
         queryParam={query}
+        Button = {Button}
       />
+
+      <CreateLayouts 
+         open={openCreate}
+        handleClose={() => setOpenCreate(false)}
+        handleSave={handleSaveCreate}
+      />
+
+      <UpdateLayouts 
+         open={openUpdate}
+    handleClose={() => {
+      setOpenUpdate(false);
+      setSelectedColor(null);
+    }}
+    handleSave={handleSaveUpdate}
+    // selectedAccount={selectedAccount}
+      />
+
+     
     </Box>
   );
 };

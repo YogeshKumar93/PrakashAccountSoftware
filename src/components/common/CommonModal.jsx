@@ -325,6 +325,27 @@ useEffect(() => {
         />
       );
 
+      case "colorpicker":
+  return (
+    <input
+      type="color"
+      name={name}
+      value={formData[name] || "#000000"} // ✅ default to black if empty
+      onChange={(e) => handleChange(e)}
+      disabled={loading}
+      style={{
+        width: "100%",
+        height: "40px",
+        border: "1px solid #ccc",
+        borderRadius: "6px",
+        cursor: "pointer",
+        background: formData[name] || "#fff",
+      }}
+      {...props}
+    />
+  );
+
+
     // Other field types remain the same
     default:
       return (
