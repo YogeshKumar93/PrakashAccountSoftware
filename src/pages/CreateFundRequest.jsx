@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { apiCall } from "../api/apiClient";
 import ApiEndpoints from "../api/ApiEndpoints";
 import CommonModal from "../components/common/CommonModal";
@@ -13,38 +13,51 @@ const CreateFundRequest = ({ open, handleClose, handleSave }) => {
   const [submitting, setSubmitting] = useState(false);
   const { showToast } = useToast();
 
+  // ✅ local state for banks
+  const [banks, setBanks] = useState([]);
+  const [bankLoading, setBankLoading] = useState(false);
+
+  // ✅ fetch banks ONLY when modal opens
+  useEffect(() => {
+    if (!open) return;
+    const fetchBanks = async () => {
+      try {
+        setBankLoading(true);
+        const res = await apiCall("post", ApiEndpoints.GET_BANKS);
+        const rawData = res?.response?.data || [];
+        const mapped = rawData.map((bank) => ({
+          value: bank.id.toString(),
+          label: bank.bank_name,
+        }));
+        setBanks(mapped);
+      } catch (err) {
+        console.error("Error fetching banks:", err);
+        setBanks([]);
+      } finally {
+        setBankLoading(false);
+      }
+    };
+    fetchBanks();
+  }, [open]);
+
   // ✅ Validation
   const validateForm = () => {
     const newErrors = {};
-
     if (!isValid(PATTERNS.TXN_ID, formData.txn_id || "")) {
       newErrors.txn_id = "Enter a valid TXN ID (6–20 alphanumeric chars)";
     }
-
-    if (!formData.bank_name) {
-      newErrors.bank_name = "Bank is required";
-    }
-
-    if (!formData.mode) {
-      newErrors.mode = "Mode is required";
-    }
-
+    if (!formData.bank_name) newErrors.bank_name = "Bank is required";
+    if (!formData.mode) newErrors.mode = "Mode is required";
     if (!isValid(PATTERNS.IFSC, formData.bank_ref_id || "")) {
       newErrors.bank_ref_id = "Enter a valid Bank Ref ID";
     }
-
-    if (!formData.date) {
-      newErrors.date = "Date is required";
-    }
-
+    if (!formData.date) newErrors.date = "Date is required";
     if (!formData.amount || isNaN(formData.amount) || Number(formData.amount) <= 0) {
       newErrors.amount = "Enter a valid amount";
     }
-
     if (formData.remark && formData.remark.length > 200) {
       newErrors.remark = "Remarks cannot exceed 200 characters";
     }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -90,30 +103,23 @@ const CreateFundRequest = ({ open, handleClose, handleSave }) => {
   // ✅ Pick only required fields from schema
   let visibleFields = schema.filter((field) => requiredFields.includes(field.name));
 
-const bankField = {
-  name: "bank_name",
-  label: "Bank Name",
-  type: "select",
-  apiOptions: {
-    endpoint: ApiEndpoints.GET_BANKS,
-    method: "post",
-    mapOptions: (responseData) => {
-        console.log("Mapping banks:", responseData);
-      // responseData is already the array of banks
-      return (responseData || []).map((bank) => ({
-        value: bank.id.toString(),
-        label: bank.bank_name,
-      }));
-    },
-  },
-};
+  // ✅ Override bank field to use preloaded options
+  const bankField = {
+    name: "bank_name",
+    label: "Bank Name",
+    type: "select",
+    options: bankLoading
+      ? [{ value: "", label: "Loading..." }]
+      : banks.length > 0
+      ? banks
+      : [{ value: "", label: "No banks available" }],
+  };
 
-  // Replace or insert bank_name field
   const hasBank = visibleFields.find((f) => f.name === "bank_name");
   if (hasBank) {
     visibleFields = visibleFields.map((f) => (f.name === "bank_name" ? bankField : f));
   } else {
-    visibleFields.splice(1, 0, bankField); // insert after txn_id
+    visibleFields.splice(1, 0, bankField);
   }
 
   return (
