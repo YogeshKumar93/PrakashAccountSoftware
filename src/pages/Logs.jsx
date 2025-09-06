@@ -6,6 +6,7 @@ import { dateToTime, ddmmyy } from "../utils/DateUtils";
 import CommonTable from "../components/common/CommonTable";
 import ApiEndpoints from "../api/ApiEndpoints";
 import DeleteLogModal from "../components/DeleteLogModal";
+import CommonStatus from "../components/common/CommonStatus";
 
 const Logs = ({ filters = [], query }) => {
   const authCtx = useContext(AuthContext);
@@ -36,18 +37,10 @@ const Logs = ({ filters = [], query }) => {
       { name: "Response Data", selector: (row) => row?.response_data || "-", width: "150px" },
       { name: "User Agent", selector: (row) => row?.user_agent || "-", width: "150px" },
       {
-        name: "Status",
-        selector: (row) => {
-          if (row?.status === "Success") {
-            return <Chip label="Success" color="success" size="small" />;
-          } else if (row?.status === "Failed" || row?.status === "Error") {
-            return <Chip label="Failed" color="error" size="small" />;
-          } else {
-            return <Chip label={row?.status || "Pending"} color="warning" size="small" />;
-          }
-        },
-        width: "120px",
-      },
+  name: "Status",
+  selector: (row) => <CommonStatus value={row.status} />,
+  center: true,
+},
       {
         name: "Actions",
         selector: (row) => (

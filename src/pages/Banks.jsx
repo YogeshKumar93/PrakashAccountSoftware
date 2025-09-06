@@ -8,6 +8,7 @@ import { dateToTime, dateToTime1, ddmmyy } from "../utils/DateUtils";
 import { capitalize1 } from "../utils/TextUtil";
 import CreateBankModal from "../components/Bank/CreateBanks";
 import AddIcon from "@mui/icons-material/Add";
+import CommonStatus from "../components/common/CommonStatus";
 
 const Banks = ({ filters = [], query }) => {
   const authCtx = useContext(AuthContext);
@@ -69,21 +70,11 @@ const Banks = ({ filters = [], query }) => {
         ),
         wrap: true,
       },
-      {
-        name: "Status",
-        selector: (row) => (
-          <div
-            style={{
-              color: row.status === 1 ? "green" : "red",
-              fontWeight: 600,
-              textAlign: "center",
-            }}
-          >
-            {row.status === 1 ? "Active" : "Inactive"}
-          </div>
-        ),
-        center: true,
-      },
+       {
+  name: "Status",
+  selector: (row) => <CommonStatus value={row.status} />,
+  center: true,
+},
     ],
     []
   );

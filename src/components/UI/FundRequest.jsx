@@ -11,6 +11,7 @@ import FundRequestModal from "../../pages/FundRequestModal";
 import AuthContext from "../../contexts/AuthContext";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
+import CommonStatus from "../common/CommonStatus";
  
  
 
@@ -30,22 +31,22 @@ const handleOpen = (row, statusType) => {
   setOpenModal(true);
 };
 
-  const getStatusColor = useCallback((status) => {
-    switch (status?.toUpperCase()) {
-      case "SUCCESS":
-        return "#2e7d32"; // green
-      case "FAILED":
-        return "#d32f2f"; // red
-      case "REFUND":
-        return "#ed6c02"; // orange
-      case "PENDING":
-        return "#0288d1"; // blue
-      case "REJECTED":
-        return "#9e9e9e"; // grey
-      default:
-        return "#616161"; // default grey
-    }
-  }, []);
+  // const getStatusColor = useCallback((status) => {
+  //   switch (status?.toUpperCase()) {
+  //     case "SUCCESS":
+  //       return "#2e7d32"; // green
+  //     case "FAILED":
+  //       return "#d32f2f"; // red
+  //     case "REFUND":
+  //       return "#ed6c02"; // orange
+  //     case "PENDING":
+  //       return "#0288d1"; // blue
+  //     case "REJECTED":
+  //       return "#9e9e9e"; // grey
+  //     default:
+  //       return "#616161"; // default grey
+  //   }
+  // }, []);
 
   // ✅ After create
   const handleSaveCreate = () => {
@@ -138,25 +139,11 @@ const handleOpen = (row, statusType) => {
           </Typography>
         ),
       },
-      {
-        name: "Status",
-        selector: (row) => (
-          <Box
-            sx={{
-              px: 1,
-              py: 0.5,
-              borderRadius: "6px",
-              bgcolor: getStatusColor(row?.status),
-              color: "white",
-              fontSize: "12px",
-              textTransform: "capitalize",
-              textAlign: "center",
-            }}
-          >
-            {row?.status}
-          </Box>
-        ),
-      },
+       {
+  name: "Status",
+  selector: (row) => <CommonStatus value={row.status} />,
+  center: true,
+},
     
 
    ...(user?.role === "adm"
