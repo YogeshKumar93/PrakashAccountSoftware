@@ -90,7 +90,6 @@ const CreateFundRequest = ({ open, handleClose, handleSave }) => {
   // ✅ Pick only required fields from schema
   let visibleFields = schema.filter((field) => requiredFields.includes(field.name));
 
-// ✅ Correct bank field configuration
 const bankField = {
   name: "bank_name",
   label: "Bank Name",
@@ -99,17 +98,16 @@ const bankField = {
     endpoint: ApiEndpoints.GET_BANKS,
     method: "post",
     mapOptions: (responseData) => {
-      // The API returns { status: true, message: "...", data: [...] }
-      // So we need to extract the banks array from responseData.data
-      const banks = responseData.data || [];
-      
-      return banks.map((bank) => ({
-        value: bank.id.toString(), // Convert to string for consistency
+        console.log("Mapping banks:", responseData);
+      // responseData is already the array of banks
+      return (responseData || []).map((bank) => ({
+        value: bank.id.toString(),
         label: bank.bank_name,
       }));
     },
   },
 };
+
   // Replace or insert bank_name field
   const hasBank = visibleFields.find((f) => f.name === "bank_name");
   if (hasBank) {

@@ -219,7 +219,7 @@ useEffect(() => {
       const res = await apiCall(apiOptions.method || "post", apiOptions.endpoint);
       console.log(`API response for ${name}:`, res);
       
-      const rawData = res?.data || []; // Changed from res?.data?.data
+      const rawData = res?.response.data || []; // Changed from res?.data?.data
       console.log(`Raw data for ${name}:`, rawData);
       
       const mapped = apiOptions.mapOptions ? apiOptions.mapOptions(rawData) : rawData;
