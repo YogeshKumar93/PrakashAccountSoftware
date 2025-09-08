@@ -76,10 +76,12 @@ const themeSettings = {
 
 const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
   // console.log("inroute",userRole);
+  const { colours } = useContext(AuthContext);
 
   const authCtx = useContext(AuthContext);
   const user = authCtx?.user;
   const refreshUser = authCtx.loadUserProfile;
+  const colour = authCtx.loadColours;
   const isMobile = useMediaQuery("(max-width: 900px)");
   const [mobileOpen, setMobileOpen] = useState(false);
   const [desktopOpen, setDesktopOpen] = useState(true);
@@ -165,7 +167,7 @@ const MainContent = styled(Box)(({ theme }) => ({
                   ? themeSettings.palette.primary.main
                   : "action.hover",
               },
-              mb: 0.5,
+              mb: 0,
             }}
             className={isItemActive ? "nav-link active" : "nav-link"}
           >
@@ -178,7 +180,14 @@ const MainContent = styled(Box)(({ theme }) => ({
 
             {(desktopOpen || isMobile) && (
               <>
-                <ListItemText primary={item.title} />
+<ListItemText
+  primary={item.title}
+  primaryTypographyProps={{
+    fontSize: "18px",     // increase font size
+    fontWeight: 500,      // semi-bold
+    color: isItemActive ? "#fff" : "black", // white if active, black otherwise
+  }}
+/>
                 {hasSubmenus &&
                   (isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />)}
               </>
@@ -211,7 +220,7 @@ const MainContent = styled(Box)(({ theme }) => ({
           alignItems: "center",
           justifyContent: desktopOpen ? "center" : "center",
           p: 1.5, // Reduced padding to decrease height
-          backgroundColor: "#ffffff",
+backgroundColor: colours?.header_color || "#1976d2" ,
           height: "64px",
           borderBottom: `1px solid rgba(0, 0, 0, 0.12)`,
           minHeight: "64px", // Matching the header height
@@ -295,6 +304,9 @@ const MainContent = styled(Box)(({ theme }) => ({
           {/* ✅ Refresh icon button with black color */}
           <IconButton onClick={refreshUser}>
             <RefreshIcon sx={{ color: "black" }} />
+          </IconButton>
+          <IconButton onClick={colour}>
+            <RefreshIcon sx={{ color: "#fff" }} />
           </IconButton>
           <IconButton color="inherit" onClick={handleUserMenuOpen}>
             <Avatar src={userAvatar} sx={{ width: 32, height: 32 }}>
