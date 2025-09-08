@@ -1,5 +1,13 @@
 import { useMemo, useContext, useState, useEffect } from "react";
-import { Box, Button, Tooltip, Chip, IconButton, Typography, Paper } from "@mui/material";
+import {
+  Box,
+  Button,
+  Tooltip,
+  Chip,
+  IconButton,
+  Typography,
+  Paper,
+} from "@mui/material";
 import { Edit } from "@mui/icons-material";
 import AuthContext from "../contexts/AuthContext";
 import { dateToTime, ddmmyy } from "../utils/DateUtils";
@@ -12,7 +20,7 @@ import CreateCommissionRule from "./CreateCommissionRule";
 import EditCommissionModal from "../components/EditCommissionModal";
 import { apiCall } from "../api/apiClient";
 
-const CommissionRule = ({  query }) => {
+const CommissionRule = ({ query }) => {
   const authCtx = useContext(AuthContext);
   const user = authCtx?.user;
 
@@ -20,14 +28,26 @@ const CommissionRule = ({  query }) => {
   const [openEdit, setOpenEdit] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
   const [refreshKey, setRefreshKey] = useState(0);
-    const [plans, setPlans] = useState([]);
-  const [plansLoaded, setPlansLoaded] = useState(false);
-
+  const [plans, setPlans] = useState([]);
+  console.log("====================================");
+  console.log("plans", plans);
+  console.log("====================================");
   // ✅ fetch plans (only when dropdown is clicked)
+
+  // ✅ Fetch plans only once (lazy load)
   const fetchPlans = async () => {
-    if (plansLoaded) return; // already loaded, don’t refetch
+    console.log("====================================");
+    console.log("jsdghsjgdjh");
+    console.log("====================================");
+    // if (plansLoaded) return;
     try {
-      const response = await apiCall.get(ApiEndpoints.GET_PLANS);
+      const { response } = await apiCall(
+        "POST",
+        ApiEndpoints.GET_PLANS,
+        null,
+        null
+      );
+      console.log("response", response);
       if (response?.data) {
         setPlans(
           response.data.map((plan) => ({
@@ -35,45 +55,47 @@ const CommissionRule = ({  query }) => {
             label: plan.name || `Plan ${plan.id}`,
           }))
         );
-        setPlansLoaded(true);
       }
     } catch (error) {
       console.error("Error fetching plans:", error);
     }
   };
 
-  // ✅ filters updated with lazy loader
+  useEffect(() => {
+    fetchPlans();
+  }, []);
+
+  // ✅ Filters with lazy loaded dropdown & plan_id selection
   const filters = useMemo(
     () => [
       {
         id: "plan_id",
         label: "Plan",
         type: "dropdown",
-        options: [{ value: "all", label: "All Plans" }, ...plans],
-        defaultValue: "all",
-        onOpen: fetchPlans, // 👈 called when filter dropdown is opened
+        options: plans,
+      
+        // lazy load plans
+        transformValue: (val) => (val === "all" ? null : val), // send null if "all" is chosen
       },
       { id: "service_name", label: "Service Name", type: "textfield" },
       { id: "rule_type", label: "Rule Type", type: "textfield" },
     ],
-    [plans, plansLoaded]
+    [plans]
   );
 
-
-  
   const handleSaveCreate = () => {
     setOpenCreate(false);
-    setRefreshKey(prev => prev + 1); // Refresh table after creation
+    setRefreshKey((prev) => prev + 1); // Refresh table after creation
   };
-  
+
   const handleEditClick = (row) => {
     setSelectedRow(row);
     setOpenEdit(true);
   };
-  
+
   const handleEditSuccess = () => {
     setOpenEdit(false);
-    setRefreshKey(prev => prev + 1); // Refresh table after edit
+    setRefreshKey((prev) => prev + 1); // Refresh table after edit
   };
 
   const columns = useMemo(
@@ -189,10 +211,7 @@ const CommissionRule = ({  query }) => {
       {
         name: "Actions",
         selector: (row) => (
-          <IconButton
-            color="primary"
-            onClick={() => handleEditClick(row)}
-          >
+          <IconButton color="primary" onClick={() => handleEditClick(row)}>
             <Edit />
           </IconButton>
         ),
@@ -204,7 +223,6 @@ const CommissionRule = ({  query }) => {
 
   return (
     <Box sx={{ p: 2 }}>
-
       {/* Services Table */}
       <CommonTable
         key={refreshKey}
@@ -220,19 +238,19 @@ const CommissionRule = ({  query }) => {
           />
         }
       />
-      
+
       {/* Create Commission Rule Modal */}
       <CreateCommissionRule
         open={openCreate}
         handleClose={() => setOpenCreate(false)}
         handleSave={handleSaveCreate}
       />
-      
+
       {/* Edit Commission Rule Modal */}
       <EditCommissionModal
         open={openEdit}
         onClose={() => setOpenEdit(false)}
-        commissionRule={selectedRow}  // Pass the selected row data
+        commissionRule={selectedRow} // Pass the selected row data
         onSuccess={handleEditSuccess}
       />
     </Box>

@@ -64,13 +64,6 @@ const ApiEndpoints = {
   GET_ROUTE: "admin/getRoutes",
   GET_CATEGORIES: "admin/getCategories",
 
-
-
-
-
-
-
-
   // ****************************** NEW API'S ******************************
   SIGN_IN: "auth/signIn",
   LOGIN_OTP_VALIDATE: "auth/secureLogin",
@@ -84,37 +77,34 @@ const ApiEndpoints = {
 
   GET_ACCOUNTS: "account/getAccounts",
   CREATE_ACCOUNT: "account/createAccount",
-  DELETE_ACCOUNT : "account/deleteAccount",
-  UPDATE_ACCOUNT : "account/updateAccount",
-GET_SERVICES:"service/getServices",
-CREATE_SERVICE:"service/createService",
-UPDATE_SERVICE:"service/updateService",
-GET_TEMPLATES:"template/getTemplates",
-CREATE_TEMPLATE:"template/createTemplate",
-UPDATE_TEMPLATE:"template/updateTemplate",
-DELETE_TEMPLATE:"template/deleteTemplate",
-GET_LOGS:"auditlog/getAuditLogs",
-DELETE_LOG:"auditlog/deleteAuditLog",
-GET_LOG:"auditlog/getAuditLog",
-GET_WALLETLEDGER:"walletledger/getWalletLedgers",
-// ****************************** NEW API'S ABOVE ******************************
-
+  DELETE_ACCOUNT: "account/deleteAccount",
+  UPDATE_ACCOUNT: "account/updateAccount",
+  GET_SERVICES: "service/getServices",
+  CREATE_SERVICE: "service/createService",
+  UPDATE_SERVICE: "service/updateService",
+  GET_TEMPLATES: "template/getTemplates",
+  CREATE_TEMPLATE: "template/createTemplate",
+  UPDATE_TEMPLATE: "template/updateTemplate",
+  DELETE_TEMPLATE: "template/deleteTemplate",
+  GET_LOGS: "auditlog/getAuditLogs",
+  DELETE_LOG: "auditlog/deleteAuditLog",
+  GET_LOG: "auditlog/getAuditLog",
+  GET_WALLETLEDGER: "walletledger/getWalletLedgers",
+  // ****************************** NEW API'S ABOVE ******************************
 
   GET_FUND_REQUESTS: "fundrequest/getFundRequests",
   CREATE_FUND_REQUEST: "fundrequest/createFundRequest",
   UPDATE_FUND_REQUEST: "fundrequest/updateFundRequest",
   DELETE_FUND_REQUEST: "fundrequest/deleteFundRequest",
   GET_BANKS: "bank/getBanks",
-   
 
   // ****************************** NEW API'S ABOVE ******************************
-GET_COMMISSION_RULE:"commission/getCommissions",
+  GET_COMMISSION_RULE: "commission/getCommissions",
   GET_NOTIFICATION: "notification/getNotification",
   MARK_READ_NOTI: "notification/updateNotification",
   ADMIN_NOTIFICATION: "notification/createNotification",
   UPDATE_NOTIFICATION: "notification/updateNotification",
-   DELETE_NOTIFICATION: "notification/deleteNotification",
-
+  DELETE_NOTIFICATION: "notification/deleteNotification",
 
   CREATE_BANK: "bank/createBank",
   UPDATE_BANK: "bank/updateBank",
@@ -127,37 +117,29 @@ GET_COMMISSION_RULE:"commission/getCommissions",
   GET_PAYOUT_TXN: "payout/getPayoutTxns",
   GET_RECHARGE_TXN: "recharge/getRechargeTxns",
   GET_IRCTC_TXN: "irctc/getIrctcTxns",
-  GET_FUNDREQUEST_SCHEMA:"fundrequest/getFundRequestsSchema",
-  GET_ACCOUNT_SCHEMA:"account/getAccountSchema",
-  GET_BANK_SCHEMA:"bank/getBankSchema",
-  GET_NOTIFICATION_SCHEMA:"notification/getNotificationSchema",
-  GET_COLOR_SCHEMA:"layout/colorSchema",
-  GET_COLOURS:"layout/getColours",
-  CREATE_COLOUR:"layout/createColour",
-  UPDATE_COLOUR:"layout/updateColour",
-  CREATE_COMMISSION_RULE:"commission/createCommissionRule",
-  GET_COMMISSION_SCHEMA:"commission/getCommissionSchema",
-  UPDATE_COMMISSION_RULE:"commission/updateCommissionRule",
-  GET_SENDER:"payout/getSender",
-  REGISTER_SENDER:"payout/registerSender",
-  REGISTER_SENDER_SCHEMA:"payout/registerSenderSchema",
-  VERIFY_SENDER_SCHEMA:"payout/verifySenderSchema",
-  VERIFY_SENDER:"payout/verifySender",
-  ADD_BENEFICIARY_SCHEMA:"payout/getBeneficiarySchema",
-  CREATE_BENEFICIARY:"payout/createBeneficiary",
-  DELETE_BENEFICIARY:"payout/deleteBeneficiary",
-  PAYOUT:"payments/v2/userPayOut",
-  PAYOUT_SCHEMA:"payments/v2/getPayoutSchema",
-  UPDATE_USER_PERMISSIONS:"user/updateUserPermissions",
+  GET_FUNDREQUEST_SCHEMA: "fundrequest/getFundRequestsSchema",
+  GET_ACCOUNT_SCHEMA: "account/getAccountSchema",
+  GET_BANK_SCHEMA: "bank/getBankSchema",
+  GET_NOTIFICATION_SCHEMA: "notification/getNotificationSchema",
+  GET_COLOR_SCHEMA: "layout/colorSchema",
+  GET_COLOURS: "layout/getColours",
+  CREATE_COLOUR: "layout/createColour",
+  UPDATE_COLOUR: "layout/updateColour",
+  CREATE_COMMISSION_RULE: "commission/createCommissionRule",
+  GET_COMMISSION_SCHEMA: "commission/getCommissionSchema",
+  UPDATE_COMMISSION_RULE: "commission/updateCommissionRule",
+  GET_SENDER: "payout/getSender",
+  REGISTER_SENDER: "payout/registerSender",
+  REGISTER_SENDER_SCHEMA: "payout/registerSenderSchema",
+  VERIFY_SENDER_SCHEMA: "payout/verifySenderSchema",
+  VERIFY_SENDER: "payout/verifySender",
+  ADD_BENEFICIARY_SCHEMA: "payout/getBeneficiarySchema",
+  CREATE_BENEFICIARY: "payout/createBeneficiary",
+  DELETE_BENEFICIARY: "payout/deleteBeneficiary",
+  PAYOUT: "payments/v2/userPayOut",
+  PAYOUT_SCHEMA: "payments/v2/getPayoutSchema",
+  UPDATE_USER_PERMISSIONS: "user/updateUserPermissions",
   // ****************************** NEW API'S ABOVE ******************************
-
-
-
-
-
-
-
-
 
   GET_ACC_ACCOUNTS: "",
   // GET_ACC_ACCOUNTS: "",
@@ -177,8 +159,8 @@ GET_COMMISSION_RULE:"commission/getCommissions",
   GET_PENDING_ACCOUNT_TRANSACTION: "admin/getPendingBankTxn",
   GET_STATUS: "admin/checkTxnStatus",
   CHANGE_STATUS: "admin/changeTxnStatus",
-  
-  GET_PLANS: "admin/getPlans",
+
+  GET_PLANS: "plan/getPlans",
   BLOCK_UNBLOCK_PLANS: "",
   ADD_PLAN: "admin/createPlan",
   DELETE_PLAN: "admin/deletePlan",
