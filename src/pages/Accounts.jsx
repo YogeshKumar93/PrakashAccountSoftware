@@ -95,7 +95,7 @@ const Accounts = () => {
 
       {/* ✅ Table */}
       <CommonTable
-        title="Accounts"
+       
         columns={columns}
         loading={loading}
         endpoint={ApiEndpoints.GET_ACCOUNTS}
