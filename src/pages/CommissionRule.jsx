@@ -73,9 +73,6 @@ const CommissionRule = ({ query }) => {
         label: "Plan",
         type: "dropdown",
         options: plans,
-      
-        // lazy load plans
-        transformValue: (val) => (val === "all" ? null : val), // send null if "all" is chosen
       },
       { id: "service_name", label: "Service Name", type: "textfield" },
       { id: "rule_type", label: "Rule Type", type: "textfield" },
