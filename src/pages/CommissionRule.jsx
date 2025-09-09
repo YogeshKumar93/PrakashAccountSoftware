@@ -27,7 +27,7 @@ const CommissionRule = ({ query }) => {
   const [openCreate, setOpenCreate] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
-  const [refreshKey, setRefreshKey] = useState(0);
+ 
   const [plans, setPlans] = useState([]);
   
   const fetchUsersRef = useRef(null);
@@ -88,7 +88,7 @@ const CommissionRule = ({ query }) => {
 
   const handleSaveCreate = () => {
     setOpenCreate(false);
-    setRefreshKey((prev) => prev + 1); // Refresh table after creation
+  
   };
 
   const handleEditClick = (row) => {
@@ -98,7 +98,7 @@ const CommissionRule = ({ query }) => {
 
   const handleEditSuccess = () => {
     setOpenEdit(false);
-    setRefreshKey((prev) => prev + 1); // Refresh table after edit
+    
   };
 
   const columns = useMemo(
