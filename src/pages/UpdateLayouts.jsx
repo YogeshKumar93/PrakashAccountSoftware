@@ -1,4 +1,4 @@
-import React, { useEffect, useState,  } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Typography, CircularProgress } from "@mui/material";
 import { apiCall } from "../api/apiClient";
 import ApiEndpoints from "../api/ApiEndpoints";
@@ -74,7 +74,6 @@ const UpdateLayouts = ({ open, handleClose, handleSave, row,onFetchRef }) => {
       if (response) {
         handleSave(response.data);
         onFetchRef();
-        
         handleClose();
       } else {
         console.error("Failed to update layout:", error || response);
