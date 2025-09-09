@@ -6,7 +6,7 @@ import { useSchemaForm } from "../../hooks/useSchemaForm";
 import { PATTERNS, isValid } from "../../utils/validators";
 import { useToast } from "../../utils/ToastContext";
 
-const UpdateBanks = ({ open, onClose, bankData, onSuccess }) => {
+const UpdateBanks = ({ open, onClose, bankData, onFetchRef }) => {
   const {
     schema,
     formData,
@@ -74,7 +74,7 @@ const UpdateBanks = ({ open, onClose, bankData, onSuccess }) => {
 
       if (response) {
         showToast(response?.message || "Bank updated successfully", "success");
-        if (onSuccess) onSuccess(); // 👈 let parent refresh table
+       onFetchRef(); // 👈 let parent refresh table
         onClose();
       } else {
         showToast(error?.message || "Failed to update bank", "error");

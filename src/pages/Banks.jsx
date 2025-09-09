@@ -14,13 +14,23 @@ import UpdateBanks from "../components/Bank/UpdateBanks";
 
 const Banks = ({ filters = [] }) => {
   const authCtx = useContext(AuthContext);
+   const user = authCtx?.user;
   const [openCreate, setOpenCreate] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
   const [loading, setLoading] = useState(true);
 
   // ✅ keep a ref to CommonTable for refreshing
-  const tableRef = useRef(null);
+   const fetchUsersRef = useRef(null);
+  
+    const handleFetchRef = (fetchFn) => {
+      fetchUsersRef.current = fetchFn;
+    };
+    const refreshUsers = () => {
+      if (fetchUsersRef.current) {
+        fetchUsersRef.current();
+      }
+    };
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -125,7 +135,7 @@ const Banks = ({ filters = [] }) => {
       {!loading && (
         <>
           <CommonTable
-            ref={tableRef}
+             onFetchRef={handleFetchRef} 
             columns={columns}
             endpoint={ApiEndpoints.GET_BANKS}
             filters={filters}
@@ -140,6 +150,7 @@ const Banks = ({ filters = [] }) => {
             <CreateBankModal
               open={openCreate}
               onClose={() => setOpenCreate(false)}
+                onFetchRef={refreshUsers}
             />
           )}
 
@@ -152,11 +163,7 @@ const Banks = ({ filters = [] }) => {
                 setSelectedRow(null);
               }}
               bankData={selectedRow} // ✅ correct prop
-              onSuccess={() => {
-                if (tableRef.current) {
-                  tableRef.current.reload(); // ✅ refresh table after update
-                }
-              }}
+             onFetchRef={refreshUsers}
             />
           )}
         </>
