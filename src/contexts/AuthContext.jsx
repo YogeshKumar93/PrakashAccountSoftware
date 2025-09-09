@@ -77,7 +77,7 @@ const loadUserProfile = async () => {
 };
   const getSideNavs = async () => {
     try {
-      const { error, response } = await apiCall("GET", ApiEndpoints.GET_SIDENAV);
+      const { error, response } = await apiCall("post", ApiEndpoints.GET_SIDENAV);
 
       if (error) {
         console.error("Failed to fetch side navs:", error);
