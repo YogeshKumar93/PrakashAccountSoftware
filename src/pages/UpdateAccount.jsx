@@ -90,13 +90,12 @@ const UpdateAccount = ({ open, onClose, handleClose, onFetchRef,selectedAccount 
       if (response) {
         showToast(response?.message || "Account updated successfully", "success");
         onFetchRef?.();
-        onClose();
+        handleClose();
       } else {
         showToast(error?.message || "Failed to update account", "error");
       }
-    } catch (err) {
-      showToast("Something went wrong while updating account", "error");
-    } finally {
+    }  
+     finally {
       setSubmitting(false);
     }
   };

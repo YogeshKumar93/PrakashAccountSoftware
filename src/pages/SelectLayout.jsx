@@ -1,21 +1,21 @@
 import React, { useState } from "react";
 import { Box, Tabs, Tab } from "@mui/material";
-import Templates from "./Templates";
-import CommissionRule from "./CommissionRule";
 import Layouts from "./Layouts";
-import Logs from "./Logs";
-import WebHooks from "./WebHooks";
+import SideLayout from "./SideLayout";
 
 
+ 
+
+// Reusable TabPanel
 const TabPanel = ({ children, value, index }) => {
   return (
     <div role="tabpanel" hidden={value !== index}>
-      {value === index && <Box sx={{  }}>{children}</Box>}
+      {value === index && <Box sx={{ p: 2 }}>{children}</Box>}
     </div>
   );
 };
 
-export const Settings = () => {
+const SelectLayout = () => {
   const [tab, setTab] = useState(0);
 
   const handleChange = (event, newValue) => {
@@ -33,30 +33,19 @@ export const Settings = () => {
         indicatorColor="primary"
         sx={{ borderBottom: 1, borderColor: "divider" }}
       >
-        <Tab label="Template" />
-        <Tab label="Comm Rules" />
-        {/* <Tab label="Layout" /> */}
-        <Tab label="WebHooks" />
-        <Tab label="Logs" />
-       
+        <Tab label="Color Layouts" />
+        <Tab label="Side Layout" />
       </Tabs>
 
+      {/* Tab Content */}
       <TabPanel value={tab} index={0}>
-        <Templates />
+        <Layouts />
       </TabPanel>
       <TabPanel value={tab} index={1}>
-        <CommissionRule />
+    <SideLayout />
       </TabPanel>
-      {/* <TabPanel value={tab} index={2}>
-        <Layouts />
-      </TabPanel> */}
-      <TabPanel value={tab} index={3}>
-        <WebHooks />
-      </TabPanel>
-      <TabPanel value={tab} index={4}>
-        <Logs />
-      </TabPanel>
-    
     </Box>
   );
 };
+
+export default SelectLayout;

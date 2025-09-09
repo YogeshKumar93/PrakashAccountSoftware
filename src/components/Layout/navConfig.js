@@ -20,6 +20,7 @@ export const Admin_nav = [
   { title: "Settings", icon: "👥", icon2: "👥", to: "/admin/settings" },
   { title: "Services", icon: "👥", icon2: "👥", to: "/admin/services" },
   { title: "Bankings", icon: "👥", icon2: "👥", to: "/admin/bankings" },
+    { title: "Layouts", icon: "👥", icon2: "👥", to: "/admin/selectlayout" },
 ];
 
 export const customer_nav = [
