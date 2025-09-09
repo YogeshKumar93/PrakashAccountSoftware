@@ -38,24 +38,24 @@ export const customer_nav = [
     to: "/customer/money-transfer",
   },
   {
-    title: "Super transfer",
+    title: "Fund Transfer",
     icon: "🛠️",
     icon2: "🛠️",
-    to: "/customer/super-transfer",
+    to: "/customer/fund-transfer",
   },
-  // {
-  //   title: "Recharge and bill",
-  //   icon: "🛠️",
-  //   icon2: "🛠️",
-  //   to: "/customer/recharge-bill",
-  // },
-
   {
-    title: "Notification",
-    icon: "💳",
-    icon2: "💳",
-    to: "/customer/notification",
+    title: "Recharge and bill",
+    icon: "🛠️",
+    icon2: "🛠️",
+    to: "/customer/recharge-bill",
   },
+
+  // {
+  //   title: "Notification",
+  //   icon: "💳",
+  //   icon2: "💳",
+  //   to: "/customer/notification",
+  // },
   {
     title: "Account Ledger",
     icon: "📒",

@@ -34,8 +34,11 @@ export const AuthProvider = ({ children }) => {
     JSON.parse(localStorage.getItem("location"))
   );
   const [theame, setTheame] = useState();
-  const [colours, setColours] = useState({}); // store all colors by element_type
-  const [iconColor, setIconColor] = useState();
+const [colours, setColours] = useState(() => {
+  const stored = localStorage.getItem("colours");
+  return stored ? JSON.parse(stored) : {};
+}); 
+ const [iconColor, setIconColor] = useState();
   const [currentView, setCurrentView] = useState(null);
   const [ip, setIp] = useState("");
   const [dmt2Doc, setDmt2Doc] = useState("");

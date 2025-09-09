@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,  } from "react";
 import { Typography, CircularProgress } from "@mui/material";
 import { apiCall } from "../api/apiClient";
 import ApiEndpoints from "../api/ApiEndpoints";
 import CommonModal from "../components/common/CommonModal";
+import AuthContext from "../contexts/AuthContext"; // ✅ import context
 
 const UpdateLayouts = ({ open, handleClose, handleSave, row,onFetchRef }) => {
   const [formData, setFormData] = useState({
@@ -73,6 +74,7 @@ const UpdateLayouts = ({ open, handleClose, handleSave, row,onFetchRef }) => {
       if (response) {
         handleSave(response.data);
         onFetchRef();
+        
         handleClose();
       } else {
         console.error("Failed to update layout:", error || response);
