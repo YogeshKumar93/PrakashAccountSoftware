@@ -159,7 +159,7 @@ const CommonTable = ({
   // Memoized initial filter values
   const initialFilterValues = useMemo(() => {
     const values = {};
-    availableFilters.forEach((filter) => {
+    availableFilters?.forEach((filter) => {
       values[filter.id] = filter.type === "dropdown" ? "All" : "";
     });
     return values;

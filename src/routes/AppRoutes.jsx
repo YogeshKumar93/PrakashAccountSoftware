@@ -26,6 +26,8 @@ import CommissionRule from "../pages/CommissionRule";
 import { Banking } from "../pages/Banking";
 import { Settings } from "../pages/Settings";
 import SuperTransfer from "../pages/SuperTransfer";
+import SelectLayout from "../pages/SelectLayout";
+import SideLayout from "../pages/SideLayout";
 import { Recharge } from "../pages/Recharge";
 import Navs from "../pages/Navs";
 
@@ -82,6 +84,8 @@ export default function AppRoutes() {
               <Route path="admin/layout" element={<Layouts />} />
               <Route path="admin/commissionrule" element={<CommissionRule />} />
               <Route path="admin/sidenav" element={<Navs />} />
+                <Route path="admin/selectlayout" element={<SelectLayout />} />
+                 <Route path="admin/sidelayout" element={<SideLayout/>} />
               <Route
                 path="admin/*"
                 element={<Navigate to="/admin/dashboard" replace />}

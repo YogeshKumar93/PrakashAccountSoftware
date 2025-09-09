@@ -35,7 +35,7 @@ export const Settings = () => {
       >
         <Tab label="Template" />
         <Tab label="Comm Rules" />
-        <Tab label="Layout" />
+        {/* <Tab label="Layout" /> */}
         <Tab label="WebHooks" />
         <Tab label="Logs" />
        
@@ -47,9 +47,9 @@ export const Settings = () => {
       <TabPanel value={tab} index={1}>
         <CommissionRule />
       </TabPanel>
-      <TabPanel value={tab} index={2}>
+      {/* <TabPanel value={tab} index={2}>
         <Layouts />
-      </TabPanel>
+      </TabPanel> */}
       <TabPanel value={tab} index={3}>
         <WebHooks />
       </TabPanel>
