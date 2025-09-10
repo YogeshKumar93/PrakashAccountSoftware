@@ -9,6 +9,7 @@ import SenderRegisterModal from "./SenderRegisterModal";
 import VerifySenderModal from "./VerifySenderModal";
 import BeneficiaryDetails from "./BeneficiaryDetails";
 import UpiBeneficiaryList from "./UpiBeneficiaryList";
+import UpiBeneficiaryDetails from "./UpiBeneficiaryDetails";
 
 const UpiTransfer = () => {
   const theme = useTheme();
@@ -95,7 +96,7 @@ const handleChange = (e) => {
             <SenderDetails sender={sender} />
 
           {selectedBeneficiary && (
-            <BeneficiaryDetails
+            <UpiBeneficiaryDetails
               beneficiary={selectedBeneficiary}
               senderMobile={mobile}
             />
