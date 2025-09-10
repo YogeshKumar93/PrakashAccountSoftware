@@ -41,7 +41,6 @@ const ApiEndpoints = {
   PAYOUT_BENE_KYC_DOCS: "admin/beneKycDoc",
   GET_USER_BY_USERNAME: "auth/getUserByUsername",
   GET_USER_BY_ID: "admin/getUserById",
-  UPDATE_USER: "admin/updateUser",
   // RESEND_OTP: "wallet/resendOtp",
   USER_PROFIT: "admin/userProfitability",
   DELETE_USER: "admin/deleteUser",
@@ -98,7 +97,6 @@ const ApiEndpoints = {
   UPDATE_FUND_REQUEST: "fundrequest/updateFundRequest",
   DELETE_FUND_REQUEST: "fundrequest/deleteFundRequest",
   GET_BANKS: "bank/getBanks",
-
   // ****************************** NEW API'S ABOVE ******************************
   GET_COMMISSION_RULE: "commission/getCommissions",
   GET_NOTIFICATION: "notification/getNotification",
@@ -134,6 +132,7 @@ const ApiEndpoints = {
   REGISTER_SENDER_SCHEMA: "payout/registerSenderSchema",
   VERIFY_SENDER_SCHEMA: "payout/verifySenderSchema",
   VERIFY_SENDER: "payout/verifySender",
+  PAYOUT_OTP: "payout/otpExp",
   ADD_BENEFICIARY_SCHEMA: "payout/getBeneficiarySchema",
   CREATE_BENEFICIARY: "payout/createBeneficiary",
   DELETE_BENEFICIARY: "payout/deleteBeneficiary",
@@ -142,6 +141,10 @@ const ApiEndpoints = {
   UPDATE_USER_PERMISSIONS: "user/updateUserPermissions",
   GET_PLANS_BY_OPERATOR: "recharge/getPlansByOperator",
   RECHARGE: "recharge/recharge",
+  GET_SIDENAV: "layout/getSideNav",
+  GET_ACCOUNT_STATEMENT: "accountStatement/getStatements",
+  GET_PLANS: "plan/getPlans",
+  UPDATE_USER: "user/updateUserPermissions",
   // ****************************** NEW API'S ABOVE ******************************
 
   GET_ACC_ACCOUNTS: "",
@@ -155,7 +158,7 @@ const ApiEndpoints = {
   GET_MASSEGE: "admin/getMessages",
   GET_OUT_MASSEGE: "admin/getOutMessages",
   GET_WEBHOOK: "admin/getWebHooks",
-  GET_ACCOUNT_STATEMENT: "admin/getAccStatement",
+  // GET_ACCOUNT_STATEMENT: "admin/getAccStatement",
   GET_BANK_STATEMENT: "admin/getBankStatement",
   ADD_BANK_TXN: "admin/addBankTxn",
   DELETE_BANK_TXN: "admin/deleteBankTxn",
@@ -163,7 +166,7 @@ const ApiEndpoints = {
   GET_STATUS: "admin/checkTxnStatus",
   CHANGE_STATUS: "admin/changeTxnStatus",
 
-  GET_PLANS: "plan/getPlans",
+  
   BLOCK_UNBLOCK_PLANS: "",
   ADD_PLAN: "admin/createPlan",
   DELETE_PLAN: "admin/deletePlan",

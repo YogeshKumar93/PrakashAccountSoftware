@@ -225,7 +225,7 @@ const CommissionRule = ({ query }) => {
   );
 
   return (
-    <Box sx={{ p: 2 }}>
+    <Box sx={{ p:1 }}>
       {/* Services Table */}
       <CommonTable
        onFetchRef={handleFetchRef} 
@@ -236,7 +236,7 @@ const CommissionRule = ({ query }) => {
         customHeader={
           <ReButton
             variant="contained"
-            label="Create Commission Rule"
+            label=" Commission "
             onClick={() => setOpenCreate(true)}
           />
         }
