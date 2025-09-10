@@ -27,9 +27,22 @@ import { Banking } from "../pages/Banking";
 import { Settings } from "../pages/Settings";
 import SuperTransfer from "../pages/SuperTransfer";
 import SelectLayout from "../pages/SelectLayout";
-import SideLayout from "../pages/SideLayout";
 import { Recharge } from "../pages/Recharge";
+import LandingPage from "../components/LandingPages/LandingPage";
+import NavBar from "../components/LandingPages/Navbar";
+import LandingPageIntro from "../components/LandingPages/LandingPageIntro";
+import LandingPageIntro1 from "../components/LandingPages/LandingPageIntro1";
+import LandingPageIntro2 from "../components/LandingPages/LandingPageIntro2";
+import LandingPageIntro3 from "../components/LandingPages/LandingPageIntro3";
+import Footer from "../components/LandingPages/Footer";
+import LandingServices from "../components/LandingPages/LandingServices";
+import LandingAboutUs from "../components/LandingPages/LandingAboutUs";
+import LandingContactUs from "../components/LandingPages/LandingContactUs";
 import Navs from "../pages/Navs";
+
+import Statements from "../pages/Statements";
+import AccountStatement from "../pages/AccountStatement";
+import UpiTransfer from "../pages/UpiTransfer";
 
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated, loading } = useContext(AuthContext);
@@ -50,6 +63,19 @@ export default function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
+                  <Route path="/" element={<LandingPage />} >
+
+          <Route path="navbar" element={<NavBar /> } />
+           <Route path="footer" element={<Footer /> } />
+             <Route path="landingservices" element={<LandingServices /> } />
+            <Route path="landingaboutus" element={<LandingAboutUs /> } />
+            <Route path="landingcontactus" element={<LandingContactUs /> } />
+            <Route path="landingpageintro" element={<LandingPageIntro /> } />
+             <Route path="landingpageintro1" element={<LandingPageIntro1 /> } />
+              <Route path="landingpageintro2" element={<LandingPageIntro2 /> } />
+               <Route path="landingpageintro3" element={<LandingPageIntro3 /> } />
+</Route>
+           
         <Route path="/login" element={<Login />} />
 
         {/* Protected layout */}
@@ -85,7 +111,8 @@ export default function AppRoutes() {
               <Route path="admin/commissionrule" element={<CommissionRule />} />
               <Route path="admin/sidenav" element={<Navs />} />
                 <Route path="admin/selectlayout" element={<SelectLayout />} />
-                 <Route path="admin/sidelayout" element={<SideLayout/>} />
+               
+                <Route path="admin/statements" element={<Statements />} />
               <Route
                 path="admin/*"
                 element={<Navigate to="/admin/dashboard" replace />}
@@ -113,6 +140,10 @@ export default function AppRoutes() {
               <Route
                 path="customer/fund-transfer"
                 element={<SuperTransfer />}
+              />
+              <Route
+                path="customer/upi-transfer"
+                element={<UpiTransfer />}
               />
               <Route
                 path="customer/transactions"
