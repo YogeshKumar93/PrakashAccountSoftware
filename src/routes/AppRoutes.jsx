@@ -30,6 +30,7 @@ import SelectLayout from "../pages/SelectLayout";
 import { Recharge } from "../pages/Recharge";
 import Navs from "../pages/Navs";
 import AccountStatement from "../pages/AccountStatement";
+import UpiTransfer from "../pages/UpiTransfer";
 
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated, loading } = useContext(AuthContext);
@@ -116,7 +117,7 @@ export default function AppRoutes() {
               />
               <Route
                 path="customer/upi-transfer"
-                element={<SuperTransfer />}
+                element={<UpiTransfer />}
               />
               <Route
                 path="customer/transactions"

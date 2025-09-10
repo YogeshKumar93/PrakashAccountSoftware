@@ -144,7 +144,11 @@ const ApiEndpoints = {
   GET_SIDENAV: "layout/getSideNav",
   GET_ACCOUNT_STATEMENT: "accountStatement/getStatements",
   GET_PLANS: "plan/getPlans",
+  CREATE_PLAN: "plan/createPlan",
+  UPDATE_PLAN: "plan/updatePlan",
   UPDATE_USER: "user/updateUserPermissions",
+  GET_PLAN_SCHEMA: "plan/getPlanSchema",
+  GET_UPI_SCHEMA: "payout/getBeneficiarySchemaUpi",
   // ****************************** NEW API'S ABOVE ******************************
 
   GET_ACC_ACCOUNTS: "",
@@ -401,7 +405,6 @@ const ApiEndpoints = {
   UPDATE_CARD_SCHEME: "schemes/updateCardScheme",
   CREATE_UPI_SCHEME: "schemes/createUpiScheme",
   UPDATE_UPI_SCHEME: "schemes/updateUpiScheme",
-  GET_UPI_SCHEMA: "schemes/upiSchemes",
   ADMIN_RESEND_TRANSACTION: "admin/resendTransaction",
   GET_AEPS_SCHEMA: "schemes/aepsSchemes",
   GET_CARD_SCHEMA: "schemes/cardSchemes",

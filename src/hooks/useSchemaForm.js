@@ -72,12 +72,41 @@ setFormData((prev) => ({ ...initData, ...prev }));
     }
   }, [open, endpoint]);
 
-  const handleChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
+ const handleChange = (e) => {
+  const { name, value } = e.target;
+  const field = schema.find((f) => f.name === name);
+
+  let errorMsg = "";
+
+  // ✅ Apply regex validation if present
+  if (field?.validation?.regex) {
+    try {
+      // safely convert string regex like "/^[0-9]{6,18}$/"
+      const regexString = field.validation.regex;
+      const pattern = new RegExp(
+        regexString.replace(/^\/|\/$/g, "") // remove slashes
+      );
+      if (!pattern.test(value)) {
+        errorMsg =
+          field.validation.message ||
+          `${field.label || name} is invalid`;
+      }
+    } catch (err) {
+      console.error("Invalid regex from schema:", field.validation.regex, err);
+    }
+  }
+
+  setFormData((prev) => ({
+    ...prev,
+    [name]: value,
+  }));
+
+  setErrors((prev) => ({
+    ...prev,
+    [name]: errorMsg,
+  }));
+};
+
 
   return {
     schema,

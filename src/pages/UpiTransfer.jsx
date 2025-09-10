@@ -8,8 +8,9 @@ import SenderDetails from "./SenderDetails";
 import SenderRegisterModal from "./SenderRegisterModal";
 import VerifySenderModal from "./VerifySenderModal";
 import BeneficiaryDetails from "./BeneficiaryDetails";
+import UpiBeneficiaryList from "./UpiBeneficiaryList";
 
-const SuperTransfer = () => {
+const UpiTransfer = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -103,7 +104,7 @@ const handleChange = (e) => {
 
         {/* Right: Beneficiary List */}
         <Box flex={isMobile ? "1 1 100%" : "0 0 70%"}>
-            <BeneficiaryList
+            <UpiBeneficiaryList
               sender={sender}
               onSuccess={() => handleFetchSender()}
               onSelect={(b) => setSelectedBeneficiary(b)}
@@ -136,4 +137,4 @@ const handleChange = (e) => {
   );
 };
 
-export default SuperTransfer;
+export default UpiTransfer;

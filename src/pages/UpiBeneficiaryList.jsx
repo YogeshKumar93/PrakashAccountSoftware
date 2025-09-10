@@ -53,7 +53,7 @@ import {
 } from "../utils/iconsImports";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
-const BeneficiaryList = ({ sender, onSuccess, onSelect }) => {
+const UpiBeneficiaryList = ({ sender, onSuccess, onSelect }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -63,7 +63,7 @@ const BeneficiaryList = ({ sender, onSuccess, onSelect }) => {
 
   // load schema
   const { schema, formData, handleChange, errors, setErrors, loading } =
-    useSchemaForm(ApiEndpoints.ADD_BENEFICIARY_SCHEMA, openModal, {
+    useSchemaForm(ApiEndpoints.GET_UPI_SCHEMA, openModal, {
       sender_id: sender?.id,
     });
 
@@ -418,4 +418,4 @@ const BeneficiaryList = ({ sender, onSuccess, onSelect }) => {
   );
 };
 
-export default BeneficiaryList;
+export default UpiBeneficiaryList;
