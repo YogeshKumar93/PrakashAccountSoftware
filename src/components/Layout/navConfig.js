@@ -23,7 +23,7 @@ export const Admin_nav = [
   { title: "Services", icon: "👥", icon2: "👥", to: "/admin/services" },
   { title: "Bankings", icon: "👥", icon2: "👥", to: "/admin/bankings" },
     { title: "Layouts", icon: "👥", icon2: "👥", to: "/admin/selectlayout" },
-     { title: "statements", icon: "👥", icon2: "👥", to: "/admin/statements" },
+     { title: "Statements", icon: "👥", icon2: "👥", to: "/admin/statements" },
 ];
 
 export const customer_nav = [

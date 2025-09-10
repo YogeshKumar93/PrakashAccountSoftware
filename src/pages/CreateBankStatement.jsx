@@ -5,9 +5,9 @@ import CommonModal from "../components/common/CommonModal";
 import { useSchemaForm } from "../hooks/useSchemaForm";
 import { useToast } from "../utils/ToastContext";
 
-const CreateAccountStatement = ({ open, handleClose,onFetchRef }) => {
+const CreateBankStatement = ({ open, handleClose,onFetchRef }) => {
   const { schema, formData, handleChange, errors, setErrors, loading } =
-    useSchemaForm(ApiEndpoints.GET_ACCOUNT_STATEMENT_SCHEMA, open);
+    useSchemaForm(ApiEndpoints.GET_BANK_STATEMENT_SCHEMA, open);
 
   const [submitting, setSubmitting] = useState(false);
   const { showToast } = useToast();
@@ -18,7 +18,7 @@ const CreateAccountStatement = ({ open, handleClose,onFetchRef }) => {
     setSubmitting(true);
       const { error, response } = await apiCall(
         "POST",
-        ApiEndpoints.CREATE_ACCOUNT_STATEMENT,
+        ApiEndpoints.CREATE_BANK_STATEMENT,
         formData
       );
 
@@ -41,6 +41,7 @@ const CreateAccountStatement = ({ open, handleClose,onFetchRef }) => {
     
     "account_id",
     "remarks",
+    "claimed_by",
     "bank_id",
     "credit",
     "debit",
@@ -59,7 +60,7 @@ const CreateAccountStatement = ({ open, handleClose,onFetchRef }) => {
     <CommonModal
       open={open}
       onClose={handleClose}
-      title="Create Account Statement"
+      title="Create Bank Statement"
       iconType="info"
       size="medium"
       layout="two-column"
@@ -88,4 +89,4 @@ const CreateAccountStatement = ({ open, handleClose,onFetchRef }) => {
   );
 };
 
-export default CreateAccountStatement;
+export default CreateBankStatement;

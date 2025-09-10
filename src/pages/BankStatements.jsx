@@ -8,12 +8,13 @@ import ApiEndpoints from "../api/ApiEndpoints";
 
 import ReButton from "../components/common/ReButton";
 import CommonStatus from "../components/common/CommonStatus";
+import CreateBankStatement from "./CreateBankStatement";
 
 const BankStatements = ({ filters = [], query }) => {
   const authCtx = useContext(AuthContext);
   const user = authCtx?.user;
 
-  // const [openCreate, setOpenCreate] = useState(false);
+  const [openCreate, setOpenCreate] = useState(false);
   // const [openEdit, setOpenEdit] = useState(false);
   // const [selectedService, setSelectedService] = useState(null);
  
@@ -114,6 +115,11 @@ const BankStatements = ({ filters = [], query }) => {
     </ReButton>
                )
   }
+/>
+<CreateBankStatement 
+open={openCreate}
+      handleClose={()=> setOpenCreate(false)}
+      onFetchRef={refreshUsers}
 />
       
 

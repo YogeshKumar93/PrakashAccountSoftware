@@ -63,20 +63,20 @@ export default function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<Login />} />
-          <Route path="/" element={<LandingPage />} />
+                  <Route path="/" element={<LandingPage />} >
+
           <Route path="navbar" element={<NavBar /> } />
            <Route path="footer" element={<Footer /> } />
              <Route path="landingservices" element={<LandingServices /> } />
             <Route path="landingaboutus" element={<LandingAboutUs /> } />
             <Route path="landingcontactus" element={<LandingContactUs /> } />
-
             <Route path="landingpageintro" element={<LandingPageIntro /> } />
              <Route path="landingpageintro1" element={<LandingPageIntro1 /> } />
               <Route path="landingpageintro2" element={<LandingPageIntro2 /> } />
                <Route path="landingpageintro3" element={<LandingPageIntro3 /> } />
-
+</Route>
            
+        <Route path="/login" element={<Login />} />
 
         {/* Protected layout */}
         <Route
