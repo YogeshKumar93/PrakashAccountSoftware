@@ -39,7 +39,8 @@ import LandingServices from "../components/LandingPages/LandingServices";
 import LandingAboutUs from "../components/LandingPages/LandingAboutUs";
 import LandingContactUs from "../components/LandingPages/LandingContactUs";
 import Navs from "../pages/Navs";
-import AccountStatement from "../pages/AccountStatement";
+
+import Statements from "../pages/Statements";
 
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated, loading } = useContext(AuthContext);
@@ -73,10 +74,7 @@ export default function AppRoutes() {
               <Route path="landingpageintro2" element={<LandingPageIntro2 /> } />
                <Route path="landingpageintro3" element={<LandingPageIntro3 /> } />
 
-            {/* <Route path="our-services" element={<LandingServicesPage />} />
-            <Route path="about-us" element={<LandingAboutUsPage />} />
-            <Route path="our-partners" element={<LandingPartnersPage />} />
-            <Route path="contact-us" element={<LandingContactUsPage />} /> */}
+           
 
         {/* Protected layout */}
         <Route
@@ -111,7 +109,8 @@ export default function AppRoutes() {
               <Route path="admin/commissionrule" element={<CommissionRule />} />
               <Route path="admin/sidenav" element={<Navs />} />
                 <Route path="admin/selectlayout" element={<SelectLayout />} />
-                <Route path="admin/statement" element={<AccountStatement />} />
+               
+                <Route path="admin/statements" element={<Statements />} />
               <Route
                 path="admin/*"
                 element={<Navigate to="/admin/dashboard" replace />}

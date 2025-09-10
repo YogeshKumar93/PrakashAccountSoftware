@@ -1,24 +1,22 @@
 import { useMemo, useContext, useState, useRef } from "react";
 import { Box, Button, Tooltip, Chip, IconButton } from "@mui/material";
 import { Edit } from "@mui/icons-material";
+import AuthContext from "../contexts/AuthContext";
 import { dateToTime, ddmmyy } from "../utils/DateUtils";
 import CommonTable from "../components/common/CommonTable";
 import ApiEndpoints from "../api/ApiEndpoints";
 
 import ReButton from "../components/common/ReButton";
 import CommonStatus from "../components/common/CommonStatus";
-import AuthContext from "../contexts/AuthContext";
-import CreateAccountStatement from "./CreateAccountStatement";
-import UpdateAccountStatement from "./UpdateAccountStatement";
 
-const AccountStatement = ({ filters = [], query }) => {
+const BankStatements = ({ filters = [], query }) => {
+  const authCtx = useContext(AuthContext);
+  const user = authCtx?.user;
 
-
-  const [openCreate, setOpenCreate] = useState(false);
-  const [openUpdate, setOpenUpdate] = useState(false);
-  const [selectedAccount, setSelectedAccount] = useState(null);
- const authCtx = useContext(AuthContext);
- const user = authCtx?.user;
+  // const [openCreate, setOpenCreate] = useState(false);
+  // const [openEdit, setOpenEdit] = useState(false);
+  // const [selectedService, setSelectedService] = useState(null);
+ 
 
    const fetchUsersRef = useRef(null);
   
@@ -30,15 +28,6 @@ const AccountStatement = ({ filters = [], query }) => {
         fetchUsersRef.current();
       }
     };
-
-    const handleSaveCreate = () =>{
-      setOpenCreate(false);
-      refreshUsers();
-    }
-
-    const handleSaveUpdate = () => {
-      setOpenUpdate(false);
-    }
 
   const columns = useMemo(
     () => [
@@ -110,9 +99,8 @@ const AccountStatement = ({ filters = [], query }) => {
       <CommonTable
         onFetchRef={handleFetchRef} 
         columns={columns}
-        endpoint={ApiEndpoints.GET_ACCOUNT_STATEMENTS}
+        endpoint={ApiEndpoints.GET_BANK_STATEMENTS}
         filters={filters}
-        Button= {Button}
         queryParam={query}
          customHeader={
                (user?.role !== "sadm" || user?.role !== "adm") && (
@@ -127,28 +115,10 @@ const AccountStatement = ({ filters = [], query }) => {
                )
   }
 />
-
-<CreateAccountStatement 
-open={openCreate}
-      handleClose={()=> setOpenCreate(false)}
-      handleSave={handleSaveCreate}
-      onFetchRef={refreshUsers}
-/>
-
-<UpdateAccountStatement 
- open={openUpdate}
-      row={selectedAccount}
-      handleClose={()=>{
-        setOpenUpdate(false);
-             
-      }}
-      handleSave={handleSaveUpdate}
-      onFetchRef={refreshUsers}
-/>
       
 
     </Box>
   );
 };
 
-export default AccountStatement;
+export default BankStatements;
