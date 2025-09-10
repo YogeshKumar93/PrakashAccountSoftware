@@ -1,4 +1,4 @@
-// Login.js (final version with all corrections)
+// Login.js (Updated Layout - Image Left, Login Right, Full Functionality, Scrollbar Hidden)
 import React, { useContext, useEffect, useState } from "react";
 import {
   Paper,
@@ -10,13 +10,11 @@ import {
   Grid,
   Modal,
   Button,
+  FormControlLabel,
+  Checkbox,
+  Link,
 } from "@mui/material";
-import {
-  Visibility,
-  VisibilityOff,
-  PhoneAndroid,
-  Lock,
-} from "@mui/icons-material";
+import { Visibility, VisibilityOff, PhoneAndroid, Lock } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -25,19 +23,19 @@ import AuthContext from "../contexts/AuthContext";
 import ApiEndpoints from "../api/ApiEndpoints";
 import { apiCall } from "../api/apiClient";
 import { ReTextField } from "../components/common/ReTextField";
-import backImg from "../assets/Images/BackgroundLogin4.png"
-import backImg2 from "../assets/Images/BackgroundLogin2.jpg"
+import backImg from "../assets/Images/BackgroundLogin2.png";
 import VerifyMpinLogin from "../components/UI/VerifyMpinLogin";
 import { getGeoLocation } from "../utils/GeoLocationUtil";
 import { okErrorToast } from "../utils/ToastUtil";
 import ForgotPassword from "../components/common/ForgotPassword";
-import ReButton from "../components/common/ReButton";
+import biggpayLogo from "../assets/logo(1).png";
+import lockicon from "../assets/lock.png";
+import mobilelogin from "../assets/mobile.png";
 
 const validationSchema = Yup.object({
   mobile: Yup.string()
     .matches(/^[a-zA-Z0-9]+$/, "Only letters and numbers are allowed")
     .required("Mobile is required"),
-
   password: Yup.string().required("Password is required"),
 });
 
@@ -50,8 +48,10 @@ const Login = () => {
   const [secureValidate, setSecureValidate] = useState("");
   const [loginError, setLoginError] = useState("");
   const [otpRef, setOtpRef] = useState("");
-  const navigate = useNavigate();
   const [forgotModal, setForgotModalOpen] = useState(false);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
+
+  const navigate = useNavigate();
   const authCtx = useContext(AuthContext);
   const user = authCtx.user;
 
@@ -62,22 +62,20 @@ const Login = () => {
   } = useForm({
     resolver: yupResolver(validationSchema),
   });
+
   useEffect(() => {
-    locationVal();
-    return () => {};
+    getGeoLocation(
+      (lat, long) => authCtx.setLocation(lat, long),
+      (err) => okErrorToast("Location", err)
+    );
   }, []);
 
-  const locationVal = getGeoLocation(
-    (lat, long) => {
-      authCtx.setLocation(lat, long);
-      return [lat, long];
-    },
-    (err) => {
-      okErrorToast("Location", err);
-    }
-  );
-
   const onSubmit = async (data) => {
+    if (!agreedToTerms) {
+      setLoginError("You must agree to the Terms and Conditions");
+      return;
+    }
+
     setLoading(true);
     setLoginError("");
     setUsername(data.mobile);
@@ -91,18 +89,8 @@ const Login = () => {
 
       if (error) {
         setLoginError(error.message || "Login failed");
-        setLoading(false);
         return;
       }
-
-      console.log("response is ", response);
-
-      //  if (response.data?.access_token) {
-      //     const token = response.data.access_token;
-
-      //     navigate('/customer/dashboard');
-
-      //      authCtx.login(token);
 
       if (response?.data === "MPIN") {
         setSecureValidate("MPIN");
@@ -115,20 +103,10 @@ const Login = () => {
         const token = response.data.access_token;
         await authCtx.login(token);
 
-        // 🔹 Extract role from response (depends on your API response structure)
-        // const role = response.data.role || response.data.user?.role;
-
-        // 🔹 Navigate based on role
-
-        if (user?.role === "adm") {
-          navigate("/admin/dashboard");
-        } else if (user?.role === "ret") {
-          navigate("/customer/dashboard");
-        } else if (user?.role === "user") {
-          navigate("/user/home");
-        } else {
-          navigate("/"); // fallback
-        }
+        if (user?.role === "adm") navigate("/admin/dashboard");
+        else if (user?.role === "ret") navigate("/customer/dashboard");
+        else if (user?.role === "user") navigate("/user/home");
+        else navigate("/");
       } else {
         setLoginError("Unexpected response from server");
       }
@@ -139,166 +117,213 @@ const Login = () => {
     }
   };
 
-  const handleMpinVerificationSuccess = () => {
-    setIsMpinRequired(false);
-    // AuthContext will handle navigation based on user role
-  };
+  const handleMpinVerificationSuccess = () => setIsMpinRequired(false);
+  const handleMpinVerificationClose = () => setIsMpinRequired(false);
+  const handleForgotPassword = () => setForgotModalOpen(true);
+  // InputProps for Mobile Number
+const mobileInputProps = {
+  style: { padding: 0, borderRadius: "10px" },
+  endAdornment: (
+    <img
+      src={mobilelogin}
+      alt="mobile"
+      style={{ width: "57px" }}
+    />
+  ),
+};
 
-  const handleMpinVerificationClose = () => {
-    setIsMpinRequired(false);
-  };
-  const handleForgotPassword = () => {
-    setForgotModalOpen(true);
-  };
+// InputProps for Password
+const passwordInputProps = (showPassword, setShowPassword) => ({
+  style: { padding: 0, borderRadius: "10px" },
+  endAdornment: (
+    <InputAdornment position="end">
+      <IconButton onClick={() => setShowPassword(!showPassword)}>
+        {showPassword ? <Visibility /> : <VisibilityOff />}
+      </IconButton>
+      <img
+        src={lockicon}
+        alt="lock"
+        style={{ width: "57px", alignItems: "flex-end" }}
+      />
+    </InputAdornment>
+  ),
+});
+
 
   return (
-<Grid container sx={{ height: "100vh", width: "100vw" }}>
-  {/* Left Side - Login Form */}
-  <Grid
-    item
-    xs={12}
-    md={6}
-    sx={{
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      p: 6,
-      width:900,
-      backgroundColor:"#f6f7e9ff"
-      
-    }}
-  >
-    {/* 🔹 Your existing Paper + Login form stays the same */}
-    <Paper
+    <Grid
+      container
       sx={{
-        p: 4,
-        borderRadius: 3,
-        maxWidth: 700,
-        height:  500,
-        backgroundImage: `url(${backImg2})`,
-        width: "100%",
-        backgroundColor: "rgba(223, 228, 236, 0.9)", // translucent bg
-        boxShadow: 5,
+        height: "100vh",
+        width: "100vw",
+        overflow: "hidden",
+        "&::-webkit-scrollbar": { display: "none" },
+        scrollbarWidth: "none",
       }}
     >
-      {/* ✅ keep your login form here exactly as before */}
-      <Typography variant="h3" align="center" fontWeight={600} gutterBottom sx={{color:"#112957ff", fontFamily:"serif"}}>
-        Login !
-      </Typography>
+      {/* Left Side - Background Image */}
+<Grid
+  item
+  xs={false}
+  md={7}
+  sx={{
+    backgroundImage: `url(${backImg})`,
+    backgroundRepeat: "no-repeat",
+    backgroundSize: "auto 90%", // <-- height is 50% of container
+    backgroundPosition: "center",
+    display: { xs: "none", md: "block" },
+    backgroundColor: "#0052CC",
+    width: "55%",
+  }}
+/>
 
-      {loginError && (
-        <Typography color="error" align="center" sx={{ mb: 2 }}>
-          {loginError}
-        </Typography>
-      )}
 
-      <Box component="form" onSubmit={handleSubmit(onSubmit)}>
-        {/* UserId Field */}
-        <ReTextField
-          fullWidth
-           sx={{ mt: 3, py: 2 }}
-          label="User Id"
-          {...register("mobile", {
-            onChange: (e) => setUsername(e.target.value),
-          })}
-          margin="normal"
-          error={!!errors.mobile}
-          helperText={errors.mobile?.message}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <PhoneAndroid color="action" />
-              </InputAdornment>
-            ),
-          }}
-        />
 
-        {/* Password Field */}
-        <ReTextField
-          fullWidth
-           sx={{ mt: 3, py: 2 }}
-          label="Password"
-          type={showPassword ? "text" : "password"}
-          {...register("password")}
-          margin="normal"
-          error={!!errors.password}
-          helperText={errors.password?.message}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Lock color="action" />
-              </InputAdornment>
-            ),
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton
-                  onClick={() => setShowPassword(!showPassword)}
-                  edge="end"
-                >
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-        />
+      {/* Right Side - Login Form */}
+      <Grid
+        item
+        xs={12}
+        md={5}
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          p: { xs: 4, sm: 3, md: 3 },
+         
+          height: "100vh",
+          boxSizing: "border-box",
+          width: { xs: "100%", md: "45%" },
+        }}
+      >
+        <Box sx={{ width: "100%", maxWidth: 500 }}>
+          <a href="https://impsguru.com">
+            <Box
+              component="img"
+              src={biggpayLogo}
+              alt="Logo"
+              sx={{
+                width: "100%",
+                maxWidth: 330,
+                mb: 4,
+                objectFit: "contain",
+                cursor: "pointer",
+                display: "block",
+                mx: "auto",
+              }}
+            />
+          </a>
 
-        <Box display="flex" justifyContent="flex-end" mt={1} mb={2}>
+      
+        {loginError && (
+          <Typography color="error" align="center" sx={{ mb: 3 }}>
+            {loginError}
+          </Typography>
+        )}
+
+        <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ width: "100%" }}>
+          {/* User ID */}
+          <ReTextField
+            fullWidth
+            size="medium"
+            sx={{ mt: 5 }}
+            label="User ID"
+            {...register("mobile", { onChange: (e) => setUsername(e.target.value) })}
+            margin="normal"
+            error={!!errors.mobile}
+            helperText={errors.mobile?.message}
+            // InputProps={{
+            //   startAdornment: (
+            //     <InputAdornment position="start">
+            //       <PhoneAndroid color="action" />
+            //     </InputAdornment>
+            //   ),
+            // }}
+            InputProps={mobileInputProps}  
+          />
+
+          {/* Password */}
+          <ReTextField
+            fullWidth
+            size="medium"
+            sx={{ mt: 5 }}
+            label="Password"
+            type={showPassword ? "text" : "password"}
+            {...register("password")}
+            margin="normal"
+            error={!!errors.password}
+            helperText={errors.password?.message}
+            // InputProps={{
+            //   startAdornment: (
+            //     <InputAdornment position="start">
+            //       <Lock color="action" />
+            //     </InputAdornment>
+            //   ),
+            //   endAdornment: (
+            //     <InputAdornment position="end">
+            //       <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+            //         {showPassword ? <VisibilityOff /> : <Visibility />}
+            //       </IconButton>
+            //     </InputAdornment>
+            //   ),
+            // }}
+                  InputProps={passwordInputProps(showPassword, setShowPassword)} 
+          />
+
+          {/* Forgot Password */}
+          <Box display="flex" justifyContent="flex-end" mt={1} >
+            <Button
+              variant="text"
+              size="small"
+              sx={{ textTransform: "none", fontWeight: 500, color: "#0052CC", "&:hover": { textDecoration: "underline" } }}
+              onClick={handleForgotPassword}
+            >
+              Forgot Password?
+            </Button>
+          </Box>
+
+          {/* Terms & Conditions */}
+          <FormControlLabel
+            control={<Checkbox checked={agreedToTerms} onChange={(e) => setAgreedToTerms(e.target.checked)} />}
+            label={
+              <Typography variant="body2" color="textSecondary" fontSize={12}>
+                I agree to the{" "}
+                <Link href="/terms-conditions" underline="always" color="#4253F0" fontSize={12}>
+                  Terms and Conditions
+                </Link>
+              </Typography>
+            }
+            sx={{ width: "100%", textAlign: "center", marginBottom: 0 }}
+          />
+
+          {/* Submit */}
           <Button
-            variant="text"
-            size="small"
-            sx={{ textTransform: "none", color: "primary.main" }}
-            onClick={() => handleForgotPassword()}
+            type="submit"
+            fullWidth
+            variant="contained"
+            size="large"
+            sx={{ mt: 2, py: 1.5, borderRadius: 2, fontWeight: 600, background: "linear-gradient(90deg,#0052CC,#007BFF)" }}
+            disabled={loading}
           >
-            Forgot Password?
+            {loading ? <CircularProgress size={24} /> : "Login"}
           </Button>
         </Box>
+        </Box>
+      </Grid>
 
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          size="large"
-          sx={{ mt: 3, py: 2 }}
-          disabled={loading}
-        >
-          {loading ? <CircularProgress size={24} /> : "Login"}
-        </Button>
-      </Box>
-    </Paper>
-  </Grid>
-
-  {/* Right Side - Background Image */}
-  <Grid
-    item
-    xs={false}   // hidden on extra-small
-    md={6}
-    sx={{
-      backgroundImage: `url(${backImg})`,
-      backgroundRepeat: "no-repeat",
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-      backgroundColor:"#7e93f3ff",
-      width:900
-    }}
-  />
-
-{/* MPIN/OTP Verification Modal */}
-      <Modal
-        open={isMpinRequired}
-        onClose={handleMpinVerificationClose}
-        aria-labelledby="verification-modal"
-      >
+      {/* MPIN/OTP Modal */}
+      <Modal open={isMpinRequired} onClose={handleMpinVerificationClose} aria-labelledby="verification-modal">
         <Box
           sx={{
             position: "absolute",
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            width: 800,
+            width: { xs: "90%", sm: 500, md: 600 },
             bgcolor: "background.paper",
             boxShadow: 24,
             p: 4,
-            borderRadius: 2,
+            borderRadius: 3,
           }}
         >
           <VerifyMpinLogin
@@ -312,16 +337,10 @@ const Login = () => {
           />
         </Box>
       </Modal>
-      <ForgotPassword
-        open={forgotModal}
-        onClose={() => setForgotModalOpen(false)}
-        initialUsername={username}
-      />
 
-</Grid>
-
-
-
+      {/* Forgot Password Modal */}
+      <ForgotPassword open={forgotModal} onClose={() => setForgotModalOpen(false)} initialUsername={username} />
+    </Grid>
   );
 };
 

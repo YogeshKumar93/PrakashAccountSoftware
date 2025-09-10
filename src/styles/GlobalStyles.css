@@ -56,13 +56,13 @@ body {
   background-color: var(--background-color);
   color: var(--text-primary);
   line-height: 1.6;
-  padding: var(--spacing-md);
+
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 1300px;
   margin: 0 auto;
-  padding: var(--spacing-md);
+  
 }
 
 /* Header Styles */

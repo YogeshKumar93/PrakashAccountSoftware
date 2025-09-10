@@ -6,4 +6,9 @@ import biggpayLogo from "../assets/logo.png";
 // import closeicon from "./assets_travel/images/icons/close1.png";
 // import successVdo from "./assets/video/checkmark.mp4";
 
+import lock_icon from "../assets/lock.png";
+import phone_login from "../assets/mobile.png";
 export const smLogo = biggpayLogo;
+
+export const mobilelogin = phone_login;
+export const lockicon = lock_icon;
