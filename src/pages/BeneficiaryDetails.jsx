@@ -126,43 +126,33 @@ const BeneficiaryDetails = ({ beneficiary, senderMobile, senderId }) => {
         <Typography variant="subtitle1" fontWeight="bold">
           Selected Beneficiary
         </Typography>
-      </Box>
-
-   {/* Beneficiary Details */}
+      </Box>{/* Beneficiary Details */}
 <Box sx={{ mx: 2, my: 2, p: 2, bgcolor: "#f0f8ff", borderRadius: 2 }}>
-  <Box display="flex" justifyContent="space-between" mb={1}>
-    <Typography variant="body2" fontWeight="500" color="#4B5563">
-      Name
-    </Typography>
-    <Typography variant="body2" color="#111827">
-      {beneficiary.beneficiary_name}
-    </Typography>
-  </Box>
-  <Box display="flex" justifyContent="space-between" mb={1}>
-    <Typography variant="body2" fontWeight="500" color="#4B5563">
-      Account Number
-    </Typography>
-    <Typography variant="body2" color="#111827">
-      {beneficiary.account_number}
-    </Typography>
-  </Box>
-  <Box display="flex" justifyContent="space-between" mb={1}>
-    <Typography variant="body2" fontWeight="500" color="#4B5563">
-      Bank
-    </Typography>
-    <Typography variant="body2" color="#111827">
-      {beneficiary.bank_name}
-    </Typography>
-  </Box>
-  <Box display="flex" justifyContent="space-between">
-    <Typography variant="body2" fontWeight="500" color="#4B5563">
-      IFSC
-    </Typography>
-    <Typography variant="body2" color="#111827">
-      {beneficiary.ifsc_code}
-    </Typography>
-  </Box>
+  {[
+    { label: "Name", value: beneficiary.beneficiary_name },
+    { label: "Account Number", value: beneficiary.account_number },
+    { label: "Bank", value: beneficiary.bank_name },
+    { label: "IFSC", value: beneficiary.ifsc_code },
+  ].map((item, index) => (
+    <Box key={index} display="flex" mb={1}>
+      {/* Label column with fixed width */}
+      <Typography
+        variant="body2"
+        fontWeight="500"
+        color="#4B5563"
+        sx={{ width: "190px", flexShrink: 0 }}
+      >
+        {item.label}
+      </Typography>
+
+      {/* Value always starts aligned */}
+      <Typography variant="body2" color="#111827">
+        {item.value}
+      </Typography>
+    </Box>
+  ))}
 </Box>
+
 
 
       {/* Transfer Mode */}
@@ -232,9 +222,7 @@ const BeneficiaryDetails = ({ beneficiary, senderMobile, senderId }) => {
     textAlign: "center",
   }}
 />
-
           </Box>
-
           {/* M-PIN Input */}
           <Box>
             <Typography variant="body2" mb={0.5}>

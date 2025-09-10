@@ -5,20 +5,19 @@ import AuthContext from "../contexts/AuthContext";
 import { dateToTime, ddmmyy } from "../utils/DateUtils";
 import CommonTable from "../components/common/CommonTable";
 import ApiEndpoints from "../api/ApiEndpoints";
-import DeleteLogModal from "../components/DeleteLogModal";
-import DrawerDetails from "../components/common/DrawerDetails";
-import CommonStatus from "../components/common/CommonStatus";
 import CommonLoader from "../components/common/CommonLoader";
+import ReButton from "../components/common/ReButton";
+import CreatePlan from "./CreatePlan";
+import { Edit } from "@mui/icons-material";
+import EditPlan from "../components/EditPlan";
 
 const Plans = ({ filters = [], query }) => {
   const authCtx = useContext(AuthContext);
   const user = authCtx?.user;
- 
-
+    const [openEdit, setOpenEdit] = useState(false);
+   const [openCreate, setOpenCreate] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const [selectedLogId, setSelectedLogId] = useState(null);
-
-  const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
  const [loading, setLoading] = useState(true); // initially true
 
@@ -27,7 +26,7 @@ const Plans = ({ filters = [], query }) => {
    const handleFetchRef = (fetchFn) => {
      fetchUsersRef.current = fetchFn;
    };
-   const refreshUsers = () => {
+   const refreshPlans = () => {
      if (fetchUsersRef.current) {
        fetchUsersRef.current();
      }
@@ -40,7 +39,16 @@ const Plans = ({ filters = [], query }) => {
 
     return () => clearTimeout(timer);
   }, []);
+  
+  const handleEditClick = (row) => {
+    setSelectedRow(row);
+    setOpenEdit(true);
+  };
 
+  const handleEditSuccess = () => {
+    setOpenEdit(false);
+    
+  };
   const columns = useMemo(
     () => [
       {
@@ -60,16 +68,9 @@ const Plans = ({ filters = [], query }) => {
         name: "Actions",
         selector: (row) => (
           <>
-            <IconButton
-              color="info"
-              onClick={() => {
-                setSelectedRow(row);
-                setDrawerOpen(true);
-              }}
-              size="small"
-            >
-              <InfoIcon />
-            </IconButton>
+          <IconButton color="primary" onClick={() => handleEditClick(row)}>
+                     <Edit />
+                   </IconButton>
             <IconButton
               color="error"
               onClick={() => {
@@ -101,28 +102,25 @@ const Plans = ({ filters = [], query }) => {
         endpoint={ApiEndpoints.GET_PLANS}
         filters={filters}
         queryParam={query}
+        customHeader={
+            <ReButton
+            variant="contained"
+            label="Plan"
+            onClick={() => setOpenCreate(true)}
+          />
+        }
       />
-
-      {/* Delete Modal */}
-      <DeleteLogModal
-        open={openDelete}
-        onClose={() => setOpenDelete(false)}
-        logId={selectedLogId}
-        onFetchRef={refreshUsers} 
+            <CreatePlan
+        open={openCreate}
+        handleClose={() => setOpenCreate(false)}
+        onFetchRef={refreshPlans}
       />
-
-      {/* Drawer Details */}
-      <DrawerDetails
-        open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
-        rowData={selectedRow}
-        
-        fields={[
-          { label: "IP Address", key: "ip_address" },
-          { label: "Request Data", key: "request_data" },
-          { label: "Response Data", key: "response_data" },
-          { label: "User Agent", key: "user_agent" },
-        ]}
+       <EditPlan
+        open={openEdit}
+        onClose={() => setOpenEdit(false)}
+        plans={selectedRow} // Pass the selected row data
+        onSuccess={handleEditSuccess}
+         onFetchRef={refreshPlans}
       />
     </Box>
   )}
