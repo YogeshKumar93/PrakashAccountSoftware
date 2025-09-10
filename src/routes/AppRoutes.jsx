@@ -29,6 +29,16 @@ import SuperTransfer from "../pages/SuperTransfer";
 import SelectLayout from "../pages/SelectLayout";
 import SideLayout from "../pages/SideLayout";
 import { Recharge } from "../pages/Recharge";
+import LandingPage from "../components/LandingPages/LandingPage";
+import NavBar from "../components/LandingPages/NavBar";
+import LandingPageIntro from "../components/LandingPages/LandingPageIntro";
+import LandingPageIntro1 from "../components/LandingPages/LandingPageIntro1";
+import LandingPageIntro2 from "../components/LandingPages/LandingPageIntro2";
+import LandingPageIntro3 from "../components/LandingPages/LandingPageIntro3";
+import Footer from "../components/LandingPages/Footer";
+import LandingServices from "../components/LandingPages/LandingServices";
+import LandingAboutUs from "../components/LandingPages/LandingAboutUs";
+import LandingContactUs from "../components/LandingPages/LandingContactUs";
 
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated, loading } = useContext(AuthContext);
@@ -50,6 +60,22 @@ export default function AppRoutes() {
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
+          <Route path="/" element={<LandingPage />} />
+          <Route path="navbar" element={<NavBar /> } />
+           <Route path="footer" element={<Footer /> } />
+             <Route path="landingservices" element={<LandingServices /> } />
+            <Route path="landingaboutus" element={<LandingAboutUs /> } />
+            <Route path="landingcontactus" element={<LandingContactUs /> } />
+
+            <Route path="landingpageintro" element={<LandingPageIntro /> } />
+             <Route path="landingpageintro1" element={<LandingPageIntro1 /> } />
+              <Route path="landingpageintro2" element={<LandingPageIntro2 /> } />
+               <Route path="landingpageintro3" element={<LandingPageIntro3 /> } />
+
+            {/* <Route path="our-services" element={<LandingServicesPage />} />
+            <Route path="about-us" element={<LandingAboutUsPage />} />
+            <Route path="our-partners" element={<LandingPartnersPage />} />
+            <Route path="contact-us" element={<LandingContactUsPage />} /> */}
 
         {/* Protected layout */}
         <Route
