@@ -21,32 +21,47 @@ const SuperTransfer = () => {
   const [selectedBeneficiary, setSelectedBeneficiary] = useState(null);
 
   // Fetch sender by mobile number
-  const handleFetchSender = async (number = mobile) => {
-    if (!number || number.length !== 10) return;
+const handleFetchSender = async (number = mobile) => {
+  if (!number || number.length !== 10) return;
 
-    try {
-      const response = await apiCall("post", ApiEndpoints.GET_SENDER, {
-        mobile_number: number,
-      });
+  const { error, response } = await apiCall("post", ApiEndpoints.GET_SENDER, {
+    mobile_number: number,
+  });
 
-      const data = response?.data || response?.response?.data;
+  if (response) {
+    // ✅ success path
+    const data = response?.data || response?.response?.data;
 
-      if (response)
-        okSuccessToast(response.message || "Sender fetched successfully");
-console.log("response----",response?.response?.message);
+    if (response)
+      okSuccessToast(response.message || "Sender fetched successfully");
 
-      if (data && data?.is_active === 1) {
-        setSender(data);
-        setOpenRegisterModal(false);
-      } else {
-        setSender(null);
-        setOpenRegisterModal(true);
-      }
-    } catch (error) {
-      apiErrorToast(error);
-      console.error("Error fetching sender:", error);
+    if (data && data?.is_active === 1) {
+      setSender(data);
+      setOpenRegisterModal(false);
+    } else {
+      setSender(null);
+      setOpenRegisterModal(true);
     }
-  };
+  } else if (error) {
+    // ❌ error path
+    console.log("error from API:", error);
+
+    if (error?.message === "The number is inactive") {
+      // 👉 open verify modal instead of register
+      setSender(null);
+      setOpenRegisterModal(false);
+
+      setOtpData({
+        mobile_number: error?.errors?.mobile_number || number,
+        otp_ref: error?.errors?.otp_ref,
+      });
+      setOpenVerifyModal(true);
+    } else {
+      apiErrorToast(error?.message || "Something went wrong");
+    }
+  }
+};
+
 
 const handleChange = (e) => {
   const value = e.target.value.replace(/\D/g, ""); // only digits allowed
