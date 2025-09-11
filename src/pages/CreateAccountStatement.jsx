@@ -7,7 +7,7 @@ import { useToast } from "../utils/ToastContext";
 import { Box, Button, Grid, TextField, Typography } from "@mui/material";
 
 const CreateAccountStatement = ({  handleClose,onFetchRef,accountId }) => {
-  const { schema, errors, setErrors, loading } =
+  const { schema, errors,  loading } =
     useSchemaForm(ApiEndpoints.GET_ACCOUNT_STATEMENT_SCHEMA, true);
 
   const [submitting, setSubmitting] = useState(false);
