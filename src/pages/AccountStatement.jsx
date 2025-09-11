@@ -10,6 +10,7 @@ import CommonStatus from "../components/common/CommonStatus";
 import AuthContext from "../contexts/AuthContext";
 import CreateAccountStatement from "./CreateAccountStatement";
 import UpdateAccountStatement from "./UpdateAccountStatement";
+import { useLocation, useParams } from "react-router-dom";
 
 const AccountStatement = ({ filters = [], query }) => {
 
@@ -19,6 +20,10 @@ const AccountStatement = ({ filters = [], query }) => {
   const [selectedAccount, setSelectedAccount] = useState(null);
  const authCtx = useContext(AuthContext);
  const user = authCtx?.user;
+
+ const {id} = useParams;
+ const location = useLocation();
+ const account_id = location.state?.account_id || id;
 
    const fetchUsersRef = useRef(null);
   
@@ -83,21 +88,21 @@ const AccountStatement = ({ filters = [], query }) => {
         selector: (row) =>
  <CommonStatus value={row.is_active} />
       },
-      {
-        name: "Actions",
-        selector: (row) => (
-          <IconButton
-            color="primary"
-            onClick={() => {
-              setSelectedService(row);
-              setOpenEdit(true);
-            }}
-          >
-            <Edit />
-          </IconButton>
-        ),
-        width: "100px",
-      },
+      // {
+      //   name: "Actions",
+      //   selector: (row) => (
+      //     <IconButton
+      //       color="primary"
+      //       onClick={() => {
+      //         setSelectedService(row);
+      //         setOpenEdit(true);
+      //       }}
+      //     >
+      //       <Edit />
+      //     </IconButton>
+      //   ),
+      //   width: "100px",
+      // },
     ],
     []
   );
@@ -105,6 +110,8 @@ const AccountStatement = ({ filters = [], query }) => {
   return (
     <Box>
      
+       <h2>Account Statements for Bank ID: {id}</h2>
+         <p>Account ID: {account_id}</p>
 
       {/* Services Table */}
       <CommonTable
@@ -113,7 +120,7 @@ const AccountStatement = ({ filters = [], query }) => {
         endpoint={ApiEndpoints.GET_ACCOUNT_STATEMENTS}
         filters={filters}
         Button= {Button}
-        queryParam={query}
+        queryParam={`account_id=${account_id}`}
          customHeader={
                (user?.role !== "sadm" || user?.role !== "adm") && (
     <ReButton

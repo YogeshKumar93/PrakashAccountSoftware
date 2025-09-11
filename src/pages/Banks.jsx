@@ -12,32 +12,47 @@ import CommonLoader from "../components/common/CommonLoader";
 import DeleteIcon from "@mui/icons-material/Delete";
 import UpdateBanks from "../components/Bank/UpdateBanks";
 import DeleteBank from "./DeleteBank";
+import DescriptionIcon from "@mui/icons-material/Description";
+import { useNavigate } from "react-router-dom";
 
 const Banks = ({ filters = [] }) => {
   const authCtx = useContext(AuthContext);
-   const user = authCtx?.user;
+  const user = authCtx?.user;
+  const navigate = useNavigate();
+
   const [openCreate, setOpenCreate] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
-   const [openDelete, setOpenDelete] = useState(false);
+  const [openDelete, setOpenDelete] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
   const [selectedBank, setSelectedBank] = useState(null);
   const [loading, setLoading] = useState(true);
 
   // ✅ keep a ref to CommonTable for refreshing
-   const fetchUsersRef = useRef(null);
-  
-    const handleFetchRef = (fetchFn) => {
-      fetchUsersRef.current = fetchFn;
-    };
-    const refreshUsers = () => {
-      if (fetchUsersRef.current) {
-        fetchUsersRef.current();
-      }
-    };
-     const handleDelete = (row) => {
+  const fetchBanksRef = useRef(null);
+
+  const handleFetchRef = (fetchFn) => {
+    fetchBanksRef.current = fetchFn;
+  };
+
+  const refreshBanks = () => {
+    if (fetchBanksRef.current) {
+      fetchBanksRef.current();
+    }
+  };
+
+  const handleDelete = (row) => {
     setSelectedBank(row);
     setOpenDelete(true);
   };
+
+const handleStatement = (row) => {
+ 
+  navigate(`/admin/bankstatements/${row.id}`, {
+    state: { bank_id: row.id },  
+  });
+};
+
+
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -99,9 +114,7 @@ const Banks = ({ filters = [] }) => {
       {
         name: "Balance",
         selector: (row) => (
-          <div
-            style={{ color: "green", fontWeight: "600", textAlign: "left" }}
-          >
+          <div style={{ color: "green", fontWeight: "600", textAlign: "left" }}>
             ₹ {parseFloat(row.balance).toFixed(2)}
           </div>
         ),
@@ -115,26 +128,33 @@ const Banks = ({ filters = [] }) => {
       {
         name: "Actions",
         selector: (row) => (
-                 <Box sx={{ display: "flex", gap: 1 }}>
-          <IconButton
-            size="small"
-            color="primary"
-            onClick={() => {
-              setSelectedRow(row);
-              setOpenEdit(true);
-            }}
-          >
-            <Edit fontSize="small" />
-          </IconButton>
-           <Tooltip title="Delete">
-            <IconButton color="error" onClick={() => handleDelete(row)}>
-              <DeleteIcon fontSize="small" />
+          <Box sx={{ display: "flex", gap: 1 }}>
+            <Tooltip title="Statement">
+              <IconButton color="info" onClick={() => handleStatement(row)}>
+                <DescriptionIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+
+            <IconButton
+              size="small"
+              color="primary"
+              onClick={() => {
+                setSelectedRow(row);
+                setOpenEdit(true);
+              }}
+            >
+              <Edit fontSize="small" />
             </IconButton>
-          </Tooltip>
+
+            <Tooltip title="Delete">
+              <IconButton color="error" onClick={() => handleDelete(row)}>
+                <DeleteIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
           </Box>
         ),
         center: true,
-        width: "80px",
+        width: "150px", // ✅ more space for 3 icons
       },
     ],
     []
@@ -144,12 +164,12 @@ const Banks = ({ filters = [] }) => {
 
   return (
     <>
-      <CommonLoader loading={loading} text="Loading Fund Requests" />
+      <CommonLoader loading={loading} text="Loading Banks" />
 
       {!loading && (
         <>
           <CommonTable
-             onFetchRef={handleFetchRef} 
+            onFetchRef={handleFetchRef}
             columns={columns}
             endpoint={ApiEndpoints.GET_BANKS}
             filters={filters}
@@ -164,7 +184,7 @@ const Banks = ({ filters = [] }) => {
             <CreateBankModal
               open={openCreate}
               onClose={() => setOpenCreate(false)}
-                onFetchRef={refreshUsers}
+              onFetchRef={refreshBanks}
             />
           )}
 
@@ -176,23 +196,23 @@ const Banks = ({ filters = [] }) => {
                 setOpenEdit(false);
                 setSelectedRow(null);
               }}
-              bankData={selectedRow} // ✅ correct prop
-             onFetchRef={refreshUsers}
+              bankData={selectedRow}
+              onFetchRef={refreshBanks}
             />
           )}
-         {selectedBank && user?.role === "adm" && (
-  <DeleteBank
-    open={openDelete}
-    handleClose={() => {
-      setOpenDelete(false);
-      setSelectedBank(null);
-    }}
-    selectedBank={selectedBank}
-    onFetchRef={refreshUsers} // ✅ trigger fetch after update
-  />
 
-
-      )}
+          {/* Delete Bank Modal */}
+          {selectedBank && user?.role === "adm" && (
+            <DeleteBank
+              open={openDelete}
+              handleClose={() => {
+                setOpenDelete(false);
+                setSelectedBank(null);
+              }}
+              selectedBank={selectedBank}
+              onFetchRef={refreshBanks}
+            />
+          )}
         </>
       )}
     </>

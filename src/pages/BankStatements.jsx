@@ -9,10 +9,16 @@ import ApiEndpoints from "../api/ApiEndpoints";
 import ReButton from "../components/common/ReButton";
 import CommonStatus from "../components/common/CommonStatus";
 import CreateBankStatement from "./CreateBankStatement";
+import { useLocation, useParams } from "react-router-dom";
 
-const BankStatements = ({ filters = [], query }) => {
+const BankStatements = ({ filters = [] }) => {
   const authCtx = useContext(AuthContext);
   const user = authCtx?.user;
+  
+
+const { id} = useParams();
+ const location = useLocation();
+  const bank_id = location.state?.bank_id || id;
 
   const [openCreate, setOpenCreate] = useState(false);
   // const [openEdit, setOpenEdit] = useState(false);
@@ -73,28 +79,29 @@ const BankStatements = ({ filters = [], query }) => {
         selector: (row) =>
  <CommonStatus value={row.is_active} />
       },
-      {
-        name: "Actions",
-        selector: (row) => (
-          <IconButton
-            color="primary"
-            onClick={() => {
-              setSelectedService(row);
-              setOpenEdit(true);
-            }}
-          >
-            <Edit />
-          </IconButton>
-        ),
-        width: "100px",
-      },
+      // {
+      //   name: "Actions",
+      //   selector: (row) => (
+      //     <IconButton
+      //       color="primary"
+      //       // onClick={() => {
+      //       //   setSelectedService(row);
+      //       //   setOpenEdit(true);
+      //       // }}
+      //     >
+      //       <Edit />
+      //     </IconButton>
+      //   ),
+      //   width: "100px",
+      // },
     ],
     []
   );
 
   return (
     <Box>
-     
+        <h2>Bank Statements for Bank ID: {id}</h2>
+         <p>Bank ID: {bank_id}</p>
 
       {/* Services Table */}
       <CommonTable
@@ -102,7 +109,7 @@ const BankStatements = ({ filters = [], query }) => {
         columns={columns}
         endpoint={ApiEndpoints.GET_BANK_STATEMENTS}
         filters={filters}
-        queryParam={query}
+        queryParam={`bank_id=${bank_id}`}
          customHeader={
                (user?.role !== "sadm" || user?.role !== "adm") && (
     <ReButton
