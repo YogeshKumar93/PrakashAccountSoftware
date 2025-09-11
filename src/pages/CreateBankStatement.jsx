@@ -44,6 +44,8 @@ const CreateBankStatement = ({ open, handleClose,onFetchRef }) => {
     "claimed_by",
     "bank_id",
     "credit",
+    "status",
+    "date",
     "debit",
     "balance",
     "particulars"

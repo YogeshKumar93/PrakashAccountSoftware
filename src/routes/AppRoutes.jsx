@@ -41,8 +41,10 @@ import LandingContactUs from "../components/LandingPages/LandingContactUs";
 import Navs from "../pages/Navs";
 
 import Statements from "../pages/Statements";
-import AccountStatement from "../pages/AccountStatement";
+ 
 import UpiTransfer from "../pages/UpiTransfer";
+import BankStatements from "../pages/BankStatements";
+import AccountStatement from "../pages/AccountStatement";
 
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated, loading } = useContext(AuthContext);
@@ -105,6 +107,8 @@ export default function AppRoutes() {
               <Route path="admin/logs" element={<Logs />} />
               <Route path="admin/profile" element={<ProfilePage />} />
               <Route path="admin/banks" element={<Banks />} />
+               <Route path="admin/bankstatements/:id" element={<BankStatements />} />
+               <Route path="admin/accountstatements/:id" element={<AccountStatement />} />
               <Route path="admin/layout" element={<Layouts />} />
               <Route path="admin/commissionrule" element={<CommissionRule />} />
               <Route path="admin/sidenav" element={<Navs />} />

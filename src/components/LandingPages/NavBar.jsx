@@ -16,6 +16,7 @@ const NavBar = () => {
     >
       <div
         style={{
+         
           margin: "0 auto",
           padding: "1.2rem 1.5rem",
           display: "flex",

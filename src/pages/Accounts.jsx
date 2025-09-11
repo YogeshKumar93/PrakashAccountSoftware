@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import { Box, IconButton, Tooltip } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
@@ -7,12 +7,14 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import CreateAccount from "./CreateAccount";
 import UpdateAccount from "./UpdateAccount";
 import DeleteAccount from "./DeleteAccount";
-
+import DescriptionIcon from "@mui/icons-material/Description";
 import ApiEndpoints from "../api/ApiEndpoints";
 import CommonTable from "../components/common/CommonTable";
 import ReButton from "../components/common/ReButton";
 import CommonStatus from "../components/common/CommonStatus";
 import CommonLoader from "../components/common/CommonLoader";
+import AuthContext from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Accounts = () => {
   const [openCreate, setOpenCreate] = useState(false);
@@ -23,6 +25,9 @@ const Accounts = () => {
   const [loading, setLoading] = useState(false);
 
   const fetchUsersRef = useRef(null);
+  const authCtx = useContext(AuthContext)
+  const user = authCtx?.user;
+  const navigate = useNavigate();
 
   const handleFetchRef = (fetchFn) => {
     fetchUsersRef.current = fetchFn;
@@ -33,6 +38,12 @@ const Accounts = () => {
       fetchUsersRef.current();
     }
   };
+
+  const handleAccountStatement = (row) =>{
+      navigate(`/admin/accountstatements/${row.id}`, {
+    state: { account_id: row.id },  
+  });
+  }
 
   // ✅ Add new account
   const handleSaveCreate = (newAccount) => {
@@ -58,6 +69,13 @@ const Accounts = () => {
       name: "Actions",
       selector: (row) => (
         <Box sx={{ display: "flex", gap: 1 }}>
+
+         <Tooltip title="Account Statement">
+                      <IconButton color="info" onClick={() => handleAccountStatement(row)}>
+                        <DescriptionIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+
           <Tooltip title="Edit">
             <IconButton
               color="primary"
@@ -85,6 +103,8 @@ const Accounts = () => {
     },
   ];
 
+const queryParam = "";
+
   return (
     <>
       <CommonLoader loading={loading} text="Loading Fund Requests" />
@@ -97,6 +117,7 @@ const Accounts = () => {
             loading={loading}
             endpoint={ApiEndpoints.GET_ACCOUNTS}
             onFetchRef={handleFetchRef}
+            queryParam={queryParam}
             customHeader={
               <ReButton
                 variant="contained"
