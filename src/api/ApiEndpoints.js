@@ -62,6 +62,7 @@ const ApiEndpoints = {
   CHANGE_OPERATOR_PIPE: "admin/changePipe",
   GET_ROUTE: "admin/getRoutes",
   GET_CATEGORIES: "admin/getCategories",
+BBPS_GET_CATEGORIES:"bbps/getCategories",
 
   // ****************************** NEW API'S ******************************
   SIGN_IN: "auth/signIn",
@@ -90,6 +91,7 @@ const ApiEndpoints = {
   DELETE_LOG: "auditlog/deleteAuditLog",
   GET_LOG: "auditlog/getAuditLog",
   GET_WALLETLEDGER: "walletledger/getWalletLedgers",
+  
   // ****************************** NEW API'S ABOVE ******************************
 
   GET_FUND_REQUESTS: "fundrequest/getFundRequests",
