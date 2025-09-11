@@ -1,12 +1,17 @@
 import React, { useContext, useState } from "react";
 import {
   Box,
-  Typography,
   Grid,
-  useTheme,
+  Typography,
   IconButton,
   Card,
   CardContent,
+  useTheme,
+  alpha,
+  Container,
+  Fade,
+  Slide,
+  Zoom,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
@@ -66,128 +71,181 @@ import UpiTransfer from "./UpiTransfer";
 
 const MenuCard = ({ icon, label, onClick, isActive, user }) => {
   return (
-    <Box
-      onClick={onClick}
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        height: "100px",
-        width: "100px",
-        borderRadius: 2,
-        backgroundColor: isActive ? "#5210c1" : "#F5F4FA",
-        color: isActive ? "#FFF" : "#2B1A4C",
-        cursor: "pointer",
-        transition: "all 0.3s ease",
-        boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-        "&:hover": {
-          transform: "translateY(-2px)",
-          boxShadow: "0 4px 8px rgba(0,0,0,0.15)",
-          backgroundColor: isActive ? "#5210c1" : "#E9E8F5",
-        },
-        p: 1,
-        position: "relative",
-        overflow: "hidden",
-      }}
-    >
+    <Zoom in={true} style={{ transitionDelay: Math.random() * 100 + "ms" }}>
       <Box
+        onClick={onClick}
         sx={{
           display: "flex",
+          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          width: 50,
-          height: 50,
-          mb: 0.5,
-          "& img": {
-            width: "100%",
-            height: "100%",
-            objectFit: "contain",
+          height: { xs: 90, sm: 100 },
+          width: { xs: 90, sm: 100 },
+          borderRadius: 3,
+          background: isActive
+            ? "linear-gradient(135deg, #5210c1 0%, #7b3fe3 100%)"
+            : "linear-gradient(135deg, #F5F4FA 0%, #FFFFFF 100%)",
+          color: isActive ? "#FFF" : "#2B1A4C",
+          cursor: "pointer",
+          transition: "all 0.3s ease",
+          boxShadow: isActive
+            ? "0 8px 16px rgba(82, 16, 193, 0.25)"
+            : "0 4px 12px rgba(0,0,0,0.08)",
+          "&:hover": {
+            transform: "translateY(-4px)",
+            boxShadow: isActive
+              ? "0 12px 20px rgba(82, 16, 193, 0.3)"
+              : "0 8px 16px rgba(0,0,0,0.12)",
+            background: isActive
+              ? "linear-gradient(135deg, #5210c1 0%, #7b3fe3 100%)"
+              : "linear-gradient(135deg, #E9E8F5 0%, #F5F4FA 100%)",
           },
+          p: 1.5,
+          position: "relative",
+          overflow: "hidden",
+          "&::before": isActive
+            ? {
+                content: '""',
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                height: 4,
+                // background: "linear-gradient(90deg, #FF9A8B 0%, #FF6A88 55%, #FF99AC 100%)",
+                borderRadius: "3px 3px 0 0",
+              }
+            : {},
         }}
       >
-        {typeof icon === "string" ? (
-          <img src={icon} alt="icon" />
-        ) : (
-          React.createElement(icon, { sx: { fontSize: 32 } })
-        )}
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: 50,
+            height: 50,
+            mb: 1,
+            borderRadius: "50%",
+            backgroundColor: isActive
+              ? "rgba(255,255,255,0.2)"
+              : "rgba(82, 16, 193, 0.08)",
+            "& img": {
+              width: "60%",
+              height: "60%",
+              objectFit: "contain",
+            },
+            transition: "all 0.3s ease",
+          }}
+        >
+          {typeof icon === "string" ? (
+            <img src={icon} alt="icon" />
+          ) : (
+            React.createElement(icon, {
+              sx: {
+                fontSize: 24,
+                color: isActive ? "#FFF" : "#5210c1",
+              },
+            })
+          )}
+        </Box>
+        <Typography
+          variant="caption"
+          sx={{
+            fontWeight: 600,
+            fontSize: "0.7rem",
+            textAlign: "center",
+            lineHeight: 1.2,
+            transition: "all 0.3s ease",
+          }}
+        >
+          {label}
+        </Typography>
       </Box>
-      <Typography
-        variant="caption"
-        sx={{
-          mt: 0.5,
-          fontWeight: 500,
-          fontSize: "0.75rem",
-          textAlign: "center",
-          lineHeight: 1.2,
-        }}
-      >
-        {label}
-      </Typography>
-    </Box>
+    </Zoom>
   );
 };
 
 const SubMenuCard = ({ icon, label, onClick, isActive, user }) => {
   return (
-    <Box
-      onClick={onClick}
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        height: 90,
-        width: 90,
-        borderRadius: 1.5,
-        backgroundColor: isActive ? "#5210c1" : "#F5F4FA",
-        color: isActive ? "#FFF" : "#2B1A4C",
-        cursor: "pointer",
-        transition: "all 0.2s ease",
-        boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-        "&:hover": {
-          backgroundColor: isActive ? "#5210c1" : "#E9E8F5",
-          transform: "translateY(-2px)",
-        },
-        p: 1,
-      }}
-    >
+    <Fade in={true} style={{ transitionDelay: Math.random() * 100 + "ms" }}>
       <Box
+        onClick={onClick}
         sx={{
           display: "flex",
+          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          width: 40,
-          height: 40,
-          mb: 0.5,
-          "& img": {
-            width: "100%",
-            height: "100%",
-            objectFit: "contain",
+          height: { xs: 80, sm: 90 },
+          width: { xs: 80, sm: 90 },
+          borderRadius: 2.5,
+          background: isActive
+            ? "linear-gradient(135deg, #5210c1 0%, #7b3fe3 100%)"
+            : "linear-gradient(135deg, #F5F4FA 0%, #FFFFFF 100%)",
+          color: isActive ? "#FFF" : "#2B1A4C",
+          cursor: "pointer",
+          transition: "all 0.2s ease",
+          boxShadow: isActive
+            ? "0 6px 12px rgba(82, 16, 193, 0.2)"
+            : "0 3px 8px rgba(0,0,0,0.06)",
+          "&:hover": {
+            transform: "translateY(-3px)",
+            boxShadow: isActive
+              ? "0 8px 16px rgba(82, 16, 193, 0.25)"
+              : "0 6px 12px rgba(0,0,0,0.1)",
+            background: isActive
+              ? "linear-gradient(135deg, #5210c1 0%, #7b3fe3 100%)"
+              : "linear-gradient(135deg, #E9E8F5 0%, #F5F4FA 100%)",
           },
+          p: 1.2,
+          position: "relative",
         }}
       >
-        {typeof icon === "string" ? (
-          <img src={icon} alt="icon" />
-        ) : (
-          React.createElement(icon, { sx: { fontSize: 28 } })
-        )}
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: 40,
+            height: 40,
+            mb: 0.8,
+            borderRadius: "50%",
+            backgroundColor: isActive
+              ? "rgba(255,255,255,0.2)"
+              : "rgba(82, 16, 193, 0.08)",
+            "& img": {
+              width: "60%",
+              height: "60%",
+              objectFit: "contain",
+            },
+            transition: "all 0.2s ease",
+          }}
+        >
+          {typeof icon === "string" ? (
+            <img src={icon} alt="icon" />
+          ) : (
+            React.createElement(icon, {
+              sx: {
+                fontSize: 20,
+                color: isActive ? "#FFF" : "#5210c1",
+              },
+            })
+          )}
+        </Box>
+        <Typography
+          variant="caption"
+          sx={{
+            fontWeight: 500,
+            fontSize: "0.65rem",
+            textAlign: "center",
+            lineHeight: 1.2,
+          }}
+        >
+          {label}
+        </Typography>
       </Box>
-      <Typography
-        variant="caption"
-        sx={{
-          fontWeight: 500,
-          fontSize: "0.7rem",
-          textAlign: "center",
-          lineHeight: 1.2,
-        }}
-      >
-        {label}
-      </Typography>
-    </Box>
+    </Fade>
   );
 };
-
 export default function AllServices() {
   const [activeMenu, setActiveMenu] = useState("qrUpi");
   const [activeSubMenu, setActiveSubMenu] = useState(null);
@@ -199,7 +257,7 @@ export default function AllServices() {
   const currentView = authCtx.currentView;
 
   const menuData = [
-    (user?.dmt1 === 1 || user?.dmt2 === 1) && {
+    (user?.dmt1 !== 1 || user?.dmt2 !== 1) && {
       key: "moneyTransfer",
       label: "Money Transfer",
       icon: mt,
@@ -219,7 +277,7 @@ export default function AllServices() {
       ].filter(Boolean),
     },
 
-    user?.dmt4 == !0 && {
+    user?.dmt4 !==0 && {
       key: "ppiWallet",
       label: "Fund Transfer",
       icon: vapy_1,
@@ -247,7 +305,7 @@ export default function AllServices() {
         },
       ],
     },
-    user?.aeps === 1 && {
+    user?.aeps !== 1 && {
       key: "aeps",
       label: "AEPS",
       icon: aeps1,
@@ -302,9 +360,9 @@ export default function AllServices() {
         },
       ],
     },
-    user?.bbps === 1 && {
+    user?.bbps !== 1 && {
       key: "bbps",
-      label: "BBPS",
+      label: "BBPS (ONLINE)",
       icon: BBPS,
       subMenu: [
         {
