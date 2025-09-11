@@ -83,7 +83,7 @@ const LandingPageIntro = () => {
     <Box
       sx={{
         background: "linear-gradient(to bottom, #0F2027 0%, #203A43 50%, #2C5364 100%)",
-        width: "100%",
+        width: 1800,
         minHeight: "100vh",
         height: "auto",
         backgroundPosition: "center",

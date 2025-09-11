@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Helmet } from "react-helmet";
-import Navbar from "./Navbar"; // Import new navbar
+ 
 import LandingPageIntro from "./LandingPageIntro";
 
 import LandingPageIntro1 from "./LandingPageIntro1";
@@ -19,7 +19,7 @@ const LandingPage = () => {
     <div>
       <Helmet>
         <meta charSet="utf-8" />
-        <title>TrustPayIndia</title>
+        <title>IMPS GURU</title>
         <meta name="description" content="IMPS GURU - Secure Payment Platform" />
         <meta name="keywords" content="TrustPayIndia, Payments, Finance" />
       </Helmet>
