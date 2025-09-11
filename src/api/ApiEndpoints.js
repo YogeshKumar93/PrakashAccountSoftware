@@ -2,7 +2,7 @@
 // export const BASE_URL = "https://uat.impsguru.com/";
 // export const BASE_URL = "https://api.dillipay.com/";
 // export const BASE_URL = "http://192.168.1.14/impsguru-php/";
-export const BASE_URL = "https://api.biggpay.in/";
+export const BASE_URL = "https://newapi.impsguru.com";
 
 const ApiEndpoints = {
   COOKIE: "sanctum/csrf-cookie",
@@ -105,20 +105,17 @@ const ApiEndpoints = {
   UPDATE_NOTIFICATION: "notification/updateNotification",
   DELETE_NOTIFICATION: "notification/deleteNotification",
 
-
   GET_BANK_STATEMENTS: "bankStatement/getBankStatement",
   CREATE_BANK_STATEMENT: "bankStatement/createBankStatement",
   UPDATE_BANK_STATEMENT: "bankStatement/updateBankStatement",
- DELETE_BANK_STATEMENT: "bankStatement/deleteBankStatement",
-GET_BANK_STATEMENT_SCHEMA: "bankStatement/getBankStatementSchema",
+  DELETE_BANK_STATEMENT: "bankStatement/deleteBankStatement",
+  GET_BANK_STATEMENT_SCHEMA: "bankStatement/getBankStatementSchema",
 
-
- GET_ACCOUNT_STATEMENTS: "accountStatement/getAccountStatement",
- CREATE_ACCOUNT_STATEMENT: "accountStatement/createAccountStatement",
- UPDATE_ACCOUNT_STATEMENT: "accountStatement/updateAccountStatement",
- DELETE_ACCOUNT_STATEMENT: "accountStatement/deleteAccountStatement",
-GET_ACCOUNT_STATEMENT_SCHEMA: "accountStatement/getAccountStatementSchema",
-
+  GET_ACCOUNT_STATEMENTS: "accountStatement/getAccountStatement",
+  CREATE_ACCOUNT_STATEMENT: "accountStatement/createAccountStatement",
+  UPDATE_ACCOUNT_STATEMENT: "accountStatement/updateAccountStatement",
+  DELETE_ACCOUNT_STATEMENT: "accountStatement/deleteAccountStatement",
+  GET_ACCOUNT_STATEMENT_SCHEMA: "accountStatement/getAccountStatementSchema",
 
   CREATE_BANK: "bank/createBank",
   UPDATE_BANK: "bank/updateBank",
@@ -164,6 +161,9 @@ GET_ACCOUNT_STATEMENT_SCHEMA: "accountStatement/getAccountStatementSchema",
   GET_PLAN_SCHEMA: "plan/getPlanSchema",
   GET_UPI_SCHEMA: "payout/getBeneficiarySchemaUpi",
   UPDATE_USER_STATUS: "user/blockAndUnblock",
+
+  CHANGE_USER_LAYOUT: "user/changeLayout",
+
   // ****************************** NEW API'S ABOVE ******************************
 
   GET_ACC_ACCOUNTS: "",
@@ -185,7 +185,6 @@ GET_ACCOUNT_STATEMENT_SCHEMA: "accountStatement/getAccountStatementSchema",
   GET_STATUS: "admin/checkTxnStatus",
   CHANGE_STATUS: "admin/changeTxnStatus",
 
-  
   BLOCK_UNBLOCK_PLANS: "",
   ADD_PLAN: "admin/createPlan",
   DELETE_PLAN: "admin/deletePlan",
