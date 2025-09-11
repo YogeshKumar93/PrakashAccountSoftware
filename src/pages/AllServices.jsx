@@ -277,7 +277,7 @@ export default function AllServices() {
       ].filter(Boolean),
     },
 
-    user?.dmt4 !==0 && {
+    user?.dmt4 !== 0 && {
       key: "ppiWallet",
       label: "Fund Transfer",
       icon: vapy_1,
