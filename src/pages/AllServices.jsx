@@ -317,52 +317,52 @@ export default function AllServices() {
         },
       ],
     },
-    user?.billpay !== 1 && {
-      key: "billPayments",
-      label: "BBPS(OFFLINE)",
-      icon: BBPS,
-      subMenu: [
-        {
-          key: "electricity",
-          label: "Electricity",
-          icon: electricity1,
-          type: "C04",
-        },
-        {
-          key: "broadband",
-          label: "Broadband",
-          icon: broadband_1,
-          type: "C05",
-        },
-        {
-          key: "gas",
-          label: "Gas Bill",
-          icon: gas_1,
-          type: "C07",
-        },
-        {
-          key: "water",
-          label: "Water Bill",
-          icon: water_1,
-          type: "C08",
-        },
-        {
-          key: "insurance",
-          label: "Insurance",
-          icon: insurance_1,
-          type: "C11",
-        },
-        {
-          key: "landline",
-          label: "Landline Bill",
-          icon: landline_1,
-          type: "C02",
-        },
-      ],
-    },
+    // user?.billpay !== 1 && {
+    //   key: "billPayments",
+    //   label: "BBPS(OFFLINE)",
+    //   icon: BBPS,
+    //   subMenu: [
+    //     {
+    //       key: "electricity",
+    //       label: "Electricity",
+    //       icon: electricity1,
+    //       type: "C04",
+    //     },
+    //     {
+    //       key: "broadband",
+    //       label: "Broadband",
+    //       icon: broadband_1,
+    //       type: "C05",
+    //     },
+    //     {
+    //       key: "gas",
+    //       label: "Gas Bill",
+    //       icon: gas_1,
+    //       type: "C07",
+    //     },
+    //     {
+    //       key: "water",
+    //       label: "Water Bill",
+    //       icon: water_1,
+    //       type: "C08",
+    //     },
+    //     {
+    //       key: "insurance",
+    //       label: "Insurance",
+    //       icon: insurance_1,
+    //       type: "C11",
+    //     },
+    //     {
+    //       key: "landline",
+    //       label: "Landline Bill",
+    //       icon: landline_1,
+    //       type: "C02",
+    //     },
+    //   ],
+    // },
     user?.bbps !== 1 && {
       key: "bbps",
-      label: "BBPS (ONLINE)",
+      label: "BBPS ",
       icon: BBPS,
       subMenu: [
         {
