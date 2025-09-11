@@ -63,6 +63,9 @@ const ApiEndpoints = {
   GET_ROUTE: "admin/getRoutes",
   GET_CATEGORIES: "admin/getCategories",
 BBPS_GET_CATEGORIES:"bbps/getCategories",
+BBPS_GET_BILLERS:"bbps/getBillers",
+BBPS_GET_BILLERS_DETAILS:"bbps/getBillerDetails",
+BBPS_FETCH_BILL:"bbps/fetchBill",
 
   // ****************************** NEW API'S ******************************
   SIGN_IN: "auth/signIn",
@@ -263,10 +266,10 @@ GET_ACCOUNT_STATEMENT_SCHEMA: "accountStatement/getAccountStatementSchema",
   DMT2_MT: "dmr/transactionDmt2",
 
   BBPS_CATEGORIES: "prepaid/getCategories",
-  BBPS_GET_BILLERS: "prepaid/getBillers",
-  BBPS_GET_BILLERS_DETAILS: "prepaid/getBillerDetails",
-  BBPS_FETCH_BILL: "prepaid/fetchBillInst",
-  BBPS_PAY_BILL: "prepaid/payBillInst",
+  // BBPS_GET_BILLERS: "prepaid/getBillers",
+  // BBPS_GET_BILLERS_DETAILS: "prepaid/getBillerDetails",
+  // BBPS_FETCH_BILL: "prepaid/fetchBillInst",
+  // BBPS_PAY_BILL: "prepaid/payBillInst",
 
   //recharges and bill payment
   RECH_FETCH_BILL: "prepaid/fetchBill",

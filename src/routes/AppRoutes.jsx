@@ -45,6 +45,7 @@ import Statements from "../pages/Statements";
 import UpiTransfer from "../pages/UpiTransfer";
 import BankStatements from "../pages/BankStatements";
 import AccountStatement from "../pages/AccountStatement";
+import Bbps from "../pages/Bbps";
 
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated, loading } = useContext(AuthContext);
@@ -149,8 +150,8 @@ export default function AppRoutes() {
               <Route path="customer/purchase" element={<MyPurchase />} />
               <Route path="customer/fund-request" element={<FundRequest />} />
               <Route path="customer/sale" element={<MySale />} />
-
-              <Route path="customer/profile" element={<ProfilePage />} />
+ <Route path="customer/bbps" element={<Bbps />} />     
+          <Route path="customer/profile" element={<ProfilePage />} />
 
               <Route
                 path="customer/*"
