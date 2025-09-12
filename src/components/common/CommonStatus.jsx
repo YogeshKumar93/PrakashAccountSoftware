@@ -23,30 +23,29 @@ const CommonStatus = ({ value, is_read }) => {
   let bgColor = statusColors[statusText] || "lightgray";
 
   // Override with is_read
-if (typeof is_read !== "undefined") {
-  if (is_read === 0 || is_read === "0") {
-    statusText = "UNREAD";
-    bgColor = "#ff9800"; // Vibrant Orange
-  } else if (is_read === 1 || is_read === "1") {
-    statusText = "READ";
-    bgColor = "#fdd835"; // Bright Yellow
+  if (typeof is_read !== "undefined") {
+    if (is_read === 0 || is_read === "0") {
+      statusText = "UNREAD";
+      bgColor = "#ff9800"; // Vibrant Orange
+    } else if (is_read === 1 || is_read === "1") {
+      statusText = "READ";
+      bgColor = "#fdd835"; // Bright Yellow
+    }
   }
-}
-
-
 
   return (
     <Button
-      variant="contained"
       sx={{
         backgroundColor: bgColor,
         color: "white",
         textTransform: "uppercase",
         fontWeight: "bold",
-        "&:hover": {
-          backgroundColor: bgColor,
-          opacity: 0.9,
-        },
+        fontSize: "12px",
+        minWidth: "80px", // ✅ keeps consistent width
+        maxWidth: "80px", // ✅ prevents expanding
+        padding: "4px 8px",
+        overflow: "hidden",
+        whiteSpace: "nowrap",
       }}
       size="small"
     >

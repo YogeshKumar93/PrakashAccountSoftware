@@ -6,6 +6,7 @@ import Layouts from "./Layouts";
 import Logs from "./Logs";
 import WebHooks from "./WebHooks";
 import Plans from "./Plans";
+import Notification from "../components/Notification/Notification";
 
 
 const TabPanel = ({ children, value, index }) => {
@@ -40,6 +41,7 @@ export const Settings = () => {
         <Tab label="WebHooks" />
         <Tab label="Logs" />
         <Tab label="Plans" />
+        <Tab label="Notifications" />
        
       </Tabs>
 
@@ -57,6 +59,9 @@ export const Settings = () => {
       </TabPanel>
       <TabPanel value={tab} index={4}>
         <Plans />
+      </TabPanel>
+      <TabPanel value={tab} index={5}>
+        <Notification />
       </TabPanel>
     
     </Box>

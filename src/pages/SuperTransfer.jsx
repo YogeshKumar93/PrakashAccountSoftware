@@ -33,7 +33,7 @@ const handleFetchSender = async (number = mobile) => {
     const data = response?.data || response?.response?.data;
 
     if (response)
-      okSuccessToast(response.message || "Sender fetched successfully");
+      // okSuccessToast(response.message || "Sender fetched successfully");
 
     if (data && data?.is_active === 1) {
       setSender(data);

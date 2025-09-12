@@ -7,6 +7,7 @@ import RemitterDetails from "./RemitterDetails";
 import RegistterRemitter from "./RegistterRemitter";
 import Beneficiaries from "./Beneficiaries";
 import SelectedBeneficiary from "./SelectedBeneficiary";
+import SenderRegisterModal from "./SenderRegisterModal";
 
 const Dmt = () => {
   const [mobile, setMobile] = useState("");
@@ -14,6 +15,7 @@ const Dmt = () => {
   const [beneficiaries, setBeneficiaries] = useState([]);
   const [showRegister, setShowRegister] = useState(false);
   const [selectedBeneficiary, setSelectedBeneficiary] = useState(null);
+  const [openRegisterModal, setOpenRegisterModal] = useState(false);
 
   const handleFetchSender = async (number = mobile) => {
     if (!number || number.length !== 10) return;
@@ -33,9 +35,10 @@ const Dmt = () => {
         okSuccessToast(message);
       } else if (message === "Remitter Not Found") {
         setSender(null);
+              setOpenRegisterModal(true);
         setBeneficiaries([]);
         setShowRegister(true);
-        okSuccessToast(message);
+        // okSuccessToast(message);
       } else {
         apiErrorToast(message || "Unexpected response");
       }
@@ -75,11 +78,15 @@ const Dmt = () => {
         value={mobile}
         onChange={handleChange}
         inputProps={{ maxLength: 10 }}
+                sx={{ mb: 1}}
+
       />
 
-      {showRegister && <RegistterRemitter mobile={mobile} onSuccess={setSender} />}
+          {openRegisterModal && (
+ <RegistterRemitter   open={openRegisterModal}
+          onClose={() => setOpenRegisterModal(false)} mobile={mobile} onSuccess={setSender} />
+          )}
 
-      {sender && (
         <Box display="flex" flexDirection={{ xs: "column", md: "row" }} gap={0.5}>
           {/* Left column: Remitter + selected beneficiary */}
           <Box flex="0 0 30%" display="flex" flexDirection="column" >
@@ -103,7 +110,6 @@ const Dmt = () => {
             />
           </Box>
         </Box>
-      )}
     </Box>
   );
 };

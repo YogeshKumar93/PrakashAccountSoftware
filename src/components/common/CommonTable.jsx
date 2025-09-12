@@ -447,8 +447,9 @@ const tableRows = useMemo(() => {
           style={{ 
             textAlign: "center", 
             padding: "40px 20px",
-            fontStyle: "italic",
-            color: "#666"
+            fontStyle: "inter",
+            color: "#666",
+            backgroundColor:"#fff"
           }}
         >
           <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
@@ -468,7 +469,7 @@ const tableRows = useMemo(() => {
           style={{ 
             textAlign: "center", 
             padding: "40px 20px",
-            fontStyle: "italic",
+            fontStyle: "inter",
             color: "#666"
           }}
         >
@@ -500,10 +501,12 @@ const tableRows = useMemo(() => {
             verticalAlign: "middle",
             width: column.width || "auto",
             textAlign: "left",
-            fontSize: "16px",
+            fontSize: "14px",
             lineHeight: "1",
-            fontFamily: "'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif",
-            color: "#333"
+              borderBottom: "1px solid #e2e8f0", // ✅ horizontal line
+            fontFamily: "inter",
+            fontWeight:400,
+            color: "#000"
           }}
         >
           {column.selector ? (
@@ -541,13 +544,13 @@ const tableHeaders = useMemo(
         style={{
           padding: "16px 12px",
           textAlign: "left",
-          fontWeight: 500,
-          fontSize: "15px",
+          fontWeight: 550,
+          fontSize: "14px",
           width: column.width || "auto",
           minWidth: column.width || "auto",
           letterSpacing: "0.5px",
           borderBottom: "2px solid #e2e8f0",
-          fontFamily: "'Inter', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif",
+          fontFamily: 'Inter',
           position: "sticky",
           top: 0,
           zIndex: 1,

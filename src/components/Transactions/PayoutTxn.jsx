@@ -41,6 +41,13 @@ const PayoutTxn = ({ filters = [], query }) => {
         ),
         wrap: true,
       },
+      {
+        name: "Ref",
+        selector: (row) => (
+          <div style={{ textAlign: "left" }}>{row.client_ref}</div>
+        ),
+        wrap: true,
+      },
 
       {
         name: "Mobile Number",
@@ -81,16 +88,7 @@ const PayoutTxn = ({ filters = [], query }) => {
         wrap: true,
         right: true,
       },
-      {
-        name: "CCF",
-        selector: (row) => (
-          <>
-        ₹{parseFloat(row.ccf).toFixed(2)}
-       </>
-        ),
-        wrap: true,
-        right: true,
-      },
+  
       {
         name: "GST",
         selector: (row) => (
@@ -100,24 +98,7 @@ const PayoutTxn = ({ filters = [], query }) => {
         wrap: true,
         right: true,
       },
-      {
-        name: "Comm",
-        selector: (row) => (
-          <>
-            ₹{parseFloat(row.comm).toFixed(2)}
-                </>  ),
-        wrap: true,
-        right: true,
-      },
-      {
-        name: "TDS",
-        selector: (row) => (
-          <>
-            ₹{parseFloat(row.tds).toFixed(2)}
-                </>  ),
-        wrap: true,
-        right: true,
-      },
+  
       {
         name: "Status",
         selector: (row) => <CommonStatus value={row.status} />,
