@@ -62,10 +62,10 @@ const ApiEndpoints = {
   CHANGE_OPERATOR_PIPE: "admin/changePipe",
   GET_ROUTE: "admin/getRoutes",
   GET_CATEGORIES: "admin/getCategories",
-BBPS_GET_CATEGORIES:"bbps/getCategories",
-BBPS_GET_BILLERS:"bbps/getBillers",
-BBPS_GET_BILLERS_DETAILS:"bbps/getBillerDetails",
-BBPS_FETCH_BILL:"bbps/fetchBill",
+  BBPS_GET_CATEGORIES: "bbps/getCategories",
+  BBPS_GET_BILLERS: "bbps/getBillers",
+  BBPS_GET_BILLERS_DETAILS: "bbps/getBillerDetails",
+  BBPS_FETCH_BILL: "bbps/fetchBill",
 
   // ****************************** NEW API'S ******************************
   SIGN_IN: "auth/signIn",
@@ -94,7 +94,7 @@ BBPS_FETCH_BILL:"bbps/fetchBill",
   DELETE_LOG: "auditlog/deleteAuditLog",
   GET_LOG: "auditlog/getAuditLog",
   GET_WALLETLEDGER: "walletledger/getWalletLedgers",
-  
+
   // ****************************** NEW API'S ABOVE ******************************
 
   GET_FUND_REQUESTS: "fundrequest/getFundRequests",
@@ -173,12 +173,28 @@ BBPS_FETCH_BILL:"bbps/fetchBill",
 
   CREATE_USER: "signup/createUser",
   GET_SIGNUP_SCHEMA: "signup/getSignupSchema",
-  DMT1:"dmt1/remitterStatus",
-  DMT1_REGISTER:"dmt1/registerRemitter",
-  // ****************************** NEW API'S ABOVE ******************************
+  DMT1: "dmt1/remitterStatus",
+  DMT1_REGISTER: "dmt1/registerRemitter",
 
-  GET_ACC_ACCOUNTS: "",
-  // GET_ACC_ACCOUNTS: "",
+  CREATE_BASIC: "business/createBasic",
+  CREATE_CONTACT: "business/createContact",
+  CREATE_ADDRESS: "business/createAddress",
+  CREATE_IDENTIFICATION: "business/createIdentification",
+  CREATE_BANK: "business/createBank",
+  CREATE_DOCUMENTS: "business/createDocuments",
+  CREATE_KYC: "business/createKyc",
+  CREATE_STATUS: "business/createStatus",
+
+  BASIC_SCHEMA: "business/basicSchema",
+  CONTACT_SCHEMA: "business/contactSchema",
+  ADDRESS_SCHEMA: "business/addressSchema",
+  IDENTIFICATION_SCHEMA: "business/identificationSchema",
+  BANK_SCHEMA: "business/bankSchema",
+  DOCUMENTS_SCHEMA: "business/documentsSchema",
+  KYC_SCHEMA: "business/kycSchema",
+  STATUS_SCHEMA: "business/statusSchema",
+
+  // ****************************** NEW API'S ABOVE ******************************
 
   GET_ACC_BANKS: "",
   UPDATE_BANKS: "admin/changeBankStatus",
