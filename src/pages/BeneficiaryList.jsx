@@ -179,6 +179,7 @@ const BeneficiaryList = ({ sender, onSuccess, onSelect }) => {
           </Typography>
 
        <Box ml={isMobile ? 2 : "auto"}>
+        {sender &&
     <Button
       variant="contained"
       size="small"
@@ -199,6 +200,7 @@ const BeneficiaryList = ({ sender, onSuccess, onSelect }) => {
     >
       Add Beneficiary
     </Button>
+}
   </Box>
 
         </Box>
@@ -269,7 +271,7 @@ const BeneficiaryList = ({ sender, onSuccess, onSelect }) => {
       py: 0.2,
     }}
   >
-    Pay
+    Send Money
   </Button>
 
   {/* Delete button */}

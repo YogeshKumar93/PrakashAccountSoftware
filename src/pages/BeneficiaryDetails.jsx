@@ -120,7 +120,7 @@ const BeneficiaryDetails = ({ beneficiary, senderMobile, senderId }) => {
           bgcolor: "#0078B6",
           color: "#fff",
           textAlign: "center",
-          py: 1.5,
+          py: 1,
         }}
       >
         <Typography variant="subtitle1" fontWeight="bold">

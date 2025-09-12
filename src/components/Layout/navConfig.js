@@ -9,7 +9,7 @@ export const nav = [
 export const Admin_nav = [
   { title: "Dashboard", icon: "📊", icon2: "📊", to: "/admin/dashboard" },
   { title: "Users", icon: "👥", icon2: "👥", to: "/admin/users" },
-  { title: "Notification", icon: "💳", icon2: "💳", to: "/admin/notification" },
+  // { title: "Notification", icon: "💳", icon2: "💳", to: "/admin/notification" },
   { title: "Transactions", icon: "💳", icon2: "💳", to: "/admin/transactions" },
   { title: "Statement", icon: "💳", icon2: "💳", to: "/admin/statement" },
   {

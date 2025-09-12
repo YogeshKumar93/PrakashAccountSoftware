@@ -101,16 +101,22 @@ const SelectedBeneficiary = ({ beneficiary, senderId, senderMobile }) => {
   };
 
   return (
-    <Paper sx={{ p: 2, mt: 2, borderRadius: 2 }}>
+    <Paper sx={{ p: 0, mt: 2, borderRadius: 2, overflow: "hidden" }}>
       {/* Header */}
-      <Box sx={{ bgcolor: "#0078B6", py: 1, textAlign: "center", mb: 2 }}>
-        <Typography variant="subtitle1" fontWeight="bold" color="#fff">
+   <Box
+        sx={{
+          bgcolor: "#0078B6",
+          color: "#fff",
+          textAlign: "center",
+          py: 1,
+        }}
+      >        <Typography variant="subtitle1" fontWeight="bold" color="#fff">
           Selected Beneficiary
         </Typography>
       </Box>
 
       {/* Beneficiary Details */}
-      <Box sx={{ mb: 2 }}>
+<Box sx={{ mx: 2, my: 2, p: 1, bgcolor: "#f0f8ff", borderRadius: 2 }}>
         {[
           { label: "Name", value: beneficiary.name },
           { label: "Account Number", value: beneficiary.account },
@@ -118,15 +124,15 @@ const SelectedBeneficiary = ({ beneficiary, senderId, senderMobile }) => {
           { label: "IFSC", value: beneficiary.ifsc },
         ].map((item, idx) => (
           <Box key={idx} display="flex" mb={1}>
-            <Typography sx={{ width: "150px", fontWeight: 500 }}>{item.label}:</Typography>
-            <Typography>{item.value}</Typography>
+            <Typography sx={{ width: "150px", fontWeight: 500,fontSize:"14px" }}>{item.label}:</Typography>
+            <Typography sx={{fontSize:"12px"}}>{item.value}</Typography>
           </Box>
         ))}
       </Box>
 
       {/* Transfer Mode */}
-      <Box textAlign="center" mb={2}>
-        <Typography variant="body2" fontWeight="bold" mb={0.5}>
+      <Box textAlign="center" mb={0}>
+        <Typography variant="body2" fontWeight="bold" mb={0}>
           Transfer Mode
         </Typography>
         <RadioGroup

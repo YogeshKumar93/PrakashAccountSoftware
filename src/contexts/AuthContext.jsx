@@ -8,6 +8,7 @@ import React, {
 } from "react";
 import { apiCall } from "../api/apiClient";
 import ApiEndpoints from "../api/ApiEndpoints";
+import axios from "axios";
 
 // import useSessionTimeout from "../hooks/useSessionTimeout";
 
@@ -49,7 +50,6 @@ export const AuthProvider = ({ children }) => {
   const userIsLoggedIn = !!token;
 
   const loadUserProfile = async () => {
-    console.log("I AM Loading user profile...");
     try {
       const { error, response } = await apiCall(
         "GET",
@@ -57,16 +57,16 @@ export const AuthProvider = ({ children }) => {
       );
 
       if (error)
-        throw new Error(error?.message || "Failed to load user profile");
+        throw new Error(error.message || "Failed to load user profile");
 
       if (response) {
-        const latestUser = response?.data;
+        const latestUser = response.data;
         const savedUser = JSON.parse(localStorage.getItem("user"));
 
         // 🚨 Compare critical fields like role, status, etc.
         if (savedUser && savedUser.role !== latestUser.role) {
-          console.log("User role has changed, logging out...");
-          await logout();
+          console.warn("User role has changed, logging out...");
+          await logout(); // logout API + clear storage
           return null;
         }
 
@@ -129,7 +129,18 @@ export const AuthProvider = ({ children }) => {
       console.error("Failed to fetch colours:", err);
     }
   };
+  useEffect(() => {
+    const fetchIp = async () => {
+      try {
+        const response = await axios.get("https://api.ipify.org?format=json");
+        setIp(response.data.ip);
+      } catch (error) {
+        console.error("Error fetching the IP address:", error);
+      }
+    };
 
+    fetchIp();
+  }, []);
   // Initialize auth state on app load
   useEffect(() => {
     const initializeAuth = async () => {
