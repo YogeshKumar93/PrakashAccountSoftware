@@ -624,7 +624,7 @@ export default function AllServices() {
             >
               <ArrowBackIcon />
             </IconButton>
-            <Typography variant="h5" sx={{ fontWeight: 600, color: "#2B1A4C" }}>
+            <Typography variant="h6" sx={{ fontWeight: 600, color: "#2B1A4C" }}>
               {currentView.menuLabel} / {currentView.subMenuLabel}
             </Typography>
           </Box>
@@ -665,7 +665,7 @@ export default function AllServices() {
                 }}
               >
                 <img
-                  src={""}
+                  src={broadband_1}
                   alt="Banner"
                   style={{
                     width: "100%",
