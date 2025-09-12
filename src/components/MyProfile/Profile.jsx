@@ -99,7 +99,7 @@ const ProfilePage = () => {
               borderRadius: 3,
               mb: { xs: 2, sm: 3, md: 4 },
               // mb: 4,
-             
+
               background: "#1E3A8A",
               color: "white",
               textAlign: { xs: "center", sm: "left" },
@@ -523,26 +523,29 @@ const ProfilePage = () => {
         />
       )}
 
-      {/* New Number Modal */}
-      <NumberVerificationComponent
-        open={newNumberModal}
-        onClose={() => setNewNumberModal(false)}
-        onSuccess={(message) => {
-          setSuccessMessage(message);
-          setNewNumberModal(false);
-        }}
-        username={user?.username}
-      />
+      {newNumberModal && (
+        <NumberVerificationComponent
+          open={newNumberModal}
+          onClose={() => setNewNumberModal(false)}
+          onSuccess={(message) => {
+            setSuccessMessage(message);
+            setNewNumberModal(false);
+          }}
+          username={user?.username}
+        />
+      )}
 
-      <ChangeLayoutModal
-        open={changeLayout}
-        onClose={() => setChangeLayout(false)}
-        onSuccess={(message) => {
-          setSuccessMessage(message);
-          setChangeLayout(false);
-        }}
-        username={user?.username}
-      />
+      {changeLayout && (
+        <ChangeLayoutModal
+          open={changeLayout}
+          onClose={() => setChangeLayout(false)}
+          onSuccess={(message) => {
+            setSuccessMessage(message);
+            setChangeLayout(false);
+          }}
+          username={user?.username}
+        />
+      )}
     </Container>
   );
 };

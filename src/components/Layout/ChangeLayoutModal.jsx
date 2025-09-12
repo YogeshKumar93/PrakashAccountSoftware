@@ -20,6 +20,7 @@ import CommonModal from "../common/CommonModal";
 import { apiCall } from "../../api/apiClient";
 import ApiEndpoints from "../../api/ApiEndpoints";
 import CommonMpinModal from "../common/CommonMpinModal";
+import Loader from "../common/Loader";
 
 const style = {
   position: "absolute",
@@ -41,51 +42,59 @@ const ChangeLayoutModal = ({ open, onClose, onSuccess, username }) => {
   const [mpinModalOpen, setMpinModalOpen] = useState(false);
   const [MpinCallBackVal, setMpinCallBackVal] = useState(false);
   const [selectedLayout, setSelectedLayout] = useState(null);
+
   const authCtx = useContext(AuthContext);
   const user = authCtx.user;
+  const layout = user?.is_layout;
   const [value, setValue] = React.useState(user?.layout * 1);
   const navigate = useNavigate();
 
   const handleChange = (event) => {
     const newValue = event.target.value * 1;
+    setValue(newValue);
     setSelectedLayout(newValue);
-    setMpinModalOpen(true); // Open MPIN modal when layout is selected
+    setMpinModalOpen(true);
   };
+const changeSwitch = useCallback(
+  async (mpin) => {
+    if (!selectedLayout) return;
 
-  const changeSwitch = useCallback(
-    (mpin) => {
-      if (!selectedLayout) return;
-
-      const data = { is_layout: selectedLayout, mpin: mpin * 1 };
-      setRequest(true);
-
-      apiCall(
-        "post",
+    const data = { is_layout: selectedLayout, mpin: mpin * 1 };
+    setRequest(true);
+    
+    try {
+      const { error, response } = await apiCall(
+        "POST",
         ApiEndpoints.CHANGE_USER_LAYOUT,
         data,
-        null,
-        (res) => {
-          const data = res?.data?.data;
-          authCtx.saveUser(data);
-
-          setMpinCallBackVal(false);
-          setTimeout(() => {
-            if (data.layout === 2) navigate("/customer/services");
-          }, 800);
-
-          onClose();
-          setRequest(false);
-          if (onSuccess) onSuccess("Layout changed successfully");
-        },
-        (err) => {
-          showToast(err, "error");
-          setRequest(false);
-          setMpinCallBackVal(false);
-        }
+        null
       );
-    },
-    [selectedLayout, authCtx, navigate, onClose, onSuccess, showToast]
-  );
+
+      if (response) {
+        const userData = response?.data?.data;
+        showToast(response?.data?.message || "Layout changed successfully", "success");
+        // authCtx.saveUser(userData);
+        onClose();
+        setMpinCallBackVal(false);
+      
+      } else {
+        showToast(error?.message || "Failed to change layout", "error");
+       
+      }
+    } catch (err) {
+      console.error("Error changing layout:", err);
+      showToast("Something went wrong while changing layout", "error");
+    } finally {
+      setRequest(false);
+    }
+  },
+  [selectedLayout, authCtx, onClose, onSuccess, showToast, setRequest, setMpinCallBackVal]
+);
+  useEffect(() => {
+    if (user?.is_layout) {
+      setValue(user?.is_layout * 1);
+    }
+  }, [user]);
 
   useEffect(() => {
     if (MpinCallBackVal && selectedLayout) {
@@ -101,6 +110,8 @@ const ChangeLayoutModal = ({ open, onClose, onSuccess, username }) => {
 
   return (
     <>
+      <Loader loading={request} />
+
       <CommonModal
         open={open}
         title="Choose between layouts"
