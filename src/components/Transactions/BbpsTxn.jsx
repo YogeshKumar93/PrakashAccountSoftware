@@ -91,19 +91,32 @@ const BbpxTxn = ({ filters = [], query }) => {
         right: true,
       },
       {
-        name: "Charges & Comm",
+        name: "Charge",
         selector: (row) => (
           <div style={{ textAlign: "right" }}>
-            Charges: ₹{parseFloat(row.charges).toFixed(2)} <br />
-            GST: ₹{parseFloat(row.gst).toFixed(2)} <br />
+            ₹{parseFloat(row.charges).toFixed(2)} <br />
+            {/* GST: ₹{parseFloat(row.gst).toFixed(2)} <br />
             Comm: ₹{parseFloat(row.commission).toFixed(2)} <br />
             TDS: ₹{parseFloat(row.tds).toFixed(2)} <br />
-            Net Comm: ₹{parseFloat(row.net_commission).toFixed(2)}
+            Net Comm: ₹{parseFloat(row.net_commission).toFixed(2)} */}
           </div>
         ),
         wrap: true,
         right: true,
       },
+       {
+        name: "Comm",
+        selector: (row) => <div style={{ textAlign: "left" }}>₹{parseFloat(row.commission).toFixed(2)}</div>,
+        wrap: true,
+      }, {
+        name: "TDS",
+        selector: (row) => <div style={{ textAlign: "left" }}>₹{parseFloat(row.tds).toFixed(2)}</div>,
+        wrap: true,
+      }, {
+        name: " Net Comm",
+        selector: (row) => <div style={{ textAlign: "left" }}>₹{parseFloat(row.net_commission).toFixed(2)}</div>,
+        wrap: true,
+      }, 
       {
         name: "Status",
        selector: (row) => <CommonStatus value={row.status} />,

@@ -45,6 +45,7 @@ import Statements from "../pages/Statements";
 import UpiTransfer from "../pages/UpiTransfer";
 import BankStatements from "../pages/BankStatements";
 import AccountStatement from "../pages/AccountStatement";
+import Dmt from "../pages/Dmt";
 import Bbps from "../pages/Bbps";
 
 const PrivateRoute = ({ children }) => {
@@ -138,7 +139,7 @@ export default function AppRoutes() {
               <Route path="customer/logs" element={<RetailerLogs />} />
               <Route
                 path="customer/money-transfer"
-                element={<DmtContainer />}
+                element={<Dmt />}
               />
               <Route
                 path="customer/fund-transfer"

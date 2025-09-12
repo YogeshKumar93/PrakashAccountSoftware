@@ -169,6 +169,8 @@ GET_ACCOUNT_STATEMENT_SCHEMA: "accountStatement/getAccountStatementSchema",
   GET_PLAN_SCHEMA: "plan/getPlanSchema",
   GET_UPI_SCHEMA: "payout/getBeneficiarySchemaUpi",
   UPDATE_USER_STATUS: "user/blockAndUnblock",
+  DMT1:"dmt1/remitterStatus",
+  DMT1_REGISTER:"dmt1/registerRemitter",
   // ****************************** NEW API'S ABOVE ******************************
 
   GET_ACC_ACCOUNTS: "",
