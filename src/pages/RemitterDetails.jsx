@@ -7,8 +7,17 @@ import {
   Collapse,
   useTheme,
   useMediaQuery,
+  Grid,
+  Avatar,
 } from "@mui/material";
-import { ExpandMore, ExpandLess } from "@mui/icons-material";
+import {
+  ExpandMore,
+  ExpandLess,
+  Person,
+  Phone,
+  Verified,
+  AccountBalance,
+} from "@mui/icons-material";
 
 const RemitterDetails = ({ sender }) => {
   const theme = useTheme();
@@ -18,15 +27,16 @@ const RemitterDetails = ({ sender }) => {
   const handleToggle = () => setOpen((prev) => !prev);
 
   return (
-   <Card 
-      sx={{ 
+    <Card
+      sx={{
         borderRadius: 2,
         boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
         border: "1px solid",
         borderColor: "divider",
         overflow: "hidden",
       }}
-    >      {/* Header */}
+    >
+      {/* Header */}
       <Box
         sx={{
           bgcolor: "#0078B6",
@@ -34,14 +44,14 @@ const RemitterDetails = ({ sender }) => {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-       py: 1,
+          py: 1,
           px: 2,
-            cursor: isMobile ? "pointer" : "default",
+          cursor: isMobile ? "pointer" : "default",
         }}
         onClick={isMobile ? handleToggle : undefined}
       >
         <Typography variant="subtitle1" fontWeight="bold">
-          Remitter Details
+          Sender Details
         </Typography>
         {isMobile && (
           <IconButton size="small" sx={{ color: "white" }}>
@@ -53,27 +63,62 @@ const RemitterDetails = ({ sender }) => {
       {/* Content with collapse on mobile */}
       <Collapse in={open || !isMobile} timeout="auto" unmountOnExit>
         {sender ? (
-          <Box sx={{ mx: 2, my: 2, p: 1, bgcolor: "#f0f8ff", borderRadius: 2 }}>
-            {[
-              { label: "Name", value: `${sender.firstName} ${sender.lastName}` },
-              { label: "Mobile Number", value: sender.mobileNumber },
-              { label: "Pincode", value: sender.pincode || "-" },
-              { label: "Available Limit", value: sender.limitAvailable },
-            ].map((item, index) => (
-              <Box key={index} display="flex" mb={1}>
-                <Typography
-                  variant="body2"
-                  fontWeight="500"
-                  color="#4B5563"
-                  sx={{ width: "190px", flexShrink: 0 }}
-                >
-                  {item.label}
-                </Typography>
-                <Typography variant="body2" color="#111827">
-                  {item.value}
-                </Typography>
-              </Box>
-            ))}
+          <Box sx={{ p: 2 }}>
+  <Grid container>
+  {/* Top Row */}
+  <Grid item xs={12} sm={6} sx={{ display: "flex", alignItems: "center" }}>
+    <Avatar sx={{ bgcolor: "#e6f3fb", color: "#0078B6", width: 32, height: 32 }}>
+      <Person fontSize="small" />
+    </Avatar>
+    <Box ml={1.5}>
+      <Typography variant="body2" color="text.secondary">
+        Name
+      </Typography>
+      <Typography>{sender.firstName} {sender.lastName}</Typography>
+    </Box>
+  </Grid>
+
+  <Grid item xs={12} sm={6} sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
+    <Avatar sx={{ bgcolor: "#e6f3fb", color: "#0078B6", width: 32, height: 32 }}>
+      <Phone fontSize="small" />
+    </Avatar>
+    <Box ml={1.5} textAlign="left">
+      <Typography variant="body2" color="text.secondary">
+        Number
+      </Typography>
+      <Typography>{sender.mobileNumber}</Typography>
+    </Box>
+  </Grid>
+
+  {/* Bottom Row */}
+  <Grid item xs={12} sm={6} sx={{ display: "flex", alignItems: "center", mt: 2 }}>
+    <Avatar sx={{ bgcolor: "#e6f3fb", color: "#0078B6", width: 32, height: 32 }}>
+      <Verified fontSize="small" />
+    </Avatar>
+    <Box ml={1.5}>
+      <Typography variant="body2" color="text.secondary">
+        Limit per txn
+      </Typography>
+      <Typography>{sender.limitPerTransaction}</Typography>
+    </Box>
+  </Grid>
+
+  <Grid item xs={12} sm={6} sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end", mt: 2 }}>
+    <Avatar sx={{ bgcolor: "#e6f3fb", color: "#0078B6", width: 32, height: 32 }}>
+      <AccountBalance fontSize="small" />
+    </Avatar>
+    <Box ml={1.5} textAlign="left">
+      <Typography variant="body2" color="text.secondary">
+        Limit Available
+      </Typography>
+      <Typography fontWeight="bold" color="#0078B6">
+        ₹{sender.limitAvailable}
+      </Typography>
+    </Box>
+  </Grid>
+</Grid>
+
+
           </Box>
         ) : (
           <Box

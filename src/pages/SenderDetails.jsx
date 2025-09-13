@@ -59,7 +59,7 @@ const SenderDetails = ({ sender }) => {
         alignItems="center"
         justifyContent="space-between"
         sx={{
-          p: 1.2,
+          p: 1,
           cursor: isMobile ? "pointer" : "default",
           background: "#0078B6",
           color: "#fff",

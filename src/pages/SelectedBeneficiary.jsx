@@ -15,6 +15,7 @@ import { apiCall } from "../api/apiClient";
 import ApiEndpoints from "../api/ApiEndpoints";
 import { okSuccessToast, apiErrorToast } from "../utils/ToastUtil";
 import AuthContext from "../contexts/AuthContext";
+import { useToast } from "../utils/ToastContext";
 
 const SelectedBeneficiary = ({ beneficiary, senderId, senderMobile }) => {
   const { location } = useContext(AuthContext);
@@ -24,7 +25,7 @@ const SelectedBeneficiary = ({ beneficiary, senderId, senderMobile }) => {
   const [otp, setOtp] = useState("");
   const [mpin, setMpin] = useState("");
   const [loading, setLoading] = useState(false);
-
+const {showToast} = useToast()
   if (!beneficiary) return null;
 
   const handleGetOtp = async () => {
@@ -43,7 +44,7 @@ const SelectedBeneficiary = ({ beneficiary, senderId, senderMobile }) => {
       const { error, response } = await apiCall("post", ApiEndpoints.PAYOUT_OTP, payload);
       if (error) apiErrorToast(error);
       else {
-        okSuccessToast("OTP sent successfully!");
+        showToast("OTP sent successfully!","success");
         setOtpRef(response?.data?.otp_ref || null);
       }
     } catch (err) {
@@ -109,8 +110,9 @@ const SelectedBeneficiary = ({ beneficiary, senderId, senderMobile }) => {
           color: "#fff",
           textAlign: "center",
           py: 1,
+          px:2
         }}
-      >        <Typography variant="subtitle1" fontWeight="bold" color="#fff">
+      >        <Typography variant="subtitle1" fontWeight="bold" color="#fff" sx={{textAlign:"left"}}>
           Selected Beneficiary
         </Typography>
       </Box>
@@ -158,16 +160,24 @@ const SelectedBeneficiary = ({ beneficiary, senderId, senderMobile }) => {
           onChange={(e) => setAmount(e.target.value)}
           InputProps={{
             endAdornment: (
-              <InputAdornment position="end">
-                <Button
-                  variant="contained"
-                  size="small"
-                  onClick={handleGetOtp}
-                  disabled={loading}
-                >
-                  {loading ? "Sending..." : "Get OTP"}
-                </Button>
-              </InputAdornment>
+           <InputAdornment position="end">
+  <Button
+    variant="contained"
+    size="small"
+    onClick={handleGetOtp}
+    disabled={loading}
+    sx={{
+      minWidth: "60px",   
+      px: 1,            
+      py: 0.5,            
+      fontSize: "0.75rem", 
+      borderRadius: 1,     
+    }}
+  >
+    {loading ? "..." : "Get OTP"}
+  </Button>
+</InputAdornment>
+
             ),
           }}
         />
@@ -175,7 +185,7 @@ const SelectedBeneficiary = ({ beneficiary, senderId, senderMobile }) => {
         <Box display="flex" flexDirection="column" gap={2}>
           {/* OTP */}
           <Box>
-            <Typography variant="body2" mb={0.5}>Enter OTP</Typography>
+            <Typography variant="body2" mb={0.5} sx={{px:2}}>Enter OTP</Typography>
             <OTPInput
               value={otp}
               onChange={setOtp}
@@ -196,7 +206,7 @@ const SelectedBeneficiary = ({ beneficiary, senderId, senderMobile }) => {
 
           {/* M-PIN */}
           <Box>
-            <Typography variant="body2" mb={0.5}>Enter M-PIN</Typography>
+            <Typography variant="body2" mb={0.5} sx={{px:2}}>Enter M-PIN</Typography>
             <OTPInput
               value={mpin}
               onChange={setMpin}

@@ -22,7 +22,30 @@ import {
   ExpandMore,
   ExpandLess,
 } from "@mui/icons-material";
-
+import {
+  abhy2,
+  airtel2,
+  axis2,
+  bandhan2,
+  bob2,
+  bom2,
+  canara2,
+  cbi2,
+  dbs2,
+  hdfc2,
+  icici2,
+  idbi2,
+  idib2,
+  indus2,
+  jk2,
+  kotak2,
+  pnb2,
+  rbl2,
+  sbi2,
+  stand2,
+  union2,
+  yes2,
+} from "../utils/iconsImports";
 const Beneficiaries = ({ beneficiaries, onSelect, onDelete, onVerify }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -44,7 +67,30 @@ const Beneficiaries = ({ beneficiaries, onSelect, onDelete, onVerify }) => {
           },
         ];
 
-  const bankImageMapping = {}; // add mappings if needed
+  const bankImageMapping = {
+     SBI: sbi2,
+        IBKL: idbi2,
+        UTIB: axis2,
+        HDFC: hdfc2,
+        ICIC: icici2,
+        KKBK: kotak2,
+        BARB: bob2,
+        PUNB: pnb2,
+        MAHB: bom2,
+        UBIN: union2,
+        DBSS: dbs2,
+        RATN: rbl2,
+        YESB: yes2,
+        INDB: indus2,
+        AIRP: airtel2,
+        ABHY: abhy2,
+        CNRB: canara2,
+        BDBL: bandhan2,
+        CBIN: cbi2,
+        IDIB: idib2,
+        SCBL: stand2,
+        JAKA: jk2,
+  }; // add mappings if needed
 
   return (
      <Card 
@@ -175,22 +221,22 @@ const Beneficiaries = ({ beneficiaries, onSelect, onDelete, onVerify }) => {
               >
                 <Box display="flex" alignItems="center" gap={1.5} width="100%">
                   {/* Bank logo */}
-                  {bankImageMapping[b.bank_name] ? (
-                    <Box
-                      component="img"
-                      src={bankImageMapping[b.bank_name]}
-                      alt={b.bank_name}
-                      sx={{
-                        width: 36,
-                        height: 36,
-                        objectFit: "contain",
-                        borderRadius: 1,
-                        border: "1px solid",
-                        borderColor: "divider",
-                        p: 0.5,
-                        backgroundColor: "white",
-                      }}
-                    />
+                 {bankImageMapping[b.ifsc?.slice(0, 4)] ? (
+  <Box
+    component="img"
+    src={bankImageMapping[b.ifsc.slice(0, 4)]}
+    alt={b.bank_name}
+    sx={{
+      width: 36,
+      height: 36,
+      objectFit: "contain",
+      borderRadius: 1,
+      border: "1px solid",
+      borderColor: "divider",
+      p: 0.5,
+      backgroundColor: "white",
+    }}
+  />
                   ) : (
                     <Avatar
                       sx={{
@@ -212,7 +258,7 @@ const Beneficiaries = ({ beneficiaries, onSelect, onDelete, onVerify }) => {
                         fontWeight="500"
                         noWrap
                         sx={{
-                          fontSize: isMobile ? "0.7rem" : "1rem",
+                          fontSize: isMobile ? "0.7rem" : "0.8rem",
                           color:
                             b.id === "na" ? "text.secondary" : "text.primary",
                         }}

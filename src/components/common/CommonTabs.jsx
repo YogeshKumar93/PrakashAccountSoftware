@@ -1,17 +1,19 @@
 import React, { useState } from "react";
-import { Box, Tabs, Tab } from "@mui/material";
+import { Box, Tabs, Tab, useMediaQuery, useTheme } from "@mui/material";
 
 // Reusable TabPanel
 const TabPanel = ({ children, value, index }) => {
   return (
     <div role="tabpanel" hidden={value !== index}>
-      {value === index && <Box sx={{ p: 2 }}>{children}</Box>}
+      {value === index && <Box sx={{ p: { xs: 1, sm: 2 } }}>{children}</Box>}
     </div>
   );
 };
 
 const CommonTabs = ({ tabs = [], defaultTab = 0 }) => {
   const [tab, setTab] = useState(defaultTab);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm")); // small screens
 
   const handleChange = (event, newValue) => {
     setTab(newValue);
@@ -23,13 +25,14 @@ const CommonTabs = ({ tabs = [], defaultTab = 0 }) => {
       <Box
         sx={{
           bgcolor: "white",
-          borderRadius: "0 0 24px 24px",
+          borderRadius: { xs: "0 0 16px 16px", sm: "0 0 24px 24px" },
           display: "flex",
-          p: 1,
+          p: { xs: 0.5, sm: 1 },
           boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
-          width: "fit-content",
+          width: "100%",
+          overflowX: "auto",
           mx: "auto",
-          mt: -3,
+          mt: { xs: -2, sm: -3 },
         }}
       >
         <Tabs
@@ -40,14 +43,14 @@ const CommonTabs = ({ tabs = [], defaultTab = 0 }) => {
           TabIndicatorProps={{ style: { display: "none" } }}
           sx={{
             "& .MuiTab-root": {
-              minWidth: 180,
-              borderRadius: "16px",
+              minWidth: { xs: 100, sm: 140, md: 180 },
+              borderRadius: "12px",
               textTransform: "none",
-              fontSize: "0.75rem",
+              fontSize: { xs: "0.7rem", sm: "0.8rem", md: "0.9rem" },
               color: "#1976d2",
               display: "flex",
               flexDirection: "column",
-              padding: "8px 12px",
+              padding: { xs: "6px 8px", sm: "8px 12px" },
             },
             "& .Mui-selected": {
               bgcolor: "#e3f2fd",
@@ -60,7 +63,7 @@ const CommonTabs = ({ tabs = [], defaultTab = 0 }) => {
             <Tab
               key={index}
               icon={tabItem.icon}
-              label={tabItem.label}
+              label={isMobile ? null : tabItem.label} // hide text on mobile if needed
             />
           ))}
         </Tabs>

@@ -580,7 +580,7 @@ const tableHeaders = useMemo(
       {/* Filter Section */}
       {availableFilters.length > 0 && (
         <>
-          <Paper sx={{ p: 2, mb: 2, display: { xs: "none", md: "block" } }}>
+          <Paper sx={{ p: 1, display: { xs: "none", md: "block" } }}>
             {/* <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}> */}
               {/* <FilterListIcon sx={{ mr: 1 }} /> */}
               {/* <Typography variant="h6">Filters</Typography> */}
@@ -590,8 +590,8 @@ const tableHeaders = useMemo(
         display: "flex", 
         alignItems: "center", 
         flexWrap: "wrap", 
-        gap: 2, 
-        mb: 2 
+        gap: 1, 
+        // mb: 2 
       }}>
         {availableFilters.map((filter) => (
           <Box key={filter.id} sx={{ minWidth: 120 }}>
@@ -626,21 +626,29 @@ const tableHeaders = useMemo(
         ))}
         
         {/* Apply and Reset buttons */}
-        <Box sx={{ display: "flex", gap: 1 }}>
-          <Button variant="contained" onClick={applyFilters} size="small">
-            Apply
-          </Button>
-          <Button
-            variant="outlined"
-            onClick={resetFilters}
-            startIcon={<ClearIcon />}
-            size="small"
-          >
-            Reset
-          </Button>
-        </Box>
+<Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+  {/* Left side buttons */}
+  <Button variant="contained" onClick={applyFilters} size="small">
+    Apply
+  </Button>
+  <Button
+    variant="outlined"
+    onClick={resetFilters}
+    startIcon={<ClearIcon />}
+    size="small"
+  >
+    Reset
+  </Button>
+  <Tooltip title="Refresh">
+    <IconButton onClick={handleManualRefresh} disabled={loading}>
+      <CachedIcon />
+    </IconButton>
+  </Tooltip>
+</Box>
+  <Box sx={{ marginLeft: "auto" }}>
+    {customHeader}
+  </Box>
       </Box>
-
             {/* Applied filters chips */}
             {/* <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
               {appliedFiltersChips}
@@ -709,20 +717,22 @@ const tableHeaders = useMemo(
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    mb: 2,
+  
   }}
 >
   <Typography variant="h5">{title}</Typography>
   
-  <Box sx={{ display: "flex", alignItems: "center" }}>
-    {customHeader} {/* Add custom header content here */}
-    <Tooltip title="Refresh">
-      <IconButton onClick={handleManualRefresh} disabled={loading} sx={{ ml: 1 }}>
-        <CachedIcon />
-        {/* {loading ? <CircularProgress size={24} /> : <CachedIcon />} */}
-      </IconButton>
-    </Tooltip>
-  </Box>
+<Box sx={{ display: "flex", alignItems: "center" }}>
+
+  {/* ✅ Show Refresh only if no filters are used */}
+ {availableFilters.length === 0 && (
+      <Tooltip title="Refresh">
+        <IconButton onClick={handleManualRefresh} disabled={loading} sx={{ ml: 1 }}>
+          {loading ? <CircularProgress size={24} /> : <CachedIcon />}
+        </IconButton>
+      </Tooltip>
+    )}
+</Box>
 </Box>
 
       {/* Data Table */}

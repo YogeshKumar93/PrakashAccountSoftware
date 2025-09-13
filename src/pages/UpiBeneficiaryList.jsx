@@ -175,7 +175,7 @@ const UpiBeneficiaryList = ({ sender, onSuccess, onSelect }) => {
       >
         <Box display="flex" alignItems="center" gap={1} flexGrow={1}>
           <Typography variant="subtitle1" fontWeight="600" color="#fff">
-            Beneficiary List
+            Beneficiary List ({beneficiaries?.length || 0})
           </Typography>
 
        <Box ml={isMobile ? 2 : "auto"}>

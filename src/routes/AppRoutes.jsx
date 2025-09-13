@@ -48,6 +48,7 @@ import AllServices from "../pages/AllServices";
 import Dmt from "../pages/Dmt";
 import Bbps from "../pages/Bbps";
 import { SelectLayout } from "../pages/SelectLayout";
+import Cms from "../pages/Cms";
 
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated, loading } = useContext(AuthContext);
@@ -121,7 +122,7 @@ export default function AppRoutes() {
               <Route path="admin/layout" element={<Layouts />} />
               <Route path="admin/commissionrule" element={<CommissionRule />} />
               <Route path="admin/sidenav" element={<Navs />} />
-              <Route path="admin/selectlayout" element={<SelectLayout />} />
+              <Route path="admin/selectlayout" element={<Layouts />} />
 
               <Route path="admin/statements" element={<Statements />} />
               <Route
@@ -157,6 +158,7 @@ export default function AppRoutes() {
               <Route path="customer/sale" element={<MySale />} />
  <Route path="customer/bbps" element={<Bbps />} />     
           <Route path="customer/profile" element={<ProfilePage />} />
+          <Route path="customer/cms" element={<Cms />} />
 
               <Route
                 path="customer/*"
