@@ -1,4 +1,4 @@
-import { useMemo, useContext, useState, useRef } from "react";
+import { useMemo, useContext, useState, useRef, useEffect } from "react";
 import { Box, Tooltip, IconButton, Button } from "@mui/material";
 import AuthContext from "../contexts/AuthContext";
 import { dateToTime, ddmmyy } from "../utils/DateUtils";
@@ -11,6 +11,8 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import BlockUnblockUser from "./BlockUnblockUser";
 import ReButton from "../components/common/ReButton";
 import CreateUser from "../components/User/createUser";
+import EditIcon from '@mui/icons-material/Edit';
+import { apiCall } from "../api/apiClient";
 
 const Users = ({ query }) => {
   const authCtx = useContext(AuthContext);
@@ -18,6 +20,7 @@ const Users = ({ query }) => {
 
   const [selectedUser, setSelectedUser] = useState(null);
   const [openPermissions, setOpenPermissions] = useState(false);
+  const [userMap, setUserMap] = useState({}); // id → name map
 
   // 🔐 Lock/Unlock Modal
   const [lockModalOpen, setLockModalOpen] = useState(false);
@@ -52,6 +55,34 @@ const Users = ({ query }) => {
     setUserToToggle(null);
     setLockModalOpen(false);
   };
+
+  useEffect(() => {
+    const fetchUserMap = async () => {
+      try {
+        const res = await apiCall("post",ApiEndpoints.GET_USERS);
+        console.log("Full API response:", res);
+
+        const usersArray = res?.response?.data?.data;
+        if (Array.isArray(usersArray)) {
+          const map = {};
+          usersArray.forEach((user) => {
+            console.log("Mapping user:", user.id, user.name); // Debug each user
+            map[user.id] = user.name;
+          });
+
+          console.log("Final ID → Name map:", map); // Check final mapping
+          setUserMap(map);
+        } else {
+          console.warn("Users array is missing or not an array", usersArray);
+        }
+      } catch (err) {
+        console.error("Error fetching users:", err);
+      }
+    };
+
+    fetchUserMap();
+  }, []);
+
 
   const filters = useMemo(
     () => [
@@ -88,6 +119,38 @@ const Users = ({ query }) => {
           </Tooltip>
         ),
       },
+          {
+        name: "Mobile",
+        selector: (row) => (
+          <Tooltip title={row?.mobile}>
+            <div style={{ textAlign: "left" }}>{row?.mobile}</div>
+          </Tooltip>
+        ),
+        width: "100px",
+      },
+      {
+        name: "Establishment",
+        selector: (row) => (
+          <Tooltip title={row?.establishment}>
+            <div style={{ textAlign: "left" }}>{row?.establishment}</div>
+          </Tooltip>
+        ),
+                width: "150px",
+      },
+{
+  name: "Parent",
+  selector: (row) => {
+    if (!row.parent) return "-"; // If parent is null, show dash
+    const parentName = userMap[row.parent]; // Lookup name in map
+    return (
+      <Tooltip title={`Parent ID: ${row.parent}`}>
+        <div style={{ textAlign: "left" }}>
+          {parentName || `ID ${row.parent}`} {/* show name if exists, else fallback */}
+        </div>
+      </Tooltip>
+    );
+  },
+},
       {
         name: "W1",
         selector: (row) => (
@@ -113,15 +176,6 @@ const Users = ({ query }) => {
         ),
       },
       {
-        name: "Mobile",
-        selector: (row) => (
-          <Tooltip title={row?.mobile}>
-            <div style={{ textAlign: "left" }}>{row?.mobile}</div>
-          </Tooltip>
-        ),
-        width: "150px",
-      },
-      {
         name: "Status",
         selector: (row) =>
           row.is_active === 1 ? (
@@ -138,22 +192,37 @@ const Users = ({ query }) => {
             </Tooltip>
           ),
       },
-      {
-        name: "Permissions",
-        selector: (row) => (
-          <Tooltip title="Edit Permissions">
-            <IconButton
-              size="small"
-              color="primary"
-              onClick={() => handleOpenPermissions(row)}
-            >
-              <SettingsIcon />
-            </IconButton>
-          </Tooltip>
-        ),
-      },
+   {
+  name: "Actions",
+  selector: (row) => (
+    <Box sx={{ display: "flex", gap: 1 }}>
+      {/* Edit Icon */}
+      <Tooltip title="Edit User">
+        <IconButton
+          size="small"
+          color="secondary"
+          onClick={() => handleEdit(row)}
+        >
+          <EditIcon />
+        </IconButton>
+      </Tooltip>
+
+      {/* Permissions Icon */}
+      <Tooltip title="Edit Permissions">
+        <IconButton
+          size="small"
+          color="primary"
+          onClick={() => handleOpenPermissions(row)}
+        >
+          <SettingsIcon />
+        </IconButton>
+      </Tooltip>
+    </Box>
+  ),
+}
+
     ],
-    []
+    [userMap]
   );
 
   return (

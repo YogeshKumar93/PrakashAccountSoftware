@@ -11,7 +11,7 @@ export const Admin_nav = [
   { title: "Users", icon: "👥", icon2: "👥", to: "/admin/users" },
   // { title: "Notification", icon: "💳", icon2: "💳", to: "/admin/notification" },
   { title: "Transactions", icon: "💳", icon2: "💳", to: "/admin/transactions" },
-  { title: "Statement", icon: "💳", icon2: "💳", to: "/admin/statement" },
+  // { title: "Statement", icon: "💳", icon2: "💳", to: "/admin/statement" },
   {
     title: "Fund Request",
     icon: "🛠️",
@@ -28,6 +28,10 @@ export const Admin_nav = [
   { title: "Services", icon: "👥", icon2: "👥", to: "/admin/services" },
   { title: "Bankings", icon: "👥", icon2: "👥", to: "/admin/bankings" },
   { title: "Layouts", icon: "👥", icon2: "👥", to: "/admin/selectlayout" },
+  { title: "Complaint", icon: "👥", icon2: "👥", to: "/admin/selectlayout" },
+  { title: "Risk", icon: "👥", icon2: "👥", to: "/admin/selectlayout" },
+  { title: "Virtual Accounts", icon: "👥", icon2: "👥", to: "/admin/selectlayout" },
+  { title: "Login History", icon: "👥", icon2: "👥", to: "/admin/selectlayout" },
 ];
 
 // Customer Navigation
@@ -91,6 +95,7 @@ export const customer_nav = [
   { title: "My Sale", icon: "📒", icon2: "📒", to: "/customer/sale" },
   { title: "Bbps", icon: "📒", icon2: "📒", to: "/customer/bbps" },
   { title: "Logs", icon: "📒", icon2: "📒", to: "/customer/logs" },
+  { title: "Cms", icon: "📒", icon2: "📒", to: "/customer/cms" },
 ];
 export const di_nav = [
   { title: "Dashboard", icon: "📊", icon2: "📊", to: "/di/dashboard" },

@@ -590,7 +590,7 @@ const CommonTable = ({
       {/* Filter Section */}
       {availableFilters.length > 0 && (
         <>
-          <Paper sx={{ p: 2, mb: 2, display: { xs: "none", md: "block" } }}>
+          <Paper sx={{ p: 1, display: { xs: "none", md: "block" } }}>
             {/* <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}> */}
             {/* <FilterListIcon sx={{ mr: 1 }} /> */}
             {/* <Typography variant="h6">Filters</Typography> */}
@@ -601,8 +601,8 @@ const CommonTable = ({
                 display: "flex",
                 alignItems: "center",
                 flexWrap: "wrap",
-                gap: 2,
-                mb: 2,
+                gap: 1,
+                // mb: 2
               }}
             >
               {availableFilters.map((filter) => (
@@ -642,7 +642,8 @@ const CommonTable = ({
               ))}
 
               {/* Apply and Reset buttons */}
-              <Box sx={{ display: "flex", gap: 1 }}>
+              <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+                {/* Left side buttons */}
                 <Button variant="contained" onClick={applyFilters} size="small">
                   Apply
                 </Button>
@@ -654,9 +655,14 @@ const CommonTable = ({
                 >
                   Reset
                 </Button>
+                <Tooltip title="Refresh">
+                  <IconButton onClick={handleManualRefresh} disabled={loading}>
+                    <CachedIcon />
+                  </IconButton>
+                </Tooltip>
               </Box>
+              <Box sx={{ marginLeft: "auto" }}>{customHeader}</Box>
             </Box>
-
             {/* Applied filters chips */}
             {/* <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
               {appliedFiltersChips}
@@ -741,6 +747,30 @@ const CommonTable = ({
               >
                 <CachedIcon />
                 {/* {loading ? <CircularProgress size={24} /> : <CachedIcon />} */}
+              </IconButton>
+            </Tooltip>
+          )}
+        </Box>
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Typography variant="h5">{title}</Typography>
+
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          {/* ✅ Show Refresh only if no filters are used */}
+          {availableFilters.length === 0 && (
+            <Tooltip title="Refresh">
+              <IconButton
+                onClick={handleManualRefresh}
+                disabled={loading}
+                sx={{ ml: 1 }}
+              >
+                {loading ? <CircularProgress size={24} /> : <CachedIcon />}
               </IconButton>
             </Tooltip>
           )}

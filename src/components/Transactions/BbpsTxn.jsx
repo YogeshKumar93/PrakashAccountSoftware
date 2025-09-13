@@ -41,6 +41,12 @@ const BbpxTxn = ({ filters = [], query }) => {
         ),
         wrap: true,
       },
+        {
+        name: "RRN",
+        selector: (row) => <div style={{ textAlign: "left" }}>{row.rrn}</div>,
+        wrap: true,
+      },
+   
       {
         name: "Client Ref",
         selector: (row) => (
@@ -124,12 +130,7 @@ const BbpxTxn = ({ filters = [], query }) => {
         
         center: true,
       },
-      {
-        name: "RRN",
-        selector: (row) => <div style={{ textAlign: "left" }}>{row.rrn}</div>,
-        wrap: true,
-      },
-   
+    
     ],
     []
   );

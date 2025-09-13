@@ -8,6 +8,7 @@ import RegistterRemitter from "./RegistterRemitter";
 import Beneficiaries from "./Beneficiaries";
 import SelectedBeneficiary from "./SelectedBeneficiary";
 import SenderRegisterModal from "./SenderRegisterModal";
+import { useToast } from "../utils/ToastContext";
 
 const Dmt = () => {
   const [mobile, setMobile] = useState("");
@@ -16,7 +17,7 @@ const Dmt = () => {
   const [showRegister, setShowRegister] = useState(false);
   const [selectedBeneficiary, setSelectedBeneficiary] = useState(null);
   const [openRegisterModal, setOpenRegisterModal] = useState(false);
-
+const {showToast} = useToast();
   const handleFetchSender = async (number = mobile) => {
     if (!number || number.length !== 10) return;
 
@@ -32,7 +33,7 @@ const Dmt = () => {
         setSender(data);
         setBeneficiaries(data?.beneficiaries || []);
         setShowRegister(false);
-        okSuccessToast(message);
+        showToast(message,"success");
       } else if (message === "Remitter Not Found") {
         setSender(null);
               setOpenRegisterModal(true);

@@ -103,7 +103,7 @@ const handleChange = (e) => {
       <Box
         display="flex"
         flexDirection={isMobile ? "column" : "row"}
-        gap={1}
+        gap={0.5}
       >
         {/* Left: Sender Details + Selected Beneficiary */}
         <Box flex={isMobile ? "1 1 100%" : "0 0 30%"}>

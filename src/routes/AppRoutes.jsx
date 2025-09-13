@@ -26,7 +26,6 @@ import CommissionRule from "../pages/CommissionRule";
 import { Banking } from "../pages/Banking";
 import { Settings } from "../pages/Settings";
 import SuperTransfer from "../pages/SuperTransfer";
-import SelectLayout from "../pages/SelectLayout";
 import { Recharge } from "../pages/Recharge";
 import LandingPage from "../components/LandingPages/LandingPage";
 import NavBar from "../components/LandingPages/Navbar";
@@ -50,6 +49,8 @@ import Dmt from "../pages/Dmt";
 import Bbps from "../pages/Bbps";
 import Wallet2WalletTransfer from "../pages/Wallet2WalletTransfer";
 import W2wTransfer from "../pages/w2wTransfer";
+import { SelectLayout } from "../pages/SelectLayout";
+import Cms from "../pages/Cms";
 
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated, loading } = useContext(AuthContext);
@@ -127,7 +128,7 @@ export default function AppRoutes() {
               <Route path="admin/layout" element={<Layouts />} />
               <Route path="admin/commissionrule" element={<CommissionRule />} />
               <Route path="admin/sidenav" element={<Navs />} />
-              <Route path="admin/selectlayout" element={<SelectLayout />} />
+              <Route path="admin/selectlayout" element={<Layouts />} />
 
               <Route path="admin/statements" element={<Statements />} />
               <Route
@@ -155,7 +156,7 @@ export default function AppRoutes() {
                 path="customer/fund-transfer"
                 element={<SuperTransfer />}
               />
-                 <Route
+              <Route
                 path="customer/wallet-transfer"
                 element={<Wallet2WalletTransfer />}
               />
@@ -168,6 +169,7 @@ export default function AppRoutes() {
               <Route path="customer/sale" element={<MySale />} />
               <Route path="customer/bbps" element={<Bbps />} />
               <Route path="customer/profile" element={<ProfilePage />} />
+              <Route path="customer/cms" element={<Cms />} />
 
               <Route
                 path="customer/*"

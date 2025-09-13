@@ -155,6 +155,7 @@ const BeneficiaryList = ({ sender, onSuccess, onSelect }) => {
     <Card 
       sx={{ 
         borderRadius: 2,
+                width: "100%",
         boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
         border: "1px solid",
         borderColor: "divider",
@@ -167,19 +168,19 @@ const BeneficiaryList = ({ sender, onSuccess, onSelect }) => {
   justifyContent={isMobile ? "flex-start" : "space-between"}
         alignItems="center"
         sx={{ 
-          p: 1.5,
+          p: 1,
           background: "#0078B6",
           borderBottom: openList ? "1px solid" : "none",
           borderColor: "divider"
         }}
       >
         <Box display="flex" alignItems="center" gap={1} flexGrow={1}>
-          <Typography variant="subtitle1" fontWeight="600" color="#fff">
-            Beneficiary List
+          <Typography variant="subtitle2" fontWeight="600" color="#fff">
+            Beneficiary List ({beneficiaries?.length || 0})
           </Typography>
 
        <Box ml={isMobile ? 2 : "auto"}>
-        {sender &&
+        {/* {sender &&
     <Button
       variant="contained"
       size="small"
@@ -200,7 +201,7 @@ const BeneficiaryList = ({ sender, onSuccess, onSelect }) => {
     >
       Add Beneficiary
     </Button>
-}
+} */}
   </Box>
 
         </Box>

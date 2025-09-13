@@ -60,6 +60,22 @@ export const ErrorToast = Swal.mixin({
   keydownListenerCapture: true,
   returnFocus: false,
 });
+const ToastAlt = Swal.mixin({
+  showConfirmButton: true,
+  timerProgressBar: false,
+  didOpen: (toast) => {
+    toast.addEventListener("mouseenter", Swal.stopTimer);
+    toast.addEventListener("mouseleave", Swal.resumeTimer);
+  },
+  width: "max-content",
+  background: "#e6f7ff", // slightly different from #fefefe
+  color: "#0a6ebd",      // slightly different from green
+  iconColor: "#0288d1",  // slightly different from green
+  showCloseButton: true,
+  allowEscapeKey: true,
+  allowEnterKey: true,
+});
+export const MySwalAlt = withReactContent(ToastAlt);
 
 //
 const ConfirmSwal = (apiCallFunc, res) => {
@@ -359,4 +375,7 @@ export const toastInvoicePopup = (msg, timer) => {
 // small toast
 export const okSuccessToastsm = (title, msg) => {
   ToastSm.fire(title, msg, "success");
+};
+export const okSuccessToastAlt = (title, msg) => {
+  MySwalAlt.fire(title, msg, "success");
 };
