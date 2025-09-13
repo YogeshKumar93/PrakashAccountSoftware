@@ -171,7 +171,7 @@ const ApiEndpoints = {
 
   DMT1: "dmt1/remitterStatus",
   REGISTER_DMT1_BENEFICIARY: "dmt1/registerBeneficiary",
-  ADD_DMT1_SCHEMA: "dmt1/registerBeneficiary",
+  ADD_DMT1_SCHEMA: "dmt1/getBeneficiarySchema",
 
   CREATE_USER: "signup/createUser",
   GET_SIGNUP_SCHEMA: "signup/getSignupSchema",

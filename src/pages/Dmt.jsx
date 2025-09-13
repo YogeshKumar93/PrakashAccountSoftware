@@ -106,6 +106,7 @@ const {showToast} = useToast();
           <Box flex="0 0 70%">
             <Beneficiaries
             sender={sender}
+            onSuccess={handleFetchSender}
               beneficiaries={beneficiaries}
               onSelect={setSelectedBeneficiary}
               onDelete={handleDeleteBeneficiary}

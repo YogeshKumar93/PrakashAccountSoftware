@@ -51,7 +51,8 @@ import CommonModal from "../components/common/CommonModal";
 import { useSchemaForm } from "../hooks/useSchemaForm";
 import ApiEndpoints from "../api/ApiEndpoints";
 import { apiCall } from "../api/apiClient";
-const Beneficiaries = ({ beneficiaries, onSelect, onDelete, onVerify,sender }) => {
+import { apiErrorToast, okSuccessToast } from "../utils/ToastUtil";
+const Beneficiaries = ({ beneficiaries, onSelect, onDelete, onVerify,sender ,onSuccess}) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [open, setOpen] = useState(true);
@@ -62,13 +63,18 @@ const Beneficiaries = ({ beneficiaries, onSelect, onDelete, onVerify,sender }) =
     useSchemaForm(ApiEndpoints.ADD_DMT1_SCHEMA, openModal, {
       sender_id: sender?.id,
     });
+console.log("sender",sender);
 
   const handleAddBeneficiary = async () => {
     setSubmitting(true);
     setErrors({});
     try {
-      const payload = { ...formData, sender_id: sender.id };
-      const res = await apiCall(
+const payload = { 
+  ...formData, 
+  sender_id: sender?.id,
+  rem_mobile: sender?.mobileNumber   // <-- correct property name
+};
+      const {res,error} = await apiCall(
         "post",
         ApiEndpoints.REGISTER_DMT1_BENEFICIARY,
         payload
@@ -79,7 +85,7 @@ const Beneficiaries = ({ beneficiaries, onSelect, onDelete, onVerify,sender }) =
         setOpenModal(false);
         onSuccess?.(sender.mobile_number);
       } else {
-        apiErrorToast(res?.message || "Failed to add beneficiary");
+        apiErrorToast(error?.message || "Failed to add beneficiary");
       }
     } catch (err) {
       apiErrorToast(err);
@@ -282,10 +288,10 @@ const Beneficiaries = ({ beneficiaries, onSelect, onDelete, onVerify,sender }) =
               >
                 <Box display="flex" alignItems="center" gap={1.5} width="100%">
                   {/* Bank logo */}
-                 {bankImageMapping[b.ifsc?.slice(0, 4)] ? (
+                 {bankImageMapping[b.ifsc_code?.slice(0, 4)] ? (
   <Box
     component="img"
-    src={bankImageMapping[b.ifsc.slice(0, 4)]}
+    src={bankImageMapping[b.ifsc_code.slice(0, 4)]}
     alt={b.bank_name}
     sx={{
       width: 36,
@@ -324,7 +330,7 @@ const Beneficiaries = ({ beneficiaries, onSelect, onDelete, onVerify,sender }) =
                             b.id === "na" ? "text.secondary" : "text.primary",
                         }}
                       >
-                        {b.name}
+                        {b.beneficiary_name}
                       </Typography>
                     </Box>
                     <Stack
@@ -341,7 +347,7 @@ const Beneficiaries = ({ beneficiaries, onSelect, onDelete, onVerify,sender }) =
                         <Box component="span" fontWeight="500" mr={0.5}>
                           IFSC:
                         </Box>
-                        {b.ifsc}
+                        {b.ifsc_code}
                       </Typography>
                       <Typography
                         variant="caption"
@@ -353,7 +359,7 @@ const Beneficiaries = ({ beneficiaries, onSelect, onDelete, onVerify,sender }) =
                         <Box component="span" fontWeight="500" mr={0.5}>
                           A/C:
                         </Box>
-                        {b.account}
+                        {b.account_number}
                       </Typography>
                     </Stack>
                   </Box>

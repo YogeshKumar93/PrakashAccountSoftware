@@ -737,7 +737,8 @@ const CommonTable = ({
         <Typography variant="h5">{title}</Typography>
 
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          {customHeader} {/* Add custom header content here */}
+          {/* {customHeader}  */}
+          {/* Add custom header content here */}
           {/* {refresh && (
             <Tooltip title="Refresh">
               <IconButton

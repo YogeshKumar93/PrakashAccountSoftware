@@ -161,7 +161,7 @@
 // };
 
 // export default CommonModal;
-
+ 
 // CommonModal.js
 
 import React, { useState, useEffect } from "react";
@@ -182,6 +182,8 @@ import {
   Radio,
   RadioGroup,
   FormLabel,
+  TextField,
+  Autocomplete,
 } from "@mui/material";
 import {
   Close as CloseIcon,
@@ -276,6 +278,49 @@ const CommonFormField = ({
           {...props}
         />
       );
+case "autocomplete":
+  return (
+    <Autocomplete
+      options={finalOptions}
+      getOptionLabel={(opt) => {
+        if (!opt) return "";
+        if (typeof opt === "string") return opt;
+        return opt.label ?? opt.name ?? opt.bank_name ?? String(opt.value ?? "");
+      }}
+      value={
+        finalOptions.find(
+          (opt) =>
+            opt?.value === formData[name] ||
+            opt?.id === formData[name] ||
+            opt?.bank_id === formData[name]
+        ) || null
+      }
+      onChange={(e, newValue) => {
+        handleChange({
+          target: {
+            name,
+            value:
+              newValue?.value ??
+              newValue?.id ??
+              newValue?.bank_id ??
+              newValue ??
+              "",
+          },
+        });
+      }}
+      loading={optionsLoading}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          label={label}
+          fullWidth
+          {...getErrorProps()}
+        />
+      )}
+      disabled={loading || optionsLoading}
+      {...props}
+    />
+  );
 
     case "select":
     case "dropdown":
