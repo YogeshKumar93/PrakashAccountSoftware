@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useContext } from "react";
 import {
   Box,
   Typography,
@@ -11,6 +11,7 @@ import {
   InputAdornment,
   Pagination,
   Grid,
+  Tooltip,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import SearchIcon from "@mui/icons-material/Search";
@@ -19,6 +20,7 @@ import ApiEndpoints from "../api/ApiEndpoints";
 import { apiErrorToast } from "../utils/ToastUtil";
 
 import BbpsBillerDetails from "./BbpsBillerDetails";
+import AuthContext from "../contexts/AuthContext";
 
 const BbpsBillers = ({ category, onBack }) => {
   const [billers, setBillers] = useState([]);
@@ -26,7 +28,9 @@ const BbpsBillers = ({ category, onBack }) => {
   const [searchText, setSearchText] = useState("");
   const [selectedBillerId, setSelectedBillerId] = useState(null);
   const [selectedBillerIdImage, setSelectedBillerIdImage] = useState(null);
-
+  const authCtx = useContext(AuthContext);
+  const user = authCtx.user;
+  const is_layout = user?.is_layout;
   const [meta, setMeta] = useState(null);
   const [page, setPage] = useState(1);
 
@@ -127,69 +131,107 @@ const BbpsBillers = ({ category, onBack }) => {
       ) : null}
 
       {/* Billers list */}
+      {/* Billers list */}
       {!selectedBillerId && !loading && filteredBillers.length > 0 && (
         <>
-          <Grid container spacing={2}>
-  {filteredBillers.map((biller) => (
-    <Grid item key={biller.billerId} xs={12} sm={3} md={2.4} lg={3} xl={4}>
-      <Card
-        sx={{
-          borderRadius: 3,
-          boxShadow: 3,
-          width: 270, // make it responsive inside grid
-          height: 150,
-          opacity: isBillerDisabled(biller) ? 0.6 : 1,
-        }}
-      >
-        <CardActionArea
-          onClick={() => {
-            if (!isBillerDisabled(biller)) {
-              setSelectedBillerId(biller.billerId);
-              setSelectedBillerIdImage(biller.iconUrl);
-            }
-          }}
-          sx={{
-            height: "100%",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            userSelect: "text",
-          }}
-        >
-          <CardContent sx={{ textAlign: "center", flexGrow: 1 }}>
-            {biller.iconUrl && (
-              <Box
-                component="img"
-                src={biller.iconUrl}
-                alt={biller.billerName}
-                sx={{
-                  width: 55,
-                  height: 55,
-                  objectFit: "contain",
-                  mb: 1,
-                }}
-              />
-            )}
-            <Typography variant="subtitle2" fontWeight="600" Wrap>
-              {biller.billerName}
-            </Typography>
-            <Typography
-              variant="caption"
-              sx={{
-                color: biller.billerStatus === "ACTIVE" ? "green" : "red",
-                fontWeight: "bold",
-              }}
-            >
-              {biller.billerStatus}
-            </Typography>
-          </CardContent>
-        </CardActionArea>
-      </Card>
-    </Grid>
-  ))}
-</Grid>
+          <Grid container spacing={2.5} justifyContent="center">
+            {filteredBillers.map((biller) => (
+              <Grid
+                item
+                key={biller.billerId}
+                xs={2}
+                sm={2}
+                md={2.4}
+                xl={2.4}
+                lg={3}
+              >
+                {/* xs=6 (2 per row mobile), sm=4 (3 per row tablet), md=2.4 (5 per row desktop) */}
 
+                <Card
+                  sx={{
+                    borderRadius: is_layout === 2 ? 2 : 3,
+                    boxShadow: 3,
+                    width: is_layout === 2 ? 180 : 305, // ✅ Compact width in layout 2
+                    height: is_layout === 2 ? 110 : 150, // ✅ Compact height ensure uniform height
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    cursor: isBillerDisabled(biller)
+                      ? "not-allowed"
+                      : "pointer",
+                    opacity: isBillerDisabled(biller) ? 0.6 : 1,
+                    transition: "all 0.25s ease",
+                    // aspectRatio: "4 / 3", // ensures equal length & breadth
+                    "&:hover": {
+                      boxShadow: 6,
+                      transform: "translateY(-3px)",
+                    },
+                  }}
+                  onClick={() => {
+                    if (!isBillerDisabled(biller)) {
+                      setSelectedBillerId(biller.billerId);
+                      setSelectedBillerIdImage(biller.iconUrl);
+                    }
+                  }}
+                >
+                  <CardContent
+                    sx={{
+                      textAlign: "center",
+                      p: 1,
+                      width: "100%",
+                      height: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    {biller.iconUrl && (
+                      <Box
+                        component="img"
+                        src={biller.iconUrl}
+                        alt={biller.billerName}
+                        sx={{
+                          width: is_layout === 2 ? 40 : 55,
+                          height: is_layout === 2 ? 40 : 55,
+                          objectFit: "contain",
+                          mb: 1,
+                        }}
+                      />
+                    )}
+
+                    {/* Tooltip only on biller name */}
+                    <Tooltip title={biller.billerName} arrow>
+                      <Typography
+                        variant={is_layout === 2 ? "body2" : "subtitle2"}
+                        fontWeight="600"
+                        noWrap
+                        sx={{
+                          maxWidth: "100%",
+                          textOverflow: "ellipsis",
+                          overflow: "hidden",
+                        }}
+                      >
+                        {biller.billerName}
+                      </Typography>
+                    </Tooltip>
+
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        color:
+                          biller.billerStatus === "ACTIVE" ? "green" : "red",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {biller.billerStatus}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
 
           {/* Pagination */}
           {meta && (
