@@ -47,6 +47,8 @@ import AccountStatement from "../pages/AccountStatement";
 import AllServices from "../pages/AllServices";
 import Dmt from "../pages/Dmt";
 import Bbps from "../pages/Bbps";
+import Wallet2WalletTransfer from "../pages/Wallet2WalletTransfer";
+import W2wTransfer from "../pages/w2wTransfer";
 import { SelectLayout } from "../pages/SelectLayout";
 import Cms from "../pages/Cms";
 
@@ -119,6 +121,10 @@ export default function AppRoutes() {
                 path="admin/accountstatements/:id"
                 element={<AccountStatement />}
               />
+              <Route
+                path="admin/wallet-transfer"
+                element={<Wallet2WalletTransfer />}
+              />
               <Route path="admin/layout" element={<Layouts />} />
               <Route path="admin/commissionrule" element={<CommissionRule />} />
               <Route path="admin/sidenav" element={<Navs />} />
@@ -150,15 +156,20 @@ export default function AppRoutes() {
                 path="customer/fund-transfer"
                 element={<SuperTransfer />}
               />
+              <Route
+                path="customer/wallet-transfer"
+                element={<Wallet2WalletTransfer />}
+              />
+              <Route path="customer/w2w-transfer" element={<W2wTransfer />} />
               <Route path="customer/upi-transfer" element={<UpiTransfer />} />
               <Route path="customer/transactions" element={<Transaction />} />
               <Route path="customer/recharge-bill" element={<Recharge />} />
               <Route path="customer/purchase" element={<MyPurchase />} />
               <Route path="customer/fund-request" element={<FundRequest />} />
               <Route path="customer/sale" element={<MySale />} />
- <Route path="customer/bbps" element={<Bbps />} />     
-          <Route path="customer/profile" element={<ProfilePage />} />
-          <Route path="customer/cms" element={<Cms />} />
+              <Route path="customer/bbps" element={<Bbps />} />
+              <Route path="customer/profile" element={<ProfilePage />} />
+              <Route path="customer/cms" element={<Cms />} />
 
               <Route
                 path="customer/*"
@@ -173,7 +184,7 @@ export default function AppRoutes() {
               <Route path="di/dashboard" element={<AdminTransactions />} />
               <Route path="di/users" element={<Users />} />
               <Route path="di/services" element={<Dashboard />} />
-
+              <Route path="di/allServices" element={<AllServices />} />
               <Route
                 path="customer/account-ledger"
                 element={<AccountLadger />}
