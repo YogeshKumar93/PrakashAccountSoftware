@@ -62,10 +62,10 @@ const ApiEndpoints = {
   CHANGE_OPERATOR_PIPE: "admin/changePipe",
   GET_ROUTE: "admin/getRoutes",
   GET_CATEGORIES: "admin/getCategories",
-BBPS_GET_CATEGORIES:"bbps/getCategories",
-BBPS_GET_BILLERS:"bbps/getBillers",
-BBPS_GET_BILLERS_DETAILS:"bbps/getBillerDetails",
-BBPS_FETCH_BILL:"bbps/fetchBill",
+  BBPS_GET_CATEGORIES: "bbps/getCategories",
+  BBPS_GET_BILLERS: "bbps/getBillers",
+  BBPS_GET_BILLERS_DETAILS: "bbps/getBillerDetails",
+  BBPS_FETCH_BILL: "bbps/fetchBill",
 
   // ****************************** NEW API'S ******************************
   SIGN_IN: "auth/signIn",
@@ -94,7 +94,7 @@ BBPS_FETCH_BILL:"bbps/fetchBill",
   DELETE_LOG: "auditlog/deleteAuditLog",
   GET_LOG: "auditlog/getAuditLog",
   GET_WALLETLEDGER: "walletledger/getWalletLedgers",
-  
+
   // ****************************** NEW API'S ABOVE ******************************
 
   GET_FUND_REQUESTS: "fundrequest/getFundRequests",
@@ -110,20 +110,17 @@ BBPS_FETCH_BILL:"bbps/fetchBill",
   UPDATE_NOTIFICATION: "notification/updateNotification",
   DELETE_NOTIFICATION: "notification/deleteNotification",
 
-
   GET_BANK_STATEMENTS: "bankStatement/getBankStatement",
   CREATE_BANK_STATEMENT: "bankStatement/createBankStatement",
   UPDATE_BANK_STATEMENT: "bankStatement/updateBankStatement",
- DELETE_BANK_STATEMENT: "bankStatement/deleteBankStatement",
-GET_BANK_STATEMENT_SCHEMA: "bankStatement/getBankStatementSchema",
+  DELETE_BANK_STATEMENT: "bankStatement/deleteBankStatement",
+  GET_BANK_STATEMENT_SCHEMA: "bankStatement/getBankStatementSchema",
 
-
- GET_ACCOUNT_STATEMENTS: "accountStatement/getAccountStatement",
- CREATE_ACCOUNT_STATEMENT: "accountStatement/createAccountStatement",
- UPDATE_ACCOUNT_STATEMENT: "accountStatement/updateAccountStatement",
- DELETE_ACCOUNT_STATEMENT: "accountStatement/deleteAccountStatement",
-GET_ACCOUNT_STATEMENT_SCHEMA: "accountStatement/getAccountStatementSchema",
-
+  GET_ACCOUNT_STATEMENTS: "accountStatement/getAccountStatement",
+  CREATE_ACCOUNT_STATEMENT: "accountStatement/createAccountStatement",
+  UPDATE_ACCOUNT_STATEMENT: "accountStatement/updateAccountStatement",
+  DELETE_ACCOUNT_STATEMENT: "accountStatement/deleteAccountStatement",
+  GET_ACCOUNT_STATEMENT_SCHEMA: "accountStatement/getAccountStatementSchema",
 
   CREATE_BANK: "bank/createBank",
   UPDATE_BANK: "bank/updateBank",
@@ -169,12 +166,35 @@ GET_ACCOUNT_STATEMENT_SCHEMA: "accountStatement/getAccountStatementSchema",
   GET_PLAN_SCHEMA: "plan/getPlanSchema",
   GET_UPI_SCHEMA: "payout/getBeneficiarySchemaUpi",
   UPDATE_USER_STATUS: "user/blockAndUnblock",
-  DMT1:"dmt1/remitterStatus",
-  DMT1_REGISTER:"dmt1/registerRemitter",
-  // ****************************** NEW API'S ABOVE ******************************
 
-  GET_ACC_ACCOUNTS: "",
-  // GET_ACC_ACCOUNTS: "",
+  CHANGE_USER_LAYOUT: "user/changeLayout",
+
+  DMT1: "dmt1/remitterStatus",
+
+  CREATE_USER: "signup/createUser",
+  GET_SIGNUP_SCHEMA: "signup/getSignupSchema",
+  DMT1: "dmt1/remitterStatus",
+  DMT1_REGISTER: "dmt1/registerRemitter",
+
+  CREATE_BASIC: "business/createBasic",
+  CREATE_CONTACT: "business/createContact",
+  CREATE_ADDRESS: "business/createAddress",
+  CREATE_IDENTIFICATION: "business/createIdentification",
+  CREATE_BANK: "business/createBank",
+  CREATE_DOCUMENTS: "business/createDocuments",
+  CREATE_KYC: "business/createKyc",
+  CREATE_STATUS: "business/createStatus",
+
+  BASIC_SCHEMA: "business/basicSchema",
+  CONTACT_SCHEMA: "business/contactSchema",
+  ADDRESS_SCHEMA: "business/addressSchema",
+  IDENTIFICATION_SCHEMA: "business/identificationSchema",
+  BANK_SCHEMA: "business/bankSchema",
+  DOCUMENTS_SCHEMA: "business/documentsSchema",
+  KYC_SCHEMA: "business/kycSchema",
+  STATUS_SCHEMA: "business/statusSchema",
+
+  // ****************************** NEW API'S ABOVE ******************************
 
   GET_ACC_BANKS: "",
   UPDATE_BANKS: "admin/changeBankStatus",
@@ -192,7 +212,6 @@ GET_ACCOUNT_STATEMENT_SCHEMA: "accountStatement/getAccountStatementSchema",
   GET_STATUS: "admin/checkTxnStatus",
   CHANGE_STATUS: "admin/changeTxnStatus",
 
-  
   BLOCK_UNBLOCK_PLANS: "",
   ADD_PLAN: "admin/createPlan",
   DELETE_PLAN: "admin/deletePlan",

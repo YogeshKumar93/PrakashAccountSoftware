@@ -222,7 +222,7 @@ const passwordInputProps = (showPassword, setShowPassword) => ({
                 display: "block",
                 mx: "auto",
               }}
-              onClick={() => navigate("/")} 
+              onClick={() => navigate("/login")} 
             />
           {/* </a> */}
 
