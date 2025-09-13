@@ -74,7 +74,7 @@ export const customer_nav = [
     to: "/customer/wallet-transfer",
   },
   {
-    title: "Upi Transer",
+    title: "Upi Transfer",
     icon: "🛠️",
     icon2: "🛠️",
     to: "/customer/upi-transfer",
