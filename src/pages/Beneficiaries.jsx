@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import {
   Card,
   CardContent,
@@ -119,6 +120,29 @@ const Beneficiaries = ({ beneficiaries, onSelect, onDelete, onVerify }) => {
         <Typography variant="subtitle1" fontWeight="bold">
           Beneficiary List ({beneficiaries?.length || 0})
         </Typography>
+          <Box ml={isMobile ? 2 : "auto"}>
+    <Button
+      variant="contained"
+      size="small"
+      // onClick={() => setOpenModal(true)}
+      startIcon={<PersonAddIcon sx={{ fontSize: 16 }} />}
+      sx={{ 
+        minWidth: "auto", 
+        px: 1.5, 
+        backgroundColor:"#1AB1FF",
+        py: 0.5, 
+        fontSize: "0.75rem",
+        borderRadius: 1,
+        textTransform: "none",
+        fontWeight: "500",
+        boxShadow: "none",
+       
+      }}
+    >
+      Add Beneficiary
+    </Button>
+
+  </Box>
         {isMobile && (
         <IconButton size="small" sx={{ color: "white" }}>
           {open ? <ExpandLess /> : <ExpandMore />}
