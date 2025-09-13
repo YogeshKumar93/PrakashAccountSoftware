@@ -1,5 +1,4 @@
 
-import React from "react";
 import CommonTabs from "../components/common/CommonTabs";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import ReceiptIcon from "@mui/icons-material/Receipt";

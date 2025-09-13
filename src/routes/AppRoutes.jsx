@@ -26,7 +26,6 @@ import CommissionRule from "../pages/CommissionRule";
 import { Banking } from "../pages/Banking";
 import { Settings } from "../pages/Settings";
 import SuperTransfer from "../pages/SuperTransfer";
-import SelectLayout from "../pages/SelectLayout";
 import { Recharge } from "../pages/Recharge";
 import LandingPage from "../components/LandingPages/LandingPage";
 import NavBar from "../components/LandingPages/Navbar";
@@ -48,6 +47,7 @@ import AccountStatement from "../pages/AccountStatement";
 import AllServices from "../pages/AllServices";
 import Dmt from "../pages/Dmt";
 import Bbps from "../pages/Bbps";
+import { SelectLayout } from "../pages/SelectLayout";
 
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated, loading } = useContext(AuthContext);

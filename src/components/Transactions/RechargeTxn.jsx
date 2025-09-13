@@ -1,5 +1,5 @@
-import { useMemo, useCallback, useContext, useState } from "react";
-import { Box, Tooltip, Typography, Button, IconButton } from "@mui/material";
+import { useMemo,  useContext, useState } from "react";
+import { Box, Tooltip,  IconButton } from "@mui/material";
 import CommonTable from "../common/CommonTable";
 import ApiEndpoints from "../../api/ApiEndpoints";
 import AuthContext from "../../contexts/AuthContext";
@@ -8,8 +8,8 @@ import CommonStatus from "../common/CommonStatus";
 import { android2, linux2, macintosh2, okhttp, windows2 } from "../../utils/iconsImports";
 import LaptopIcon from "@mui/icons-material/Laptop";
 import DrawerDetails from "../common/DrawerDetails";
-import { Delete, Info as InfoIcon } from "@mui/icons-material";
-
+import VisibilityIcon from '@mui/icons-material/Visibility';
+ 
 const RechargeTxn = ({ filters = [], query }) => {
   const authCtx = useContext(AuthContext);
   const user = authCtx?.user;
@@ -205,10 +205,10 @@ const RechargeTxn = ({ filters = [], query }) => {
       {
         name: "Status",
         selector: (row) => 
-        <>
+          <div style={{ textAlign: "left" }}>
         <CommonStatus value={row.status} /> <br />
-         {row.operator_id}
-        </>,
+            {row.operator_id}
+          </div>,
         center: true,
       },
       {
@@ -223,12 +223,9 @@ const RechargeTxn = ({ filters = [], query }) => {
               }}
               size="small"
             >
-              <InfoIcon />
+              <VisibilityIcon />
             </IconButton>
-            </>
-            ,
-         
-        
+            </>,
         center: true,
       },
     
