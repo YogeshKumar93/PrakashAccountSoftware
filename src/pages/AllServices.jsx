@@ -68,6 +68,7 @@ import SuperTransfer from "./SuperTransfer";
 import AuthContext from "../contexts/AuthContext";
 import { Recharge } from "./Recharge";
 import UpiTransfer from "./UpiTransfer";
+import Bbps from "./Bbps";
 
 const MenuCard = ({ icon, label, onClick, isActive, user }) => {
   return (
@@ -317,61 +318,12 @@ export default function AllServices() {
         },
       ],
     },
-    // user?.billpay !== 1 && {
-    //   key: "billPayments",
-    //   label: "BBPS(OFFLINE)",
-    //   icon: BBPS,
-    //   subMenu: [
-    //     {
-    //       key: "electricity",
-    //       label: "Electricity",
-    //       icon: electricity1,
-    //       type: "C04",
-    //     },
-    //     {
-    //       key: "broadband",
-    //       label: "Broadband",
-    //       icon: broadband_1,
-    //       type: "C05",
-    //     },
-    //     {
-    //       key: "gas",
-    //       label: "Gas Bill",
-    //       icon: gas_1,
-    //       type: "C07",
-    //     },
-    //     {
-    //       key: "water",
-    //       label: "Water Bill",
-    //       icon: water_1,
-    //       type: "C08",
-    //     },
-    //     {
-    //       key: "insurance",
-    //       label: "Insurance",
-    //       icon: insurance_1,
-    //       type: "C11",
-    //     },
-    //     {
-    //       key: "landline",
-    //       label: "Landline Bill",
-    //       icon: landline_1,
-    //       type: "C02",
-    //     },
-    //   ],
-    // },
+
     user?.bbps !== 1 && {
       key: "bbps",
       label: "BBPS ",
       icon: BBPS,
-      subMenu: [
-        {
-          key: "bbps",
-          label: "BBPS",
-          icon: BBPS,
-          type: "C04",
-        },
-      ],
+      component: Bbps,
     },
 
     user?.recharge !== 1 && {
@@ -460,24 +412,17 @@ export default function AllServices() {
     },
   ].filter(Boolean);
 
-  const handleMenuClick = (key) => {
-    setActiveMenu(key === activeMenu ? null : key);
-    setActiveSubMenu(null);
-    setCurrentView(null);
-  };
-
-  const handleSubMenuClick = (subMenu) => {
-    setActiveSubMenu(subMenu.key);
-    if (subMenu.component) {
-      setCurrentView({
-        component: subMenu.component,
-        type: subMenu.type || subMenu.key,
-        title: subMenu.title || subMenu.key,
-        menuLabel: menuData.find((m) =>
-          m.subMenu.some((sm) => sm.key === subMenu.key)
-        )?.label,
-        subMenuLabel: subMenu.label,
-      });
+  const handleMenuClick = (menu) => {
+    if (menu.component && !menu.subMenu) {
+      // Agar direct component hai toh currentView me mat bhejo
+      setActiveMenu(menu.key);
+      setActiveSubMenu(null);
+      setCurrentView(null);
+    } else {
+      // Normal submenu wala case
+      setActiveMenu(menu.key === activeMenu ? null : menu.key);
+      setActiveSubMenu(null);
+      setCurrentView(null);
     }
   };
 
@@ -518,7 +463,7 @@ export default function AllServices() {
                   icon={menu.icon}
                   user={user}
                   label={menu.label}
-                  onClick={() => handleMenuClick(menu.key)}
+                  onClick={() => handleMenuClick(menu)}
                   isActive={activeMenu === menu.key}
                 />
               </Grid>
@@ -561,30 +506,33 @@ export default function AllServices() {
               >
                 {activeMenuData.label}
               </Typography>
-              <Grid container spacing={2}>
-                {activeMenuData.subMenu.map((sub) => (
-                  <Grid
-                    item
-                    xs={6}
-                    sm={4}
-                    md={3}
-                    lg={2.4}
-                    key={sub.key}
-                    sx={{
-                      display: "flex",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <SubMenuCard
-                      icon={sub.icon}
-                      user={user}
-                      label={sub.label}
-                      onClick={() => handleSubMenuClick(sub)}
-                      isActive={activeSubMenu === sub.key}
-                    />
-                  </Grid>
-                ))}
-              </Grid>
+
+              {/* 👇 yahan condition laga do */}
+              {activeMenuData.subMenu ? (
+                <Grid container spacing={2}>
+                  {activeMenuData.subMenu.map((sub) => (
+                    <Grid
+                      item
+                      xs={6}
+                      sm={4}
+                      md={3}
+                      lg={2.4}
+                      key={sub.key}
+                      sx={{ display: "flex", justifyContent: "center" }}
+                    >
+                      <SubMenuCard
+                        icon={sub.icon}
+                        user={user}
+                        label={sub.label}
+                        onClick={() => handleSubMenuClick(sub)}
+                        isActive={activeSubMenu === sub.key}
+                      />
+                    </Grid>
+                  ))}
+                </Grid>
+              ) : (
+                <activeMenuData.component /> // 👈 agar submenu nahi hai toh direct render
+              )}
             </Box>
           )}
         </>
@@ -605,7 +553,7 @@ export default function AllServices() {
             sx={{
               display: "flex",
               alignItems: "center",
-                backgroundColor: "#FFF",
+              backgroundColor: "#FFF",
               // mb: 3,
               borderBottom: "1px solid #F5F4FA",
               pb: 1,
