@@ -113,6 +113,8 @@ export default function AppRoutes() {
               <Route path="admin/logs" element={<Logs />} />
               <Route path="admin/profile" element={<ProfilePage />} />
               <Route path="admin/banks" element={<Banks />} />
+                <Route path="admin/wallet-ledger" element={<AccountLadger />} />
+
               <Route
                 path="admin/bankstatements/:id"
                 element={<BankStatements />}

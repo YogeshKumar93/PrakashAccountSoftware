@@ -24,6 +24,12 @@ export const Admin_nav = [
     icon2: "🛠️",
     to: "/admin/wallet-transfer",
   },
+    {
+    title: "Wallet Ledger",
+    icon: "🛠️",
+    icon2: "🛠️",
+    to: "/admin/wallet-ledger",
+  },
   { title: "Settings", icon: "👥", icon2: "👥", to: "/admin/settings" },
   { title: "Services", icon: "👥", icon2: "👥", to: "/admin/services" },
   { title: "Bankings", icon: "👥", icon2: "👥", to: "/admin/bankings" },

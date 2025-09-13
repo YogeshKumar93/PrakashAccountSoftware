@@ -24,8 +24,15 @@ const AccountLadger = ({ query }) => {
 
   const filters = useMemo(
     () => [
-      { id: "id", label: "User Name", type: "textfield" },
-      { id: "date", label: "Date", type: "date" },
+      {
+        id: "user_id",
+        label: "User Name",
+        type: "textfield",
+      },
+      { id: "from_date", label: "Start Date", type: "date" },
+      { id: "to_date", label: "End Date", type: "date" },
+
+      { id: "mobile", label: "Mobile", type: "textfield" },
     ],
     []
   );
@@ -183,7 +190,6 @@ const AccountLadger = ({ query }) => {
           endpoint={ApiEndpoints.GET_WALLETLEDGER}
           filters={filters}
           queryParam={queryParam}
-
           refresh={true}
         />
       )}
