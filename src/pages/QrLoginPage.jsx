@@ -42,6 +42,7 @@ const QrLoginPage = () => {
   const [loginError, setLoginError] = useState("");
   const [qrToken, setQrToken] = useState("");
   const [polling, setPolling] = useState(false);
+  const [qrExpired, setQrExpired] = useState(false); // ✅ QR timeout status
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -50,18 +51,18 @@ const QrLoginPage = () => {
 
   const navigate = useNavigate();
   const authCtx = useContext(AuthContext);
-  const user = authCtx.user;
 
   const pollingRef = useRef(null);
   const timeoutRef = useRef(null);
 
+  // 🔹 Generate QR
   const generateQrLogin = async () => {
     try {
       setLoading(true);
       setLoginError("");
       setPolling(false);
+      setQrExpired(false); // Reset expired state
 
-      // 🔹 Clear previous polling & timeout
       if (pollingRef.current) clearInterval(pollingRef.current);
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
 
@@ -78,10 +79,8 @@ const QrLoginPage = () => {
 
       if (response?.data) {
         const token = response.data;
-        setQrToken(token); // save latest token
-
-        // 🔹 Start polling with latest token
-        startPolling(token);
+        setQrToken(token);
+        startPolling(token, 2 * 60 * 1000); // 2 minutes
       }
     } catch (err) {
       setLoginError(err.message || "QR generation failed");
@@ -98,17 +97,13 @@ const QrLoginPage = () => {
         ApiEndpoints.QR_STATUS,
         { token }
       );
-
       if (error) return;
 
       const status = response?.status;
 
       if (status === "approved") {
-        clearInterval(pollingRef.current);
-        clearTimeout(timeoutRef.current);
-        setPolling(false);
-
-        // 🔹 Save token from response.data
+        stopPolling();
+        setQrToken("");
         const authToken = response?.data;
         authCtx.login(authToken);
 
@@ -118,7 +113,6 @@ const QrLoginPage = () => {
           authCtx.saveUser(userData);
           localStorage.setItem("user", JSON.stringify(userData));
 
-          // 🔹 Navigate based on role
           switch (userData.role) {
             case "adm":
             case "sadm":
@@ -139,9 +133,9 @@ const QrLoginPage = () => {
           }
         }
       } else if (status === "expired") {
-        clearInterval(pollingRef.current);
-        clearTimeout(timeoutRef.current);
-        setPolling(false);
+        stopPolling();
+
+        setQrExpired(true);
         setLoginError("QR expired, please refresh.");
       }
     } catch (err) {
@@ -149,30 +143,33 @@ const QrLoginPage = () => {
     }
   };
 
-  const startPolling = (token) => {
+  const startPolling = (token, timeout = 1 * 60 * 1000) => {
     setPolling(true);
 
     pollingRef.current = setInterval(() => {
-      checkQrStatus(token); // always use latest token
+      checkQrStatus(token);
     }, 3000);
+
+    timeoutRef.current = setTimeout(() => {
+      stopPolling();
+      setQrToken("");
+      setQrExpired(true);
+      setLoginError("QR not approved in 2 minutes. Please refresh.");
+    }, timeout);
   };
 
-  //   useEffect(() => {
-  //     generateQrLogin();
-  //     return () => {
-  //       clearInterval(pollingRef.current);
-  //       clearTimeout(timeoutRef.current);
-  //     };
-  //   }, []);
+  const stopPolling = () => {
+    setPolling(false);
+    if (pollingRef.current) clearInterval(pollingRef.current);
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+  };
 
-  // 🔹 Get Location
   useEffect(() => {
     getGeoLocation(
       (lat, long) => authCtx.setLocation(lat, long),
       (err) => okErrorToast("Location", err)
     );
   }, []);
-
   return (
     <Grid
       container
@@ -238,7 +235,7 @@ const QrLoginPage = () => {
         {/* QR Box */}
         {loading ? (
           <CircularProgress />
-        ) : qrToken ? (
+        ) : qrToken && !qrExpired ? (
           <Box
             sx={{
               mt: 4,
@@ -268,21 +265,23 @@ const QrLoginPage = () => {
             )}
 
             {/* Refresh QR */}
-            <Box sx={{ mt: 2 }}>
-              <button
-                onClick={generateQrLogin}
-                style={{
-                  padding: "8px 16px",
-                  borderRadius: "8px",
-                  border: "none",
-                  background: "#0052CC",
-                  color: "#fff",
-                  cursor: "pointer",
-                }}
-              >
-                Refresh QR
-              </button>
-            </Box>
+            {qrExpired && (
+              <Box sx={{ mt: 2 }}>
+                <button
+                  onClick={generateQrLogin}
+                  style={{
+                    padding: "8px 16px",
+                    borderRadius: "8px",
+                    border: "none",
+                    background: "#0052CC",
+                    color: "#fff",
+                    cursor: "pointer",
+                  }}
+                >
+                  Refresh QR
+                </button>
+              </Box>
+            )}
           </Box>
         ) : (
           <Box
