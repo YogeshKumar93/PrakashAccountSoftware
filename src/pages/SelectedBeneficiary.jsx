@@ -120,10 +120,10 @@ const {showToast} = useToast()
       {/* Beneficiary Details */}
 <Box sx={{ mx: 2, my: 2, p: 1, bgcolor: "#f0f8ff", borderRadius: 2 }}>
         {[
-          { label: "Name", value: beneficiary.name },
-          { label: "Account Number", value: beneficiary.account },
-          { label: "Bank", value: beneficiary.bank },
-          { label: "IFSC", value: beneficiary.ifsc },
+          { label: "Name", value: beneficiary.beneficiary_name },
+          { label: "Account Number", value: beneficiary.account_number },
+          { label: "Bank", value: beneficiary.bank_name },
+          { label: "IFSC", value: beneficiary.ifsc_code },
         ].map((item, idx) => (
           <Box key={idx} display="flex" mb={1}>
             <Typography sx={{ width: "150px", fontWeight: 500,fontSize:"14px" }}>{item.label}:</Typography>
