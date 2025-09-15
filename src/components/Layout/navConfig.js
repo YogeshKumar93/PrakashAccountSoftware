@@ -66,22 +66,22 @@ export const Admin_nav = [
 
 // Customer Navigation
 export const customer_nav = [
-  { title: "Dashboard", icon: "📊", icon2: "📊", to: "/customer/dashboard" },
+  { title: "Dashboard", icon: bankImage, icon2: "📊", to: "/customer/dashboard" },
   {
     title: "Fund Request",
-    icon: "🛠️",
+    icon: bankImage,
     icon2: "🛠️",
     to: "/customer/fund-request",
   },
   {
     title: "Transactions",
-    icon: "💳",
+    icon: bankImage,
     icon2: "💳",
     to: "/customer/transactions",
   },
   {
     title: "Money transfer",
-    icon: "🛠️",
+    icon: bankImage,
     icon2: "🛠️",
     to: "/customer/money-transfer",
   },

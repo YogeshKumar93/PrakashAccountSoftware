@@ -222,7 +222,7 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
   <img
     src={isItemActive ? item.icon: item.icon}
     alt={item.title}
-    style={{ width: 24, height: 24 }}
+    style={{ width: 26, height: 26, fill: isItemActive ? "#fff" : "#fff" }}
   />
 </ListItemIcon>
 
