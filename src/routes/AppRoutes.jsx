@@ -53,6 +53,10 @@ import W2wTransfer from "../pages/w2wTransfer";
 import { SelectLayout } from "../pages/SelectLayout";
 import Cms from "../pages/Cms";
 import QrLoginPage from "../pages/QrLoginPage";
+import Complaint from "../pages/Complaint";
+import Risk from "../pages/Risk";
+import Virtual_Accounts from "../pages/Virtual_Accounts";
+import Login_History from "../pages/Login_History";
 
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated, loading } = useContext(AuthContext);
@@ -69,6 +73,10 @@ export default function AppRoutes() {
   const isAdmin = role === "adm" || role === "sadm";
   const isCustomer = role === "ret" || role === "dd";
   const isDi = role === "di";
+  const isAsm = role === "asm";
+  const isZsm = role === "zsm";
+  const isApi = role === "api";
+  const isMd = role === "api";
 
   return (
     <BrowserRouter>
@@ -135,8 +143,14 @@ export default function AppRoutes() {
               <Route path="admin/selectlayout" element={<SelectLayout />} />
                 <Route path="admin/aeps" element={<Aeps />} />
               <Route path="admin/selectlayout" element={<Layouts />} />
-
+              
               <Route path="admin/statements" element={<Statements />} />
+               <Route path="admin/complaint" element={<Complaint />} />
+                 <Route path="admin/risk" element={<Risk />} />
+                   <Route path="admin/virtual_accounts" element={<Virtual_Accounts />} />
+                     <Route path="admin/login_history" element={<Login_History />} />
+
+
               <Route
                 path="admin/*"
                 element={<Navigate to="/admin/dashboard" replace />}
@@ -221,6 +235,43 @@ export default function AppRoutes() {
                 element={<Navigate to="/customer/dashboard" replace />}
               />
               <Route path="customer/accounts" element={<Accounts />} />
+            </>
+          )}
+
+
+           {isAsm && (
+            <>
+              <Route path="asm/dashboard" element={<Dashboard />} />
+              <Route path="asm/users" element={<Users />} />
+              <Route path="asm/transcations" element={<Transaction />} />      
+               
+            </>
+          )}
+
+          {isZsm && (
+            <>
+              <Route path="zsm/dashboard" element={<Dashboard />} />
+              <Route path="zsm/users" element={<Users />} />
+              <Route path="zsm/transcations" element={<Transaction />} />      
+               
+            </>
+          )}
+
+            {isApi && (
+            <>
+              <Route path="api/dashboard" element={<Dashboard />} />
+              <Route path="api/users" element={<Users />} />
+              <Route path="api/transcations" element={<Transaction />} />      
+               
+            </>
+          )}
+
+            {isMd && (
+            <>
+              <Route path="md/dashboard" element={<Dashboard />} />
+              <Route path="md/users" element={<Users />} />
+              <Route path="md/transcations" element={<Transaction />} />      
+               
             </>
           )}
 

@@ -37,7 +37,7 @@ import {
   AccountCircle,
 } from "@mui/icons-material";
 import { useNavigate, useLocation, Outlet } from "react-router-dom";
-import { Admin_nav, customer_nav, di_nav, nav, service_nav } from "./navConfig";
+import { Admin_nav, api_nav, asm_nav, customer_nav, di_nav, md_nav, nav, service_nav, zsm_nav } from "./navConfig";
 import AuthContext from "../../contexts/AuthContext";
 
 {
@@ -57,7 +57,11 @@ const roleNavigation = {
   ret: customer_nav,
   dd: customer_nav,
   service_nav: service_nav,
-  di:di_nav
+  di:di_nav,
+  asm:asm_nav,
+  zsm:zsm_nav,
+  api:api_nav,
+  md:md_nav,
 };
 
 const themeSettings = {
