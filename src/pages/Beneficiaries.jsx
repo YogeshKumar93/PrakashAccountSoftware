@@ -184,7 +184,7 @@ const payload = {
           Beneficiary List ({beneficiaries?.length || 0})
         </Typography>
         
-          <Box ml={isMobile ? 2 : "auto"}>
+          <Box ml={isMobile ? 1 : "auto"}>
                       {sender &&
 
     <Button

@@ -119,7 +119,7 @@ console.log("referenceKey",referenceKey);
         setMpin("");
         setOtpRef(null);
       } else {
-        apiErrorToast(error || "Something went wrong");
+        apiErrorToast(error?.message || "Something went wrong");
       }
     } catch (err) {
       apiErrorToast(err);
@@ -178,36 +178,47 @@ console.log("referenceKey",referenceKey);
       {/* Amount / OTP / M-PIN */}
       {!otpRef ? (
         <TextField
-          label="Amount"
-          type="number"
-          fullWidth
-          variant="outlined"
-          size="small"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-          InputProps={{
-            endAdornment: (
-           <InputAdornment position="end">
-  <Button
-    variant="contained"
-    size="small"
-    onClick={handleGetOtp}
-    disabled={loading}
-    sx={{
-      minWidth: "60px",   
-      px: 1,            
-      py: 0.5,            
-      fontSize: "0.75rem", 
-      borderRadius: 1,     
-    }}
-  >
-    {loading ? "..." : "Get OTP"}
-  </Button>
-</InputAdornment>
+  label="Amount"
+  type="number"
+  fullWidth
+  variant="outlined"
+  size="small"
+  value={amount}
+  onChange={(e) => {
+    const value = e.target.value;
+    const limit = parseFloat(sender?.limitAvailable || 0);
 
-            ),
+    // ✅ Block invalid or over-limit values
+    if (parseFloat(value) > limit) {
+      apiErrorToast(`Amount cannot exceed available limit: ${limit}`);
+      return;
+    }
+
+    setAmount(value);
+  }}
+  InputProps={{
+    endAdornment: (
+      <InputAdornment position="end">
+        <Button
+          variant="contained"
+          size="small"
+          onClick={handleGetOtp}
+          disabled={loading}
+          sx={{
+            minWidth: "60px",
+            px: 1,
+            py: 0.5,
+            fontSize: "0.75rem",
+            borderRadius: 1,
           }}
-        />
+        >
+          {loading ? "..." : "Get OTP"}
+        </Button>
+      </InputAdornment>
+    ),
+  }}
+/>
+
       ) : (
         <Box display="flex" flexDirection="column" gap={2}>
           {/* OTP */}

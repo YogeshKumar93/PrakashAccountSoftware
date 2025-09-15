@@ -200,9 +200,9 @@ const FundRequest = () => {
         label: "Status",
         type: "dropdown",
         options: [
-          { value: "all", label: "All" },
+          // { value: "all", label: "All" },
           { value: "success", label: "Success" },
-          { value: "failed", label: "Failed" },
+          // { value: "failed", label: "Failed" },
           { value: "refund", label: "Refund" },
           { value: "pending", label: "Pending" },
           { value: "approved", label: "Approved" },
@@ -210,9 +210,9 @@ const FundRequest = () => {
         ],
         defaultValue: "pending",
       },
-      { id: "name", label: "Name", type: "textfield" },
-      { id: "bank_name", label: "Bank Name", type: "textfield" },
-      { id: "txn_id", label: "Txn ID", type: "textfield" },
+      // { id: "name", label: "Name", type: "textfield" },
+      // { id: "bank_name", label: "Bank Name", type: "textfield" },
+      // { id: "txn_id", label: "Txn ID", type: "textfield" },
     ],
     []
   );
@@ -223,7 +223,6 @@ const FundRequest = () => {
 
   {!loading && (
     <Box>
-      {/* ✅ Header */}
 
       {/* ✅ Table */}
       <CommonTable
