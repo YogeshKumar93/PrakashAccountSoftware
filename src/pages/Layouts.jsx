@@ -112,7 +112,8 @@ const Layouts = ({ filters = [], query }) => {
       <CommonTable
      onFetchRef={handleFetchRef} 
         columns={columns}
-        endpoint={ApiEndpoints.GET_COLOURS}
+        // endpoint={ApiEndpoints.GET_COLOURS}
+        endpoint={ApiEndpoints.GET_COMPLAINS}
         filters={filters}
         queryParam={query}
         Button={Button}

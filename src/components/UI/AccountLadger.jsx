@@ -29,13 +29,20 @@ const AccountLadger = ({ query }) => {
         label: "User Name",
         type: "textfield",
       },
-      { id: "from_date", label: "Start Date", type: "date" },
-      { id: "to_date", label: "End Date", type: "date" },
-
-      { id: "mobile", label: "Mobile", type: "textfield" },
+      {
+        id: "date_range",
+        // label: "Date Range",
+        type: "daterange",
+      },
+      {
+        id: "mobile",
+        label: "Mobile",
+        type: "textfield",
+      },
     ],
     []
   );
+
   const columns = useMemo(
     () => [
       {
@@ -46,6 +53,11 @@ const AccountLadger = ({ query }) => {
           </div>
         ),
         wrap: true,
+      },
+      {
+        name: "Service",
+        selector: (row) => row.service,
+        center: true,
       },
       {
         name: "Narration",
@@ -112,21 +124,11 @@ const AccountLadger = ({ query }) => {
                 fontWeight: "500",
               }}
             >
-              {(user.role === "Ad" || user.role === "Md") &&
-                row.txn_type === "DR" && (
-                  <div style={{ color: "red", textAlign: "left" }}>
-                    {row.type === "W2W TRANSFER"
-                      ? currencySetter(parseFloat(row.net_amount).toFixed(2))
-                      : "0"}
-                  </div>
-                )}
-
-              {(user.role === "ret" || user.role === "dd") &&
-                row.txn_type === "DR" && (
-                  <div style={{ color: "red", textAlign: "left" }}>
-                    -{currencySetter(parseFloat(row.amount).toFixed(2))}
-                  </div>
-                )}
+              {row.txn_type === "DR" && (
+                <div style={{ color: "red", textAlign: "left" }}>
+                  {row.txn_type === "W2W TRANSFER" ? "Debit" : "NA"}
+                </div>
+              )}
             </Box>
           );
         },
@@ -146,21 +148,11 @@ const AccountLadger = ({ query }) => {
                 fontWeight: "500",
               }}
             >
-              {(user.role === "Ad" || user.role === "Md") &&
-                row.txn_type === "CR" && (
-                  <div style={{ color: "green", textAlign: "left" }}>
-                    {row.type === "W2W TRANSFER"
-                      ? currencySetter(parseFloat(row.net_amount).toFixed(2))
-                      : currencySetter(parseFloat(row.ad_comm).toFixed(2))}
-                  </div>
-                )}
-
-              {(user.role === "ret" || user.role === "dd") &&
-                row.txn_type === "CR" && (
-                  <div style={{ color: "green", textAlign: "left" }}>
-                    + {currencySetter(parseFloat(row.amount).toFixed(2))}
-                  </div>
-                )}
+              {row.txn_type === "CR" && (
+                <div style={{ color: "green", textAlign: "left" }}>
+                  {row.txn_type === "CR" ? "Credit" : "Na"}
+                </div>
+              )}
             </Box>
           );
         },

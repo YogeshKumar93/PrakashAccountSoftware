@@ -695,6 +695,8 @@ th:last-child::after {
   justify-content: center !important;
   top: 8px !important;
   right: 8px !important;
+/* .rs-picker-dropdown, .rs-picker-container { */
+  z-index: 9999 !important;
 }
 
 

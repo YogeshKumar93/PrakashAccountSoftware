@@ -10,7 +10,7 @@ const BbpxTxn = ({ query }) => {
   const authCtx = useContext(AuthContext);
   const user = authCtx?.user;
   const [openCreate, setOpenCreate] = useState(false);
-const filters = useMemo(
+  const filters = useMemo(
     () => [
       {
         id: "status",
@@ -31,7 +31,6 @@ const filters = useMemo(
   );
   const columns = useMemo(
     () => [
-            
       {
         name: "Date",
         selector: (row) => (
@@ -41,37 +40,45 @@ const filters = useMemo(
                 {ddmmyy(row.created_at)} {dateToTime1(row.created_at)}
               </span>
             </Tooltip>
-      
+
             <Tooltip title={`Updated: ${ddmmyyWithTime(row.updated_at)}`} arrow>
               <span>
-               {ddmmyy(row.updated_at)} {dateToTime1(row.updated_at)}
+                {ddmmyy(row.updated_at)} {dateToTime1(row.updated_at)}
               </span>
             </Tooltip>
           </div>
         ),
         wrap: true,
-        width: "140px", 
+        width: "140px",
       },
       {
-        name: "Txn ID",
+        name: "Route",
         selector: (row) => (
-          <div style={{ textAlign: "left" }}>{row.txn_id}</div>
+          <div style={{ display: "flex", fontSize: "13px" }}>{row.route}</div>
+        ),
+
+        center: true,
+        width: "140px",
+      },
+      {
+        name: "TxnId/Ref",
+        selector: (row) => (
+          <>
+            <div style={{ textAlign: "left", fontSize: "13px" }}>
+              {row.txn_id}
+              <br />
+              {row.client_ref}
+            </div>
+          </>
         ),
         wrap: true,
       },
-        {
-        name: "RRN",
-        selector: (row) => <div style={{ textAlign: "left" }}>{row.rrn}</div>,
-        wrap: true,
-      },
-   
-      {
-        name: "Client Ref",
-        selector: (row) => (
-          <div style={{ textAlign: "left" }}>{row.client_ref}</div>
-        ),
-        wrap: true,
-      },
+      // {
+      //   name: "RRN",
+      //   selector: (row) => <div style={{ textAlign: "left" }}>{row.rrn}</div>,
+      //   wrap: true,
+      // },
+
       {
         name: "Biller",
         selector: (row) => (
@@ -92,22 +99,11 @@ const filters = useMemo(
         ),
         wrap: true,
       },
-      {
-        name: "Route / Platform",
-        selector: (row) => (
-          <div style={{ textAlign: "left" }}>
-            {row.route} <br />
-            {row.pf?.toUpperCase()}
-          </div>
-        ),
-        wrap: true,
-      },
+
       {
         name: "Amount (₹)",
         selector: (row) => (
-          <div
-            style={{ color: "green", fontWeight: "600", textAlign: "right" }}
-          >
+          <div style={{ color: "red", fontWeight: "600", textAlign: "right" }}>
             ₹ {parseFloat(row.amount).toFixed(2)}
           </div>
         ),
@@ -117,7 +113,7 @@ const filters = useMemo(
       {
         name: "Charge",
         selector: (row) => (
-          <div style={{ textAlign: "right" }}>
+          <div style={{ color: "red", textAlign: "right" }}>
             ₹{parseFloat(row.charges).toFixed(2)} <br />
             {/* GST: ₹{parseFloat(row.gst).toFixed(2)} <br />
             Comm: ₹{parseFloat(row.commission).toFixed(2)} <br />
@@ -128,27 +124,49 @@ const filters = useMemo(
         wrap: true,
         right: true,
       },
-       {
+      {
         name: "Comm",
-        selector: (row) => <div style={{ textAlign: "left" }}>₹{parseFloat(row.commission).toFixed(2)}</div>,
+        selector: (row) => (
+          <div style={{ color: "green", textAlign: "right" }}>
+            ₹{parseFloat(row.commission).toFixed(2)}
+          </div>
+        ),
         wrap: true,
-      }, {
+      },
+      {
         name: "TDS",
-        selector: (row) => <div style={{ textAlign: "left" }}>₹{parseFloat(row.tds).toFixed(2)}</div>,
+        selector: (row) => (
+          <div style={{ color: "red", textAlign: "right" }}>
+            ₹{parseFloat(row.tds).toFixed(2)}
+          </div>
+        ),
         wrap: true,
-      }, {
+      },
+      {
         name: " Net Comm",
-        selector: (row) => <div style={{ textAlign: "left" }}>₹{parseFloat(row.net_commission).toFixed(2)}</div>,
+        selector: (row) => (
+          <div style={{ color: "green", textAlign: "right" }}>
+            ₹{parseFloat(row.net_commission).toFixed(2)}
+          </div>
+        ),
         wrap: true,
-      }, 
+      },
       {
         name: "Status",
-       selector: (row) => <CommonStatus value={row.status} />,
-         
-        
+        selector: (row) => (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <CommonStatus value={row.status} />
+            <span>{row.rrn}</span>
+          </div>
+        ),
         center: true,
       },
-    
     ],
     []
   );

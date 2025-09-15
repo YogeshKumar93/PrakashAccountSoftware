@@ -111,11 +111,11 @@ const Wallet2WalletTransfer = ({ filters = [] }) => {
         center: true,
         width: "80px",
       },
-      {
-        name: "Route",
-        selector: (row) => <div style={{ textAlign: "left" }}>{row.route}</div>,
-        wrap: true,
-      },
+      // {
+      //   name: "Route",
+      //   selector: (row) => <div style={{ textAlign: "left" }}>{row.route}</div>,
+      //   wrap: true,
+      // },
       // {
       //   name: "Client Ref",
       //   selector: (row) => (
@@ -158,7 +158,10 @@ const Wallet2WalletTransfer = ({ filters = [] }) => {
           display: "flex",
         }}
       >
-        <W2wTransfer type="w2w" handleFetchRef={refreshTransfer} />
+        {user.role === "adm" ||
+          (user.role === "adm" && (
+            <W2wTransfer type="w2w" handleFetchRef={refreshTransfer} />
+          ))}
       </Box>
 
       <Box sx={{}}>
