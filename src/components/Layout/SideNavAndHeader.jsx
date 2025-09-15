@@ -348,18 +348,32 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
             <MenuIcon />
           </IconButton> */}
           <Typography
-            variant="h5"
-            noWrap
-            component="div"
-            sx={{ flexGrow: 1 }}
-            className="text-xl font-semibold"
-          >
-            {title}
-          </Typography>
+  variant="h5"
+  noWrap
+  component="div"
+  sx={{ flexGrow: 1 }}
+>
+  {title}
+</Typography>
+
+{/* 👤 User Name */}
+<Typography
+  variant="subtitle1"
+  sx={{
+    fontWeight: 600,
+    color: "#FFAE42", 
+    mr: 2, 
+    fontSize: '24px',
+  }}
+>
+ Welcome!  {user?.name || userName}
+</Typography>
+
           {/* ✅ Refresh icon button with black color */}
           <IconButton onClick={refreshUser}>
             <RefreshIcon sx={{ color: "black" }} />
           </IconButton>
+
           <IconButton onClick={colour}>
             <RefreshIcon sx={{ color: "#fff" }} />
           </IconButton>
@@ -393,9 +407,9 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
       sx={{
         display: "flex",
         alignItems: "center",
-        gap: 3,
+        gap: 8,
         width: "100%",
-        px: 3,
+        px: 5,
         py: 3,
         borderRadius: "16px",
         background: "linear-gradient(135deg, #fdfdfd 0%, #f5f7f9 100%)",
@@ -409,8 +423,8 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
             alt={user?.name || "User Avatar"}
             src={preview || defaultMaleAvatar}
             sx={{
-              width: 90,
-              height: 90,
+              width: 100,
+              height: 100,
               border: "2px solid #1CA895",
               boxShadow: "0 3px 8px rgba(28,168,149,0.25)",
               transition: "all 0.25s ease-in-out",
@@ -455,7 +469,7 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
 
       {/* User Details */}
       <Box sx={{ flexGrow: 1 }}>
-        <Typography sx={{ fontWeight: 700, fontSize: "1.2rem", color: "#222" }}>
+        <Typography sx={{ fontWeight: 700, fontSize: "2rem", color: "#145Ca1" }}>
           {user?.name || "Guest User"}
         </Typography>
 
@@ -463,7 +477,7 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
           {user?.role || "Standard User"}
         </Typography>
 
-        <Divider sx={{ my: 1, width: "60px", borderColor: "#1CA895" }} />
+        <Divider sx={{ my: 1, width: "80px", borderColor: "#1CA895" }} />
 
         <Button
           variant="contained"
@@ -495,9 +509,13 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
   sx={{
     display: "flex",
     alignItems: "center",
-    gap: 1.5,
-    px: 10,
+    justifyContent:"center",
+    mt:2,
+    mb:1.5,
+    gap: 2,
+    px: 4,
     py: 1.5,
+    width:200,
     borderRadius: "12px",
     fontWeight: 500,
     color: "#dc2626", // red-600
@@ -510,6 +528,7 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
       transform: "scale(1.02)",
       boxShadow: "0 4px 12px rgba(220, 38, 38, 0.3)",
     },
+    mx:"auto",
   }}
 >
   <ListItemIcon sx={{ color: "inherit" }}>
