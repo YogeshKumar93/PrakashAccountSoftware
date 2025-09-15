@@ -45,23 +45,12 @@ export const Admin_nav = [
   },
     { title: "Layouts", icon:layoutImage, icon2: "👥", to: "/admin/selectlayout" },
      { title: "AEPS", icon: aepsImage, icon2: "👥", to: "/admin/aeps" },
-  { title: "Layouts", icon: layoutImage, icon2: "👥", to: "/admin/selectlayout" },
+  
   { title: "Complaint", icon: complainImage, icon2: "👥", to: "/admin/complaint" },
   { title: "Risk", icon: riskImage, icon2: "👥", to: "/admin/risk" },
-    { title: "Virtual Accounts", icon: virtuanAccountImage, icon2: "👥", to: "/admin/virtual_accounts" },
+    // { title: "Virtual Accounts", icon: virtuanAccountImage, icon2: "👥", to: "/admin/virtual_accounts" },
       { title: "Login History", icon: loginHistoryImage, icon2: "👥", to: "/admin/login_history" },
-  {
-    title: "Virtual Accounts",
-    icon: virtuanAccountImage,
-    icon2: "👥",
-    to: "/admin/selectlayout",
-  },
-  {
-    title: "Login History",
-    icon: loginHistoryImage,
-    icon2: "👥",
-    to: "/admin/selectlayout",
-  },
+  
 ];
 
 // Customer Navigation
@@ -75,7 +64,7 @@ export const customer_nav = [
   },
   {
     title: "Transactions",
-    icon: bankImage,
+    icon: transImage,
     icon2: "💳",
     to: "/customer/transactions",
   },
@@ -91,15 +80,15 @@ export const customer_nav = [
     icon2: "🛠️",
     to: "/customer/fund-transfer",
   },
-  {
-    title: "W2W Transfer",
-    icon: "🛠️",
-    icon2: "🛠️",
-    to: "/customer/w2w-transfer",
-  },
+  // {
+  //   title: "W2W Transfer",
+  //   icon: "🛠️",
+  //   icon2: "🛠️",
+  //   to: "/customer/w2w-transfer",
+  // },
   {
     title: "Wallet Transfer",
-    icon: "🛠️",
+    icon: walletTransferImage,
     icon2: "🛠️",
     to: "/customer/wallet-transfer",
   },
@@ -128,8 +117,8 @@ export const customer_nav = [
   { title: "Cms", icon: "📒", icon2: "📒", to: "/customer/cms" },
 ];
 export const di_nav = [
-  { title: "Dashboard", icon: "📊", icon2: "📊", to: "/di/dashboard" },
-  { title: "Users", icon: "👥", icon2: "👥", to: "/di/users" },
+  { title: "Dashboard", icon: dashboardImage, icon2: "📊", to: "/di/dashboard" },
+  { title: "Users", icon: usersImage, icon2: "👥", to: "/di/users" },
   {
     title: "All Services",
     icon: "🛠️",
@@ -139,7 +128,7 @@ export const di_nav = [
 ];
 
 export const service_nav = [
-  { title: "Dashboard", icon: "📊", icon2: "📊", to: "/customer/dashboard" },
+  { title: "Dashboard", icon: dashboardImage, icon2: "📊", to: "/customer/dashboard" },
   {
     title: "All Services",
     icon: "🛠️",
@@ -148,7 +137,7 @@ export const service_nav = [
   },
     {
     title: "Wallet Transfer",
-    icon: "🛠️",
+    icon: walletTransferImage,
     icon2: "🛠️",
     to: "/customer/wallet-transfer",
   },
@@ -164,28 +153,28 @@ export const service_nav = [
 
 
 export const asm_nav = [
-  { title: "Dashboard", icon: "📊", icon2: "📊", to: "/asm/dashboard" },
+  { title: "Dashboard", icon: dashboardImage, icon2: "📊", to: "/asm/dashboard" },
   { title: "Users", icon: "📊", icon2: "📊", to: "/asm/users" }, 
     { title: "Transcations", icon: "📊", icon2: "📊", to: "/asm/transcations" },  
 
 ];
 
 export const zsm_nav = [
-  { title: "Dashboard", icon: "📊", icon2: "📊", to: "/zsm/dashboard" },
+  { title: "Dashboard", icon: dashboardImage, icon2: "📊", to: "/zsm/dashboard" },
       { title: "Users", icon: "📊", icon2: "📊", to: "/zsm/users" },  
     { title: "Transcations", icon: "📊", icon2: "📊", to: "/zsm/transcations" },  
 
 ];
 
 export const api_nav = [
-  { title: "Dashboard", icon: "📊", icon2: "📊", to: "/api/dashboard" },
+  { title: "Dashboard", icon: dashboardImage, icon2: "📊", to: "/api/dashboard" },
    { title: "Users", icon: "📊", icon2: "📊", to: "/api/users" },
     { title: "Transcations", icon: "📊", icon2: "📊", to: "/api/transcations" },  
 
 ];
 
 export const md_nav = [
-  { title: "Dashboard", icon: "📊", icon2: "📊", to: "/md/dashboard" },
+  { title: "Dashboard", icon: dashboardImage, icon2: "📊", to: "/md/dashboard" },
       { title: "Users", icon: "📊", icon2: "📊", to: "/md/users" }, 
     { title: "Transcations", icon: "📊", icon2: "📊", to: "/md/transcations" },  
 
