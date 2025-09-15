@@ -33,7 +33,7 @@ const handleFetchSender = async (number = mobile) => {
     const data = response?.data || response?.response?.data;
 
     if (response)
-      okSuccessToast(response.message || "Sender fetched successfully");
+      // okSuccessToast(response.message || "Sender fetched successfully");
 
     if (data && data?.is_active === 1) {
       setSender(data);
@@ -86,7 +86,7 @@ const handleChange = (e) => {
   };
 
   return (
-    <Box p={3}>
+    <Box >
       {/* Always show mobile input */}
       <TextField
         label="Mobile Number"
@@ -96,14 +96,14 @@ const handleChange = (e) => {
           autoComplete="on"   // <-- enable autocomplete for phone numbers
         onChange={handleChange}
         inputProps={{ maxLength: 10 }}
-        sx={{ mb: 2 }}
+        sx={{ mb: 1 }}
       />
 
       {/* Main Content (Sender + Beneficiaries) */}
       <Box
         display="flex"
         flexDirection={isMobile ? "column" : "row"}
-        gap={1}
+        gap={0.5}
       >
         {/* Left: Sender Details + Selected Beneficiary */}
         <Box flex={isMobile ? "1 1 100%" : "0 0 30%"}>

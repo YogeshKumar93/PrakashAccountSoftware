@@ -6,11 +6,29 @@ import AuthContext from "../../contexts/AuthContext";
 import { dateToTime1, ddmmyy, ddmmyyWithTime } from "../../utils/DateUtils";
 import CommonStatus from "../common/CommonStatus";
 
-const DmtTxn = ({ filters = [], query }) => {
+const DmtTxn = ({ query }) => {
   const authCtx = useContext(AuthContext);
   const user = authCtx?.user;
   const [openCreate, setOpenCreate] = useState(false);
-
+const filters = useMemo(
+    () => [
+      {
+        id: "status",
+        label: "Status",
+        type: "dropdown",
+        options: [
+          { value: "success", label: "Success" },
+          { value: "failed", label: "Failed" },
+          { value: "refund", label: "Refund" },
+          { value: "pending", label: "Pending" },
+        ],
+        defaultValue: "pending",
+      },
+      { id: "sender_mobile", label: "Sender Mobile", type: "textfield" },
+      { id: "txn_id", label: "Txn ID", type: "textfield" },
+    ],
+    []
+  );
   const columns = useMemo(
     () => [
       {
@@ -57,44 +75,38 @@ const DmtTxn = ({ filters = [], query }) => {
         style: { fontWeight: 500 },
       },
       {
-        name: "Bank Name",
-        selector: (row) => row.bank_name?.toUpperCase(),
-        wrap: true,
-      },
-      {
-        name: "Account No.",
+        name: "Bank Details",
         selector: (row) =>
-          row.account_number ? `****${row.account_number.slice(-4)}` : "",
+                    <div style={{ textAlign: "left" }}>
+          { row.bank_name?.toUpperCase()} <br />
+        {row.account_number.slice(-4)} <br />
+        {row.ifsc_code} 
+        </div>,
         wrap: true,
       },
       {
-        name: "IFSC",
-        selector: (row) => row.ifsc_code,
-        wrap: true,
-      },
-      {
-        name: "Amount (₹)",
+        name: "Amount ",
         selector: (row) => parseFloat(row.amount).toFixed(2),
         right: true,
         style: { color: "green", fontWeight: 600 },
       },
       {
-        name: "CCF (₹)",
+        name: "CCF ",
         selector: (row) => parseFloat(row.ccf).toFixed(2),
         right: true,
       },
       {
-        name: "GST (₹)",
+        name: "GST ",
         selector: (row) => parseFloat(row.gst).toFixed(2),
         right: true,
       },
       {
-        name: "Comm (₹)",
+        name: "Comm ",
         selector: (row) => parseFloat(row.comm).toFixed(2),
         right: true,
       },
       {
-        name: "TDS (₹)",
+        name: "TDS ",
         selector: (row) => parseFloat(row.tds).toFixed(2),
         right: true,
       },

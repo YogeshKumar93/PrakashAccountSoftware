@@ -26,7 +26,6 @@ import CommissionRule from "../pages/CommissionRule";
 import { Banking } from "../pages/Banking";
 import { Settings } from "../pages/Settings";
 import SuperTransfer from "../pages/SuperTransfer";
-import SelectLayout from "../pages/SelectLayout";
 import { Recharge } from "../pages/Recharge";
 import LandingPage from "../components/LandingPages/LandingPage";
 import NavBar from "../components/LandingPages/Navbar";
@@ -41,11 +40,19 @@ import LandingContactUs from "../components/LandingPages/LandingContactUs";
 import Navs from "../pages/Navs";
 
 import Statements from "../pages/Statements";
- 
+
 import UpiTransfer from "../pages/UpiTransfer";
 import BankStatements from "../pages/BankStatements";
 import AccountStatement from "../pages/AccountStatement";
 import Aeps from "../pages/Aeps";
+import AllServices from "../pages/AllServices";
+import Dmt from "../pages/Dmt";
+import Bbps from "../pages/Bbps";
+import Wallet2WalletTransfer from "../pages/Wallet2WalletTransfer";
+import W2wTransfer from "../pages/w2wTransfer";
+import { SelectLayout } from "../pages/SelectLayout";
+import Cms from "../pages/Cms";
+import QrLoginPage from "../pages/QrLoginPage";
 
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated, loading } = useContext(AuthContext);
@@ -66,7 +73,7 @@ export default function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="" element={<LandingPage />}/>
+        {/* <Route path="" element={<LandingPage />}/>
           <Route path="navbar" element={<NavBar />} />
           <Route path="footer" element={<Footer />} />
           <Route path="landingservices" element={<LandingServices />} />
@@ -75,9 +82,9 @@ export default function AppRoutes() {
           <Route path="landingpageintro" element={<LandingPageIntro />} />
           <Route path="landingpageintro1" element={<LandingPageIntro1 />} />
           <Route path="landingpageintro2" element={<LandingPageIntro2 />} />
-          <Route path="landingpageintro3" element={<LandingPageIntro3 />} />
+          <Route path="landingpageintro3" element={<LandingPageIntro3 />} /> */}
 
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<QrLoginPage />} />
 
         {/* Protected layout */}
         <Route
@@ -108,13 +115,26 @@ export default function AppRoutes() {
               <Route path="admin/logs" element={<Logs />} />
               <Route path="admin/profile" element={<ProfilePage />} />
               <Route path="admin/banks" element={<Banks />} />
-               <Route path="admin/bankstatements/:id" element={<BankStatements />} />
-               <Route path="admin/accountstatements/:id" element={<AccountStatement />} />
+              <Route path="admin/wallet-ledger" element={<AccountLadger />} />
+
+              <Route
+                path="admin/bankstatements/:id"
+                element={<BankStatements />}
+              />
+              <Route
+                path="admin/accountstatements/:id"
+                element={<AccountStatement />}
+              />
+              <Route
+                path="admin/wallet-transfer"
+                element={<Wallet2WalletTransfer />}
+              />
               <Route path="admin/layout" element={<Layouts />} />
               <Route path="admin/commissionrule" element={<CommissionRule />} />
               <Route path="admin/sidenav" element={<Navs />} />
               <Route path="admin/selectlayout" element={<SelectLayout />} />
                 <Route path="admin/aeps" element={<Aeps />} />
+              <Route path="admin/selectlayout" element={<Layouts />} />
 
               <Route path="admin/statements" element={<Statements />} />
               <Route
@@ -137,14 +157,20 @@ export default function AppRoutes() {
                 element={<AccountLadger />}
               />
               <Route path="customer/logs" element={<RetailerLogs />} />
-              <Route
-                path="customer/money-transfer"
-                element={<DmtContainer />}
-              />
+              <Route path="customer/money-transfer" element={<Dmt />} />
               <Route
                 path="customer/fund-transfer"
                 element={<SuperTransfer />}
               />
+              <Route
+                path="customer/wallet-transfer"
+                element={<Wallet2WalletTransfer />}
+              />
+              <Route
+                path="customer/wallet-ledger"
+                element={<AccountLadger />}
+              />
+              <Route path="customer/w2w-transfer" element={<W2wTransfer />} />
               <Route path="customer/upi-transfer" element={<UpiTransfer />} />
               <Route path="customer/transactions" element={<Transaction />} />
               <Route path="customer/recharge-bill" element={<Recharge />} />
@@ -152,23 +178,29 @@ export default function AppRoutes() {
               <Route path="customer/fund-request" element={<FundRequest />} />
               <Route path="customer/sale" element={<MySale />} />
              <Route path="customer/aeps" element={<Aeps />} />
+              <Route path="customer/bbps" element={<Bbps />} />
               <Route path="customer/profile" element={<ProfilePage />} />
+              <Route path="customer/cms" element={<Cms />} />
 
               <Route
                 path="customer/*"
                 element={<Navigate to="/customer/dashboard" replace />}
               />
               <Route path="customer/accounts" element={<Accounts />} />
+              <Route path="customer/allServices" element={<AllServices />} />
             </>
           )}
           {isDi && (
             <>
               <Route path="di/dashboard" element={<AdminTransactions />} />
+              <Route path="di/users" element={<Users />} />
               <Route path="di/services" element={<Dashboard />} />
+              <Route path="di/allServices" element={<AllServices />} />
               <Route
-                path="customer/account-ledger"
+                path="customer/wallet-ledger"
                 element={<AccountLadger />}
               />
+
               <Route path="customer/logs" element={<RetailerLogs />} />
               <Route
                 path="customer/money-transfer"

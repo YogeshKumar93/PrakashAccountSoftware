@@ -2,6 +2,9 @@
 import { useState, useEffect } from "react";
 import { apiCall } from "../api/apiClient";
 
+// ✅ Global in-memory cache (persists until page reload)
+const schemaCache = {};
+
 export const useSchemaForm = (endpoint, open) => {
   const [schema, setSchema] = useState([]);
   const [formName, setFormName] = useState("");
@@ -13,11 +16,21 @@ export const useSchemaForm = (endpoint, open) => {
     if (open) {
       (async () => {
         try {
+          // ✅ Check cache first
+          if (schemaCache[endpoint]) {
+            const cached = schemaCache[endpoint];
+            setSchema(cached.schema);
+            setFormName(cached.formName);
+            setFormData((prev) => ({ ...cached.formData, ...prev }));
+            setErrors({});
+            return; // don't call API
+          }
+
           setLoading(true);
           const res = await apiCall("post", endpoint);
 
           const payload =
-            res?.data?.data || res?.data || res?.response?.data || res;
+            res?.data?.data || res?.data || res?.response?.data || res || res?.response?.data?.data;
 
           console.log("📥 Schema structure:", payload);
 
@@ -51,15 +64,19 @@ export const useSchemaForm = (endpoint, open) => {
             setFormName(payload.formName || "Form");
             setSchema(normalizedFields);
 
-            // ✅ Initialize with empty form data only
-     // inside useSchemaForm
-const initData = {};
-normalizedFields.forEach((f) => {
-  initData[f.name] = formData[f.name] ?? "";  // keep existing value if present
-});
-setFormData((prev) => ({ ...initData, ...prev }));
-
+            const initData = {};
+            normalizedFields.forEach((f) => {
+              initData[f.name] = formData[f.name] ?? "";
+            });
+            setFormData((prev) => ({ ...initData, ...prev }));
             setErrors({});
+
+            // ✅ Save in cache
+            schemaCache[endpoint] = {
+              schema: normalizedFields,
+              formName: payload.formName || "Form",
+              formData: initData,
+            };
           } else {
             console.warn("⚠️ No fields found in payload:", payload);
           }
@@ -72,41 +89,35 @@ setFormData((prev) => ({ ...initData, ...prev }));
     }
   }, [open, endpoint]);
 
- const handleChange = (e) => {
-  const { name, value } = e.target;
-  const field = schema.find((f) => f.name === name);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    const field = schema.find((f) => f.name === name);
 
-  let errorMsg = "";
+    let errorMsg = "";
 
-  // ✅ Apply regex validation if present
-  if (field?.validation?.regex) {
-    try {
-      // safely convert string regex like "/^[0-9]{6,18}$/"
-      const regexString = field.validation.regex;
-      const pattern = new RegExp(
-        regexString.replace(/^\/|\/$/g, "") // remove slashes
-      );
-      if (!pattern.test(value)) {
-        errorMsg =
-          field.validation.message ||
-          `${field.label || name} is invalid`;
+    if (field?.validation?.regex) {
+      try {
+        const regexString = field.validation.regex;
+        const pattern = new RegExp(regexString.replace(/^\/|\/$/g, ""));
+        if (!pattern.test(value)) {
+          errorMsg =
+            field.validation.message || `${field.label || name} is invalid`;
+        }
+      } catch (err) {
+        console.error("Invalid regex from schema:", field.validation.regex, err);
       }
-    } catch (err) {
-      console.error("Invalid regex from schema:", field.validation.regex, err);
     }
-  }
 
-  setFormData((prev) => ({
-    ...prev,
-    [name]: value,
-  }));
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
 
-  setErrors((prev) => ({
-    ...prev,
-    [name]: errorMsg,
-  }));
-};
-
+    setErrors((prev) => ({
+      ...prev,
+      [name]: errorMsg,
+    }));
+  };
 
   return {
     schema,

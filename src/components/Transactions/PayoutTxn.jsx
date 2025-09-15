@@ -6,11 +6,29 @@ import AuthContext from "../../contexts/AuthContext";
 import { dateToTime1, ddmmyy, ddmmyyWithTime } from "../../utils/DateUtils";
 import CommonStatus from "../common/CommonStatus";
 
-const PayoutTxn = ({ filters = [], query }) => {
+const PayoutTxn = ({ query }) => {
   const authCtx = useContext(AuthContext);
   const user = authCtx?.user;
   const [openCreate, setOpenCreate] = useState(false);
-
+const filters = useMemo(
+    () => [
+      {
+        id: "status",
+        label: "Status",
+        type: "dropdown",
+        options: [
+          { value: "success", label: "Success" },
+          { value: "failed", label: "Failed" },
+          { value: "refund", label: "Refund" },
+          { value: "pending", label: "Pending" },
+        ],
+        defaultValue: "pending",
+      },
+      { id: "sender_mobile", label: "Sender Mobile", type: "textfield" },
+      { id: "txn_id", label: "Txn ID", type: "textfield" },
+    ],
+    []
+  );
   const columns = useMemo(
     () => [
             
@@ -42,16 +60,17 @@ const PayoutTxn = ({ filters = [], query }) => {
         wrap: true,
       },
       {
-        name: "Client Ref",
+        name: "Ref",
         selector: (row) => (
           <div style={{ textAlign: "left" }}>{row.client_ref}</div>
         ),
         wrap: true,
       },
+
       {
-        name: "Sender Mobile",
+        name: "Mobile Number",
         selector: (row) => (
-          <div style={{ textAlign: "left" }}>{row.sender_mobile}</div>
+          <div style={{ textAlign: "left" }}>{row.mobile_number}</div>
         ),
         wrap: true,
       },
@@ -69,7 +88,7 @@ const PayoutTxn = ({ filters = [], query }) => {
         selector: (row) => (
           <div style={{ textAlign: "left" }}>
             {row.bank_name?.toUpperCase()} <br />
-            ****{row.account_number.slice(-4)} <br />
+            {row.account_number} <br />
             {row.ifsc_code}
           </div>
         ),
@@ -87,19 +106,17 @@ const PayoutTxn = ({ filters = [], query }) => {
         wrap: true,
         right: true,
       },
+  
       {
-        name: "Charges",
+        name: "GST",
         selector: (row) => (
-          <div style={{ textAlign: "right" }}>
-            CCF: ₹{parseFloat(row.ccf).toFixed(2)} <br />
-            GST: ₹{parseFloat(row.gst).toFixed(2)} <br />
-            Comm: ₹{parseFloat(row.comm).toFixed(2)} <br />
-            TDS: ₹{parseFloat(row.tds).toFixed(2)}
-          </div>
-        ),
+          <>
+            ₹{parseFloat(row.gst).toFixed(2)}
+                </>  ),
         wrap: true,
         right: true,
       },
+  
       {
         name: "Status",
         selector: (row) => <CommonStatus value={row.status} />,

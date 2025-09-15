@@ -155,6 +155,7 @@ const BeneficiaryList = ({ sender, onSuccess, onSelect }) => {
     <Card 
       sx={{ 
         borderRadius: 2,
+                width: "100%",
         boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
         border: "1px solid",
         borderColor: "divider",
@@ -167,39 +168,41 @@ const BeneficiaryList = ({ sender, onSuccess, onSelect }) => {
   justifyContent={isMobile ? "flex-start" : "space-between"}
         alignItems="center"
         sx={{ 
-          p: 1.5,
-          background: "#0078B6",
+      py: 1,
+          px: 2,
+                    background: "#0078B6",
           borderBottom: openList ? "1px solid" : "none",
           borderColor: "divider"
         }}
       >
         <Box display="flex" alignItems="center" gap={1} flexGrow={1}>
-          <Typography variant="subtitle1" fontWeight="600" color="#fff">
-            Beneficiary List
+          <Typography variant="subtitle2" fontWeight="600" color="#fff">
+            Beneficiary List ({beneficiaries?.length || 0})
           </Typography>
 
-       <Box ml={isMobile ? 2 : "auto"}>
+<Box ml={isMobile ? 1 : "auto"}>
+  {sender && (
     <Button
       variant="contained"
       size="small"
       onClick={() => setOpenModal(true)}
-      startIcon={<PersonAddIcon sx={{ fontSize: 16 }} />}
+      startIcon={<PersonAddIcon sx={{ fontSize: 14 }} />}
       sx={{ 
-        minWidth: "auto", 
-        px: 1.5, 
-        backgroundColor:"#1AB1FF",
-        py: 0.5, 
-        fontSize: "0.75rem",
+        minWidth: "auto",     // shrink width
+        px: 0.8,              // smaller horizontal padding
+        py: 0.3,              // smaller vertical padding
+        fontSize: "0.65rem",  // smaller text
         borderRadius: 1,
         textTransform: "none",
-        fontWeight: "500",
+        fontWeight: 500,
         boxShadow: "none",
-       
+        backgroundColor: "#1AB1FF",
       }}
     >
       Add Beneficiary
     </Button>
-  </Box>
+  )}
+</Box>
 
         </Box>
 
@@ -269,7 +272,7 @@ const BeneficiaryList = ({ sender, onSuccess, onSelect }) => {
       py: 0.2,
     }}
   >
-    Pay
+    Send Money
   </Button>
 
   {/* Delete button */}
@@ -396,15 +399,9 @@ const BeneficiaryList = ({ sender, onSuccess, onSelect }) => {
           errors={errors}
           loading={loading || submitting}
           footerButtons={[
+        
             {
-              text: "Cancel",
-              variant: "outlined",
-              onClick: () => setOpenModal(false),
-              disabled: submitting,
-              sx: { borderRadius: 1 }
-            },
-            {
-              text: submitting ? "Saving..." : "Save Beneficiary",
+              text: submitting ? "Saving..." : "Add Beneficiary",
               variant: "contained",
               color: "primary",
               onClick: handleAddBeneficiary,

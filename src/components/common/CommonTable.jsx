@@ -35,7 +35,7 @@ import {
   KeyboardArrowRight,
   LastPage as LastPageIcon,
 } from "@mui/icons-material";
-import CachedIcon from '@mui/icons-material/Cached';
+import CachedIcon from "@mui/icons-material/Cached";
 import { apiCall } from "../../api/apiClient";
 import Loader from "./Loader";
 
@@ -134,7 +134,8 @@ const CommonTable = ({
   title = "",
   queryParam = "",
   onFetchRef,
-    customHeader = null, // Add this line
+  refresh = true,
+  customHeader = null, // Add this line
 }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -160,7 +161,15 @@ const CommonTable = ({
   const initialFilterValues = useMemo(() => {
     const values = {};
     availableFilters?.forEach((filter) => {
-      values[filter.id] = filter.type === "dropdown" ? "All" : "";
+      if (filter.type === "dropdown") {
+        values[filter.id] = "All";
+      } else if (filter.type === "date") {
+        values[filter.id] = "";
+      } else if (filter.type === "daterange") {
+        values[filter.id] = { start: "", end: "" };
+      } else {
+        values[filter.id] = "";
+      }
     });
     return values;
   }, [availableFilters]);
@@ -309,15 +318,44 @@ const CommonTable = ({
   }, []);
 
   const applyFilters = useCallback(() => {
-    setAppliedFilters({ ...filterValues });
-    appliedFiltersRef.current = { ...filterValues };
+    // Format dates before applying filters
+    const formattedFilters = { ...filterValues };
+
+    Object.keys(formattedFilters).forEach((key) => {
+      const filterConfig = availableFilters.find((f) => f.id === key);
+
+      if (filterConfig?.type === "date" && formattedFilters[key]) {
+        // Format date to YYYY-MM-DD for API
+        formattedFilters[key] = new Date(formattedFilters[key])
+          .toISOString()
+          .split("T")[0];
+      } else if (filterConfig?.type === "daterange" && formattedFilters[key]) {
+        // Format date range
+        if (formattedFilters[key].start) {
+          formattedFilters[`${key}_start`] = new Date(
+            formattedFilters[key].start
+          )
+            .toISOString()
+            .split("T")[0];
+        }
+        if (formattedFilters[key].end) {
+          formattedFilters[`${key}_end`] = new Date(formattedFilters[key].end)
+            .toISOString()
+            .split("T")[0];
+        }
+        delete formattedFilters[key]; // Remove the original daterange object
+      }
+    });
+
+    setAppliedFilters(formattedFilters);
+    appliedFiltersRef.current = formattedFilters;
     setPage(0);
     pageRef.current = 0;
     if (isSmallScreen) {
       setFilterModalOpen(false);
     }
     fetchData();
-  }, [filterValues, isSmallScreen, fetchData]);
+  }, [filterValues, isSmallScreen, fetchData, availableFilters]);
 
   const resetFilters = useCallback(() => {
     setFilterValues(initialFilterValues);
@@ -327,13 +365,18 @@ const CommonTable = ({
     pageRef.current = 0;
     fetchData();
   }, [initialFilterValues, fetchData]);
-
   const removeFilter = useCallback(
     (filterId) => {
-      const resetValue =
-        availableFilters.find((f) => f.id === filterId)?.type === "dropdown"
-          ? "All"
-          : "";
+      const filterConfig = availableFilters.find((f) => f.id === filterId);
+      let resetValue;
+
+      if (filterConfig?.type === "dropdown") {
+        resetValue = "All";
+      } else if (filterConfig?.type === "daterange") {
+        resetValue = { start: "", end: "" };
+      } else {
+        resetValue = "";
+      }
 
       setFilterValues((prev) => ({ ...prev, [filterId]: resetValue }));
       setAppliedFilters((prev) => ({ ...prev, [filterId]: resetValue }));
@@ -403,6 +446,60 @@ const CommonTable = ({
                   ))}
               </TextField>
             </FormControl>
+          ) : filter.type === "date" ? (
+            <TextField
+              fullWidth
+              size="small"
+              label={filter.label}
+              type="date"
+              value={filterValues[filter.id] || ""}
+              onChange={(e) => handleFilterChange(filter.id, e.target.value)}
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+          ) : filter.type === "daterange" ? (
+            <Box
+              sx={{ display: "flex", flexDirection: "column", minWidth: 250 }}
+            >
+              <Typography variant="body2" sx={{ mb: 1, fontWeight: "bold" }}>
+                {filter.label}
+              </Typography>
+              <Box sx={{ display: "flex", gap: 1 }}>
+                <TextField
+                  size="small"
+                  label="Start"
+                  type="date"
+                  value={filterValues[filter.id]?.start || ""}
+                  onChange={(e) =>
+                    handleFilterChange(filter.id, {
+                      ...filterValues[filter.id],
+                      start: e.target.value,
+                    })
+                  }
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  sx={{ flex: 1 }}
+                />
+                <TextField
+                  size="small"
+                  label="End"
+                  type="date"
+                  value={filterValues[filter.id]?.end || ""}
+                  onChange={(e) =>
+                    handleFilterChange(filter.id, {
+                      ...filterValues[filter.id],
+                      end: e.target.value,
+                    })
+                  }
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  sx={{ flex: 1 }}
+                />
+              </Box>
+            </Box>
           ) : (
             <TextField
               fullWidth
@@ -421,9 +518,38 @@ const CommonTable = ({
   const appliedFiltersChips = useMemo(
     () =>
       Object.entries(appliedFilters)
-        .filter(([key, value]) => value && value !== "All" && value !== "")
+        .filter(([key, value]) => {
+          // Skip date range sub-filters (they're handled separately)
+          if (key.includes("_start") || key.includes("_end")) return false;
+
+          const filterConfig = availableFilters.find((f) => f.id === key);
+
+          if (filterConfig?.type === "daterange") {
+            return value && (value.start || value.end);
+          }
+
+          return value && value !== "All" && value !== "";
+        })
         .map(([key, value]) => {
           const filterConfig = availableFilters.find((f) => f.id === key);
+
+          if (filterConfig?.type === "daterange") {
+            if (!value.start && !value.end) return null;
+
+            const label = `${filterConfig.label}: ${
+              value.start || "Start"
+            } to ${value.end || "End"}`;
+            return (
+              <Chip
+                key={key}
+                label={label}
+                onDelete={() => removeFilter(key)}
+                size="small"
+                sx={{ m: 0.5 }}
+              />
+            );
+          }
+
           return (
             <FilterChip
               key={key}
@@ -437,207 +563,289 @@ const CommonTable = ({
     [appliedFilters, availableFilters, removeFilter]
   );
 
-  // Memoized table rows
-const tableRows = useMemo(() => {
-  if (loading) {
-    return (
-      <tr>
-        <td
-          colSpan={initialColumns.length}
-          style={{ 
-            textAlign: "center", 
-            padding: "40px 20px",
-            fontStyle: "italic",
-            color: "#666"
-          }}
-        >
-          <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
-            <CircularProgress size={30} />
-            <Typography variant="body2">Loading data...</Typography>
-          </Box>
-        </td>
-      </tr>
-    );
-  }
-
-  if (data.length === 0) {
-    return (
-      <tr>
-        <td
-          colSpan={initialColumns.length}
-          style={{ 
-            textAlign: "center", 
-            padding: "40px 20px",
-            fontStyle: "italic",
-            color: "#666"
-          }}
-        >
-          <Typography variant="body1">
-            No data available
-          </Typography>
-        </td>
-      </tr>
-    );
-  }
-
-  return data.map((row, rowIndex) => (
-    <tr 
-      key={rowIndex} 
-      style={{ 
-        borderBottom: "1px solid #e0e0e0",
-        transition: "background-color 0.2s ease",
-        "&:hover": {
-          backgroundColor: "#f8f9fa"
-        }
-      }}
-      className="table-row"
-    >
-      {initialColumns.map((column, colIndex) => (
-        <td
-          key={colIndex}
-          style={{
-            padding: "14px 12px",
-            verticalAlign: "middle",
-            width: column.width || "auto",
-            textAlign: "left",
-            fontSize: "16px",
-            lineHeight: "1",
-            fontFamily: "'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif",
-            color: "#333"
-          }}
-        >
-          {column.selector ? (
-            <Box sx={{ 
-              display: "flex", 
-              alignItems: "center",
-              textAlign: "left",
-              justifyContent: "flex-start"
-            }}>
-              {column.selector(row)}
+  const renderDesktopFilters = useCallback(
+    () =>
+      availableFilters.map((filter) => (
+        <Box key={filter.id} sx={{ minWidth: 120 }}>
+          {filter.type === "dropdown" ? (
+            <FormControl size="small" sx={{ minWidth: 120 }}>
+              <TextField
+                select
+                label={filter.label}
+                value={filterValues[filter.id] || "All"}
+                onChange={(e) => handleFilterChange(filter.id, e.target.value)}
+                size="small"
+              >
+                <MenuItem value="All">All</MenuItem>
+                {filter.options &&
+                  filter.options.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+              </TextField>
+            </FormControl>
+          ) : filter.type === "date" ? (
+            <TextField
+              size="small"
+              label={filter.label}
+              type="date"
+              value={filterValues[filter.id] || ""}
+              onChange={(e) => handleFilterChange(filter.id, e.target.value)}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              sx={{ minWidth: 140 }}
+            />
+          ) : filter.type === "daterange" ? (
+            <Box
+              sx={{ display: "flex", flexDirection: "column", minWidth: 280 }}
+            >
+              <Typography variant="body2" sx={{ mb: 1, fontWeight: "bold" }}>
+                {filter.label}
+              </Typography>
+              <Box sx={{ display: "flex", gap: 1 }}>
+                <TextField
+                  size="small"
+                  label="Start"
+                  type="date"
+                  value={filterValues[filter.id]?.start || ""}
+                  onChange={(e) =>
+                    handleFilterChange(filter.id, {
+                      ...filterValues[filter.id],
+                      start: e.target.value,
+                    })
+                  }
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                />
+                <TextField
+                  size="small"
+                  label="End"
+                  type="date"
+                  value={filterValues[filter.id]?.end || ""}
+                  onChange={(e) =>
+                    handleFilterChange(filter.id, {
+                      ...filterValues[filter.id],
+                      end: e.target.value,
+                    })
+                  }
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                />
+              </Box>
             </Box>
           ) : (
-            <Typography 
-              variant="body2" 
-              sx={{ 
-                textAlign: "left",
-                fontWeight: column.name === "Amount" ? 600 : 400,
-                color: column.name === "Status" ? "transparent" : "inherit" // Status will be handled by its selector
+            <TextField
+              size="small"
+              label={filter.label}
+              value={filterValues[filter.id] || ""}
+              onChange={(e) => handleFilterChange(filter.id, e.target.value)}
+              sx={{ minWidth: 120 }}
+            />
+          )}
+        </Box>
+      )),
+    [availableFilters, filterValues, handleFilterChange]
+  );
+
+  // Memoized table rows
+  const tableRows = useMemo(() => {
+    if (loading) {
+      return (
+        <tr>
+          <td
+            colSpan={initialColumns.length}
+            style={{
+              textAlign: "center",
+              padding: "40px 20px",
+              fontStyle: "inter",
+              color: "#666",
+              backgroundColor: "#fff",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: 2,
               }}
             >
-              {row[column.name] || "—"}
-            </Typography>
-          )}
-        </td>
-      ))}
-    </tr>
-  ));
-}, [loading, data, initialColumns]);
-  // Memoized table headers
-const tableHeaders = useMemo(
-  () =>
-    initialColumns.map((column, index) => (
-      <th
-        key={index}
+              <CircularProgress size={30} />
+              <Typography variant="body2">Loading data...</Typography>
+            </Box>
+          </td>
+        </tr>
+      );
+    }
+
+    if (data.length === 0) {
+      return (
+        <tr>
+          <td
+            colSpan={initialColumns.length}
+            style={{
+              textAlign: "center",
+              padding: "40px 20px",
+              fontStyle: "inter",
+              color: "#666",
+            }}
+          >
+            <Typography variant="body1">No data available</Typography>
+          </td>
+        </tr>
+      );
+    }
+
+    return data.map((row, rowIndex) => (
+      <tr
+        key={rowIndex}
         style={{
-          padding: "16px 12px",
-          textAlign: "left",
-          fontWeight: 500,
-          fontSize: "15px",
-          width: column.width || "auto",
-          minWidth: column.width || "auto",
-          letterSpacing: "0.5px",
-          borderBottom: "2px solid #e2e8f0",
-          fontFamily: "'Inter', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif",
-          position: "sticky",
-          top: 0,
-          zIndex: 1,
-          whiteSpace: "nowrap"
+          borderBottom: "1px solid #e0e0e0",
+          transition: "background-color 0.2s ease",
+          "&:hover": {
+            backgroundColor: "#f8f9fa",
+          },
         }}
+        className="table-row"
       >
-        {typeof column.name === "string" ? (
-          <Box sx={{ 
-            display: "flex", 
-            alignItems: "center",
-            justifyContent: "space-between"
-          }}>
-            <span>{column.name}</span>
-            {/* Optional: Add sorting indicators if needed */}
-            {/* <ArrowUpwardIcon sx={{ fontSize: 14, opacity: 0.5 }} /> */}
-          </Box>
-        ) : (
-          column.name?.props?.children || `Column ${index + 1}`
-        )}
-      </th>
-    )),
-  [initialColumns]
-);
+        {initialColumns.map((column, colIndex) => (
+          <td
+            key={colIndex}
+            style={{
+
+              padding: "16px 14px", // ✅ thoda spacious feel
+              verticalAlign: "middle",
+              width: column.width || "auto",
+              textAlign: "left",
+              fontSize: "14.5px",
+              lineHeight: "1.6",
+              borderBottom: "1px solid #e5e7eb", // ✅ subtle divider
+              fontFamily: "Source Sans Pro, Inter, sans-serif",
+              fontWeight: 400,
+              color: "#1e293b", // dark slate (eye-friendly fintech look)
+              backgroundColor: "rgba(255,255,255,0.7)", // ✅ glassy bg
+              backdropFilter: "blur(1px)", // ✅ premium glassmorphism
+              transition: "all 0.2s ease-in-out", // ✅ smooth hover
+            }}
+          >
+            {column.selector ? (
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  textAlign: "left",
+                  justifyContent: "flex-start",
+                }}
+              >
+                {column.selector(row)}
+              </Box>
+            ) : (
+              <Typography
+                variant="body2"
+                sx={{
+                  textAlign: "left",
+                  fontWeight: column.name === "Amount" ? 600 : 400,
+                  color: column.name === "Status" ? "transparent" : "inherit", // Status will be handled by its selector
+                }}
+              >
+                {row[column.name] || "—"}
+              </Typography>
+            )}
+          </td>
+        ))}
+      </tr>
+    ));
+  }, [loading, data, initialColumns]);
+  // Memoized table headers
+  const tableHeaders = useMemo(
+    () =>
+      initialColumns.map((column, index) => (
+        <th
+          key={index}
+          style={{
+            backgroundColor: "#FFF6E9",
+            padding: "16px 12px",
+            textAlign: "left",
+            fontWeight: 550,
+            fontSize: "14px",
+            width: column.width || "auto",
+            minWidth: column.width || "auto",
+            letterSpacing: "0.5px",
+            borderBottom: "1px solid #e2e8f0",
+            fontFamily: "Inter, Roboto, sans-serif",
+            position: "sticky",
+            top: 0,
+            zIndex: 1,
+            whiteSpace: "nowrap",
+          }}
+        >
+          {typeof column.name === "string" ? (
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <span>{column.name}</span>
+              {/* Optional: Add sorting indicators if needed */}
+              {/* <ArrowUpwardIcon sx={{ fontSize: 14, opacity: 0.5 }} /> */}
+            </Box>
+          ) : (
+            column.name?.props?.children || `Column ${index + 1}`
+          )}
+        </th>
+      )),
+    [initialColumns]
+  );
   return (
-    <Box sx={{}}>
+    <Box>
       <Loader request={loading} />
       {/* Filter Section */}
       {availableFilters.length > 0 && (
         <>
-          <Paper sx={{ p: 2, mb: 2, display: { xs: "none", md: "block" } }}>
+          <Paper sx={{ p: 1, display: { xs: "none", md: "block" } }}>
             {/* <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}> */}
-              {/* <FilterListIcon sx={{ mr: 1 }} /> */}
-              {/* <Typography variant="h6">Filters</Typography> */}
+            {/* <FilterListIcon sx={{ mr: 1 }} /> */}
+            {/* <Typography variant="h6">Filters</Typography> */}
             {/* </Box> */}
 
-            <Box sx={{ 
-        display: "flex", 
-        alignItems: "center", 
-        flexWrap: "wrap", 
-        gap: 2, 
-        mb: 2 
-      }}>
-        {availableFilters.map((filter) => (
-          <Box key={filter.id} sx={{ minWidth: 120 }}>
-            {filter.type === "dropdown" ? (
-              <FormControl size="small" sx={{ minWidth: 120 }}>
-                <TextField
-                  select
-                  label={filter.label}
-                  value={filterValues[filter.id] || "All"}
-                  onChange={(e) => handleFilterChange(filter.id, e.target.value)}
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                flexWrap: "wrap",
+                gap: 1,
+                // mb: 2
+              }}
+            >
+              {renderDesktopFilters()}
+              {/* Apply and Reset buttons */}
+              <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+                {/* Left side buttons */}
+                <Button variant="contained" onClick={applyFilters} size="small">
+                  Apply
+                </Button>
+                <Button
+                  variant="outlined"
+                  onClick={resetFilters}
+                  startIcon={<ClearIcon />}
                   size="small"
                 >
-                  <MenuItem value="All">All</MenuItem>
-                  {filter.options &&
-                    filter.options.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
-                        {option.label}
-                      </MenuItem>
-                    ))}
-                </TextField>
-              </FormControl>
-            ) : (
-              <TextField
-                size="small"
-                label={filter.label}
-                value={filterValues[filter.id] || ""}
-                onChange={(e) => handleFilterChange(filter.id, e.target.value)}
-                sx={{ minWidth: 120 }}
-              />
-            )}
-          </Box>
-        ))}
-        
-        {/* Apply and Reset buttons */}
-        <Box sx={{ display: "flex", gap: 1 }}>
-          <Button variant="contained" onClick={applyFilters} size="small">
-            Apply
-          </Button>
-          <Button
-            variant="outlined"
-            onClick={resetFilters}
-            startIcon={<ClearIcon />}
-            size="small"
-          >
-            Reset
-          </Button>
-        </Box>
-      </Box>
-
+                  Reset
+                </Button>
+                <Tooltip title="Refresh">
+                  <IconButton onClick={handleManualRefresh} disabled={loading}>
+                    <CachedIcon />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+              <Box sx={{ marginLeft: "auto" }}>{customHeader}</Box>
+            </Box>
             {/* Applied filters chips */}
             {/* <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
               {appliedFiltersChips}
@@ -701,25 +909,57 @@ const tableHeaders = useMemo(
       )}
 
       {/* Table Header with Refresh */}
-<Box
-  sx={{
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    mb: 2,
-  }}
->
-  <Typography variant="h5">{title}</Typography>
-  
-  <Box sx={{ display: "flex", alignItems: "center" }}>
-    {customHeader} {/* Add custom header content here */}
-    <Tooltip title="Refresh">
-      <IconButton onClick={handleManualRefresh} disabled={loading} sx={{ ml: 1 }}>
-        {loading ? <CircularProgress size={24} /> : <CachedIcon />}
-      </IconButton>
-    </Tooltip>
-  </Box>
-</Box>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 2,
+        }}
+      >
+        <Typography variant="h5">{title}</Typography>
+
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          {/* {customHeader}  */}
+          {/* Add custom header content here */}
+          {/* {refresh && (
+            <Tooltip title="Refresh">
+              <IconButton
+                onClick={handleManualRefresh}
+                disabled={loading}
+                sx={{ ml: 1 }}
+              >
+                <CachedIcon />
+                {loading ? <CircularProgress size={24} /> : <CachedIcon />}
+              </IconButton>
+            </Tooltip>
+          )} */}
+        </Box>
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Typography variant="h5">{title}</Typography>
+
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          {/* ✅ Show Refresh only if no filters are used */}
+          {availableFilters.length === 0 && refresh && (
+            <Tooltip title="Refresh">
+              <IconButton
+                onClick={handleManualRefresh}
+                disabled={loading}
+                sx={{ ml: 1 }}
+              >
+                {loading ? <CircularProgress size={24} /> : <CachedIcon />}
+              </IconButton>
+            </Tooltip>
+          )}
+        </Box>
+      </Box>
 
       {/* Data Table */}
       <Paper sx={{ width: "100%", overflow: "hidden" }}>

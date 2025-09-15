@@ -1,64 +1,30 @@
-import React, { useState } from "react";
-import { Box, Tabs, Tab } from "@mui/material";
+import React from "react";
+import CommonTabs from "../components/common/CommonTabs";
 import Templates from "./Templates";
 import CommissionRule from "./CommissionRule";
 import Layouts from "./Layouts";
 import Logs from "./Logs";
 import WebHooks from "./WebHooks";
 import Plans from "./Plans";
+import Notification from "../components/Notification/Notification";
 
-
-const TabPanel = ({ children, value, index }) => {
-  return (
-    <div role="tabpanel" hidden={value !== index}>
-      {value === index && <Box sx={{  }}>{children}</Box>}
-    </div>
-  );
-};
+// Icons
+import DescriptionIcon from "@mui/icons-material/Description";     // Template
+import RuleIcon from "@mui/icons-material/Rule";                   // Comm Rules
+import HttpIcon from "@mui/icons-material/Http";                   // WebHooks
+import ListAltIcon from "@mui/icons-material/ListAlt";             // Logs
+import AssignmentIcon from "@mui/icons-material/Assignment";       // Plans
+import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive"; // Notifications
 
 export const Settings = () => {
-  const [tab, setTab] = useState(0);
+  const tabItems = [
+    { label: "Template", icon: <DescriptionIcon />, component: <Templates /> },
+    { label: "Comm Rules", icon: <RuleIcon />, component: <CommissionRule /> },
+    { label: "WebHooks", icon: <HttpIcon />, component: <WebHooks /> },
+    { label: "Logs", icon: <ListAltIcon />, component: <Logs /> },
+    { label: "Plans", icon: <AssignmentIcon />, component: <Plans /> },
+    { label: "Notifications", icon: <NotificationsActiveIcon />, component: <Notification /> },
+  ];
 
-  const handleChange = (event, newValue) => {
-    setTab(newValue);
-  };
-
-  return (
-    <Box sx={{ width: "100%" }}>
-      {/* Tab Header */}
-      <Tabs
-        value={tab}
-        onChange={handleChange}
-        variant="fullWidth"
-        textColor="primary"
-        indicatorColor="primary"
-        sx={{ borderBottom: 1, borderColor: "divider" }}
-      >
-        <Tab label="Template" />
-        <Tab label="Comm Rules" />
-        {/* <Tab label="Layout" /> */}
-        <Tab label="WebHooks" />
-        <Tab label="Logs" />
-        <Tab label="Plans" />
-       
-      </Tabs>
-
-      <TabPanel value={tab} index={0}>
-        <Templates />
-      </TabPanel>
-      <TabPanel value={tab} index={1}>
-        <CommissionRule />
-      </TabPanel>
-      <TabPanel value={tab} index={2}>
-        <WebHooks />
-      </TabPanel>
-      <TabPanel value={tab} index={3}>
-        <Logs />
-      </TabPanel>
-      <TabPanel value={tab} index={4}>
-        <Plans />
-      </TabPanel>
-    
-    </Box>
-  );
+  return <CommonTabs tabs={tabItems} defaultTab={0} />;
 };
