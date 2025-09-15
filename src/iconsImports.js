@@ -174,6 +174,7 @@ import indNepal from "./assets/indo_nepal.webp";
 import aepsAuth from "./assets/aepsAuth.webp";
 import processing from "./assets/processing.png";
 import creditReqImg from "./assets/just_icons/creditReq.svg";
+import complaintsImg2 from "./assets/just_icons/complaints.svg";
 import complaintsImg from "./assets/just_icons/complaints.svg";
 import BusImage from "./assets/busimage.jpg";
 import TrainImage from "./assets/irctcimage.png";
@@ -188,8 +189,19 @@ import lock_icon from "./assets/lock.png";
 
 import bank from "./assets/Images/Bank.png";
 import dashboardnew from "./assets/Images/dashboard.svg";
-import users from "./assets/Images/users.png";
+import users from "./assets/Images/Users2.svg";
 import transctionNew from "./assets/Images/Transctionns.png";
+import fundReq from "./assets/Images/FundRequest.svg";
+import walletTransfer from "./assets/Images/Transfer.svg";
+import walletLdger from "./assets/Images/walletLedger.svg";
+import setting from "./assets/ImageS/settings2.svg";
+import service from "./assets/ImageS/Services.svg";
+import layout from "./assets/ImageS/layouts.svg";
+import aeps from "./assets/ImageS/AEPS.svg";
+import complain from "./assets/Images/Settings.svg";
+import risk from "./assets/Images/Risk.svg";
+import virtualAccount from "./assets/sidenav/virtualaccount1.svg";
+import loginHistory from "./assets/Images/history.svg";
 
 // side nav images
 
@@ -231,7 +243,7 @@ import elec from "../src/assets/sidebar_icons/electricity.svg";
 import ccard from "../src/assets/sidebar_icons/creditcard.svg";
 import gasI from "../src/assets/sidebar_icons/gas.svg";
 import bb from "../src/assets/sidebar_icons/broad band.svg";
-import aeps from "../src/assets/sidebar_icons/aeps.svg";
+ 
 import mtrans from "../src/assets/sidebar_icons/money transfer.svg";
 import etrans from "../src/assets/sidebar_icons/express transfer.svg";
 import strans from "../src/assets/sidebar_icons/super transfer.svg";
@@ -523,16 +535,29 @@ export const windows2 = windows_1;
 export const linux2 = linux_1;
 export const festivalIMage = fest;
 
+
+
+
+// *************New Icons******************************************
 export const bankImage = bank;
 export const dashboardImage = dashboardnew;
 export const usersImage = users;
-export const transImage = transctionNew;
-// export const fundReqImage = fundReq;
-// export const walletTransferImage = walletTransfer;
-// export const walletLdgerImage = walletLdger;
-// export const settingImage = setting;
-// export const serviceImage = service;
-// export const layoutImage = layout;
-// export const aepsImage = aeps;
-// export const complainImage = complain;
-// export const riskImage = risk;
+export const transImage = transctionNew; 
+ 
+export const fundReqImage = fundReq;
+export const walletTransferImage = walletTransfer;
+ 
+export const walletLdgerImage = walletLdger;
+export const settingImage = setting; 
+export const serviceImage = service; 
+export const layoutImage = layout;
+ 
+
+export const aepsImage = aeps;
+export const complainImage = complain;
+ 
+export const riskImage = risk;
+ 
+export const virtuanAccountImage = virtualAccount;
+ 
+export const loginHistoryImage = loginHistory;

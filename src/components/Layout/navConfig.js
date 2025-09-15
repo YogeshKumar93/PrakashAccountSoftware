@@ -1,5 +1,5 @@
 import { Avatar } from "@mui/material";
-import { bankImage, dashboardImage, transImage, usersImage } from "../../iconsImports";
+import { aepsImage, bankImage, complainImage, dashboardImage, fundReqImage, layoutImage, loginHistoryImage, riskImage, serviceImage, settingImage, transImage, usersImage, virtuanAccountImage, walletLdgerImage, walletTransferImage } from "../../iconsImports";
 
 
 
@@ -19,46 +19,46 @@ export const Admin_nav = [
   // { title: "Statement", icon: "💳", icon2: "💳", to: "/admin/statement" },
   {
     title: "Fund Request",
-    icon: "🛠️",
+    icon: fundReqImage,
     icon2: "🛠️",
     to: "/admin/fund-request",
   },
   {
     title: "Wallet Transfer",
-    icon: "🛠️",
+    icon: walletTransferImage,
     icon2: "🛠️",
     to: "/admin/wallet-transfer",
   },
     {
     title: "Wallet Ledger",
-    icon: "🛠️",
+    icon: walletLdgerImage,
     icon2: "🛠️",
     to: "/admin/wallet-ledger",
   },
-  { title: "Settings", icon: "👥", icon2: "👥", to: "/admin/settings" },
-  { title: "Services", icon: "👥", icon2: "👥", to: "/admin/services" },
+  { title: "Settings", icon:settingImage, icon2: "👥", to: "/admin/settings" },
+  { title: "Services", icon: serviceImage, icon2: "👥", to: "/admin/services" },
  {
     title: "Bankings",
   icon: bankImage ,
   icon2: bankImage ,
     to: "/admin/bankings",
   },
-    { title: "Layouts", icon: "👥", icon2: "👥", to: "/admin/selectlayout" },
-     { title: "AEPS", icon: "👥", icon2: "👥", to: "/admin/aeps" },
-  { title: "Layouts", icon: "👥", icon2: "👥", to: "/admin/selectlayout" },
-  { title: "Complaint", icon: "👥", icon2: "👥", to: "/admin/complaint" },
-  { title: "Risk", icon: "👥", icon2: "👥", to: "/admin/risk" },
-    { title: "Virtual Accounts", icon: "👥", icon2: "👥", to: "/admin/virtual_accounts" },
-      { title: "Login History", icon: "👥", icon2: "👥", to: "/admin/login_history" },
+    { title: "Layouts", icon:layoutImage, icon2: "👥", to: "/admin/selectlayout" },
+     { title: "AEPS", icon: aepsImage, icon2: "👥", to: "/admin/aeps" },
+  { title: "Layouts", icon: layoutImage, icon2: "👥", to: "/admin/selectlayout" },
+  { title: "Complaint", icon: complainImage, icon2: "👥", to: "/admin/complaint" },
+  { title: "Risk", icon: riskImage, icon2: "👥", to: "/admin/risk" },
+    { title: "Virtual Accounts", icon: virtuanAccountImage, icon2: "👥", to: "/admin/virtual_accounts" },
+      { title: "Login History", icon: loginHistoryImage, icon2: "👥", to: "/admin/login_history" },
   {
     title: "Virtual Accounts",
-    icon: "👥",
+    icon: virtuanAccountImage,
     icon2: "👥",
     to: "/admin/selectlayout",
   },
   {
     title: "Login History",
-    icon: "👥",
+    icon: loginHistoryImage,
     icon2: "👥",
     to: "/admin/selectlayout",
   },
