@@ -84,7 +84,6 @@ const QrLoginPage = () => {
     }
   };
 
-  // 🔹 Poll QR Status
   const checkQrStatus = async (token) => {
     try {
       const { error, response } = await apiCall(
@@ -165,11 +164,6 @@ const QrLoginPage = () => {
     if (!mountedRef.current) {
       mountedRef.current = true;
       generateQrLogin(); // 🔹 Auto-generate QR on page load
-
-      getGeoLocation(
-        (lat, long) => authCtx.setLocation(lat, long),
-        (err) => okErrorToast("Location", err)
-      );
     }
 
     return () => {
@@ -177,6 +171,20 @@ const QrLoginPage = () => {
       if (pollingRef.current) clearInterval(pollingRef.current);
     };
   }, []);
+  useEffect(() => {
+    console.log("🔄 Fetching location...");
+
+    const fetchLocation = getGeoLocation(
+      (lat, long) => {
+        console.log("✅ Got location:", lat, long);
+        authCtx.setLocation(lat, long);
+      },
+      (err) => console.error(" Location error:", err)
+    );
+
+    fetchLocation();
+  }, []);
+
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
