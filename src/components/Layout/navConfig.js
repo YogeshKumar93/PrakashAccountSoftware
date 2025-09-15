@@ -1,3 +1,8 @@
+import { Avatar } from "@mui/material";
+import { bankImage, dashboardImage, transImage, usersImage } from "../../iconsImports";
+
+
+
 // Normal User Navigation
 export const nav = [
   { title: "Dashboard", icon: "📊", icon2: "📊", to: "/dashboard" },
@@ -7,10 +12,10 @@ export const nav = [
 
 // Admin Navigation
 export const Admin_nav = [
-  { title: "Dashboard", icon: "📊", icon2: "📊", to: "/admin/dashboard" },
-  { title: "Users", icon: "👥", icon2: "👥", to: "/admin/users" },
+  { title: "Dashboard", icon:dashboardImage, icon2: "📊", to: "/admin/dashboard" },
+  { title: "Users", icon: usersImage, icon2: "👥", to: "/admin/users" },
   // { title: "Notification", icon: "💳", icon2: "💳", to: "/admin/notification" },
-  { title: "Transactions", icon: "💳", icon2: "💳", to: "/admin/transactions" },
+  { title: "Transactions", icon:transImage, icon2: "💳", to: "/admin/transactions" },
   // { title: "Statement", icon: "💳", icon2: "💳", to: "/admin/statement" },
   {
     title: "Fund Request",
@@ -32,10 +37,19 @@ export const Admin_nav = [
   },
   { title: "Settings", icon: "👥", icon2: "👥", to: "/admin/settings" },
   { title: "Services", icon: "👥", icon2: "👥", to: "/admin/services" },
-  { title: "Bankings", icon: "👥", icon2: "👥", to: "/admin/bankings" },
+ {
+    title: "Bankings",
+  icon: bankImage ,
+  icon2: bankImage ,
+    to: "/admin/bankings",
+  },
+    { title: "Layouts", icon: "👥", icon2: "👥", to: "/admin/selectlayout" },
+     { title: "AEPS", icon: "👥", icon2: "👥", to: "/admin/aeps" },
   { title: "Layouts", icon: "👥", icon2: "👥", to: "/admin/selectlayout" },
-  { title: "Complaint", icon: "👥", icon2: "👥", to: "/admin/selectlayout" },
-  { title: "Risk", icon: "👥", icon2: "👥", to: "/admin/selectlayout" },
+  { title: "Complaint", icon: "👥", icon2: "👥", to: "/admin/complaint" },
+  { title: "Risk", icon: "👥", icon2: "👥", to: "/admin/risk" },
+    { title: "Virtual Accounts", icon: "👥", icon2: "👥", to: "/admin/virtual_accounts" },
+      { title: "Login History", icon: "👥", icon2: "👥", to: "/admin/login_history" },
   {
     title: "Virtual Accounts",
     icon: "👥",
@@ -144,5 +158,35 @@ export const service_nav = [
     icon2: "🛠️",
     to: "/customer/wallet-ledger",
   },
+
+];
+
+
+
+export const asm_nav = [
+  { title: "Dashboard", icon: "📊", icon2: "📊", to: "/asm/dashboard" },
+  { title: "Users", icon: "📊", icon2: "📊", to: "/asm/users" }, 
+    { title: "Transcations", icon: "📊", icon2: "📊", to: "/asm/transcations" },  
+
+];
+
+export const zsm_nav = [
+  { title: "Dashboard", icon: "📊", icon2: "📊", to: "/zsm/dashboard" },
+      { title: "Users", icon: "📊", icon2: "📊", to: "/zsm/users" },  
+    { title: "Transcations", icon: "📊", icon2: "📊", to: "/zsm/transcations" },  
+
+];
+
+export const api_nav = [
+  { title: "Dashboard", icon: "📊", icon2: "📊", to: "/api/dashboard" },
+   { title: "Users", icon: "📊", icon2: "📊", to: "/api/users" },
+    { title: "Transcations", icon: "📊", icon2: "📊", to: "/api/transcations" },  
+
+];
+
+export const md_nav = [
+  { title: "Dashboard", icon: "📊", icon2: "📊", to: "/md/dashboard" },
+      { title: "Users", icon: "📊", icon2: "📊", to: "/md/users" }, 
+    { title: "Transcations", icon: "📊", icon2: "📊", to: "/md/transcations" },  
 
 ];

@@ -44,6 +44,7 @@ import Statements from "../pages/Statements";
 import UpiTransfer from "../pages/UpiTransfer";
 import BankStatements from "../pages/BankStatements";
 import AccountStatement from "../pages/AccountStatement";
+import Aeps from "../pages/Aeps";
 import AllServices from "../pages/AllServices";
 import Dmt from "../pages/Dmt";
 import Bbps from "../pages/Bbps";
@@ -53,6 +54,10 @@ import { SelectLayout } from "../pages/SelectLayout";
 import Cms from "../pages/Cms";
 import QrLoginPage from "../pages/QrLoginPage";
 import BusinessDetails from "../components/BusinessDetails";
+import Complaint from "../pages/Complaint";
+import Risk from "../pages/Risk";
+import Virtual_Accounts from "../pages/Virtual_Accounts";
+import Login_History from "../pages/Login_History";
 
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated, loading, user } = useContext(AuthContext);
@@ -73,6 +78,10 @@ export default function AppRoutes() {
   const isAdmin = role === "adm" || role === "sadm";
   const isCustomer = role === "ret" || role === "dd";
   const isDi = role === "di";
+  const isAsm = role === "asm";
+  const isZsm = role === "zsm";
+  const isApi = role === "api";
+  const isMd = role === "api";
 
   return (
     <BrowserRouter>
@@ -136,9 +145,17 @@ export default function AppRoutes() {
               <Route path="admin/layout" element={<Layouts />} />
               <Route path="admin/commissionrule" element={<CommissionRule />} />
               <Route path="admin/sidenav" element={<Navs />} />
+              <Route path="admin/selectlayout" element={<SelectLayout />} />
+                <Route path="admin/aeps" element={<Aeps />} />
               <Route path="admin/selectlayout" element={<Layouts />} />
-
+              
               <Route path="admin/statements" element={<Statements />} />
+               <Route path="admin/complaint" element={<Complaint />} />
+                 <Route path="admin/risk" element={<Risk />} />
+                   <Route path="admin/virtual_accounts" element={<Virtual_Accounts />} />
+                     <Route path="admin/login_history" element={<Login_History />} />
+
+
               <Route
                 path="admin/*"
                 element={<Navigate to="/admin/dashboard" replace />}
@@ -179,6 +196,7 @@ export default function AppRoutes() {
               <Route path="customer/purchase" element={<MyPurchase />} />
               <Route path="customer/fund-request" element={<FundRequest />} />
               <Route path="customer/sale" element={<MySale />} />
+             <Route path="customer/aeps" element={<Aeps />} />
               <Route path="customer/bbps" element={<Bbps />} />
               <Route path="customer/profile" element={<ProfilePage />} />
               <Route path="customer/cms" element={<Cms />} />
@@ -222,6 +240,43 @@ export default function AppRoutes() {
                 element={<Navigate to="/customer/dashboard" replace />}
               />
               <Route path="customer/accounts" element={<Accounts />} />
+            </>
+          )}
+
+
+           {isAsm && (
+            <>
+              <Route path="asm/dashboard" element={<Dashboard />} />
+              <Route path="asm/users" element={<Users />} />
+              <Route path="asm/transcations" element={<Transaction />} />      
+               
+            </>
+          )}
+
+          {isZsm && (
+            <>
+              <Route path="zsm/dashboard" element={<Dashboard />} />
+              <Route path="zsm/users" element={<Users />} />
+              <Route path="zsm/transcations" element={<Transaction />} />      
+               
+            </>
+          )}
+
+            {isApi && (
+            <>
+              <Route path="api/dashboard" element={<Dashboard />} />
+              <Route path="api/users" element={<Users />} />
+              <Route path="api/transcations" element={<Transaction />} />      
+               
+            </>
+          )}
+
+            {isMd && (
+            <>
+              <Route path="md/dashboard" element={<Dashboard />} />
+              <Route path="md/users" element={<Users />} />
+              <Route path="md/transcations" element={<Transaction />} />      
+               
             </>
           )}
 
