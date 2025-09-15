@@ -193,90 +193,88 @@ export const okErrorToast = (title, msg) => {
 };
 
 export const apiErrorToast = (error, history) => {
-  var msg;
-  var status =
+  let msg = "Something went wrong";
+  let status =
     error && error.response && error.response.status && error.response.status;
+
   if (error) {
     if (error.data) {
-      error.response = error;
+      error.response = error; // normalize
     }
+
     if (error.response) {
       status = error.response.status;
+
       if (error.response.data) {
-        if (error.response.data.message) {
-          if (typeof error.response.data.message === "string") {
-            msg = error.response.data.message;
-          } else {
-            const msgObj = error.response.data.message;
-            msg = "";
-            for (let i in msgObj) {
-              msg += msgObj[i] + "\n";
-            }
+        const data = error.response.data;
+
+        // ✅ Handle "message" field
+        if (data.message) {
+          if (typeof data.message === "string") {
+            msg = data.message;
+          } else if (typeof data.message === "object") {
+            msg = Object.values(data.message).flat().join("\n");
           }
-        } else if (error.response.data.detail) {
-          if (typeof error.response.data.detail === "string") {
-            msg = error.response.data.detail;
-          } else {
-            const msgObj = error.response.data.detail;
-            msg = "";
-            for (let i in msgObj) {
-              msg += msgObj[i] + "\n";
-            }
+        }
+        // ✅ Handle "detail" field
+        else if (data.detail) {
+          if (typeof data.detail === "string") {
+            msg = data.detail;
+          } else if (typeof data.detail === "object") {
+            msg = Object.values(data.detail).flat().join("\n");
           }
-        } else if (typeof error.response.data === "object") {
-          msg = JSON.stringify(error.response.data);
+        }
+        // ✅ Handle raw object response
+        else if (typeof data === "object") {
+          msg = Object.values(data).flat().join("\n");
         } else {
-          msg = error.response.data;
+          msg = data;
         }
       } else {
-        msg = JSON.stringify(error.response);
-        // msg = "Something went wrong, Please try after sometime";
+        msg = "Something went wrong, Please try after sometime";
       }
     } else {
       if (error.message) {
         msg = error.message;
+      } else if (typeof error === "object") {
+        msg = Object.values(error).flat().join("\n");
       } else {
-        // msg = JSON.stringify(error);
         msg = error;
-        // msg = "Something went wrong, Please try after sometime";
       }
     }
   }
+
+  // 🔑 Handle different statuses
   if (status === 401) {
     ErrorSwal.fire({
       title: history ? "Login Required!!" : "Error!",
       text: msg,
-      icon: "error", // 'success' | 'error' | 'warning' | 'info' | 'question'
-      showCancelButton: false,
+      icon: "error",
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Login",
+      showCancelButton: false,
       showConfirmButton: history,
       showLoaderOnConfirm: history,
       keydownListenerCapture: true,
-      preConfirm: () => {},
       allowOutsideClick: () => !Swal.isLoading(),
-      // backdrop: true,
-    }).then((result) => {
+    }).then(() => {
       localStorage.clear();
       const location = window.location;
       let baseUrl = location.protocol + "//" + location.host;
       window.open(baseUrl, "_self");
     });
-  }
-  if (status === 500) {
-    // ErrorSwal.fire("", "Something Went wrong", "error");
+  } else if (status === 500) {
     okErrorToast("", "Something Went wrong");
-  }
-  if (status === 404 || status === 406) {
-    // ErrorSwal.fire("", msg ? msg : "Something Went wrong", "error");
+  } else if (status === 404 || status === 406) {
     okErrorToast("", msg ? msg : "Something Went wrong");
   } else {
     okErrorToast("", msg);
-    // ErrorSwal.fire("", msg ? msg : "Error can't be identified", "error");
   }
+
   return msg;
 };
+
 
 export const okSuccessToast = (title, msg) => {
   Toast.fire(title, msg, "success");

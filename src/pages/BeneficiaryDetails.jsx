@@ -17,7 +17,7 @@ import AuthContext from "../contexts/AuthContext";
 import OTPInput from "react-otp-input";
 import { useToast } from "../utils/ToastContext";
 
-const BeneficiaryDetails = ({ beneficiary, senderMobile, senderId }) => {
+const BeneficiaryDetails = ({ beneficiary, senderMobile, senderId ,sender}) => {
   const [transferMode, setTransferMode] = useState("IMPS");
   const [amount, setAmount] = useState("");
   const [loading, setLoading] = useState(false);
@@ -26,6 +26,9 @@ const BeneficiaryDetails = ({ beneficiary, senderMobile, senderId }) => {
   const [mpin, setMpin] = useState("");
   const { location } = useContext(AuthContext);
   const { showToast } = useToast();
+  const [resendLoading, setResendLoading] = useState(false);
+
+// console.log("sender rem_limit",sender.rem_limit);
 
   if (!beneficiary) return null;
 
@@ -58,6 +61,29 @@ const BeneficiaryDetails = ({ beneficiary, senderMobile, senderId }) => {
       setLoading(false);
     }
   };
+const handleResendOtp = async () => {
+  setResendLoading(true);
+  try {
+    const payload = {
+      mobile_number: senderMobile,
+      beneficiary_id: beneficiary.id,
+      amount,
+    };
+    const { error, response } = await apiCall("post", ApiEndpoints.PAYOUT_OTP, payload);
+
+    if (error) {
+      apiErrorToast(error);
+    } else {
+      showToast("OTP resent successfully!", "success");
+      setOtpRef(response?.data?.otp_ref || null); // 🔑 update new reference
+      setOtp(""); // clear old OTP input
+    }
+  } catch (err) {
+    apiErrorToast(err);
+  } finally {
+    setResendLoading(false);
+  }
+};
 
   const handleProceed = async () => {
     if (!otp || otp.length !== 6) {
@@ -94,23 +120,24 @@ const BeneficiaryDetails = ({ beneficiary, senderMobile, senderId }) => {
         ApiEndpoints.PAYOUT,
         payload
       );
+if (response) {
+  okSuccessToast("Payout successful!");
+  setAmount("");
+  setOtp("");
+  setMpin("");
+  setOtpRef(null);
+} else {
+  apiErrorToast(error?.message);
+}
 
-      if (response) {
-        okSuccessToast("Payout successful!");
-        setAmount("");
-        setOtp("");
-        setMpin("");
-        setOtpRef(null);
-      } else {
-        apiErrorToast(error || "Something went wrong");
-      }
+
     } catch (err) {
       apiErrorToast(err);
     } finally {
       setLoading(false);
     }
   };
-
+ 
   // --- UI Section ---
   return (
     <Paper sx={{ p: 0, mt: 2, borderRadius: 2, overflow: "hidden" }}>
@@ -174,29 +201,38 @@ const BeneficiaryDetails = ({ beneficiary, senderMobile, senderId }) => {
       {/* Amount + OTP / M-PIN */}
       {!otpRef ? (
         <Box mt={2} px={2} pb={2}>
-          <TextField
-            label="Amount"
-            type="number"
-            variant="outlined"
-            size="small"
-            fullWidth
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <Button
-                    variant="contained"
-                    size="small"
-                    onClick={handleGetOtp}
-                    disabled={loading}
-                  >
-                    {loading ? "Sending..." : "Get OTP"}
-                  </Button>
-                </InputAdornment>
-              ),
-            }}
-          />
+      <TextField
+  label="Amount"
+  type="number"
+  variant="outlined"
+  size="small"
+  fullWidth
+  value={amount}
+  onChange={(e) => {
+    const value = e.target.value;
+    // ✅ prevent exceeding rem_limit
+    if (parseFloat(value) > parseFloat(sender?.rem_limit || 0)) {
+      apiErrorToast(`Exceeds Rem Limit`);
+      return;
+    }
+    setAmount(value);
+  }}
+  InputProps={{
+    endAdornment: (
+      <InputAdornment position="end">
+        <Button
+          variant="contained"
+          size="small"
+          onClick={handleGetOtp}
+          disabled={loading}
+        >
+          {loading ? "Sending..." : "Get OTP"}
+        </Button>
+      </InputAdornment>
+    ),
+  }}
+/>
+
         </Box>
       ) : (
         <Box mt={2} px={2} pb={2} display="flex" flexDirection="column" gap={2}>
@@ -222,6 +258,15 @@ const BeneficiaryDetails = ({ beneficiary, senderMobile, senderId }) => {
     textAlign: "center",
   }}
 />
+  <Button
+    variant="text"
+    size="small"
+    sx={{ mt: 1 }}
+    onClick={handleResendOtp}
+    disabled={resendLoading}
+  >
+    {resendLoading ? "Resending..." : "Resend OTP"}
+  </Button>
           </Box>
           {/* M-PIN Input */}
           <Box>

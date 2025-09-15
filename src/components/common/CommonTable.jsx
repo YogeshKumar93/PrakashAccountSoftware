@@ -176,6 +176,7 @@ const CommonTable = ({
 
   // Initialize filter values
   useEffect(() => {
+        console.log("hey i am here 2")
     setFilterValues(initialFilterValues);
     setAppliedFilters(initialFilterValues);
     appliedFiltersRef.current = initialFilterValues;
@@ -281,6 +282,7 @@ const CommonTable = ({
 
   // Update refs when state changes
   useEffect(() => {
+        console.log("hey i am here 3")
     appliedFiltersRef.current = appliedFilters;
     pageRef.current = page;
     rowsPerPageRef.current = rowsPerPage;
@@ -289,6 +291,7 @@ const CommonTable = ({
 
   // Initial data fetch
   useEffect(() => {
+        console.log("hey i am here 4")
     if (!hasFetchedInitialData.current) {
       fetchData();
       hasFetchedInitialData.current = true;
@@ -297,6 +300,7 @@ const CommonTable = ({
 
   // Setup refresh interval
   useEffect(() => {
+        console.log("hey i am here 5")
     let intervalId;
     if (refreshIntervalRef.current > 0) {
       intervalId = setInterval(() => {
@@ -417,13 +421,10 @@ const CommonTable = ({
     fetchData(true);
   }, [fetchData]);
   useEffect(() => {
+    console.log("hey i am here 1")
     if (onFetchRef) onFetchRef(fetchData);
   }, [fetchData, onFetchRef]);
 
-  // Initial fetch
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
   // Memoized filter inputs renderer
   const renderFilterInputs = useCallback(
     () =>
@@ -716,7 +717,6 @@ const CommonTable = ({
           <td
             key={colIndex}
             style={{
-
               padding: "16px 14px", // ✅ thoda spacious feel
               verticalAlign: "middle",
               width: column.width || "auto",

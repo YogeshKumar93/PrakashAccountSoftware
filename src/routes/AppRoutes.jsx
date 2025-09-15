@@ -53,20 +53,25 @@ import W2wTransfer from "../pages/w2wTransfer";
 import { SelectLayout } from "../pages/SelectLayout";
 import Cms from "../pages/Cms";
 import QrLoginPage from "../pages/QrLoginPage";
+import BusinessDetails from "../components/BusinessDetails";
 import Complaint from "../pages/Complaint";
 import Risk from "../pages/Risk";
 import Virtual_Accounts from "../pages/Virtual_Accounts";
 import Login_History from "../pages/Login_History";
 
 const PrivateRoute = ({ children }) => {
-  const { isAuthenticated, loading } = useContext(AuthContext);
-  console.log("THe aufdgaegaee", isAuthenticated);
-  if (loading) {
-    return <div>Loading...</div>; // spinner or splash screen
+  const { isAuthenticated, loading, user } = useContext(AuthContext);
+
+  if (loading) return <div>Loading...</div>;
+
+  // If user exists but status !== 1, show subscription gate
+  if (user && user.status !== 1) {
+    return <ProfilePage user={user} />;
   }
 
   return isAuthenticated ? children : <Navigate to="/login" replace />;
 };
+
 export default function AppRoutes() {
   const { user } = useContext(AuthContext) || {};
   const role = user?.role;
