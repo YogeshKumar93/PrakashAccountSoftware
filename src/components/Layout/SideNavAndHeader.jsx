@@ -49,10 +49,11 @@ import Notification from "../Notification/Notification";
 import NotificationModal from "../Notification/NotificationModal";
 import { setTitleFunc } from "../../utils/HeaderTitleUtil";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
- 
+import defaultMaleAvatar from "../../assets/Images/male_avtar.jpg";
+ import defaultMaleAvatar2 from "../../assets/Images/male_avtar2.jpg"
 
 // ✅ Default male avatar image (replace with your own asset if available)
-import defaultMaleAvatar from "../../assets/Images/male_avtar.jpg";
+ 
 // Navigation configuration
 
 const roleNavigation = {
@@ -353,6 +354,8 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
           >
             <MenuIcon />
           </IconButton> */}
+
+
           <Typography
   variant="h5"
   noWrap
@@ -362,33 +365,47 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
   {title}
 </Typography>
 
-{/* 👤 User Name */}
-<Typography
-  variant="subtitle1"
+
+
+         <Box
   sx={{
-    fontWeight: 600,
-    color: "#FFAE42", 
-    mr: 2, 
-    fontSize: '24px',
+    display: "flex",
+    alignItems: "center",
+    gap: 2, // Adjust the gap value as needed
   }}
 >
- Welcome!  {user?.name || userName}
-</Typography>
+  {/* ✅ Refresh icon buttons */}
+  <IconButton onClick={refreshUser}>
+    <RefreshIcon sx={{ color: "black" }} />
+  </IconButton>
 
-          {/* ✅ Refresh icon button with black color */}
-          <IconButton onClick={refreshUser}>
-            <RefreshIcon sx={{ color: "black" }} />
-          </IconButton>
+  <IconButton onClick={colour}>
+    <RefreshIcon sx={{ color: "#fff" }} />
+  </IconButton>
 
-          <IconButton onClick={colour}>
-            <RefreshIcon sx={{ color: "#fff" }} />
-          </IconButton>
-          <IconButton color="inherit" onClick={handleUserMenuOpen}>
-            <Avatar src={userAvatar} sx={{ width: 32, height: 32 }}>
-              {!userAvatar && <PersonIcon />}
-            </Avatar>
-          </IconButton>
-          <NotificationModal />
+  {/* Notification Modal */}
+  <NotificationModal />
+
+  {/* 👤 User Avatar */}
+  <IconButton color="inherit" onClick={handleUserMenuOpen}>
+    <Avatar
+      src={defaultMaleAvatar2}
+      sx={{ width: 50, height: 50 }}
+    />
+  </IconButton>
+
+  {/* 👤 User Name */}
+  <Typography
+    variant="subtitle1"
+    sx={{
+      fontWeight: 600,
+      color: "#FFE7C7",
+      fontSize: "26px",
+    }}
+  >
+    {user?.name || userName}!
+  </Typography>
+</Box>
 
           <Menu
             anchorEl={userMenuAnchor}
