@@ -106,6 +106,7 @@ const ApiEndpoints = {
   QR_LOGIN: "auth/generateQr",
   QR_STATUS: "auth/qrStatus",
 
+  GET_COMPLAINS: "complains/getComplains",
   // ****************************** NEW API'S ABOVE ******************************
   GET_COMMISSION_RULE: "commission/getCommissions",
   GET_NOTIFICATION: "notification/getNotification",
@@ -130,7 +131,7 @@ const ApiEndpoints = {
   UPDATE_BANK: "bank/updateBank",
   DELETE_BANK: "bank/deleteBank",
 
-  GET_DMT_TXN: "dmt/getDmtTxns",
+  GET_DMT_TXN: "dmt1/getDmtTxns",
   GET_BBPS_TXN: "bbps/getBbpsTxns",
   GET_AEPS_TXN: "aeps/getAepsTxns",
   GET_MATM_TXN: "matm/getMatmTxns",

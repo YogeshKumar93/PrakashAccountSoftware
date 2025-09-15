@@ -6,11 +6,17 @@ import AuthContext from "../../contexts/AuthContext";
 import { dateToTime1, ddmmyy, ddmmyyWithTime } from "../../utils/DateUtils";
 import CommonStatus from "../common/CommonStatus";
 
+
+import ComplaintForm from "../ComplaintForm";
+
 const DmtTxn = ({ query }) => {
   const authCtx = useContext(AuthContext);
   const user = authCtx?.user;
+
   const [openCreate, setOpenCreate] = useState(false);
-const filters = useMemo(
+  const [selectedTxn, setSelectedTxn] = useState(null);
+
+  const filters = useMemo(
     () => [
       {
         id: "status",
@@ -29,6 +35,7 @@ const filters = useMemo(
     ],
     []
   );
+
   const columns = useMemo(
     () => [
       {
@@ -40,7 +47,6 @@ const filters = useMemo(
                 {ddmmyy(row.created_at)} {dateToTime1(row.created_at)}
               </span>
             </Tooltip>
-
             <Tooltip title={`Updated: ${ddmmyyWithTime(row.updated_at)}`} arrow>
               <span>
                 {ddmmyy(row.updated_at)} {dateToTime1(row.updated_at)}
@@ -51,70 +57,44 @@ const filters = useMemo(
         wrap: true,
         width: "140px",
       },
-
-      {
-        name: "Txn ID",
-        selector: (row) => row.txn_id,
-        sortable: true,
-        wrap: true,
-      },
-      {
-        name: "Client Ref",
-        selector: (row) => row.client_ref,
-        wrap: true,
-      },
-      {
-        name: "Sender Mobile",
-        selector: (row) => row.sender_mobile,
-        wrap: true,
-      },
-      {
-        name: "Beneficiary Name",
-        selector: (row) => row.beneficiary_name,
-        wrap: true,
-        style: { fontWeight: 500 },
-      },
+      { name: "Txn ID", selector: (row) => row.txn_id, sortable: true, wrap: true },
+      { name: "Client Ref", selector: (row) => row.client_ref, wrap: true },
+      { name: "Sender Mobile", selector: (row) => row.sender_mobile, wrap: true },
+      { name: "Beneficiary Name", selector: (row) => row.beneficiary_name, wrap: true, style: { fontWeight: 500 } },
       {
         name: "Bank Details",
-        selector: (row) =>
-                    <div style={{ textAlign: "left" }}>
-          { row.bank_name?.toUpperCase()} <br />
-        {row.account_number.slice(-4)} <br />
-        {row.ifsc_code} 
-        </div>,
+        selector: (row) => (
+          <div style={{ textAlign: "left" }}>
+            {row.bank_name?.toUpperCase()} <br />
+            {row.account_number.slice(-4)} <br />
+            {row.ifsc_code}
+          </div>
+        ),
         wrap: true,
       },
+      { name: "Amount", selector: (row) => parseFloat(row.amount).toFixed(2), right: true, style: { color: "green", fontWeight: 600 } },
+      { name: "CCF", selector: (row) => parseFloat(row.ccf).toFixed(2), right: true },
+      { name: "GST", selector: (row) => parseFloat(row.gst).toFixed(2), right: true },
+      { name: "Comm", selector: (row) => parseFloat(row.comm).toFixed(2), right: true },
+      { name: "TDS", selector: (row) => parseFloat(row.tds).toFixed(2), right: true },
+      { name: "Status", selector: (row) => <CommonStatus value={row.status} />, center: true },
       {
-        name: "Amount ",
-        selector: (row) => parseFloat(row.amount).toFixed(2),
-        right: true,
-        style: { color: "green", fontWeight: 600 },
+        name: "Actions",
+        cell: (row) => (
+          <IconButton
+            color="error"
+            onClick={() => {
+              setSelectedTxn(row);
+              setOpenCreate(true);
+            }}
+          >
+            <ReportProblemIcon />
+          </IconButton>
+        ),
+        ignoreRowClick: true,
+        allowOverflow: true,
+        button: true,
       },
-      {
-        name: "CCF ",
-        selector: (row) => parseFloat(row.ccf).toFixed(2),
-        right: true,
-      },
-      {
-        name: "GST ",
-        selector: (row) => parseFloat(row.gst).toFixed(2),
-        right: true,
-      },
-      {
-        name: "Comm ",
-        selector: (row) => parseFloat(row.comm).toFixed(2),
-        right: true,
-      },
-      {
-        name: "TDS ",
-        selector: (row) => parseFloat(row.tds).toFixed(2),
-        right: true,
-      },
-      {
-        name: "Status",
-       selector: (row) => <CommonStatus value={row.status} />,
-        center: true,
-      }
     ],
     []
   );
@@ -129,8 +109,20 @@ const filters = useMemo(
         filters={filters}
         queryParam={queryParam}
       />
+
+      {/* ✅ Complaint Modal */}
+      {openCreate && selectedTxn && (
+        <ComplaintForm
+          open={openCreate}
+          onClose={() => setOpenCreate(false)}
+          txnData={selectedTxn}
+        />
+      )}
     </>
   );
 };
 
 export default DmtTxn;
+
+
+

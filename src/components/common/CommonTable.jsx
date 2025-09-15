@@ -363,7 +363,7 @@ const CommonTable = ({
 
     // Fetch data with new filters
     fetchData();
-  }, [filterValues, isSmallScreen, fetchData, availableFilters]);
+  }, [filterValues, fetchData, availableFilters]);
 
   const resetFilters = useCallback(() => {
     setFilterValues(initialFilterValues);
@@ -424,15 +424,11 @@ const CommonTable = ({
   const handleManualRefresh = useCallback(() => {
     fetchData(true);
   }, [fetchData]);
-  useEffect(() => {
-    if (onFetchRef) onFetchRef(fetchData);
-  }, [fetchData, onFetchRef]);
+  // useEffect(() => {
+  //   if (onFetchRef) onFetchRef(fetchData);
+  // }, [fetchData, onFetchRef]);
 
-  // Initial fetch
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
-  // Memoized filter inputs renderer
+
   const renderFilterInputs = useCallback(
     () =>
       availableFilters.map((filter) => (
