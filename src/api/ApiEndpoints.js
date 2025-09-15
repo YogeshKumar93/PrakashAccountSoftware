@@ -107,6 +107,8 @@ const ApiEndpoints = {
   QR_STATUS: "auth/qrStatus",
 
   GET_COMPLAINS: "complains/getComplains",
+  CREATE_COMPLAINTS: "complains/createComplains",
+
   // ****************************** NEW API'S ABOVE ******************************
   GET_COMMISSION_RULE: "commission/getCommissions",
   GET_NOTIFICATION: "notification/getNotification",

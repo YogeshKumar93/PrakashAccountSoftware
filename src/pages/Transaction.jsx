@@ -18,6 +18,8 @@ import CreditCardIcon from "@mui/icons-material/CreditCard";
 import PaymentIcon from "@mui/icons-material/Payment";
 import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
 import TrainIcon from "@mui/icons-material/Train";
+import { Wallet } from "@mui/icons-material";
+import Wallet2WalletTransfer from "./Wallet2WalletTransfer";
 
 export const Transaction = () => {
   const tabItems = [
@@ -28,6 +30,7 @@ export const Transaction = () => {
     { label: "Payout", icon: <PaymentIcon />, component: <PayoutTxn /> },
     { label: "Recharge", icon: <PhoneIphoneIcon />, component: <RechargeTxn /> },
     { label: "Irctc", icon: <TrainIcon />, component: <IrctcTxn /> },
+    { label: "W2W", icon: <Wallet />, component: <Wallet2WalletTransfer /> },
   ];
 
   return <CommonTabs tabs={tabItems} defaultTab={0} />;

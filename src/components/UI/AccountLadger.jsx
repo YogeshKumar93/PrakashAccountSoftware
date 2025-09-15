@@ -55,6 +55,11 @@ const AccountLadger = ({ query }) => {
         wrap: true,
       },
       {
+        name: "Service",
+        selector: (row) => row.service,
+        center: true,
+      },
+      {
         name: "Narration",
         selector: (row) => (
           <Tooltip title={row?.narration}>
@@ -119,21 +124,11 @@ const AccountLadger = ({ query }) => {
                 fontWeight: "500",
               }}
             >
-              {(user.role === "Ad" || user.role === "Md") &&
-                row.txn_type === "DR" && (
-                  <div style={{ color: "red", textAlign: "left" }}>
-                    {row.type === "W2W TRANSFER"
-                      ? currencySetter(parseFloat(row.net_amount).toFixed(2))
-                      : "0"}
-                  </div>
-                )}
-
-              {(user.role === "ret" || user.role === "dd") &&
-                row.txn_type === "DR" && (
-                  <div style={{ color: "red", textAlign: "left" }}>
-                    -{currencySetter(parseFloat(row.amount).toFixed(2))}
-                  </div>
-                )}
+              {row.txn_type === "DR" && (
+                <div style={{ color: "red", textAlign: "left" }}>
+                  {row.txn_type === "W2W TRANSFER" ? "Debit" : "NA"}
+                </div>
+              )}
             </Box>
           );
         },
@@ -153,21 +148,11 @@ const AccountLadger = ({ query }) => {
                 fontWeight: "500",
               }}
             >
-              {(user.role === "Ad" || user.role === "Md") &&
-                row.txn_type === "CR" && (
-                  <div style={{ color: "green", textAlign: "left" }}>
-                    {row.type === "W2W TRANSFER"
-                      ? currencySetter(parseFloat(row.net_amount).toFixed(2))
-                      : currencySetter(parseFloat(row.ad_comm).toFixed(2))}
-                  </div>
-                )}
-
-              {(user.role === "ret" || user.role === "dd") &&
-                row.txn_type === "CR" && (
-                  <div style={{ color: "green", textAlign: "left" }}>
-                    + {currencySetter(parseFloat(row.amount).toFixed(2))}
-                  </div>
-                )}
+              {row.txn_type === "CR" && (
+                <div style={{ color: "green", textAlign: "left" }}>
+                  {row.txn_type === "CR" ? "Credit" : "Na"}
+                </div>
+              )}
             </Box>
           );
         },

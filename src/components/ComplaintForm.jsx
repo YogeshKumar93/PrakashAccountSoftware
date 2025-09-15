@@ -9,8 +9,11 @@ import {
   Alert,
 } from "@mui/material";
 import axios from "axios";
-
-const ComplaintForm = ({ txnId, onSuccess }) => {
+import { apiCall } from "../api/apiClient";
+import ApiEndpoints from "../api/ApiEndpoints";
+import CommonModal from "./common/CommonModal";
+const ComplaintForm = ({ txnId, onSuccess, open, onClose, type }) => {
+  console.log("THe tan ind ",txnId.id)
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [snackbar, setSnackbar] = useState({
@@ -19,6 +22,7 @@ const ComplaintForm = ({ txnId, onSuccess }) => {
     text: "",
   });
 
+  // ✅ Submit
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -39,33 +43,35 @@ const ComplaintForm = ({ txnId, onSuccess }) => {
       return;
     }
 
+    setLoading(true);
     try {
-      setLoading(true);
-      const res = await axios.post("/api/complains/create", {
-        txn_id: txnId,
-        message,
-      });
+      const { error, response } = await apiCall(
+        "POST",
+        ApiEndpoints.CREATE_COMPLAINTS, // 🔄 endpoint
+        { txn_id: txnId.id, message, type: type }
+      );
 
-      if (res.data.status === "success") {
+      if (response) {
         setSnackbar({
           open: true,
           type: "success",
-          text: res.data.message || "Complaint created successfully",
+          text: response?.message || "Complaint created successfully",
         });
         setMessage("");
-        if (onSuccess) onSuccess(res.data.data); // pass data back
+        if (onSuccess) onSuccess(response.data);
       } else {
         setSnackbar({
           open: true,
           type: "error",
-          text: res.data.message || "Something went wrong",
+          text: error?.message || "Failed to create complaint",
         });
       }
     } catch (err) {
+      console.error("Error creating complaint:", err);
       setSnackbar({
         open: true,
         type: "error",
-        text: err.response?.data?.message || "Server error",
+        text: "Something went wrong while creating complaint",
       });
     } finally {
       setLoading(false);
@@ -73,65 +79,67 @@ const ComplaintForm = ({ txnId, onSuccess }) => {
   };
 
   return (
-    <Box
-      component="form"
-      onSubmit={handleSubmit}
-      sx={{
-        p: 2,
-        display: "flex",
-        flexDirection: "column",
-        gap: 2,
-        maxWidth: 450,
-      }}
-    >
-      <Typography variant="h6">Raise a Complaint</Typography>
-
-      {/* Transaction ID (auto-filled, readonly) */}
-      <TextField
-        label="Transaction ID"
-        value={txnId || ""}
-        InputProps={{ readOnly: true }}
-        fullWidth
-        variant="outlined"
-      />
-
-      {/* Complaint message */}
-      <TextField
-        label="Complaint Message"
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        fullWidth
-        required
-        multiline
-        rows={3}
-        placeholder="Enter your complaint details..."
-      />
-
-      {/* Submit button */}
-      <Button
-        type="submit"
-        variant="contained"
-        color="primary"
-        disabled={loading}
+    <CommonModal open={open} onClose={onClose}>
+      <Box
+        component="form"
+        onSubmit={handleSubmit}
+        sx={{
+          p: 2,
+          display: "flex",
+          flexDirection: "column",
+          gap: 2,
+          maxWidth: 450,
+        }}
       >
-        {loading ? <CircularProgress size={24} /> : "Submit Complaint"}
-      </Button>
+        <Typography variant="h6">Raise a Complaint</Typography>
 
-      {/* Snackbar for user feedback */}
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={4000}
-        onClose={() => setSnackbar({ ...snackbar, open: false })}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      >
-        <Alert
-          severity={snackbar.type || "info"}
-          onClose={() => setSnackbar({ ...snackbar, open: false })}
+        {/* Transaction ID (auto-filled, readonly) */}
+        <TextField
+          label="Transaction ID"
+          value={txnId.id || ""}
+          InputProps={{ readOnly: true }}
+          fullWidth
+          variant="outlined"
+        />
+
+        {/* Complaint message */}
+        <TextField
+          label="Complaint Message"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          fullWidth
+          required
+          multiline
+          rows={3}
+          placeholder="Enter your complaint details..."
+        />
+
+        {/* Submit button */}
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          disabled={loading}
         >
-          {snackbar.text}
-        </Alert>
-      </Snackbar>
-    </Box>
+          {loading ? <CircularProgress size={24} /> : "Submit Complaint"}
+        </Button>
+
+        {/* Snackbar */}
+        <Snackbar
+          open={snackbar.open}
+          autoHideDuration={4000}
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        >
+          <Alert
+            severity={snackbar.type || "info"}
+            onClose={() => setSnackbar({ ...snackbar, open: false })}
+          >
+            {snackbar.text}
+          </Alert>
+        </Snackbar>
+      </Box>
+    </CommonModal>
   );
 };
 

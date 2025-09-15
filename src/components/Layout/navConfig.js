@@ -13,22 +13,23 @@ export const nav = [
 // Admin Navigation
 export const Admin_nav = [
   { title: "Dashboard", icon:dashboardImage, icon2: "📊", to: "/admin/dashboard" },
-  { title: "Users", icon: usersImage, icon2: "👥", to: "/admin/users" },
-  // { title: "Notification", icon: "💳", icon2: "💳", to: "/admin/notification" },
-  { title: "Transactions", icon:transImage, icon2: "💳", to: "/admin/transactions" },
-  // { title: "Statement", icon: "💳", icon2: "💳", to: "/admin/statement" },
-  {
+  { title: "Manage Users", icon: usersImage, icon2: "👥", to: "/admin/users" },
+    {
     title: "Fund Request",
     icon: fundReqImage,
     icon2: "🛠️",
     to: "/admin/fund-request",
   },
-  {
-    title: "Wallet Transfer",
-    icon: walletTransferImage,
-    icon2: "🛠️",
-    to: "/admin/wallet-transfer",
-  },
+  // { title: "Notification", icon: "💳", icon2: "💳", to: "/admin/notification" },
+  { title: "Transactions", icon:transImage, icon2: "💳", to: "/admin/transactions" },
+  // { title: "Statement", icon: "💳", icon2: "💳", to: "/admin/statement" },
+
+  // {
+  //   title: "Wallet Transfer",
+  //   icon: walletTransferImage,
+  //   icon2: "🛠️",
+  //   to: "/admin/wallet-transfer",
+  // },
     {
     title: "Wallet Ledger",
     icon: walletLdgerImage,

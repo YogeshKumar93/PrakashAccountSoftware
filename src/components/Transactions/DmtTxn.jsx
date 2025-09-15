@@ -1,12 +1,11 @@
 import { useMemo, useCallback, useContext, useState } from "react";
-import { Box, Tooltip, Typography, Button } from "@mui/material";
+import { Box, Tooltip, Typography, Button, IconButton } from "@mui/material";
 import CommonTable from "../common/CommonTable";
 import ApiEndpoints from "../../api/ApiEndpoints";
 import AuthContext from "../../contexts/AuthContext";
 import { dateToTime1, ddmmyy, ddmmyyWithTime } from "../../utils/DateUtils";
 import CommonStatus from "../common/CommonStatus";
-
-
+import ReportProblemIcon from "@mui/icons-material/ReportProblem";
 import ComplaintForm from "../ComplaintForm";
 
 const DmtTxn = ({ query }) => {
@@ -41,7 +40,13 @@ const DmtTxn = ({ query }) => {
       {
         name: "Date",
         selector: (row) => (
-          <div style={{ display: "flex", flexDirection: "column" }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              fontSize: "13px",
+            }}
+          >
             <Tooltip title={`Created: ${ddmmyyWithTime(row.created_at)}`} arrow>
               <span>
                 {ddmmyy(row.created_at)} {dateToTime1(row.created_at)}
@@ -57,44 +62,124 @@ const DmtTxn = ({ query }) => {
         wrap: true,
         width: "140px",
       },
-      { name: "Txn ID", selector: (row) => row.txn_id, sortable: true, wrap: true },
-      { name: "Client Ref", selector: (row) => row.client_ref, wrap: true },
-      { name: "Sender Mobile", selector: (row) => row.sender_mobile, wrap: true },
-      { name: "Beneficiary Name", selector: (row) => row.beneficiary_name, wrap: true, style: { fontWeight: 500 } },
       {
-        name: "Bank Details",
+        name: "Route",
         selector: (row) => (
-          <div style={{ textAlign: "left" }}>
-            {row.bank_name?.toUpperCase()} <br />
-            {row.account_number.slice(-4)} <br />
+          <div style={{ display: "flex", fontSize: "13px" }}>{row.route}</div>
+        ),
+
+        center: true,
+        width: "100px",
+      },
+      {
+        name: "TxnId/Ref",
+        selector: (row) => (
+          <>
+            <div style={{ textAlign: "left", fontSize: "13px" }}>
+              {row.txn_id}
+              <br />
+              {row.client_ref}
+            </div>
+          </>
+        ),
+        wrap: true,
+      },
+      {
+        name: "Sender Mobile",
+        selector: (row) => row.sender_mobile,
+        wrap: true,
+      },
+      {
+        name: "Beneficiary Details",
+        selector: (row) => (
+          <div style={{ textAlign: "left", fontSize: "12px" }}>
+            {row.beneficiary_name?.toUpperCase()} <br />
+            {row.account_number} <br />
             {row.ifsc_code}
           </div>
         ),
         wrap: true,
+        center: true,
+        width: "200px",
       },
-      { name: "Amount", selector: (row) => parseFloat(row.amount).toFixed(2), right: true, style: { color: "green", fontWeight: 600 } },
-      { name: "CCF", selector: (row) => parseFloat(row.ccf).toFixed(2), right: true },
-      { name: "GST", selector: (row) => parseFloat(row.gst).toFixed(2), right: true },
-      { name: "Comm", selector: (row) => parseFloat(row.comm).toFixed(2), right: true },
-      { name: "TDS", selector: (row) => parseFloat(row.tds).toFixed(2), right: true },
-      { name: "Status", selector: (row) => <CommonStatus value={row.status} />, center: true },
       {
-        name: "Actions",
-        cell: (row) => (
-          <IconButton
-            color="error"
-            onClick={() => {
-              setSelectedTxn(row);
-              setOpenCreate(true);
-            }}
-          >
-            <ReportProblemIcon />
-          </IconButton>
+        name: "Amount",
+        selector: (row) => (
+          <div style={{ color: "red", fontWeight: "600", textAlign: "right" }}>
+            ₹{parseFloat(row.amount).toFixed(2)}
+          </div>
         ),
-        ignoreRowClick: true,
-        allowOverflow: true,
-        button: true,
+        right: true,
       },
+      {
+        name: "CCF",
+        selector: (row) => (
+          <div style={{ color: "red", fontWeight: "600", textAlign: "right" }}>
+            {" "}
+            {parseFloat(row.ccf).toFixed(2)}
+          </div>
+        ),
+        right: true,
+      },
+      {
+        name: "GST",
+        selector: (row) => (
+          <div style={{ color: "red", fontWeight: "600", textAlign: "right" }}>
+            {parseFloat(row.gst).toFixed(2)}
+          </div>
+        ),
+        right: true,
+      },
+      {
+        name: "Comm",
+        selector: (row) => (
+          <div
+            style={{ color: "green", fontWeight: "600", textAlign: "right" }}
+          >
+            {" "}
+            {parseFloat(row.comm).toFixed(2)}
+          </div>
+        ),
+        right: true,
+      },
+      {
+        name: "TDS",
+        selector: (row) => (
+          <div style={{ color: "red", fontWeight: "600", textAlign: "right" }}>
+            {" "}
+            {parseFloat(row.tds).toFixed(2)}
+          </div>
+        ),
+        right: true,
+      },
+      {
+        name: "Status",
+        selector: (row) => <CommonStatus value={row.status} />,
+        center: true,
+      },
+      ...(user?.role === "adm"
+        ? [
+            {
+              name: "Actions",
+              selector: (row) => (
+                <Box sx={{ background: "#000" }}>
+                  {" "}
+                  <IconButton
+                    color="error"
+                    onClick={() => {
+                      setSelectedTxn(row);
+                      setOpenCreate(true);
+                    }}
+                  >
+                    {" "}
+                    <ReportProblemIcon fontSize="small" />{" "}
+                  </IconButton>{" "}
+                </Box>
+              ),
+              width: "120px",
+            },
+          ]
+        : []),
     ],
     []
   );
@@ -115,7 +200,8 @@ const DmtTxn = ({ query }) => {
         <ComplaintForm
           open={openCreate}
           onClose={() => setOpenCreate(false)}
-          txnData={selectedTxn}
+          txnId={selectedTxn}
+          type="dmt"
         />
       )}
     </>
@@ -123,6 +209,3 @@ const DmtTxn = ({ query }) => {
 };
 
 export default DmtTxn;
-
-
-

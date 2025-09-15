@@ -10,7 +10,7 @@ const PayoutTxn = ({ query }) => {
   const authCtx = useContext(AuthContext);
   const user = authCtx?.user;
   const [openCreate, setOpenCreate] = useState(false);
-const filters = useMemo(
+  const filters = useMemo(
     () => [
       {
         id: "status",
@@ -31,38 +31,51 @@ const filters = useMemo(
   );
   const columns = useMemo(
     () => [
-            
       {
         name: "Date",
         selector: (row) => (
-          <div style={{ display: "flex", flexDirection: "column" }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              fontSize: "13px",
+            }}
+          >
             <Tooltip title={`Created: ${ddmmyyWithTime(row.created_at)}`} arrow>
               <span>
                 {ddmmyy(row.created_at)} {dateToTime1(row.created_at)}
               </span>
             </Tooltip>
-      
+
             <Tooltip title={`Updated: ${ddmmyyWithTime(row.updated_at)}`} arrow>
               <span>
-               {ddmmyy(row.updated_at)} {dateToTime1(row.updated_at)}
+                {ddmmyy(row.updated_at)} {dateToTime1(row.updated_at)}
               </span>
             </Tooltip>
           </div>
         ),
         wrap: true,
-        width: "140px", 
+        width: "140px",
       },
       {
-        name: "Txn ID",
+        name: "Route",
         selector: (row) => (
-          <div style={{ textAlign: "left" }}>{row.txn_id}</div>
+          <div style={{ display: "flex", fontSize: "13px" }}>{row.route}</div>
         ),
-        wrap: true,
+
+        center: true,
+          width: "140px",
       },
       {
-        name: "Ref",
+        name: "TxnId/Ref",
         selector: (row) => (
-          <div style={{ textAlign: "left" }}>{row.client_ref}</div>
+          <>
+            <div style={{ textAlign: "left", fontSize: "13px" }}>
+              {row.txn_id}
+              <br />
+              {row.client_ref}
+            </div>
+          </>
         ),
         wrap: true,
       },
@@ -70,60 +83,72 @@ const filters = useMemo(
       {
         name: "Mobile Number",
         selector: (row) => (
-          <div style={{ textAlign: "left" }}>{row.mobile_number}</div>
-        ),
-        wrap: true,
-      },
-      {
-        name: "Beneficiary",
-        selector: (row) => (
-          <div style={{ textAlign: "left", fontWeight: 500 }}>
-            {row.beneficiary_name}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              fontSize: "13px",
+            }}
+          >
+            {row.mobile_number}
           </div>
         ),
         wrap: true,
       },
+      // {
+      //   name: "Beneficiary",
+      //   selector: (row) => (
+      //     <div style={{ textAlign: "left", fontWeight: 500 }}>
+      //       {row.beneficiary_name}
+      //     </div>
+      //   ),
+      //   wrap: true,
+      // },
       {
-        name: "Bank Details",
+        name: "Beneficiary Details",
         selector: (row) => (
-          <div style={{ textAlign: "left" }}>
-            {row.bank_name?.toUpperCase()} <br />
+          <div style={{ textAlign: "left", fontSize: "12px" }}>
+            {row.beneficiary_name?.toUpperCase()} <br />
             {row.account_number} <br />
             {row.ifsc_code}
           </div>
         ),
         wrap: true,
+        width: "250px",
       },
       {
         name: "Amount",
         selector: (row) => (
-          <div
-            style={{ color: "green", fontWeight: "600", textAlign: "right" }}
-          >
-            ₹ {parseFloat(row.amount).toFixed(2)}
+          <div style={{ color: "red", fontWeight: "600", textAlign: "right" }}>
+            ₹{parseFloat(row.amount).toFixed(2)}
           </div>
         ),
         wrap: true,
         right: true,
       },
-  
       {
-        name: "GST",
+        name: "Charges",
         selector: (row) => (
-          <>
-            ₹{parseFloat(row.gst).toFixed(2)}
-                </>  ),
+          <div style={{ color: "red", fontWeight: "600", textAlign: "right" }}>
+            ₹{parseFloat(row.charges).toFixed(2)}
+          </div>
+        ),
         wrap: true,
         right: true,
       },
-  
+      {
+        name: "GST",
+        selector: (row) =>  <div style={{ color: "red", fontWeight: "600", textAlign: "right" }}>₹{parseFloat(row.gst).toFixed(2)}</div>,
+        wrap: true,
+        right: true,
+      },
+
       {
         name: "Status",
         selector: (row) => <CommonStatus value={row.status} />,
-       
+
         center: true,
       },
-    
     ],
     []
   );
