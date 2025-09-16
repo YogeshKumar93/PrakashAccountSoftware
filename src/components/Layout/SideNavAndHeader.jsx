@@ -252,7 +252,7 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
                 color: "#9769ff", // hover pe bhi active jaisa text color
                 "& .MuiListItemIcon-root img": {
                   filter:
-                    "invert(40%) sepia(80%) saturate(300%) hue-rotate(250deg)", // hover icon effect
+                    "invert(41%) sepia(83%) saturate(7421%) hue-rotate(261deg) brightness(97%) contrast(101%)",
                 },
               },
 
@@ -501,7 +501,7 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
             <IconButton
               color="inherit"
               onClick={handleUserMenuOpen}
-              sx={{ p: 0 }} // padding remove
+              sx={{ p: 0, mr: 0.5 }} // padding remove
             >
               <Avatar
                 sx={{
@@ -527,26 +527,30 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
               >
                 {roleLabels[user?.role] || "User"}
               </Typography>
-              <Typography
-                variant="subtitle1"
-                sx={{
-                  fontWeight: 600,
-                  color: "#526484",
-                  fontSize: "12px",
-                  lineHeight: "16px",
-                }}
-              >
-                {user?.name || userName}
-              </Typography>
+
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <Typography
+                  variant="subtitle1"
+                  sx={{
+                    fontWeight: 600,
+                    color: "#526484",
+                    fontSize: "12px",
+                    lineHeight: "16px",
+                  }}
+                >
+                  {user?.name || userName}
+                </Typography>
+
+                <IconButton
+                  onClick={handleUserMenuOpen}
+                  sx={{ p: 0, ml: 1, width: 20, height: 20 }}
+                >
+                  <ExpandMoreIcon sx={{ fontSize: 20, color: "#9769FF" }} />
+                </IconButton>
+              </Box>
             </Box>
           </Box>
-          <IconButton
-            onClick={handleUserMenuOpen} // same as avatar
-            size="small"
-            sx={{}}
-          >
-            <ExpandMoreIcon sx={{ fontSize: 20, color: "#9769FF" }} />
-          </IconButton>
+
           <Menu
             anchorEl={userMenuAnchor}
             open={Boolean(userMenuAnchor)}
