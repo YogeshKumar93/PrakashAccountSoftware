@@ -367,7 +367,7 @@ if (card.title === "Primary") {
         <Grid item xs={12} md={9}>
           <Card sx={cardStyle}>
             <Typography variant="h6" fontWeight={600} mb={2}>Product Sale Table</Typography>
-            <TableContainer component={Paper} elevation={0} sx={{ border: "1px solid #e2e8f0", borderRadius: 2, maxHeight: 360, width:"800px" }}>
+            <TableContainer component={Paper} elevation={0} sx={{ border: "1px solid #e2e8f0", borderRadius: 2, maxHeight: 360, width:"100%" }}>
               <Table stickyHeader>
                 <TableHead>
                   <TableRow>
@@ -402,11 +402,11 @@ if (card.title === "Primary") {
         {/* Bar Chart */}
         <Grid item xs={12} md={3}>
           <Card sx={cardStyle}>
-            <Box display="flex" alignItems="center" justifyContent="space-between" mb={2} width="300px">
+            <Box display="flex" alignItems="center" justifyContent="space-between" mb={2} width="100%">
               <Typography variant="h6" fontWeight={600}>Sales Overview</Typography>
               <TrendingUp sx={{ color: "#16a34a" }} />
             </Box>
-            <Box sx={{ width: "100%", height: { xs: 280, sm: 360 } }}>
+            <Box sx={{ width: "100%", height: { xs: 280, sm: 320 } }}>
               <Bar data={salesData} options={salesOptions} />
             </Box>
           </Card>
