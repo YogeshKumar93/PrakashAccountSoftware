@@ -66,9 +66,17 @@ const PrivateRoute = ({ children }) => {
 
   if (loading) return <div>Loading...</div>;
 
-  // If user exists but status !== 1, show subscription gate
-  if (user && user.status !== 1) {
-    return <ProfilePage user={user} />;
+  if (user) {
+    if (user.status === 1) {
+      // ✅ KYC approved → allow access
+      return children;
+    } else if (user.status === 2) {
+      // ✅ KYC pending
+      return <KycPending />;
+    } else if (user.status > 2) {
+      // ✅ Some other case → go to profile
+      return <ProfilePage user={user} />;
+    }
   }
 
   // 🚨 Not logged in

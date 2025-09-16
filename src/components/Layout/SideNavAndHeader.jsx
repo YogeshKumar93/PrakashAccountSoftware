@@ -483,7 +483,7 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
             <MenuIcon />
           </IconButton> */}
 
-          <Typography variant="h5" noWrap component="div" sx={{ flexGrow: 1 }}>
+          <Typography variant="h5" noWrap component="div" sx={{ flexGrow: 1 ,color:"#9769FF",fontWeight:700}}>
             {title}
           </Typography>
 
