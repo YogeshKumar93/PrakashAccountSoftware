@@ -62,10 +62,7 @@ import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import defaultMaleAvatar from "../../assets/Images/male_avtar.jpg";
 import defaultMaleAvatar2 from "../../assets/Images/male_avtar2.jpg";
 import logo from "../../assets/Images/logo(1).png"; // adjust path
-
-// ✅ Default male avatar image (replace with your own asset if available)
-
-// Navigation configuration
+import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 
 const roleNavigation = {
   user: nav,
@@ -113,6 +110,14 @@ const themeSettings = {
 
 const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
   // console.log("inroute",userRole);
+  const roleLabels = {
+  adm: "Admin",
+  sadm: "Super Admin",
+  ret: "Retailer",
+  dd: "DD",
+  user: "User",
+};
+
   const { colours } = useContext(AuthContext);
 
   const authCtx = useContext(AuthContext);
@@ -255,13 +260,13 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
                   width: 26,
                   height: 26,
                   filter: isItemActive
-                    ? "invert(40%) sepia(80%) saturate(300%) hue-rotate(250deg)"
+                    ? "invert(41%) sepia(83%) saturate(7421%) hue-rotate(261deg) brightness(97%) contrast(101%)"
                     : "none",
                   transition: "filter 0.2s ease-in-out",
                 },
                 "&:hover img": {
                   filter: isItemActive
-                    ? "invert(40%) sepia(80%) saturate(300%) hue-rotate(250deg)"
+                    ? "invert(41%) sepia(83%) saturate(7421%) hue-rotate(261deg) brightness(97%) contrast(101%)"
                     : "brightness(0) invert(0.6)",
                 },
               }}
@@ -276,7 +281,7 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
                   sx={{
                     "& .MuiTypography-root": {
                       fontFamily: "DM Sans, sans-serif",
-                      fontWeight: 700,
+                      fontWeight: 550,
                       fontSize: "15px",
                       color: isItemActive ? "#9769ff" : "#6e82a5", // ✅ active text color
                     },
@@ -378,7 +383,7 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
         position="fixed"
         sx={{
           // backgroundColor:"#0037D7",
-          backgroundColor: colours?.header,
+          backgroundColor: "transparent",
           width: {
             md: desktopOpen
               ? `calc(100% - ${themeSettings.drawerWidth}px)`
@@ -431,22 +436,47 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
             {/* Notification Modal */}
             <NotificationModal />
 
-            {/* 👤 User Avatar */}
-            <IconButton color="inherit" onClick={handleUserMenuOpen}>
-              <Avatar src={defaultMaleAvatar2} sx={{ width: 50, height: 50 }} />
-            </IconButton>
-
-            {/* 👤 User Name */}
-            <Typography
-              variant="subtitle1"
-              sx={{
-                fontWeight: 600,
-                color: "#FFE7C7",
-                fontSize: "26px",
-              }}
+            <IconButton
+              color="inherit"
+              onClick={handleUserMenuOpen}
+              sx={{ display: "flex", alignItems: "center" }}
             >
-              {user?.name || userName}!
-            </Typography>
+              <Avatar
+                sx={{
+                  width: 30,
+                  height: 30,
+                  bgcolor: "#9769FF",
+                }}
+              >
+                <PersonOutlineIcon sx={{ color: "#FFF", fontSize: 20 }} />
+              </Avatar>
+
+              {/* Name + Role */}
+              <Box sx={{ ml: 1, display: "flex", flexDirection: "column" }}>
+                <Typography
+                  variant="caption"
+                  sx={{
+                    fontWeight: 500,
+                    color: "#9769FF", // lighter grey for role
+                    fontSize: "11px",
+                    lineHeight: 1,
+                  }}
+                >
+                  {roleLabels[user?.role] || "User"}
+                </Typography>
+                <Typography
+                  variant="subtitle1"
+                  sx={{
+                    fontWeight: 600,
+                    color: "#526484",
+                    fontSize: "12px",
+                    lineHeight:"16px"
+                  }}
+                >
+                  {user?.name || userName}
+                </Typography>
+              </Box>
+            </IconButton>
           </Box>
 
           <Menu
