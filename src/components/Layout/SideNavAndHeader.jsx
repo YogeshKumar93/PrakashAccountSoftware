@@ -65,6 +65,7 @@ import defaultMaleAvatar2 from "../../assets/Images/male_avtar2.jpg";
 import logo from "../../assets/Images/logo(1).png"; // adjust path
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
+// import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import EmailIcon from "@mui/icons-material/Email";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
@@ -473,43 +474,34 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
         className="header"
       >
         <Toolbar sx={{ minHeight: "64px !important" }}>
-          {/* <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={handleDrawerToggle}
-            sx={{ mr: 2 }}
+          <Typography
+            variant="h5"
+            noWrap
+            component="div"
+            sx={{ flexGrow: 1, color: "#9769FF", fontWeight: 700 }}
           >
-            <MenuIcon />
-          </IconButton> */}
-
-          <Typography variant="h5" noWrap component="div" sx={{ flexGrow: 1 ,color:"#9769FF",fontWeight:700}}>
             {title}
           </Typography>
+          <IconButton onClick={refreshUser}>
+            <RefreshIcon sx={{ color: "yellow" }} />
+          </IconButton>
+
+          <IconButton onClick={colour}>
+            <RefreshIcon sx={{ color: "#fff" }} />
+          </IconButton>
 
           <Box
             sx={{
               display: "flex",
               alignItems: "center",
-              gap: 0.5, // Adjust the gap value as needed
+              gap: 1,
             }}
           >
-            {/* ✅ Refresh icon buttons */}
-            <IconButton onClick={refreshUser}>
-              <RefreshIcon sx={{ color: "yellow" }} />
-            </IconButton>
-
-            <IconButton onClick={colour}>
-              <RefreshIcon sx={{ color: "#fff" }} />
-            </IconButton>
-
-            {/* Notification Modal */}
             <NotificationModal />
-
             <IconButton
               color="inherit"
               onClick={handleUserMenuOpen}
-              sx={{ display: "flex", alignItems: "center" }}
+              sx={{ p: 0 }} // padding remove
             >
               <Avatar
                 sx={{
@@ -520,35 +512,41 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
               >
                 <PersonOutlineIcon sx={{ color: "#FFF", fontSize: 20 }} />
               </Avatar>
-
-              {/* Name + Role */}
-              <Box sx={{ ml: 1, display: "flex", flexDirection: "column" }}>
-                <Typography
-                  variant="caption"
-                  sx={{
-                    fontWeight: 500,
-                    color: "#9769FF", // lighter grey for role
-                    fontSize: "11px",
-                    lineHeight: 1,
-                  }}
-                >
-                  {roleLabels[user?.role] || "User"}
-                </Typography>
-                <Typography
-                  variant="subtitle1"
-                  sx={{
-                    fontWeight: 600,
-                    color: "#526484",
-                    fontSize: "12px",
-                    lineHeight: "16px",
-                  }}
-                >
-                  {user?.name || userName}
-                </Typography>
-              </Box>
             </IconButton>
-          </Box>
 
+            {/* Role + Name as separate text (not clickable) */}
+            <Box sx={{ display: "flex", flexDirection: "column" }}>
+              <Typography
+                variant="caption"
+                sx={{
+                  fontWeight: 500,
+                  color: "#9769FF",
+                  fontSize: "11px",
+                  lineHeight: 1,
+                }}
+              >
+                {roleLabels[user?.role] || "User"}
+              </Typography>
+              <Typography
+                variant="subtitle1"
+                sx={{
+                  fontWeight: 600,
+                  color: "#526484",
+                  fontSize: "12px",
+                  lineHeight: "16px",
+                }}
+              >
+                {user?.name || userName}
+              </Typography>
+            </Box>
+          </Box>
+          <IconButton
+            onClick={handleUserMenuOpen} // same as avatar
+            size="small"
+            sx={{}}
+          >
+            <ExpandMoreIcon sx={{ fontSize: 20, color: "#9769FF" }} />
+          </IconButton>
           <Menu
             anchorEl={userMenuAnchor}
             open={Boolean(userMenuAnchor)}
