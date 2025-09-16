@@ -209,34 +209,60 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
       const isExpanded = expandedItems[item.to] || false;
 
       return (
-        <Box key={index} className="nav-item">
+        <Box
+          key={index}
+          className=""
+          sx={{
+            padding: "4px 12px",
+          }}
+        >
           <ListItem
             button
             onClick={() => handleNavigation(item.to, hasSubmenus)}
             sx={{
-              backgroundColor: isItemActive
-                ? themeSettings.palette.primary.main
-                : "transparent",
-              color: isItemActive ? "#fff" : "text.primary",
-              "&:hover": {
-                backgroundColor: isItemActive
-                  ? themeSettings.palette.primary.main
-                  : "action.hover",
-              },
+              position: "relative",
+              backgroundColor: isItemActive ? "#ebeef2" : "transparent",
+              color: isItemActive ? "#9769ff" : "#6e82a5",
+              borderRadius: "4px",
               mb: 0,
+              "&:hover": {
+                backgroundColor: "#ebeef2", // hover pe bhi active jaisa bg
+                color: "#9769ff", // hover pe bhi active jaisa text color
+                "& .MuiListItemIcon-root img": {
+                  filter:
+                    "invert(40%) sepia(80%) saturate(300%) hue-rotate(250deg)", // hover icon effect
+                },
+              },
+
+              "&::before": isItemActive
+                ? {
+                    content: '""',
+                    position: "absolute",
+                    left: 0,
+                    top: 0,
+                    height: "100%",
+                    width: "4px",
+                    backgroundColor: "#9769ff", // left border only for active
+                    borderRadius: "2px",
+                    color: "#9769ff",
+                  }
+                : {},
             }}
-            className={isItemActive ? "nav-link active" : "nav-link"}
           >
             <ListItemIcon
               sx={{
                 "& img": {
                   width: 26,
                   height: 26,
-                  filter: isItemActive ? "brightness(0) invert(1)" : "none",
+                  filter: isItemActive
+                    ? "invert(40%) sepia(80%) saturate(300%) hue-rotate(250deg)"
+                    : "none",
                   transition: "filter 0.2s ease-in-out",
                 },
                 "&:hover img": {
-                  filter: "brightness(0) invert(1)", // makes icon white
+                  filter: isItemActive
+                    ? "invert(40%) sepia(80%) saturate(300%) hue-rotate(250deg)"
+                    : "brightness(0) invert(0.6)",
                 },
               }}
             >
@@ -247,12 +273,19 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
               <>
                 <ListItemText
                   primary={item.title}
-                  primaryTypographyProps={{
-                    fontSize: "18px", // increase font size
-                    fontWeight: 500, // semi-bold
-                    color: isItemActive ? "#fff" : "black", // white if active, black otherwise
+                  sx={{
+                    "& .MuiTypography-root": {
+                      fontFamily: "DM Sans, sans-serif",
+                      fontWeight: 700,
+                      fontSize: "15px",
+                      color: isItemActive ? "#9769ff" : "#6e82a5", // ✅ active text color
+                    },
+                    ".MuiListItem-root:hover & .MuiTypography-root": {
+                      color: "#9769ff",
+                    },
                   }}
                 />
+
                 {hasSubmenus &&
                   (isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />)}
               </>
@@ -318,8 +351,19 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
           </IconButton>
         )}
       </Box>
-
-      <List className="nav-list" sx={{ overflowY: "auto" }}>
+      <List
+        className="nav-list"
+        sx={{
+          overflowY: "auto",
+          flexGrow: 1,
+          "&::-webkit-scrollbar": {
+            width: 0,
+            background: "transparent",
+          },
+          "-ms-overflow-style": "none", // IE/Edge
+          "scrollbar-width": "none", // Firefox
+        }}
+      >
         {renderNavItems(navigationItems)}
       </List>
     </Box>
