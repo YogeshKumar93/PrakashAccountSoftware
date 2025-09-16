@@ -45,14 +45,12 @@ import {
   customer_nav,
   di_nav,
   md_nav,
-   
   nav,
   service_nav,
   zsm_nav,
 } from "./navConfig";
 import AuthContext from "../../contexts/AuthContext";
 import { Switch } from "@mui/material";
-
 
 {
   /* App Bar with reduced height */
@@ -61,15 +59,16 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import Notification from "../Notification/Notification";
 import NotificationModal from "../Notification/NotificationModal";
 import { setTitleFunc } from "../../utils/HeaderTitleUtil";
- import TimelineIcon from "@mui/icons-material/Timeline";
+import TimelineIcon from "@mui/icons-material/Timeline";
 import defaultMaleAvatar from "../../assets/Images/male_avtar.jpg";
 import defaultMaleAvatar2 from "../../assets/Images/male_avtar2.jpg";
 import logo from "../../assets/Images/logo(1).png"; // adjust path
+import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
- 
+// import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+
 import EmailIcon from "@mui/icons-material/Email";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
- 
 
 // ✅ Default male avatar image (replace with your own asset if available)
 
@@ -121,6 +120,14 @@ const themeSettings = {
 
 const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
   // console.log("inroute",userRole);
+  const roleLabels = {
+    adm: "Admin",
+    sadm: "Super Admin",
+    ret: "Retailer",
+    dd: "DD",
+    user: "User",
+  };
+
   const { colours } = useContext(AuthContext);
 
   const authCtx = useContext(AuthContext);
@@ -135,8 +142,6 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
   const [expandedItems, setExpandedItems] = useState({});
   const [preview, setPreview] = useState(user?.profile_image || "");
   const [darkMode, setDarkMode] = useState(false);
-
-
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -154,10 +159,10 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
   }));
 
   const toggleDarkMode = () => {
-  setDarkMode((prev) => !prev);
-  // optional: save to localStorage
-  localStorage.setItem("darkMode", !darkMode);
-};
+    setDarkMode((prev) => !prev);
+    // optional: save to localStorage
+    localStorage.setItem("darkMode", !darkMode);
+  };
 
   const handleImageChange = (e) => {
     if (e.target.files && e.target.files[0]) {
@@ -226,34 +231,60 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
       const isExpanded = expandedItems[item.to] || false;
 
       return (
-        <Box key={index} className="nav-item">
+        <Box
+          key={index}
+          className=""
+          sx={{
+            padding: "4px 12px",
+          }}
+        >
           <ListItem
             button
             onClick={() => handleNavigation(item.to, hasSubmenus)}
             sx={{
-              backgroundColor: isItemActive
-                ? themeSettings.palette.primary.main
-                : "transparent",
-              color: isItemActive ? "#fff" : "text.primary",
-              "&:hover": {
-                backgroundColor: isItemActive
-                  ? themeSettings.palette.primary.main
-                  : "action.hover",
-              },
+              position: "relative",
+              backgroundColor: isItemActive ? "#ebeef2" : "transparent",
+              color: isItemActive ? "#9769ff" : "#6e82a5",
+              borderRadius: "4px",
               mb: 0,
+              "&:hover": {
+                backgroundColor: "#ebeef2", // hover pe bhi active jaisa bg
+                color: "#9769ff", // hover pe bhi active jaisa text color
+                "& .MuiListItemIcon-root img": {
+                  filter:
+                    "invert(41%) sepia(83%) saturate(7421%) hue-rotate(261deg) brightness(97%) contrast(101%)",
+                },
+              },
+
+              "&::before": isItemActive
+                ? {
+                    content: '""',
+                    position: "absolute",
+                    left: 0,
+                    top: 0,
+                    height: "100%",
+                    width: "4px",
+                    backgroundColor: "#9769ff", // left border only for active
+                    borderRadius: "2px",
+                    color: "#9769ff",
+                  }
+                : {},
             }}
-            className={isItemActive ? "nav-link active" : "nav-link"}
           >
             <ListItemIcon
               sx={{
                 "& img": {
                   width: 26,
                   height: 26,
-                  filter: isItemActive ? "brightness(0) invert(1)" : "none",
+                  filter: isItemActive
+                    ? "invert(41%) sepia(83%) saturate(7421%) hue-rotate(261deg) brightness(97%) contrast(101%)"
+                    : "none",
                   transition: "filter 0.2s ease-in-out",
                 },
                 "&:hover img": {
-                  filter: "brightness(0) invert(1)", // makes icon white
+                  filter: isItemActive
+                    ? "invert(41%) sepia(83%) saturate(7421%) hue-rotate(261deg) brightness(97%) contrast(101%)"
+                    : "brightness(0) invert(0.6)",
                 },
               }}
             >
@@ -264,12 +295,19 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
               <>
                 <ListItemText
                   primary={item.title}
-                  primaryTypographyProps={{
-                    fontSize: "18px", // increase font size
-                    fontWeight: 500, // semi-bold
-                    color: isItemActive ? "#fff" : "black", // white if active, black otherwise
+                  sx={{
+                    "& .MuiTypography-root": {
+                      fontFamily: "DM Sans, sans-serif",
+                      fontWeight: 550,
+                      fontSize: "15px",
+                      color: isItemActive ? "#9769ff" : "#6e82a5", // ✅ active text color
+                    },
+                    ".MuiListItem-root:hover & .MuiTypography-root": {
+                      color: "#9769ff",
+                    },
                   }}
                 />
+
                 {hasSubmenus &&
                   (isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />)}
               </>
@@ -335,64 +373,75 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
           </IconButton>
         )}
       </Box>
-
-      <List className="nav-list" sx={{ overflowY: "auto" }}>
+      <List
+        className="nav-list"
+        sx={{
+          overflowY: "auto",
+          flexGrow: 1,
+          "&::-webkit-scrollbar": {
+            width: 0,
+            background: "transparent",
+          },
+          "-ms-overflow-style": "none", // IE/Edge
+          "scrollbar-width": "none", // Firefox
+        }}
+      >
         {renderNavItems(navigationItems)}
         <MenuItem
-                  disableRipple
-                  onClick={() => {
-                    handleLogout();
-                    navigate("/login");
-                  }}
-                  sx={{
-                    width: "100%",
-                    marginBottom: "-8px",
-                    textAlign: "center",
-                    py: 2,
-                    display: "flex",
-                    justifyContent: "center",
-                    // "&:hover": {
-                    //   backgroundColor: getHoverInActive(),
-                    //   color: "#fff",
-                    // },
-                  }}
-                >
-                <LogoutIcon className="ms-2" fontSize="small" />  Logout 
-                </MenuItem>
+          disableRipple
+          onClick={() => {
+            handleLogout();
+            navigate("/login");
+          }}
+          sx={{
+            width: "100%",
+            marginBottom: "-8px",
+            textAlign: "center",
+            py: 2,
+            display: "flex",
+            justifyContent: "center",
+            // "&:hover": {
+            //   backgroundColor: getHoverInActive(),
+            //   color: "#fff",
+            // },
+          }}
+        >
+          <LogoutIcon className="ms-2" fontSize="small" /> Logout
+        </MenuItem>
       </List>
 
-         <MenuItem
-  onClick={handleLogout}
-  sx={{
-    display: "flex",
-    alignItems: "center",
-    justifyContent:"center",
-    mt:2,
-    mb:1.5,
-    gap: 2,
-    px: 4,
-    py: 1.5,
-    width:200,
-    borderRadius: "12px",
-    fontWeight: 500,
-    color: "#dc2626", // red-600
-    background: "#1405",
-    boxShadow: "0 2px 6px rgba(220, 38, 38, 0.15)",
-    transition: "all 0.3s ease",
-    "&:hover": {
-      background: "#4450A1",
-      color: "#fff",
-      transform: "scale(1.02)",
-      boxShadow: "0 4px 12px rgba(220, 38, 38, 0.3)",
-    },
-    mx:"auto",
-  }}
->
-  <ListItemIcon sx={{ color: "inherit" }}>
-    <LogoutIcon fontSize="small" />
-  </ListItemIcon>
-  <span className="text-base">Logout</span>
-</MenuItem>
+      <MenuItem
+        onClick={handleLogout}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          mt: 2,
+          mb: 1.5,
+          gap: 2,
+          px: 4,
+          py: 1.5,
+          width: 200,
+          borderRadius: "12px",
+          fontWeight: 500,
+          color: "#dc2626", // red-600
+          background: "#1405",
+          boxShadow: "0 2px 6px rgba(220, 38, 38, 0.15)",
+          transition: "all 0.3s ease",
+          "&:hover": {
+            background: "#4450A1",
+            color: "#fff",
+            transform: "scale(1.02)",
+            boxShadow: "0 4px 12px rgba(220, 38, 38, 0.3)",
+          },
+          mx: "auto",
+        }}
+      >
+        <ListItemIcon sx={{ color: "inherit" }}>
+          <LogoutIcon fontSize="small" />
+        </ListItemIcon>
+        <span className="text-base">Logout</span>
+      </MenuItem>
     </Box>
   );
 
@@ -405,7 +454,7 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
         position="fixed"
         sx={{
           // backgroundColor:"#0037D7",
-          backgroundColor: colours?.header,
+          backgroundColor: "transparent",
           width: {
             md: desktopOpen
               ? `calc(100% - ${themeSettings.drawerWidth}px)`
@@ -425,148 +474,174 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
         className="header"
       >
         <Toolbar sx={{ minHeight: "64px !important" }}>
-          {/* <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={handleDrawerToggle}
-            sx={{ mr: 2 }}
+          <Typography
+            variant="h5"
+            noWrap
+            component="div"
+            sx={{ flexGrow: 1, color: "#9769FF", fontWeight: 700 }}
           >
-            <MenuIcon />
-          </IconButton> */}
-
-          <Typography variant="h5" noWrap component="div" sx={{ flexGrow: 1 }}>
             {title}
           </Typography>
+          <IconButton onClick={refreshUser}>
+            <RefreshIcon sx={{ color: "yellow" }} />
+          </IconButton>
+
+          <IconButton onClick={colour}>
+            <RefreshIcon sx={{ color: "#fff" }} />
+          </IconButton>
 
           <Box
             sx={{
               display: "flex",
               alignItems: "center",
-              gap: 0.5, // Adjust the gap value as needed
+              gap: 1,
             }}
           >
-            {/* ✅ Refresh icon buttons */}
-            <IconButton onClick={refreshUser}>
-              <RefreshIcon sx={{ color: "yellow" }} />
-            </IconButton>
-
-            <IconButton onClick={colour}>
-              <RefreshIcon sx={{ color: "#fff" }} />
-            </IconButton>
-
-            {/* Notification Modal */}
             <NotificationModal />
-
-            {/* 👤 User Avatar */}
-            <IconButton color="inherit" onClick={handleUserMenuOpen}>
-              <Avatar src={defaultMaleAvatar2} sx={{ width: 40, height: 40 }} />
+            <IconButton
+              color="inherit"
+              onClick={handleUserMenuOpen}
+              sx={{ p: 0, mr: 0.5 }} // padding remove
+            >
+              <Avatar
+                sx={{
+                  width: 30,
+                  height: 30,
+                  bgcolor: "#9769FF",
+                }}
+              >
+                <PersonOutlineIcon sx={{ color: "#FFF", fontSize: 20 }} />
+              </Avatar>
             </IconButton>
 
-            {/* 👤 User Name */}
-            <Typography
-              variant="subtitle1"
-              sx={{
-                fontWeight: 600,
-                color: "#FFE7C7",
-                fontSize: "20px",
-              }}
-            >
-              {user?.name || userName}!
-            </Typography>
+            {/* Role + Name as separate text (not clickable) */}
+            <Box sx={{ display: "flex", flexDirection: "column" }}>
+              <Typography
+                variant="caption"
+                sx={{
+                  fontWeight: 500,
+                  color: "#9769FF",
+                  fontSize: "11px",
+                  lineHeight: 1,
+                }}
+              >
+                {roleLabels[user?.role] || "User"}
+              </Typography>
+
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <Typography
+                  variant="subtitle1"
+                  sx={{
+                    fontWeight: 600,
+                    color: "#526484",
+                    fontSize: "12px",
+                    lineHeight: "16px",
+                  }}
+                >
+                  {user?.name || userName}
+                </Typography>
+
+                <IconButton
+                  onClick={handleUserMenuOpen}
+                  sx={{ p: 0, ml: 1, width: 20, height: 20 }}
+                >
+                  <ExpandMoreIcon sx={{ fontSize: 20, color: "#9769FF" }} />
+                </IconButton>
+              </Box>
+            </Box>
           </Box>
 
-   <Menu
-      anchorEl={userMenuAnchor}
-      open={Boolean(userMenuAnchor)}
-      onClose={handleUserMenuClose}
-      transformOrigin={{ horizontal: "right", vertical: "top" }}
-      anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-      PaperProps={{
-        elevation: 4,
-        sx: {
-          mt: 1,
-          borderRadius: "16px",
-          overflow: "visible",
-          minWidth: 260,
-        },
-      }}
-    >
-      {/* Profile Header */}
-      <Box
-        sx={{
-          px: 2.5,
-          py: 2,
-          display: "flex",
-          alignItems: "center",
-          gap: 2,
-        }}
-      >
-        <Avatar
-          alt={user?.name || "User Avatar"}
-          src={user?.avatar || ""}
-          sx={{ width: 48, height: 48, bgcolor: "primary.main" }}
-        >
-          {user?.name?.[0]}
-        </Avatar>
-        <Box>
-          <Typography sx={{ fontWeight: 600, fontSize: "0.95rem" }}>
-            {user?.name || "Guest User"}
-          </Typography>
-          <Typography sx={{ fontSize: "0.8rem", color: "text.secondary" }}>
-            {user?.email || "guest@example.com"}
-          </Typography>
-        </Box>
-      </Box>
+          <Menu
+            anchorEl={userMenuAnchor}
+            open={Boolean(userMenuAnchor)}
+            onClose={handleUserMenuClose}
+            transformOrigin={{ horizontal: "right", vertical: "top" }}
+            anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+            PaperProps={{
+              elevation: 4,
+              sx: {
+                mt: 1,
+                borderRadius: "16px",
+                overflow: "visible",
+                minWidth: 260,
+              },
+            }}
+          >
+            {/* Profile Header */}
+            <Box
+              sx={{
+                px: 2.5,
+                py: 2,
+                display: "flex",
+                alignItems: "center",
+                gap: 2,
+              }}
+            >
+              <Avatar
+                alt={user?.name || "User Avatar"}
+                src={user?.avatar || ""}
+                sx={{ width: 48, height: 48, bgcolor: "primary.main" }}
+              >
+                {user?.name?.[0]}
+              </Avatar>
+              <Box>
+                <Typography sx={{ fontWeight: 600, fontSize: "0.95rem" }}>
+                  {user?.name || "Guest User"}
+                </Typography>
+                <Typography
+                  sx={{ fontSize: "0.8rem", color: "text.secondary" }}
+                >
+                  {user?.email || "guest@example.com"}
+                </Typography>
+              </Box>
+            </Box>
 
-      <Divider />
+            <Divider />
 
-      {/* Menu Items */}
-      <MenuItem onClick={() => navigate("/profile")}>
-        <ListItemIcon>
-          <PersonIcon fontSize="small" />
-        </ListItemIcon>
-        View Profile
-      </MenuItem>
+            {/* Menu Items */}
+            <MenuItem onClick={() => navigate("/profile")}>
+              <ListItemIcon>
+                <PersonIcon fontSize="small" />
+              </ListItemIcon>
+              View Profile
+            </MenuItem>
 
-      <MenuItem onClick={() => navigate("/settings")}>
-        <ListItemIcon>
-          <SettingsIcon fontSize="small" />
-        </ListItemIcon>
-        Settings
-      </MenuItem>
+            <MenuItem onClick={() => navigate("/settings")}>
+              <ListItemIcon>
+                <SettingsIcon fontSize="small" />
+              </ListItemIcon>
+              Settings
+            </MenuItem>
 
-      <MenuItem onClick={() => navigate("/activity")}>
-        <ListItemIcon>
-          <TimelineIcon fontSize="small" />
-        </ListItemIcon>
-        Logs Activity
-      </MenuItem>
+            <MenuItem onClick={() => navigate("/activity")}>
+              <ListItemIcon>
+                <TimelineIcon fontSize="small" />
+              </ListItemIcon>
+              Logs Activity
+            </MenuItem>
 
-      <MenuItem>
-        <ListItemIcon>
-          <DarkModeIcon fontSize="small" />
-        </ListItemIcon>
-        Dark Mode
-        <Switch
-          edge="end"
-          checked={darkMode}
-          onChange={toggleDarkMode}
-          sx={{ ml: "auto" }}
-        />
-      </MenuItem>
+            <MenuItem>
+              <ListItemIcon>
+                <DarkModeIcon fontSize="small" />
+              </ListItemIcon>
+              Dark Mode
+              <Switch
+                edge="end"
+                checked={darkMode}
+                onChange={toggleDarkMode}
+                sx={{ ml: "auto" }}
+              />
+            </MenuItem>
 
-      <Divider />
+            <Divider />
 
-      <MenuItem onClick={handleLogout}>
-        <ListItemIcon>
-          <LogoutIcon fontSize="small" />
-        </ListItemIcon>
-        Sign Out
-      </MenuItem>
-    </Menu>
-
-
+            <MenuItem onClick={handleLogout}>
+              <ListItemIcon>
+                <LogoutIcon fontSize="small" />
+              </ListItemIcon>
+              Sign Out
+            </MenuItem>
+          </Menu>
         </Toolbar>
       </AppBar>
 
