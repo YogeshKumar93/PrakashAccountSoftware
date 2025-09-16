@@ -168,7 +168,7 @@ const Users = ({ query }) => {
         ),
       },
       {
-        name: "Lien Amount",
+        name: "Lien",
         selector: (row) => (
           <Tooltip title={row?.lien}>
             <div style={{ textAlign: "left" }}>{row?.lien}</div>

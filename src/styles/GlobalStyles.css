@@ -60,6 +60,29 @@ body {
 
 }
 
+
+.textFieldCustom {
+  border: 1px solid #dbdfea;
+  border-radius: 4px;
+}
+
+/* Input text color */
+.textFieldCustom .MuiInputBase-input {
+  color: #3c4d62;
+  font-family: "DM Sans", sans-serif;
+}
+
+/* Label color */
+.textFieldCustom .MuiInputLabel-root {
+  color: #8094ae;
+  font-size: 15px;
+}
+
+.btnCustom {
+  font-family: "DM Sans", sans-serif !important;
+  text-transform: none; /* Optional: REMOVE automatic uppercase */
+}
+
 .container {
   max-width: 1300px;
   margin: 0 auto;

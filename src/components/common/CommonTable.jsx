@@ -431,7 +431,7 @@ const CommonTable = ({
   const renderFilterInputs = useCallback(
     () =>
       availableFilters.map((filter) => (
-        <Box key={filter.id} sx={{ minWidth: 120, mb: 2, }}>
+        <Box key={filter.id} sx={{ minWidth: 120, mb: 2 }}>
           {filter.type === "dropdown" ? (
             <FormControl size="small" fullWidth>
               <TextField
@@ -569,16 +569,20 @@ const CommonTable = ({
       availableFilters.map((filter) => (
         <Box key={filter.id} sx={{ minWidth: 120 }}>
           {filter.type === "dropdown" ? (
-            <FormControl size="small" sx={{ minWidth: 120 }}>
+            <FormControl
+              size="small"
+              sx={{ minWidth: 120 }}
+              className="textFieldCustom"
+            >
               <TextField
+                className="textFieldCustom"
                 select
                 label={filter.label}
                 value={filterValues[filter.id] || "All"}
                 onChange={(e) => handleFilterChange(filter.id, e.target.value)}
                 size="small"
-                sx={{  fontFamily: "DM Sans, sans-serif",}}
               >
-                <MenuItem value="All" sx={{  fontFamily: "DM Sans, sans-serif",}}>All</MenuItem>
+                <MenuItem value="All">All</MenuItem>
                 {filter.options &&
                   filter.options.map((option) => (
                     <MenuItem key={option.value} value={option.value}>
@@ -597,8 +601,7 @@ const CommonTable = ({
               InputLabelProps={{
                 shrink: true,
               }}
-         
-              sx={{ minWidth: 140, fontFamily: "DM Sans, sans-serif",}}
+              sx={{ minWidth: 140, fontFamily: "DM Sans, sans-serif" }}
             />
           ) : filter.type === "daterange" ? (
             <Box
@@ -609,7 +612,15 @@ const CommonTable = ({
                 mt: -1,
               }}
             >
-              <Typography variant="body2" sx={{ mb: 1, fontWeight: "bold"  ,fontFamily: "DM Sans, sans-serif",}} >
+              <Typography
+              className="textFieldCustom"
+                variant="body2"
+                sx={{
+                  mb: 1,
+                  fontWeight: "bold",
+                
+                }}
+              >
                 {filter.label}
               </Typography>
               <DateRangePicker
@@ -638,7 +649,7 @@ const CommonTable = ({
                 style={{
                   width: "100%",
                   border: "1px solid #ccc",
-                  borderRadius: "4px",
+                  borderRadius: "6px",
                   zIndex: 9999,
                 }}
               />
@@ -649,7 +660,7 @@ const CommonTable = ({
               label={filter.label}
               value={filterValues[filter.id] || ""}
               onChange={(e) => handleFilterChange(filter.id, e.target.value)}
-              sx={{ minWidth: 120 }}
+              className="textFieldCustom"
             />
           )}
         </Box>
@@ -728,7 +739,8 @@ const CommonTable = ({
                 lineHeight: "1.6",
                 fontFamily: "DM Sans, sans-serif",
                 fontWeight: 500,
-                color: "#8094ae",
+
+                color: "#646e84",
                 border: "none", // Remove default borders
               }}
             >
@@ -808,19 +820,22 @@ const CommonTable = ({
               <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
                 {/* Left side buttons */}
                 <Button
+                  className="btnCustom"
                   variant="contained"
                   onClick={applyFilters}
                   size="small"
-                  sx={{ fontFamily: "DM Sans, sans-serif" }}
+                  sx={{ backgroundColor:"#00A300" }}
                 >
                   Apply
                 </Button>
+
                 <Button
-                  variant="outlined"
+                  // className="btnCustom"
+                  // variant="outlined"
                   onClick={resetFilters}
                   startIcon={<ClearIcon />}
                   size="small"
-                  sx={{ fontFamily: "DM Sans, sans-serif" }}
+                  sx={{ backgroundColor:"#FF542E",color:"#fff" }}
                 >
                   Reset
                 </Button>
