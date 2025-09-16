@@ -567,10 +567,6 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
     </Menu>
 
 
-
-
-
-
         </Toolbar>
       </AppBar>
 
