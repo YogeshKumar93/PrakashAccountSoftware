@@ -101,15 +101,15 @@ const Dmt = () => {
     if (selectedBeneficiary?.id === id) setSelectedBeneficiary(null);
   };
 
-  if (!instId) {
-    return (
-      <OutletDmt1
-        open={true}
-        handleClose={() => setOpenDmt1Modal(false)}
-        onSuccess={() => window.location.reload()}
-      />
-    );
-  }
+  // if (!instId) {
+  //   return (
+  //     <OutletDmt1
+  //       open={true}
+  //       handleClose={() => setOpenDmt1Modal(false)}
+  //       onSuccess={() => window.location.reload()}
+  //     />
+  //   );
+  // }
   return (
     <Box>
       <Box
