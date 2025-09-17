@@ -222,18 +222,41 @@ const BbpsBillerDetails = ({ billerId, onBack, selectedBillerIdImage }) => {
             flexShrink: 0,
           }}
         >
-          <CardContent sx={{ p: { xs: 2, sm: 3 } ,height:"300px" ,}}>
-            <Typography
-              variant="h5"
-              fontWeight="bold"
-              color="primary"
-              gutterBottom
-              textAlign="center"
-              
-              sx={{ fontSize: { xs: "1.1rem", sm: "1.5rem" } }}
-            >
-              Enter Details
-            </Typography>
+          <CardContent sx={{ p: { xs: 2, sm: 2 } ,height:"300px" ,}}>
+       <Box
+  display="flex"
+  alignItems="center"
+  gap={2}
+  sx={{
+    p: 2,
+    borderRadius: "8px",
+    background: "#e6f0ff", // light blue background
+  }}
+>
+  {selectedBillerIdImage && (
+    <Box
+      component="img"
+      src={selectedBillerIdImage}
+      alt={billerDetails?.billerInfo?.name || "Biller"}
+      sx={{
+        width: 55,
+        height: 55,
+        objectFit: "contain",
+        borderRadius: "8px",
+      }}
+    />
+  )}
+
+  <Typography
+    variant="h5"
+    fontWeight="bold"
+    color="#000"
+    sx={{ fontSize: { xs: "1.1rem", sm: "1.5rem" } }}
+  >
+    {billerDetails?.billerInfo?.name || "Biller"}
+  </Typography>
+</Box>
+
             <Divider sx={{ mb: 4 }} />
 
             <Box display="flex" flexDirection="column" gap={2}>
@@ -266,10 +289,10 @@ const BbpsBillerDetails = ({ billerId, onBack, selectedBillerIdImage }) => {
                 py: { xs: 1, sm: 1.4 },
                 fontWeight: "bold",
                 fontSize: { xs: "0.9rem", sm: "1rem" },
-                background: "linear-gradient(90deg, #4f46e5, #3b82f6)",
+                background: " #3b82f6)",
                 boxShadow: "0 4px 12px rgba(79,70,229,0.25)",
                 "&:hover": {
-                  background: "linear-gradient(90deg, #4338ca, #2563eb)",
+                  background: "#2563eb)",
                 },
               }}
               onClick={handleFetchBill}
@@ -404,10 +427,10 @@ const BbpsBillerDetails = ({ billerId, onBack, selectedBillerIdImage }) => {
                   py: { xs: 1, sm: 1.4 },
                   fontWeight: "bold",
                   fontSize: { xs: "0.9rem", sm: "1rem" },
-                  background: "linear-gradient(90deg, #4f46e5, #3b82f6)",
+                  background:"#3b82f6",
                   boxShadow: "0 4px 12px rgba(79,70,229,0.25)",
                   "&:hover": {
-                    background: "linear-gradient(90deg, #4338ca, #2563eb)",
+                    background: " #2563eb)",
                   },
                 }}
                 onClick={handlePayBill}
