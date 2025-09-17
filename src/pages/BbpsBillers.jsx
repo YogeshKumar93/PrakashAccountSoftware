@@ -143,7 +143,11 @@ const BbpsBillers = ({ category, onBack }) => {
                 sm={2}
                 md={2.4}
                 xl={2.4}
+<<<<<<< HEAD
                 lg={2}
+=======
+                lg={2.4}
+>>>>>>> 883ac28 (changes)
               >
                 {/* xs=6 (2 per row mobile), sm=4 (3 per row tablet), md=2.4 (5 per row desktop) */}
 
