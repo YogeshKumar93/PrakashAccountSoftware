@@ -102,6 +102,8 @@ const roleRoutes = {
   Api: "/api-user/profile",
 };
 
+ 
+
 const themeSettings = {
   drawerWidth: 240,
   palette: {
@@ -534,10 +536,10 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
             transformOrigin={{ horizontal: "right", vertical: "right" }}
             anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
             PaperProps={{
-              elevation: 4,
+              elevation: 1,
               sx: {
-                mt: 1,
-                borderRadius: "16px",
+                mt: 2,
+                borderRadius: "6px",
                 overflow: "hidden",
                 minWidth: 320,
                
@@ -580,50 +582,45 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
             <Divider />
 
             {/* Menu Items */}
-            <Box sx={{width:"350px", p:2.5}}>
-            <MenuItem onClick={() => navigate("/profile")}>
-              <ListItemIcon>
-                <PersonIcon fontSize="small" />
-              </ListItemIcon>
-              View Profile
-            </MenuItem>
+         <Box sx={{ width: "350px", p: 2.5 }}>
+  <MenuItem onClick={() => navigate(roleRoutes[user?.role])}>
+    <ListItemIcon>
+      <PersonIcon fontSize="small" />
+    </ListItemIcon>
+    Manage Profile
+  </MenuItem> 
 
-            <MenuItem onClick={() => navigate("/settings")}>
-              <ListItemIcon>
-                <SettingsIcon fontSize="small" />
-              </ListItemIcon>
-              Settings
-            </MenuItem>
+  <MenuItem onClick={() => navigate(`/${user?.role}/logs`)}>
+    <ListItemIcon>
+      <TimelineIcon fontSize="small" />
+    </ListItemIcon>
+    Logs Activity
+  </MenuItem>
 
-            <MenuItem onClick={() => navigate("/activity")}>
-              <ListItemIcon>
-                <TimelineIcon fontSize="small" />
-              </ListItemIcon>
-              Logs Activity
-            </MenuItem>
+  {/* <MenuItem>
+    <ListItemIcon>
+      <DarkModeIcon fontSize="small" />
+    </ListItemIcon>
+    Dark Mode
+    <Switch
+      edge="end"
+      checked={darkMode}
+      onChange={toggleDarkMode}
+      sx={{ ml: "auto" }}
+    />
+  </MenuItem> */}
 
-            <MenuItem>
-              <ListItemIcon>
-                <DarkModeIcon fontSize="small" />
-              </ListItemIcon>
-              Dark Mode
-              <Switch
-                edge="end"
-                checked={darkMode}
-                onChange={toggleDarkMode}
-                sx={{ ml: "auto" }}
-              />
-            </MenuItem>
+  <Divider />
 
-            <Divider />
+  <MenuItem onClick={handleLogout}>
+    <ListItemIcon>
+      <LogoutIcon fontSize="small" />
+    </ListItemIcon>
+    Sign Out
+  </MenuItem>
+</Box>
 
-            <MenuItem onClick={handleLogout}>
-              <ListItemIcon>
-                <LogoutIcon fontSize="small" />
-              </ListItemIcon>
-              Sign Out
-            </MenuItem>
-            </Box>
+
           </Menu>
         </Toolbar>
       </AppBar>
