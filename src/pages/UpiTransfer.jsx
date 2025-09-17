@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Box,
   TextField,
@@ -8,7 +8,11 @@ import {
 } from "@mui/material";
 import { apiCall } from "../api/apiClient";
 import ApiEndpoints from "../api/ApiEndpoints";
-import { okSuccessToast, apiErrorToast } from "../utils/ToastUtil";
+import {
+  okSuccessToast,
+  apiErrorToast,
+  okSuccessToastAlt,
+} from "../utils/ToastUtil";
 import BeneficiaryList from "./BeneficiaryList";
 import SenderDetails from "./SenderDetails";
 import SenderRegisterModal from "./SenderRegisterModal";
@@ -38,12 +42,13 @@ const [loading, setLoading] = useState(false);
     try {
       const response = await apiCall("post", ApiEndpoints.GET_SENDER, {
         mobile_number: number,
+        type: "UPI",
       });
  setLoading(false); // stop loader
       const data = response?.data || response?.response?.data;
 
-      if (response?.status)
-        okSuccessToast(response.message || "Sender fetched successfully");
+      if (response)
+        okSuccessToastAlt(response.message || "Sender fetched successfully");
 
       if (data && data?.is_active === 1) {
         setSender(data);
@@ -87,7 +92,7 @@ const [loading, setLoading] = useState(false);
   };
 
   return (
-    <Box p={3}>
+    <Box p={0}>
       {/* Always show mobile input */}
       <Box>
       <TextField
@@ -98,7 +103,7 @@ const [loading, setLoading] = useState(false);
         autoComplete="on" // <-- enable autocomplete for phone numbers
         onChange={handleChange}
         inputProps={{ maxLength: 10 }}
-        sx={{ mb: 2 }}
+        sx={{ mb: 1 }}
       />
         {loading && (
             <CommonLoader loading={loading}  
@@ -113,7 +118,7 @@ const [loading, setLoading] = useState(false);
           )}
 </Box>
       {/* Main Content (Sender + Beneficiaries) */}
-      <Box display="flex" flexDirection={isMobile ? "column" : "row"} gap={1}>
+      <Box display="flex" flexDirection={isMobile ? "column" : "row"} gap={0.5}>
         {/* Left: Sender Details + Selected Beneficiary */}
         <Box flex={isMobile ? "1 1 100%" : "0 0 30%"}>
           <SenderDetails sender={sender} />
