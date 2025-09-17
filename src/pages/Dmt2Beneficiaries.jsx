@@ -314,14 +314,16 @@ const Dmt2Beneficiaries = ({
                       ) : (
                         <Button
                           size="small"
-                          variant="outlined"
-                          color="warning"
+                          variant="contained"
+                         
                           onClick={() => {
                             setSelectedBeneficiary(b);
                             setVerifyOpen(true);
                           }}
                           sx={{
                             borderRadius: 1,
+                            color:"#000",
+                            backgroundColor: "#FFC107", 
                             textTransform: "none",
                             fontSize: "0.75rem",
                             px: 1,
