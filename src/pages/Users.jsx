@@ -11,9 +11,8 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import BlockUnblockUser from "./BlockUnblockUser";
 import ReButton from "../components/common/ReButton";
 import CreateUser from "../components/User/createUser";
-import EditIcon from '@mui/icons-material/Edit';
+import EditIcon from "@mui/icons-material/Edit";
 import { apiCall } from "../api/apiClient";
-
 const Users = ({ query }) => {
   const authCtx = useContext(AuthContext);
   const fetchUsersRef = useRef(null);
@@ -26,6 +25,7 @@ const Users = ({ query }) => {
   const [lockModalOpen, setLockModalOpen] = useState(false);
   const [userToToggle, setUserToToggle] = useState(null);
   const [openCreateUser, setOpenCreateUser] = useState(false);
+
   const handleOpenPermissions = (user) => {
     setSelectedUser(user);
     setOpenPermissions(true);
@@ -56,10 +56,15 @@ const Users = ({ query }) => {
     setLockModalOpen(false);
   };
 
+  const handleEdit = (user) => {
+    // Implement edit functionality here
+    console.log("Edit user:", user);
+  };
+
   useEffect(() => {
     const fetchUserMap = async () => {
       try {
-        const res = await apiCall("post",ApiEndpoints.GET_USERS);
+        const res = await apiCall("post", ApiEndpoints.GET_USERS);
         console.log("Full API response:", res);
 
         const usersArray = res?.response?.data?.data;
@@ -82,7 +87,6 @@ const Users = ({ query }) => {
 
     fetchUserMap();
   }, []);
-
 
   const filters = useMemo(
     () => [
@@ -119,7 +123,7 @@ const Users = ({ query }) => {
           </Tooltip>
         ),
       },
-          {
+      {
         name: "Mobile",
         selector: (row) => (
           <Tooltip title={row?.mobile}>
@@ -135,22 +139,22 @@ const Users = ({ query }) => {
             <div style={{ textAlign: "left" }}>{row?.establishment}</div>
           </Tooltip>
         ),
-                width: "150px",
+        width: "150px",
       },
-{
-  name: "Parent",
-  selector: (row) => {
-    if (!row.parent) return "-"; // If parent is null, show dash
-    const parentName = userMap[row.parent]; // Lookup name in map
-    return (
-      <Tooltip title={`Parent ID: ${row.parent}`}>
-        <div style={{ textAlign: "left" }}>
-          {parentName || `ID ${row.parent}`} {/* show name if exists, else fallback */}
-        </div>
-      </Tooltip>
-    );
-  },
-},
+      {
+        name: "Parent",
+        selector: (row) => {
+          if (!row.parent) return "-";
+          const parentName = userMap[row.parent];
+          return (
+            <Tooltip title={`Parent ID: ${row.parent}`}>
+              <div style={{ textAlign: "left" }}>
+                {parentName || `ID ${row.parent}`}
+              </div>
+            </Tooltip>
+          );
+        },
+      },
       {
         name: "W1",
         selector: (row) => (
@@ -177,50 +181,78 @@ const Users = ({ query }) => {
       },
       {
         name: "Status",
-        selector: (row) =>
-          row.is_active === 1 ? (
-            <Tooltip title="Click to Block">
-              <IconButton onClick={() => handleOpenLockModal(row)}>
-                <LockOpenIcon color="success" />
-              </IconButton>
-            </Tooltip>
-          ) : (
-            <Tooltip title="Click to Unblock">
-              <IconButton onClick={() => handleOpenLockModal(row)}>
-                <LockOutlinedIcon color="error" />
-              </IconButton>
-            </Tooltip>
-          ),
+        selector: (row, { hoveredRow, enableActionsHover }) => (
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <span
+              style={{
+                color: row.is_active === 1 ? "green" : "red",
+                minWidth: "60px",
+                display: "inline-block",
+              }}
+            >
+              {row.is_active === 1 ? "Active" : "Inactive"}
+            </span>
+            {/* ✅ Hover/Always show based on prop */}
+            {(!enableActionsHover || hoveredRow === row.id) && (
+              <Box sx={{ transition: "opacity 0.2s" }}>
+                {row.is_active === 1 ? (
+                  <Tooltip title="Click to Block">
+                    <IconButton
+                      size="small"
+                      onClick={() => handleOpenLockModal(row)}
+                      sx={{ color: "success.main" }}
+                    >
+                      <LockOpenIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                ) : (
+                  <Tooltip title="Click to Unblock">
+                    <IconButton
+                      size="small"
+                      onClick={() => handleOpenLockModal(row)}
+                      sx={{ color: "error.main" }}
+                    >
+                      <LockOutlinedIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                )}
+              </Box>
+            )}
+          </Box>
+        ),
       },
-   {
-  name: "Actions",
-  selector: (row) => (
-    <Box sx={{ display: "flex", gap: 1 }}>
-      {/* Edit Icon */}
-      <Tooltip title="Edit User">
-        <IconButton
-          size="small"
-          color="secondary"
-          onClick={() => handleEdit(row)}
-        >
-          <EditIcon />
-        </IconButton>
-      </Tooltip>
+      {
+        name: "Actions",
+        selector: (row, { hoveredRow, enableActionsHover }) => (
+          <Box sx={{ display: "flex", alignItems: "center", minWidth: "80px" }}>
+            {!enableActionsHover || hoveredRow === row.id ? (
+              <Box sx={{ display: "flex", gap: 1, transition: "opacity 0.2s" }}>
+                <Tooltip title="Edit User">
+                  <IconButton
+                    size="small"
+                    color="secondary"
+                    onClick={() => handleEdit(row)}
+                  >
+                    <EditIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
 
-      {/* Permissions Icon */}
-      <Tooltip title="Edit Permissions">
-        <IconButton
-          size="small"
-          color="primary"
-          onClick={() => handleOpenPermissions(row)}
-        >
-          <SettingsIcon />
-        </IconButton>
-      </Tooltip>
-    </Box>
-  ),
-}
-
+                <Tooltip title="Edit Permissions">
+                  <IconButton
+                    size="small"
+                    color="primary"
+                    onClick={() => handleOpenPermissions(row)}
+                  >
+                    <SettingsIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+            ) : (
+              <span style={{ color: "#999" }}>-</span>
+            )}
+          </Box>
+        ),
+      },
     ],
     [userMap]
   );
@@ -233,10 +265,12 @@ const Users = ({ query }) => {
         filters={filters}
         queryParam={query}
         onFetchRef={handleFetchRef}
+         enableActionsHover={true}
         customHeader={
           <ReButton label="Add User" onClick={() => setOpenCreateUser(true)} />
         }
       />
+
       {openCreateUser && (
         <CreateUser
           open={openCreateUser}
