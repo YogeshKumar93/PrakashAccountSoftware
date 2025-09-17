@@ -143,11 +143,7 @@ const BbpsBillers = ({ category, onBack }) => {
                 sm={2}
                 md={2.4}
                 xl={2.4}
-<<<<<<< HEAD
-                lg={2}
-=======
                 lg={2.4}
->>>>>>> 883ac28 (changes)
               >
                 {/* xs=6 (2 per row mobile), sm=4 (3 per row tablet), md=2.4 (5 per row desktop) */}
 
@@ -182,7 +178,7 @@ const BbpsBillers = ({ category, onBack }) => {
                   <CardContent
                     sx={{
                       textAlign: "center",
-                
+
                       width: "100%",
                       height: "100%",
                       display: "flex",
@@ -214,8 +210,6 @@ const BbpsBillers = ({ category, onBack }) => {
                         sx={{
                           maxWidth: "100%",
                           textOverflow: "ellipsis",
-                          
-                          
                         }}
                       >
                         {biller.billerName}
@@ -223,13 +217,11 @@ const BbpsBillers = ({ category, onBack }) => {
                     </Tooltip>
 
                     <Typography
-                      variant="caption" 
+                      variant="caption"
                       sx={{
-                        
                         color:
                           biller.billerStatus === "ACTIVE" ? "green" : "red",
                         fontWeight: "bold",
-                        
                       }}
                     >
                       {biller.billerStatus}
