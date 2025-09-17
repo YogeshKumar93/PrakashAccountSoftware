@@ -428,8 +428,9 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
       <AppBar
         position="fixed"
         sx={{
-          // backgroundColor:"#0037D7",
-          backgroundColor: "transparent",
+          backgroundColor: "#FFFF",
+          boxShadow: " rgba(0,0,0,0.08)",
+          // boxShadow: "none",
           width: {
             md: desktopOpen
               ? `calc(100% - ${themeSettings.drawerWidth}px)`
