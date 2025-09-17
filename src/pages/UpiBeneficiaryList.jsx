@@ -71,19 +71,29 @@ const UpiBeneficiaryList = ({ sender, onSuccess, onSelect }) => {
     setSubmitting(true);
     setErrors({});
     try {
-      const payload = { ...formData, sender_id: sender.id };
-      const res = await apiCall(
+      // Construct account_number from prefix & suffix
+      const accountNumber = `${formData.prefix || ""}@${formData.suffix || ""}`;
+
+      const payload = {
+        ...formData,
+        account_number: accountNumber, // ✅ Add this here
+        sender_id: sender.id,
+        type: "UPI",
+        mobile_number: sender?.mobile_number,
+      };
+
+      const { error, response } = await apiCall(
         "post",
         ApiEndpoints.CREATE_BENEFICIARY,
         payload
       );
 
-      if (res) {
-        okSuccessToast(res?.message || "Beneficiary added successfully");
+      if (response) {
+        okSuccessToast(response?.message || "Beneficiary added successfully");
         setOpenModal(false);
         onSuccess?.(sender.mobile_number);
       } else {
-        apiErrorToast(res?.message || "Failed to add beneficiary");
+        apiErrorToast(error?.message || "Failed to add beneficiary");
       }
     } catch (err) {
       apiErrorToast(err);
@@ -155,6 +165,7 @@ const UpiBeneficiaryList = ({ sender, onSuccess, onSelect }) => {
     <Card
       sx={{
         borderRadius: 2,
+        width: "100%",
         boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
         border: "1px solid",
         borderColor: "divider",
@@ -167,38 +178,41 @@ const UpiBeneficiaryList = ({ sender, onSuccess, onSelect }) => {
         justifyContent={isMobile ? "flex-start" : "space-between"}
         alignItems="center"
         sx={{
-          p: 1.5,
+          py: 1,
+          px: 2,
           background: "#5c3ac8",
           borderBottom: openList ? "1px solid" : "none",
           borderColor: "divider",
         }}
       >
         <Box display="flex" alignItems="center" gap={1} flexGrow={1}>
-          <Typography variant="subtitle1" fontWeight="600" color="#fff">
-            Beneficiary List ({beneficiaries?.length || 0})
+          <Typography variant="subtitle2" fontWeight="600" color="#fff">
+            Beneficiary List
+            {sender && <>({beneficiaries?.length || 0})</>}
           </Typography>
-
-          <Box ml={isMobile ? 2 : "auto"}>
-            <Button
-              variant="contained"
-              size="small"
-              onClick={() => setOpenModal(true)}
-              startIcon={<PersonAddIcon sx={{ fontSize: 16 }} />}
-              sx={{
-                minWidth: "auto",
-                px: 1.5,
-                backgroundColor: "#7a4dff",
-                py: 0.5,
-                fontSize: "0.75rem",
-                borderRadius: 1,
-                textTransform: "none",
-                fontWeight: "500",
-                boxShadow: "none",
-              }}
-            >
-              Add Beneficiary
-            </Button>
-          </Box>
+          {sender && (
+            <Box ml={isMobile ? 2 : "auto"}>
+              <Button
+                variant="contained"
+                size="small"
+                onClick={() => setOpenModal(true)}
+                startIcon={<PersonAddIcon sx={{ fontSize: 16 }} />}
+                sx={{
+                  minWidth: "auto", // shrink width
+                  px: 0.8, // smaller horizontal padding
+                  py: 0.3, // smaller vertical padding
+                  fontSize: "0.65rem", // smaller text
+                  borderRadius: 1,
+                  textTransform: "none",
+                  fontWeight: 500,
+                  boxShadow: "none",
+                  backgroundColor: "#7a4dff",
+                }}
+              >
+                Add Beneficiary
+              </Button>
+            </Box>
+          )}
         </Box>
 
         {isMobile && (
@@ -272,7 +286,7 @@ const UpiBeneficiaryList = ({ sender, onSuccess, onSelect }) => {
                           py: 0.2,
                         }}
                       >
-                        Pay
+                        Send Money
                       </Button>
 
                       {/* Delete button */}
