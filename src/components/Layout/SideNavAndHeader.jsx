@@ -388,70 +388,35 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
       >
         {renderNavItems(navigationItems)}
         <MenuItem
-          disableRipple
-          onClick={() => {
-            handleLogout();
-            navigate("/login");
-          }}
-          sx={{
-            width: "100%",
-            marginBottom: "-8px",
-            textAlign: "center",
-            // py: 2,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: 1, // icon aur text ke beech gap
-            color: "#364a63", // normal text color
-            fontFamily: "DM Sans, sans-serif",
-            "&:hover": {
-              backgroundColor: "#9d72ff", // hover purple
-              color: "#ffffff", // hover me text white
-              "& svg": {
-                color: "#ffffff", // icon bhi white ho jaye hover pe
-              },
-            },
-            "& svg": {
-              color: "#364a63", // normal icon color
-            },
-          }}
-        >
-          <LogoutIcon fontSize="small" /> Logout
-        </MenuItem>
+  disableRipple
+  onClick={() => {
+    handleLogout();
+    navigate("/login");
+  }}
+  sx={{
+    width: "100%",
+     
+    
+    px:8,
+    display: "flex",
+    
+    alignItems: "center",
+    color: "#9769ff",
+    borderRadius: "4px",
+    mb: 0,
+    "&:hover": {
+      backgroundColor: "#ebeef2", // hover bg
+      color: "#9769ff",           // hover text
+    },
+    gap: 1, // space between icon and text
+  }}
+>
+  <LogoutIcon fontSize="small" /> Logout
+</MenuItem>
+
       </List>
 
-      {/* <MenuItem
-        onClick={handleLogout}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          mt: 2,
-          mb: 1.5,
-          gap: 2,
-          px: 4,
-          py: 1.5,
-          width: 200,
-          borderRadius: "12px",
-          fontWeight: 500,
-          color: "#dc2626", // red-600
-          background: "#1405",
-          boxShadow: "0 2px 6px rgba(220, 38, 38, 0.15)",
-          transition: "all 0.3s ease",
-          "&:hover": {
-            background: "#4450A1",
-            color: "#fff",
-            transform: "scale(1.02)",
-            boxShadow: "0 4px 12px rgba(220, 38, 38, 0.3)",
-          },
-          mx: "auto",
-        }}
-      >
-        <ListItemIcon sx={{ color: "inherit" }}>
-          <LogoutIcon fontSize="small" />
-        </ListItemIcon>
-        {/* <span className="text-base">Logout</span> */}
-      {/* </MenuItem> */}
+      
     </Box>
   );
 
@@ -566,26 +531,31 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
             anchorEl={userMenuAnchor}
             open={Boolean(userMenuAnchor)}
             onClose={handleUserMenuClose}
-            transformOrigin={{ horizontal: "right", vertical: "top" }}
+            transformOrigin={{ horizontal: "right", vertical: "right" }}
             anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
             PaperProps={{
               elevation: 4,
               sx: {
                 mt: 1,
                 borderRadius: "16px",
-                overflow: "visible",
-                minWidth: 260,
+                overflow: "hidden",
+                minWidth: 320,
+               
               },
             }}
           >
             {/* Profile Header */}
             <Box
               sx={{
-                px: 2.5,
+                px: 3.5,
                 py: 2,
+                 fontStyle:"revert",
                 display: "flex",
                 alignItems: "center",
                 gap: 2,
+                 color:"#220ad7ff",
+                bgcolor:"#e6eef4ff",
+                borderTop:"6px solid #9769FF ",
               }}
             >
               <Avatar
@@ -610,6 +580,7 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
             <Divider />
 
             {/* Menu Items */}
+            <Box sx={{width:"350px", p:2.5}}>
             <MenuItem onClick={() => navigate("/profile")}>
               <ListItemIcon>
                 <PersonIcon fontSize="small" />
@@ -652,6 +623,7 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
               </ListItemIcon>
               Sign Out
             </MenuItem>
+            </Box>
           </Menu>
         </Toolbar>
       </AppBar>

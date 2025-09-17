@@ -60,6 +60,8 @@ import Virtual_Accounts from "../pages/Virtual_Accounts";
 import Login_History from "../pages/Login_History";
 import KycPending from "../pages/KycPending";
 import { MoneyTransfer } from "../components/UI/MoneyTransfer/MoneyTransfer";
+import MD_Dashboard from "../pages/Dashboard";
+import { Transfer } from "../pages/Transfer";
 
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated, loading, user } = useContext(AuthContext);
@@ -127,7 +129,8 @@ export default function AppRoutes() {
           {/* ADMIN */}
           {isAdmin && (
             <>
-              <Route path="admin/dashboard" element={<AdminTransactions />} />
+             
+              <Route path="admin/dashboard" element={<Dashboard />} />
               <Route path="admin/users" element={<Users />} />
               <Route path="admin/transactions" element={<Transaction />} />
               <Route path="admin/notification" element={<Notification />} />
@@ -141,7 +144,6 @@ export default function AppRoutes() {
               <Route path="admin/profile" element={<ProfilePage />} />
               <Route path="admin/banks" element={<Banks />} />
               <Route path="admin/wallet-ledger" element={<AccountLadger />} />
-
               <Route
                 path="admin/bankstatements/:id"
                 element={<BankStatements />}
@@ -167,11 +169,11 @@ export default function AppRoutes() {
                    <Route path="admin/virtual_accounts" element={<Virtual_Accounts />} />
                      <Route path="admin/login_history" element={<Login_History />} />
 
-
+{/* 
               <Route
                 path="admin/*"
                 element={<Navigate to="/admin/dashboard" replace />}
-              />
+              /> */}
             </>
           )}
 
@@ -180,19 +182,20 @@ export default function AppRoutes() {
             <>
               <Route
                 path="customer/dashboard"
-                element={<AdminTransactions />}
+                element={<Dashboard />}
               />
               <Route path="customer/services" element={<Dashboard />} />
+                 <Route path="customer/transfer" element={<Transfer />} />
               <Route
                 path="customer/account-ledger"
                 element={<AccountLadger />}
               />
               <Route path="customer/logs" element={<RetailerLogs />} />
               <Route path="customer/money-transfer" element={<MoneyTransfer />} />
-              <Route
+              {/* <Route
                 path="customer/fund-transfer"
                 element={<SuperTransfer />}
-              />
+              /> */}
               <Route
                 path="customer/wallet-transfer"
                 element={<Wallet2WalletTransfer />}
@@ -202,7 +205,7 @@ export default function AppRoutes() {
                 element={<AccountLadger />}
               />
               <Route path="customer/w2w-transfer" element={<W2wTransfer />} />
-              <Route path="customer/upi-transfer" element={<UpiTransfer />} />
+              {/* <Route path="customer/upi-transfer" element={<UpiTransfer />} /> */}
               <Route path="customer/transactions" element={<Transaction />} />
               <Route path="customer/recharge-bill" element={<Recharge />} />
               <Route path="customer/purchase" element={<MyPurchase />} />
@@ -285,7 +288,7 @@ export default function AppRoutes() {
 
             {isMd && (
             <>
-              <Route path="md/dashboard" element={<Dashboard />} />
+              <Route path="md/dashboard" element={<MD_Dashboard />} />
               <Route path="md/users" element={<Users />} />
               <Route path="md/transcations" element={<Transaction />} />      
                
