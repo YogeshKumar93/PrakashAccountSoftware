@@ -8,6 +8,8 @@ import {
   IconButton,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import DownloadIcon from "@mui/icons-material/Download";
+import PanToolIcon from "@mui/icons-material/PanTool"; // This is the hand icon
 
 // Status color mapping
 const statusColors = {
@@ -23,8 +25,8 @@ const TransactionDetailsCard = ({
   message,
   details = [],
   onRaiseIssue,
-  onClose,        // ✅ Added onClose prop
-  companyLogoUrl, // ✅ Added company logo prop
+  onClose,        
+  companyLogoUrl, 
   width = 400,
   
 }) => {
@@ -48,13 +50,14 @@ const TransactionDetailsCard = ({
       {/* Header */}
       <Box
         sx={{
-          p: 1,
+        
           bgcolor: statusColors[status] || "#f5f5f5",
           display: "flex",
           flexDirection: "column",
-           position: "sticky", // <- sticky header
-    top: 0,             // <- stick to top of Paper
-    zIndex: 10,  
+           position: "sticky", 
+          top: 0,             
+          zIndex: 10,  
+          height:180
              
         }}
       >
@@ -78,7 +81,7 @@ const TransactionDetailsCard = ({
               component="img"
               src={companyLogoUrl}
               alt="Company Logo"
-              sx={{ height: 62, width: 82, objectFit: "contain" }}
+              sx={{ height: 72, width: 122, objectFit: "contain" }}
             />
           )}
         </Box>
@@ -118,48 +121,57 @@ const TransactionDetailsCard = ({
 
       <Divider />
 
-      {/* Details in rows */}
+    
      {/* Details in rows */}
 {details.length > 0 && (
-  <Box p={2} flex={1} overflow="auto">
-    <Typography variant="subtitle1" gutterBottom>
+<Box p={2} flex={1} overflow="auto">
+  {/* Header Row with Icons */}
+  <Box
+    sx={{
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      mb: 2,
+    }}
+  >
+    <Typography variant="subtitle1">
       Transaction Details
     </Typography>
-    {details.map((item, idx) => (
-      <Box
-        key={idx}
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          py: 1,
-          borderBottom: "1px solid #eee",
-        }}
-      >
-        <Typography variant="body2" color="text.secondary">
-          {item.label}
-        </Typography>
-        <Typography variant="body2" fontWeight="500">
-          {item.value ?? "N/A"}
-        </Typography>
-      </Box>
-    ))}
+    <Box sx={{ display: "flex", gap: 1 }}>
+      <IconButton size="small" onClick={onRaiseIssue}>
+        <PanToolIcon fontSize="small" />
+      </IconButton>
+      <IconButton size="small" onClick={() => console.log("Download clicked")}>
+        <DownloadIcon fontSize="small" />
+      </IconButton>
+    </Box>
   </Box>
+
+  {/* Details List */}
+  {details.map((item, idx) => (
+    <Box
+      key={idx}
+      sx={{
+        display: "flex",
+        justifyContent: "space-between",
+        py: 1,
+        borderBottom: "1px solid #eee",
+        
+      }}
+    >
+      <Typography variant="body2" color="text.secondary">
+        {item.label}
+      </Typography>
+      <Typography variant="body2" fontWeight="500">
+        {item.value ?? "N/A"}
+      </Typography>
+    </Box>
+  ))}
+</Box>
 )}
 
 
-      {/* Footer */}
-      {onRaiseIssue && (
-        <Box p={2} textAlign="center">
-          <Button
-            variant="outlined"
-            color="error"
-            onClick={onRaiseIssue}
-            sx={{ borderRadius: 2 }}
-          >
-            Raise Issue
-          </Button>
-        </Box>
-      )}
+   
     </Paper>
   );
 };
