@@ -2,12 +2,12 @@ import React from "react";
 import { Box, Grid, Tooltip, Typography } from "@mui/material";
 
 const CommenCardBill = ({ title, img, onClick, isSelected = false }) => {
-  // let imageSrc;
-  // try {
-  //   imageSrc = require(`../assests/operators/${img}.png`);
-  // } catch (error) {
-  //   imageSrc = null;
-  // }
+  let imageSrc;
+  try {
+    imageSrc = require(`../assests/operators/${img}.png`);
+  } catch (error) {
+    imageSrc = null;
+  }
   return (
     <Grid>
       <Tooltip title={title} placement="top">

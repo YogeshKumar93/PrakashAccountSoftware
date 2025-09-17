@@ -221,6 +221,8 @@ const ApiEndpoints = {
   WALLET_GET_RECEIVER: "wallet/getReceiver",
   WALLET_GET_W2W_TRANSACTION: "wallet/getW2WTransaction",
   WALLET_CREATE: "wallet/createW2W",
+  CREATE_ORDER_CMS_NEW: "cms/createOrderCms",
+  VERIFY_UPI_BENEFICIARY: "payout/upiVerifiaction",
   // WALLET_UPDATE: "wallet/update",
   // WALLET_DELETE: "wallet/delete",
 
