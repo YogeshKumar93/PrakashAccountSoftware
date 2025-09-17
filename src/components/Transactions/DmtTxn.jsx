@@ -164,35 +164,56 @@ const DmtTxn = ({ query }) => {
         ? [
             {
               name: "Actions",
-              selector: (row) => (
-                <Box sx={{ display:"flex", flexDirection:"row"   }}>
+              selector: (row, { hoveredRow, enableActionsHover }) => {
+                const isHovered = hoveredRow === row.id || !enableActionsHover;
 
-              
-                  <IconButton
-                    color="error"
-                    onClick={() => {
-                      setSelectedTxn(row);
-                      setOpenCreate(true);
+                return (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      minWidth: "80px", // fixed width
                     }}
-                    sx={{backgroundColor:"black", }}
-                  >                  
-                    <ReportProblemIcon fontSize="small" /> 
-                  </IconButton> 
-
-                  <IconButton
-              color="info"
-              onClick={() => {
-                setSelectedRow(row);
-                setDrawerOpen(true);
-              }}
-              size="small"
-            >
-              <VisibilityIcon />
-            </IconButton>
-            
-                </Box>
-              ),
-              width: "120px",
+                  >
+                    {isHovered ? (
+                      <Box
+                        sx={{
+                          display: "flex",
+                          gap: 1,
+                          transition: "opacity 0.2s ease-in-out",
+                        }}
+                      >
+                        <Tooltip title="Raise Complaint">
+                          <IconButton
+                            color="error"
+                            size="small"
+                            onClick={() => {
+                              setSelectedTxn(row);
+                              setOpenCreate(true);
+                            }}
+                          >
+                            <ReportProblemIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      </Box>
+                    ) : (
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: "#999",
+                          textAlign: "center",
+                          minWidth: "80px", // same as icon container
+                        }}
+                      >
+                        -
+                      </Typography>
+                    )}
+                  </Box>
+                );
+              },
+              width: "100px",
+              center: true,
             },
           ]
         : []),
@@ -209,6 +230,7 @@ const DmtTxn = ({ query }) => {
         endpoint={ApiEndpoints.GET_DMT_TXN}
         filters={filters}
         queryParam={queryParam}
+        enableActionsHover={true}
       />
 
      <DrawerDetails
