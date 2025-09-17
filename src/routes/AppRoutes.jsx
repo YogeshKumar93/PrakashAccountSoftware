@@ -220,6 +220,7 @@ export default function AppRoutes() {
               />
               <Route path="customer/accounts" element={<Accounts />} />
               <Route path="customer/allServices" element={<AllServices />} />
+               
             </>
           )}
           {isDi && (
