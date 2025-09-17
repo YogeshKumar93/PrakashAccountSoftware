@@ -613,12 +613,11 @@ const CommonTable = ({
               }}
             >
               <Typography
-              className="textFieldCustom"
+                className="textFieldCustom"
                 variant="body2"
                 sx={{
                   mb: 1,
                   fontWeight: "bold",
-                
                 }}
               >
                 {filter.label}
@@ -824,7 +823,7 @@ const CommonTable = ({
                   variant="contained"
                   onClick={applyFilters}
                   size="small"
-                  sx={{ backgroundColor:"#00A300" }}
+                  sx={{ backgroundColor: "#00A300" }}
                 >
                   Apply
                 </Button>
@@ -835,7 +834,7 @@ const CommonTable = ({
                   onClick={resetFilters}
                   startIcon={<ClearIcon />}
                   size="small"
-                  sx={{ backgroundColor:"#FF542E",color:"#fff" }}
+                  sx={{ backgroundColor: "#FF542E", color: "#fff" }}
                 >
                   Reset
                 </Button>
@@ -920,22 +919,7 @@ const CommonTable = ({
       >
         <Typography variant="h5">{title}</Typography>
 
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          {/* {customHeader}  */}
-          {/* Add custom header content here */}
-          {/* {refresh && (
-            <Tooltip title="Refresh">
-              <IconButton
-                onClick={handleManualRefresh}
-                disabled={loading}
-                sx={{ ml: 1 }}
-              >
-                <CachedIcon />
-                {loading ? <CircularProgress size={24} /> : <CachedIcon />}
-              </IconButton>
-            </Tooltip>
-          )} */}
-        </Box>
+        {/* <Box sx={{ display: "flex", alignItems: "center" }}></Box> */}
       </Box>
       <Box
         sx={{
