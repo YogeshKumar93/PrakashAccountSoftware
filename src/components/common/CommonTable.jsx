@@ -139,6 +139,8 @@ const CommonTable = ({
   onFetchRef,
   refresh = true,
   customHeader = null, // Add this line
+  rowHoverHandlers, // Add this prop to accept hover handlers
+  rowProps,
 }) => {
   const { afterToday } = DateRangePicker;
   const [data, setData] = useState([]);
@@ -726,6 +728,17 @@ const CommonTable = ({
             display: "table-row",
           }}
           className="table-row"
+          // Add hover handlers if provided
+          onMouseEnter={
+            rowHoverHandlers?.onMouseEnter
+              ? () => rowHoverHandlers.onMouseEnter(row)
+              : undefined
+          }
+          onMouseLeave={
+            rowHoverHandlers?.onMouseLeave
+              ? () => rowHoverHandlers.onMouseLeave()
+              : undefined
+          }
         >
           {initialColumns.map((column, colIndex) => (
             <td

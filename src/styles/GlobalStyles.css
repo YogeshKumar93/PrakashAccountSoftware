@@ -60,20 +60,24 @@ body {
 
 }
 
+/* By default icons hidden */
+
+
+
 
 .textFieldCustom .MuiOutlinedInput-root {
-  height: 34px; /* compact height */
+  height: 34px; 
   border: 1px solid #dbdfea;
   border-radius: 6px;
   background-color: #fff;
   font-family: "DM Sans", sans-serif;
   font-size: 13px;
-  padding: 0 8px; /* sleek padding */
+  padding: 0 8px; 
   transition: all 0.2s ease-in-out;
 }
 
 .textFieldCustom .MuiOutlinedInput-input {
-  padding: 6px 8px; /* inner padding reduce */
+  padding: 6px 8px;
 }
 
 .textFieldCustom .MuiOutlinedInput-root:hover {
