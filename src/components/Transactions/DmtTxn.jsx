@@ -7,6 +7,8 @@ import { dateToTime1, ddmmyy, ddmmyyWithTime } from "../../utils/DateUtils";
 import CommonStatus from "../common/CommonStatus";
 import ReportProblemIcon from "@mui/icons-material/ReportProblem";
 import ComplaintForm from "../ComplaintForm";
+import DrawerDetails from "../common/DrawerDetails";
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 const DmtTxn = ({ query }) => {
   const authCtx = useContext(AuthContext);
@@ -14,7 +16,8 @@ const DmtTxn = ({ query }) => {
 
   const [openCreate, setOpenCreate] = useState(false);
   const [selectedTxn, setSelectedTxn] = useState(null);
-
+ const [drawerOpen, setDrawerOpen] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(null);
   const filters = useMemo(
     () => [
       {
@@ -162,18 +165,31 @@ const DmtTxn = ({ query }) => {
             {
               name: "Actions",
               selector: (row) => (
-                <Box sx={{ background: "#000" }}>
-                  {" "}
+                <Box sx={{ display:"flex", flexDirection:"row"   }}>
+
+              
                   <IconButton
                     color="error"
                     onClick={() => {
                       setSelectedTxn(row);
                       setOpenCreate(true);
                     }}
-                  >
-                    {" "}
-                    <ReportProblemIcon fontSize="small" />{" "}
-                  </IconButton>{" "}
+                    sx={{backgroundColor:"black", }}
+                  >                  
+                    <ReportProblemIcon fontSize="small" /> 
+                  </IconButton> 
+
+                  <IconButton
+              color="info"
+              onClick={() => {
+                setSelectedRow(row);
+                setDrawerOpen(true);
+              }}
+              size="small"
+            >
+              <VisibilityIcon />
+            </IconButton>
+            
                 </Box>
               ),
               width: "120px",
@@ -193,6 +209,18 @@ const DmtTxn = ({ query }) => {
         endpoint={ApiEndpoints.GET_DMT_TXN}
         filters={filters}
         queryParam={queryParam}
+      />
+
+     <DrawerDetails
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        rowData={selectedRow}
+        
+        // fields={[
+        //   { label: "Gst", key: "gst" },
+        //   { label: "Api Response", key: "api_response" },
+         
+        // ]}
       />
 
       {/* ✅ Complaint Modal */}
