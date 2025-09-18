@@ -1,10 +1,10 @@
 import React, { useContext, useState } from "react";
-import { apiCall } from "../api/apiClient";
 import ApiEndpoints from "../api/ApiEndpoints";
 import CommonModal from "../components/common/CommonModal";
 import { useSchemaForm } from "../hooks/useSchemaForm";
 import { useToast } from "../utils/ToastContext";
 import AuthContext from "../contexts/AuthContext";
+import { apiCall } from "../api/apiClient";
 
 const OutletDmt1 = ({ open, handleClose, onSuccess }) => {
   const { schema, formData, handleChange, errors, loading } = useSchemaForm(
@@ -15,6 +15,9 @@ const OutletDmt1 = ({ open, handleClose, onSuccess }) => {
   const [submitting, setSubmitting] = useState(false);
   const { showToast } = useToast();
   const { location } = useContext(AuthContext);
+  const [otpModalOpen, setOtpModalOpen] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [initPayload, setInitPayload] = useState(null);
 
   // ✅ Submit Handler
 

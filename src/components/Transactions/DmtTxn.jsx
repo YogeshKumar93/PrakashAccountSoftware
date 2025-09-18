@@ -1,11 +1,5 @@
 import { useMemo, useContext, useState } from "react";
-import {
-  Box,
-  Tooltip,
-  IconButton,
-  Drawer,
-  Typography,
-} from "@mui/material";
+import { Box, Tooltip, IconButton, Drawer, Typography } from "@mui/material";
 import CommonTable from "../common/CommonTable";
 import ApiEndpoints from "../../api/ApiEndpoints";
 import AuthContext from "../../contexts/AuthContext";
@@ -15,10 +9,9 @@ import ComplaintForm from "../ComplaintForm";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import CloseIcon from "@mui/icons-material/Close";
 import TransactionDetailsCard from "../common/TransactionDetailsCard";
-import companylogo from '../../assets/Images/logo(1).png';
+import companylogo from "../../assets/Images/logo(1).png";
 import PrintIcon from "@mui/icons-material/Print";
 import { useNavigate } from "react-router-dom";
-
 
 const DmtTxn = ({ query }) => {
   const authCtx = useContext(AuthContext);
@@ -26,12 +19,10 @@ const DmtTxn = ({ query }) => {
 
   const [openCreate, setOpenCreate] = useState(false);
   const [selectedTxn, setSelectedTxn] = useState(null);
-  
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
   const navigate = useNavigate();
-
 
   const filters = useMemo(
     () => [
@@ -58,12 +49,22 @@ const DmtTxn = ({ query }) => {
       {
         name: "Date",
         selector: (row) => (
-          <div style={{ display: "flex", flexDirection: "column", fontSize: "13px" }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              fontSize: "13px",
+            }}
+          >
             <Tooltip title={`Created: ${ddmmyyWithTime(row.created_at)}`} arrow>
-              <span>{ddmmyy(row.created_at)} {dateToTime1(row.created_at)}</span>
+              <span>
+                {ddmmyy(row.created_at)} {dateToTime1(row.created_at)}
+              </span>
             </Tooltip>
             <Tooltip title={`Updated: ${ddmmyyWithTime(row.updated_at)}`} arrow>
-              <span>{ddmmyy(row.updated_at)} {dateToTime1(row.updated_at)}</span>
+              <span>
+                {ddmmyy(row.updated_at)} {dateToTime1(row.updated_at)}
+              </span>
             </Tooltip>
           </div>
         ),
@@ -135,7 +136,9 @@ const DmtTxn = ({ query }) => {
       {
         name: "Comm",
         selector: (row) => (
-          <div style={{ color: "green", fontWeight: "600", textAlign: "right" }}>
+          <div
+            style={{ color: "green", fontWeight: "600", textAlign: "right" }}
+          >
             {parseFloat(row.comm).toFixed(2)}
           </div>
         ),
@@ -180,15 +183,19 @@ const DmtTxn = ({ query }) => {
                       <VisibilityIcon />
                     </IconButton>
                   </Tooltip>
-                    <Tooltip title="Print DMT">
-          <IconButton
-            color="primary"
-            onClick={() => navigate(`/customer/print-dmt/${row.id}`)} 
-            size="small"
-          >
-            <PrintIcon />
-          </IconButton>
-        </Tooltip>
+                  <Tooltip title="Print DMT">
+                    <IconButton
+                      color="primary"
+                      onClick={() =>
+                        navigate("/customer/print-dmt", {
+                          state: { txnData: row },
+                        })
+                      }
+                      size="small"
+                    >
+                      <PrintIcon />
+                    </IconButton>
+                  </Tooltip>
                 </Box>
               ),
               width: "100px",
@@ -227,22 +234,31 @@ const DmtTxn = ({ query }) => {
         anchor="right"
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
-       
       >
-        <Box sx={{ width: 400,  display: "flex", flexDirection: "column", height: "100%" }}>
+        <Box
+          sx={{
+            width: 400,
+            display: "flex",
+            flexDirection: "column",
+            height: "100%",
+          }}
+        >
           {selectedRow && (
             <TransactionDetailsCard
               amount={selectedRow.amount}
               status={selectedRow.status}
               onClose={() => setDrawerOpen(false)} // ✅ Close drawer
-             companyLogoUrl={companylogo}
+              companyLogoUrl={companylogo}
               dateTime={ddmmyyWithTime(selectedRow.created_at)}
               message={selectedRow.message || "No message"}
               details={[
                 { label: "Txn ID", value: selectedRow.txn_id },
                 { label: "Client Ref", value: selectedRow.client_ref },
                 { label: "Sender Mobile", value: selectedRow.sender_mobile },
-                { label: "Beneficiary Name", value: selectedRow.beneficiary_name },
+                {
+                  label: "Beneficiary Name",
+                  value: selectedRow.beneficiary_name,
+                },
                 { label: "Account Number", value: selectedRow.account_number },
                 { label: "IFSC Code", value: selectedRow.ifsc_code },
                 { label: "Bank Name", value: selectedRow.bank_name },
