@@ -22,6 +22,7 @@ import AuthContext from "../contexts/AuthContext";
 import { useToast } from "../utils/ToastContext";
 import ResetMpin from "../components/common/ResetMpin";
 import { showSuccessToast } from "../components/common/ShowSuccessToast";
+import { useNavigate } from "react-router-dom";
 
 const SelectedBeneficiary = ({
   beneficiary,
@@ -45,6 +46,7 @@ const SelectedBeneficiary = ({
   const [openResetModal, setOpenResetModal] = useState(false);
 
   const username = `GURU1${user?.id}`;
+const navigate = useNavigate();
 
   if (!beneficiary) return null;
 
@@ -159,8 +161,10 @@ const SelectedBeneficiary = ({
         showSuccessToast({
           txnID: response?.data?.rrn,
           message: response?.message,
-          navigateUrl: "/customer/print-dmt",
+         
         });
+           navigate("/customer/print-dmt", { state: { txnData: txnDetails } }),      
+
 
         setAmount("");
         setOtp("");

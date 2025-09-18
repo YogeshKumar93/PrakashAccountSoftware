@@ -75,9 +75,9 @@ const PrintDmt = () => {
   const headers = ["Date","UTR","Operator","Sender","Ben Name","Account No","IFSC Code","Amount","Status"];
   const values = [
     ddmmyyWithTime(data.created_at),
-    data.txn_id,
+    data.rrn,
     data.operator,
-    data.sender_mobile,
+    data.mobile_number,
     data.beneficiary_name,
     data.account_number,
     data.ifsc_code,
@@ -170,7 +170,7 @@ const PrintDmt = () => {
             // Small Receipt
             <Box mt={2} sx={{ border: "1px solid #e0e0e0", borderRadius: 2, overflow: "hidden" }}>
               {[{ label: "Date", value: ddmmyyWithTime(data.created_at) },
-                { label: "Txn ID", value: data.txn_id },
+                { label: "Txn ID", value: data.rrn },
                 { label: "Beneficiary", value: data.beneficiary_name },
                 { label: "Account No", value: data.account_number },
                 { label: "Amount", value: `₹ ${data.amount}`, type: "amount" },
