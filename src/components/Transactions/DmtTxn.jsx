@@ -52,12 +52,12 @@ const DmtTxn = ({ query }) => {
   {
   name: "Date",
   selector: (row) => (
-    <div style={{ display: "flex", flexDirection: "column", fontSize: "11px" }}>
+    <div style={{ display: "flex", flexDirection: "column", fontSize: "11px", fontWeight:"600" }}>
       <Tooltip title={`Created: ${dateToTime(row.created_at)}`} arrow>
         <span>{ddmmyy(row.created_at)}</span>
       </Tooltip>
       <Tooltip title={`Updated: ${dateToTime(row.updated_at)}`} arrow>
-        <span style={{ marginTop: "4px" }}>{ddmmyy(row.updated_at)}</span>
+        <span style={{ marginTop: "8px" }}>{ddmmyy(row.updated_at)}</span>
       </Tooltip>
     </div>
   ),
@@ -68,14 +68,14 @@ const DmtTxn = ({ query }) => {
 
       {
         name: "Route",
-        selector: (row) => <div style={{ fontSize: "10px" }}>{row.route}</div>,
+        selector: (row) => <div style={{ fontSize: "10px", fontWeight:"600" }}>{row.route}</div>,
         center: true,
         width: "70px",
       },
       {
         name: "TxnId/Ref",
         selector: (row) => (
-          <div style={{ textAlign: "left", fontSize: "10px" }}>
+          <div style={{ textAlign: "left", fontSize: "10px", fontWeight:"600" }}>
             {row.txn_id}
             <br />
             {row.client_ref}
@@ -86,14 +86,16 @@ const DmtTxn = ({ query }) => {
       },
       {
         name: "Mobile",
-        selector: (row) => row.sender_mobile,
+        selector: (row) => (<div style={{textAlign: "left", fontSize: "10px", fontWeight:"600"}}>
+          {row.sender_mobile}
+          </div>),
         wrap: true,
           width: "80px",
       },
       {
         name: "Beneficiary",
         selector: (row) => (
-          <div style={{ textAlign: "left", fontSize: "10px" }}>
+          <div style={{ textAlign: "left", fontSize: "10px", fontWeight:"600" }}>
             {row.beneficiary_name?.toUpperCase()} <br />
             {row.account_number} <br />
             {row.ifsc_code}
@@ -106,7 +108,7 @@ const DmtTxn = ({ query }) => {
       {
         name: "Amount",
         selector: (row) => (
-          <div style={{ color: "red", fontWeight: "500", textAlign: "right", fontSize: "10px" }}>
+          <div style={{ color: "red", fontWeight: "600", textAlign: "right", fontSize: "10px" }}>
             ₹{parseFloat(row.amount).toFixed(2)}
           </div>
         ),
@@ -116,7 +118,7 @@ const DmtTxn = ({ query }) => {
       {
         name: "CCF",
         selector: (row) => (
-          <div style={{ color: "red", fontWeight: "500", fontSize: "10px", textAlign: "right" }}>
+          <div style={{ color: "red", fontWeight: "600", fontSize: "10px", textAlign: "right" }}>
             {parseFloat(row.ccf).toFixed(2)}
           </div>
         ),
@@ -126,7 +128,7 @@ const DmtTxn = ({ query }) => {
       {
         name: "GST",
         selector: (row) => (
-          <div style={{ color: "red", fontWeight: "500", fontSize: "10px", textAlign: "right" }}>
+          <div style={{ color: "red", fontWeight: "600", fontSize: "10px", textAlign: "right" }}>
             {parseFloat(row.gst).toFixed(2)}
           </div>
         ),
@@ -136,7 +138,7 @@ const DmtTxn = ({ query }) => {
       {
         name: "Comm",
         selector: (row) => (
-          <div style={{ color: "green", fontWeight: "500", fontSize: "10px", textAlign: "right" }}>
+          <div style={{ color: "green", fontWeight: "600", fontSize: "10px", textAlign: "right" }}>
             {parseFloat(row.comm).toFixed(2)}
           </div>
         ),
@@ -146,7 +148,7 @@ const DmtTxn = ({ query }) => {
       {
         name: "TDS",
         selector: (row) => (
-          <div style={{ color: "red", fontWeight: "500", fontSize: "10px", textAlign: "right" }}>
+          <div style={{ color: "red", fontWeight: "600", fontSize: "10px", textAlign: "right" }}>
             {parseFloat(row.tds).toFixed(2)}
           </div>
         ),
