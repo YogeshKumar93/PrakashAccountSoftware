@@ -199,13 +199,16 @@ const DmtTxn = ({ query }) => {
 
   return (
     <>
-      <CommonTable
-        columns={columns}
-        endpoint={ApiEndpoints.GET_DMT_TXN}
-        filters={filters}
-        queryParam={queryParam}
-        enableActionsHover={true}
-      />
+    <Box sx={{ mx: -4 }}>  
+  <CommonTable
+    columns={columns}
+    endpoint={ApiEndpoints.GET_DMT_TXN}
+    filters={filters}
+    queryParam={queryParam}
+    enableActionsHover={true}
+  />
+</Box>
+
 
       {/* Complaint Modal */}
       {openCreate && selectedTxn && (
