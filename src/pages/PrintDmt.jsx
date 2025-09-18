@@ -8,47 +8,59 @@ import {
   FormControlLabel,
   Radio,
 } from "@mui/material";
+import { useLocation } from "react-router-dom";
+import { ddmmyyWithTime } from "../utils/DateUtils";
+import biggpayLogo from "../assets/logo(1).png";
 
 const PrintDmt = () => {
   const [receiptType, setReceiptType] = useState("large");
+  const location = useLocation();
 
-  const data = {
-    date: "Sep 14 12:45:10",
-    utr: "987654321012",
-    operator: "Super Transfer",
-    number: "9876543210",
-    benName: "RAHUL KUMAR",
-    accountNo: "1234567890123456",
-    ifsc: "SBIN0001234",
-    amount: "₹ 45,000.00",
-    status: "SUCCESS",
-    totalAmount: "₹ 45,000",
-    amountInWords: "FORTY FIVE THOUSAND",
-    company: "MOBIFAST SOLUTIONS PVT LTD",
-    companyNumber: "9876543210",
-  };
+
+
+  // ✅ Transaction data passed from previous page (via navigate)
+  const data = location.state?.txnData;
+
+  if (!data) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="100vh"
+      >
+        <Typography color="error" variant="h6">
+          No Transaction Data Available
+        </Typography>
+      </Box>
+    );
+  }
 
   const headers = [
     "Date",
     "UTR",
+   
     "Operator",
-    "Number",
+    "Sender",
     "Ben Name",
     "Account No",
     "IFSC Code",
     "Amount",
+  
     "Status",
   ];
 
   const values = [
-    data.date,
-    data.utr,
+   ddmmyyWithTime(data.created_at) ,
+    data.txn_id,
+  
     data.operator,
-    data.number,
-    data.benName,
-    data.accountNo,
-    data.ifsc,
-    data.amount,
+    data.sender_mobile,
+    data.beneficiary_name,
+    data.account_number,
+    data.ifsc_code,
+    `₹ ${data.amount}`,
+  
     data.status,
   ];
 
@@ -58,11 +70,13 @@ const PrintDmt = () => {
         @media print {
           .no-print { display: none !important; }
         }
-        .table-container {
-          display: table;
-          width: 100%;
-          border-collapse: collapse;
-        }
+       .table-container table {
+  width: auto;
+  height: auto;
+  border: 1px solid blue;
+  border-collapse: collapse;
+}
+
         .table-row {
           display: table-row;
         }
@@ -105,16 +119,8 @@ const PrintDmt = () => {
             value={receiptType}
             onChange={(e) => setReceiptType(e.target.value)}
           >
-            <FormControlLabel
-              value="large"
-              control={<Radio />}
-              label="Large Receipt"
-            />
-            <FormControlLabel
-              value="small"
-              control={<Radio />}
-              label="Small Receipt"
-            />
+            <FormControlLabel value="large" control={<Radio />} label="Large Receipt" />
+            <FormControlLabel value="small" control={<Radio />} label="Small Receipt" />
           </RadioGroup>
         </Box>
 
@@ -140,31 +146,49 @@ const PrintDmt = () => {
             pb={3}
             borderBottom="2px solid #e0e0e0"
           >
-            <Box>
-              <Typography
-                variant="h5"
-                sx={{ fontWeight: "bold", letterSpacing: 1 }}
-              >
-                <span style={{ color: "#2b9bd7" }}>IMPS</span>{" "}
-                <span style={{ color: "#ff9a3c" }}>GURU</span>
-              </Typography>
-              <Typography
-                variant="caption"
-                color="text.secondary"
-                sx={{ fontStyle: "italic" }}
-              >
-                Sabka Guru
-              </Typography>
-            </Box>
+         <Box>
+  <Box
+    component="img"
+     src={biggpayLogo}
+    alt="IMPS GURU Logo"
+    sx={{
+      width: 60,   // adjust size
+      height: 60,
+      objectFit: "contain",
+    }}
+  />
+</Box>
+
             <Box textAlign="right">
               <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                {data.company}
+                {data.company || "Company Name"}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {data.companyNumber}
+                {data.companyNumber }
               </Typography>
             </Box>
           </Box>
+          <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
+  <Button
+    variant="contained"
+    sx={{
+      borderRadius: "20px",
+      textTransform: "none",
+      px: 3,
+      py: 1,
+      background: "linear-gradient(45deg, #2b9bd7, #ff9a3c)",
+      color: "#fff",
+      fontWeight: "bold",
+      boxShadow: "0px 3px 6px rgba(0,0,0,0.2)",
+      "&:hover": {
+        background: "linear-gradient(45deg, #2386ba, #e6892f)",
+      },
+    }}
+  >
+    Transaction Summary
+  </Button>
+</Box>
+
 
           {/* Receipt Content */}
           {receiptType === "large" ? (
@@ -183,7 +207,7 @@ const PrintDmt = () => {
                     <Box
                       key={i}
                       className={`table-cell ${
-                        i === 7 ? "highlight" : i === 8 ? "status" : ""
+                        i === 8 ? "highlight" : i === 10 ? "status" : ""
                       }`}
                     >
                       {value}
@@ -191,19 +215,10 @@ const PrintDmt = () => {
                   ))}
                 </Box>
               </Box>
-
-              <Box mt={4} >
-                <Typography variant="body2">
-                  Total Amount: <b>{data.totalAmount}</b>
-                </Typography>
-                <Typography variant="body2" sx={{mt:1}}>
-                  Amount (In Words): <b>{data.amountInWords}</b> /-
-                </Typography>
-              </Box>
             </>
           ) : (
             <>
-              {/* Small Receipt (Improved Card Layout) */}
+              {/* Small Receipt */}
               <Box
                 mt={2}
                 sx={{
@@ -213,11 +228,12 @@ const PrintDmt = () => {
                 }}
               >
                 {[
-                  { label: "Date", value: data.date },
-                  { label: "UTR", value: data.utr },
-                  { label: "Beneficiary", value: data.benName },
-                  { label: "Account No", value: data.accountNo },
-                  { label: "Amount", value: data.amount, highlight: "amount" },
+                 { label: "Date", value:  ddmmyyWithTime(data.created_at) },
+
+                  { label: "Txn ID", value: data.txn_id },
+                  { label: "Beneficiary", value: data.beneficiary_name },
+                  { label: "Account No", value: data.account_number },
+                  { label: "Amount", value: `₹ ${data.amount}`, highlight: "amount" },
                   { label: "Status", value: data.status, highlight: "status" },
                 ].map((item, i) => (
                   <Box
@@ -226,8 +242,7 @@ const PrintDmt = () => {
                     justifyContent="space-between"
                     sx={{
                       p: 2,
-                      borderBottom:
-                        i !== 5 ? "1px solid #f0f0f0" : "none",
+                      borderBottom: i !== 5 ? "1px solid #f0f0f0" : "none",
                       bgcolor: i % 2 === 0 ? "#fafafa" : "transparent",
                     }}
                   >
@@ -237,8 +252,7 @@ const PrintDmt = () => {
                     <Typography
                       variant="body2"
                       sx={{
-                        fontWeight:
-                          item.highlight ? "bold" : "normal",
+                        fontWeight: item.highlight ? "bold" : "normal",
                         color:
                           item.highlight === "amount"
                             ? "#d32f2f"
@@ -258,11 +272,7 @@ const PrintDmt = () => {
           <Divider sx={{ my: 2 }} />
 
           {/* Footer */}
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-          >
+          <Box display="flex" justifyContent="space-between" alignItems="center">
             <Typography variant="caption" color="text.secondary">
               © 2024 All Rights Reserved
             </Typography>

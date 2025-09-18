@@ -181,13 +181,18 @@ const DmtTxn = ({ query }) => {
                     </IconButton>
                   </Tooltip>
                     <Tooltip title="Print DMT">
-          <IconButton
-            color="primary"
-            onClick={() => navigate(`/customer/print-dmt/${row.id}`)} 
-            size="small"
-          >
-            <PrintIcon />
-          </IconButton>
+         
+                   <IconButton
+  color="primary"
+  onClick={() => navigate("/customer/print-dmt", { state: { txnData: row } })}
+  size="small"
+>
+  <PrintIcon />
+</IconButton>
+
+
+
+
         </Tooltip>
                 </Box>
               ),
