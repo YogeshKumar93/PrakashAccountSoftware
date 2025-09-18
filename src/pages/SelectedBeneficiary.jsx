@@ -21,6 +21,7 @@ import {
 import AuthContext from "../contexts/AuthContext";
 import { useToast } from "../utils/ToastContext";
 import ResetMpin from "../components/common/ResetMpin";
+import { showSuccessToast } from "../components/common/ShowSuccessToast";
 
 const SelectedBeneficiary = ({
   beneficiary,
@@ -154,7 +155,13 @@ const SelectedBeneficiary = ({
           date: new Date().toLocaleString(),
         };
 
-        okSuccessToastAlt(txnDetails); // pass full details
+        // okSuccessToastAlt(txnDetails); // pass full details
+        showSuccessToast({
+          txnID: response?.data?.rrn,
+          message: response?.message,
+          navigateUrl: "/dmt/history",
+        });
+
         setAmount("");
         setOtp("");
         setMpin("");

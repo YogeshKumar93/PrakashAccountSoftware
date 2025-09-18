@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Button, Modal, Typography, IconButton } from "@mui/material";
+import { Box, Modal, Typography, IconButton } from "@mui/material";
 import OtpInput from "react-otp-input";
 import { CheckCircle } from "@mui/icons-material";
 import { apiCall } from "../api/apiClient";
@@ -31,6 +31,7 @@ const BlockUnblockService = ({
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
   const { showToast } = useToast();
+
   const handleClose = () => {
     setOpen(false);
     setMpin("");
@@ -78,8 +79,13 @@ const BlockUnblockService = ({
   return (
     <Modal open={open} onClose={handleClose}>
       <Box sx={modalStyle}>
-        <Typography variant="h6" mb={2}>
+        <Typography variant="h6" mb={1}>
           {actionType === "block" ? "Block Service" : "Unblock Service"}
+        </Typography>
+
+        {/* Instruction Text */}
+        <Typography variant="body2" color="textSecondary" mb={2}>
+          Please enter your 6-digit MPIN to continue
         </Typography>
 
         {/* MPIN Input Fields */}

@@ -374,7 +374,7 @@ export const toastInvoicePopup = (msg, timer) => {
 export const okSuccessToastsm = (title, msg) => {
   ToastSm.fire(title, msg, "success");
 };
-export const okSuccessToastAlt = (txnDetails) => {
+export const okSuccessToastAlt = (txnID) => {
   MySwalAlt.fire({
     title: "",
     html: `
@@ -451,26 +451,11 @@ export const okSuccessToastAlt = (txnDetails) => {
 
         <!-- Transaction ID -->
         <div style="font-size: 15px; font-weight: 600; color: #333;">
-          <span style="color: #169816">${txnDetails.txnID}</span>
+          <span style="color: #169816">${txnID}</span>
         </div>
         <div style="font-size: 15px; margin-bottom: 10px; color: #555;">
           Congratulations! Your transaction was completed successfully.
-        </div>
-
-        <!-- Hidden Receipt Content for Printing -->
-        <div id="receipt-content" style="display:none;">
-          <div style="text-align:left;padding:10px;border:1px dashed #ddd;border-radius:8px;background:#fafafa;max-width:280px;margin:0 auto;">
-            <h3 style="text-align:center;margin-bottom:10px;color:#169816;">Transaction Receipt</h3>
-            <p><b>Txn ID:</b> ${txnDetails.txnID}</p>
-            <p><b>Name:</b> ${txnDetails.beneficiary.name}</p>
-            <p><b>Account:</b> ${txnDetails.beneficiary.account}</p>
-            <p><b>Bank:</b> ${txnDetails.beneficiary.bank}</p>
-            <p><b>IFSC:</b> ${txnDetails.beneficiary.ifsc}</p>
-            <p><b>Amount:</b> ₹${txnDetails.amount}</p>
-            <p><b>Mode:</b> ${txnDetails.transferMode}</p>
-            <p><b>Date:</b> ${txnDetails.date}</p>
-          </div>
-        </div>
+        </div>  
 
         <!-- Print Button -->
         <button id="print-receipt" style="
@@ -498,27 +483,8 @@ export const okSuccessToastAlt = (txnDetails) => {
     },
     didOpen: () => {
       document.getElementById("print-receipt").addEventListener("click", () => {
-        const printContents =
-          document.getElementById("receipt-content").innerHTML;
-        const newWindow = window.open("", "", "width=600,height=400");
-        newWindow.document.write(`
-          <html>
-            <head>
-              <title>Transaction Receipt</title>
-              <style>
-                body { font-family: Arial, sans-serif; padding: 20px; }
-                p { margin: 4px 0; font-size: 14px; }
-                h3 { text-align: center; color: #169816; margin-bottom: 10px; }
-                div { border: 1px dashed #ddd; padding: 10px; border-radius: 8px; background: #fafafa; }
-              </style>
-            </head>
-            <body>${printContents}</body>
-          </html>
-        `);
-        newWindow.document.close();
-        newWindow.print();
+        window.print();
       });
-
       triggerConfetti();
     },
   });

@@ -78,7 +78,7 @@ const UpiBeneficiaryDetails = ({ beneficiary, senderMobile, senderId }) => {
         ifsc_code: beneficiary.ifsc_code,
         bank_name: beneficiary.bank_name,
         mobile_number: beneficiary.mobile_number,
-        operator: 11,
+        operator: 12,
         latitude: location?.lat || "",
         longitude: location?.long || "",
         amount,
@@ -116,7 +116,7 @@ const UpiBeneficiaryDetails = ({ beneficiary, senderMobile, senderId }) => {
       {/* Header */}
       <Box
         sx={{
-          bgcolor: "#0078B6",
+          background: "#5c3ac8",
           color: "#fff",
           textAlign: "center",
           py: 1.5,
@@ -125,32 +125,33 @@ const UpiBeneficiaryDetails = ({ beneficiary, senderMobile, senderId }) => {
         <Typography variant="subtitle1" fontWeight="bold">
           Selected Beneficiary
         </Typography>
-      </Box>{/* Beneficiary Details */}
-<Box sx={{ mx: 2, my: 2, p: 2, bgcolor: "#f0f8ff", borderRadius: 2 }}>
-  {[
-    { label: "Name", value: beneficiary.beneficiary_name },
-    { label: "Account Number", value: beneficiary.account_number },
-    { label: "Bank", value: beneficiary.bank_name },
-    { label: "IFSC", value: beneficiary.ifsc_code },
-  ].map((item, index) => (
-    <Box key={index} display="flex" mb={1}>
-      {/* Label column with fixed width */}
-      <Typography
-        variant="body2"
-        fontWeight="500"
-        color="#4B5563"
-        sx={{ width: "190px", flexShrink: 0 }}
-      >
-        {item.label}
-      </Typography>
+      </Box>
+      {/* Beneficiary Details */}
+      <Box sx={{ mx: 2, my: 2, p: 2, bgcolor: "#f0f8ff", borderRadius: 2 }}>
+        {[
+          { label: "Name", value: beneficiary.beneficiary_name },
+          { label: "Account Number", value: beneficiary.account_number },
+          { label: "Bank", value: beneficiary.bank_name },
+          { label: "IFSC", value: beneficiary.ifsc_code },
+        ].map((item, index) => (
+          <Box key={index} display="flex" mb={1}>
+            {/* Label column with fixed width */}
+            <Typography
+              variant="body2"
+              fontWeight="500"
+              color="#4B5563"
+              sx={{ width: "190px", flexShrink: 0 }}
+            >
+              {item.label}
+            </Typography>
 
-      {/* Value always starts aligned */}
-      <Typography variant="body2" color="#111827">
-        {item.value}
-      </Typography>
-    </Box>
-  ))}
-</Box> 
+            {/* Value always starts aligned */}
+            <Typography variant="body2" color="#111827">
+              {item.value}
+            </Typography>
+          </Box>
+        ))}
+      </Box>
       {/* Amount + OTP / M-PIN */}
       {!otpRef ? (
         <Box mt={2} px={2} pb={2}>
@@ -188,23 +189,23 @@ const UpiBeneficiaryDetails = ({ beneficiary, senderMobile, senderId }) => {
             <Typography variant="body2" mb={0.5}>
               Enter OTP
             </Typography>
-        <OTPInput
-  value={otp}
-  onChange={setOtp}
-  numInputs={6}
-  inputType="tel"
-  renderInput={(props) => <input {...props} />}
-  inputStyle={{
-    width: "40px",
-    height: "40px",
-    margin: "0 5px",
-    fontSize: "18px",
-    border: "1px solid #D0D5DD", // ✅ uniform border
-    borderRadius: "6px",          // optional for rounded look
-    outline: "none",
-    textAlign: "center",
-  }}
-/>
+            <OTPInput
+              value={otp}
+              onChange={setOtp}
+              numInputs={6}
+              inputType="tel"
+              renderInput={(props) => <input {...props} />}
+              inputStyle={{
+                width: "40px",
+                height: "40px",
+                margin: "0 5px",
+                fontSize: "18px",
+                border: "1px solid #D0D5DD", // ✅ uniform border
+                borderRadius: "6px", // optional for rounded look
+                outline: "none",
+                textAlign: "center",
+              }}
+            />
           </Box>
           {/* M-PIN Input */}
           <Box>
@@ -222,9 +223,9 @@ const UpiBeneficiaryDetails = ({ beneficiary, senderMobile, senderId }) => {
                 height: "40px",
                 margin: "0 5px",
                 fontSize: "18px",
-    border: "1px solid #D0D5DD", // ✅ uniform border
+                border: "1px solid #D0D5DD", // ✅ uniform border
                 outline: "none",
-                borderRadius:"6px",
+                borderRadius: "6px",
                 textAlign: "center",
               }}
             />
