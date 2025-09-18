@@ -39,13 +39,45 @@ const OutletDmt1 = ({ open, handleClose, onSuccess }) => {
         response?.message || "DMT1 Outlet initiated successfully",
         "success"
       );
-      if (onSuccess) onSuccess(); // to refresh instId or reload page
-      handleClose();
+
+      // 🔑 Save the init payload + required otpReferenceId + hash
+      setInitPayload({
+        ...payload,
+        otpReferenceID: response?.data?.otpReferenceID,
+        hash: response?.data?.hash,
+        hash2: response?.data?.hash,
+      });
+
+      setOtpModalOpen(true); // Open OTP modal
     } else {
-      showToast(error?.message || "Failed to initiate DMT1 outlet", "error");
-      handleClose();
+      if (error) {
+        showToast(error, "error");
+      } else {
+        showToast(error?.message || "Failed to initiate DMT1 outlet", "error");
+        handleClose();
+      }
     }
     setSubmitting(false);
+  };
+
+  const handleOtpSubmit = async () => {
+    const { error, response } = await apiCall(
+      "post",
+      ApiEndpoints.VALIDATE_DMT1_OUTLET,
+      {
+        ...initPayload, // includes formData + otpReferenceId + hash
+        otp,
+      }
+    );
+
+    if (response) {
+      showToast("OTP Verified Successfully", "success");
+      if (onSuccess) onSuccess();
+      setOtpModalOpen(false);
+      handleClose();
+    } else {
+      showToast(error?.message || "OTP Validation Failed", "error");
+    }
   };
 
   // ✅ Required fields (if you only want some fields from schema)
