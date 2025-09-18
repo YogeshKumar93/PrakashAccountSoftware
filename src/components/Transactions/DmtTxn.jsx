@@ -239,17 +239,17 @@ const DmtTxn = ({ query }) => {
               dateTime={ddmmyyWithTime(selectedRow.created_at)}
               message={selectedRow.message || "No message"}
               details={[
-                { label: "Txn ID", value: selectedRow.txn_id },
-                { label: "Client Ref", value: selectedRow.client_ref },
-                { label: "Sender Mobile", value: selectedRow.sender_mobile },
-                { label: "Beneficiary Name", value: selectedRow.beneficiary_name },
-                { label: "Account Number", value: selectedRow.account_number },
-                { label: "IFSC Code", value: selectedRow.ifsc_code },
-                { label: "Bank Name", value: selectedRow.bank_name },
-                { label: "Route", value: selectedRow.route },
+                  { label: "Operator", value: selectedRow.operator },
+                { label: "Operator Id", value: selectedRow.operator_id },
+                { label: "Order Id", value: selectedRow.order_id },
+                { label: "MOP", value: selectedRow.mop },
+              
+               
+                { label: "Customer Number", value: selectedRow.sender_mobile },
+               
                 { label: "Charge", value: selectedRow.ccf },
                 { label: "GST", value: selectedRow.gst },
-                { label: "Commission", value: selectedRow.comm },
+              
                 { label: "TDS", value: selectedRow.tds },
               ]}
               onRaiseIssue={() => {
