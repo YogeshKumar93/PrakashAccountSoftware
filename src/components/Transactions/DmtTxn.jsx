@@ -16,6 +16,9 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import CloseIcon from "@mui/icons-material/Close";
 import TransactionDetailsCard from "../common/TransactionDetailsCard";
 import companylogo from '../../assets/Images/logo(1).png';
+import PrintIcon from "@mui/icons-material/Print";
+import { useNavigate } from "react-router-dom";
+
 
 const DmtTxn = ({ query }) => {
   const authCtx = useContext(AuthContext);
@@ -23,9 +26,12 @@ const DmtTxn = ({ query }) => {
 
   const [openCreate, setOpenCreate] = useState(false);
   const [selectedTxn, setSelectedTxn] = useState(null);
+  
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
+  const navigate = useNavigate();
+
 
   const filters = useMemo(
     () => [
@@ -174,6 +180,15 @@ const DmtTxn = ({ query }) => {
                       <VisibilityIcon />
                     </IconButton>
                   </Tooltip>
+                    <Tooltip title="Print DMT">
+          <IconButton
+            color="primary"
+            onClick={() => navigate(`/customer/print-dmt/${row.id}`)} 
+            size="small"
+          >
+            <PrintIcon />
+          </IconButton>
+        </Tooltip>
                 </Box>
               ),
               width: "100px",
