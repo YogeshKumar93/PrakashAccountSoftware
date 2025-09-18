@@ -429,6 +429,7 @@ const UpiBeneficiaryList = ({ sender, onSuccess, onSelect }) => {
           onClose={() => setVerifyModal(false)}
           mobile={sender?.mobile_number}
           beneId={selectedBene.id}
+          beneaccnumber={selectedBene.account_number}
           onSuccess={() => {
             setVerifyModal(false);
             onSuccess?.(sender.mobile_number);

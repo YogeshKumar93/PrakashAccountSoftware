@@ -194,7 +194,7 @@ const Dmt = () => {
             />
           </Box>
 
-          <Divider sx={{ my: 1, display: { xs: "none", sm: "block" } }} />
+          {/* <Divider sx={{ my: 1, display: { xs: "none", sm: "block" } }} /> */}
 
           {openRegisterModal && (
             <RemitterRegister
