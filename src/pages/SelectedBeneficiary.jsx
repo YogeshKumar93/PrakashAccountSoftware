@@ -46,7 +46,7 @@ const SelectedBeneficiary = ({
   const [openResetModal, setOpenResetModal] = useState(false);
 
   const username = `GURU1${user?.id}`;
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
   if (!beneficiary) return null;
 
@@ -145,28 +145,28 @@ const navigate = useNavigate();
       );
       if (response) {
         const txnDetails = {
-          txnID: response?.message,
+          txnID: response?.data?.rrn,
           amount,
           transferMode,
+          senderMobile,
           beneficiary: {
             name: beneficiary.beneficiary_name,
             account: beneficiary.account_number,
             bank: beneficiary.bank_name,
             ifsc: beneficiary.ifsc_code,
+            mobile: beneficiary.mobile_number,
           },
           date: new Date().toLocaleString(),
+          
         };
 
         // okSuccessToastAlt(txnDetails); // pass full details
         showSuccessToast({
           txnID: response?.data?.rrn,
           message: response?.message,
-         
         });
-           navigate("/customer/print-dmt", { state: { txnData: txnDetails } }),      
-
-
-        setAmount("");
+        navigate("/customer/print-dmt", { state: { txnData: txnDetails } }),
+          setAmount("");
         setOtp("");
         setMpin("");
         setOtpRef(null);
