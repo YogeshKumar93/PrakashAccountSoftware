@@ -1,12 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Button, Modal, Typography } from "@mui/material";
-import myImage from "../assets/Images/aeps-guidelines-new.png"; 
-import myLogo from "../assets/Images/logo(1).png"; 
+import myImage from "../assets/Images/aeps-guidelines-new.png";
+import myLogo from "../assets/Images/logo(1).png";
 import atmIcon from "../assets/Images/aeps_print.png";
 import CloseIcon from "@mui/icons-material/Close";
 import AEPS2FAModal from "../components/AEPS/AEPS2FAModal";
+import { apiCall } from "../api/apiClient";
+import ApiEndpoints from "../api/ApiEndpoints";
+import { apiErrorToast } from "../utils/ToastUtil";
+import { useToast } from "../utils/ToastContext";
 
-// Styles
 const style = {
   position: "absolute",
   top: "50%",
@@ -30,10 +33,41 @@ const Aeps = () => {
   const [open, setOpen] = useState(false);
   const [openSecond, setOpenSecond] = useState(false);
   const [openAEPS2FA, setOpenAEPS2FA] = useState(false);
-  const [twoFAStatus, setTwoFAStatus] = useState("LOGINREQUIRED");
+  const [openAepsMain, setOpenAepsMain] = useState(false); // ✅ new state for other component
+  const [twoFAStatus, setTwoFAStatus] = useState("");
+  const [loading, setLoading] = useState(false);
+  const { showToast } = useToast();
+  const handleGetOtp = async () => {
+    setLoading(true);
+    try {
+      const { error, response } = await apiCall(
+        "post",
+        ApiEndpoints.AEPS_LOGIN_STATUS
+      );
+
+      if (error) {
+        apiErrorToast(error);
+      } else {
+        if (response?.data?.message === "LOGINREQUIRED") {
+          setTwoFAStatus("LOGINREQUIRED");
+          setOpenAEPS2FA(true);
+        } else {
+          setOpenAepsMain(true);
+        }
+      }
+    } catch (err) {
+      apiErrorToast(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Page load hote hi first modal khul jaye
+  useEffect(() => {
+    setOpen(true);
+  }, []);
 
   // First modal
-  const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   const handleAccept = () => {
@@ -43,20 +77,15 @@ const Aeps = () => {
 
   const handleSecondClose = () => setOpenSecond(false);
 
-  // AEPS1 click → open AEPS2FA modal
-  const handleAeps1 = () => {
+  const handleAeps1 = async () => {
     setOpenSecond(false);
-    setOpenAEPS2FA(true);
+    await handleGetOtp();
   };
 
   const handleAeps2 = () => alert("AEPS2 Selected 🎉");
 
   return (
     <div>
-      <Button variant="contained" onClick={handleOpen}>
-        Open AEPS Modal
-      </Button>
-
       {/* First Modal */}
       <Modal open={open} onClose={handleClose}>
         <Box sx={style}>
@@ -80,30 +109,31 @@ const Aeps = () => {
             }}
           >
             <Box component="img" src={myLogo} alt="Logo" sx={{ height: 40 }} />
-            <Button variant="contained" color="primary" onClick={handleAccept}>
+            <Button
+              variant="contained"
+              sx={{
+                bgcolor: "#9d72f0",
+                "&:hover": { bgcolor: "#8756e5" },
+              }}
+              onClick={handleAccept}
+            >
               Accept
             </Button>
           </Box>
         </Box>
       </Modal>
 
-      {/* Second Modal (Choose AEPS type) */}
-      <Modal open={openSecond} onClose={handleSecondClose}>
-        <Box sx={secondModalStyle} position="relative">
-          <CloseIcon
-            onClick={handleSecondClose}
-            sx={{
-              position: "absolute",
-              top: 16,
-              right: 16,
-              cursor: "pointer",
-              color: "gray",
-              fontSize: 30,
-            }}
-          />
+      {/* Second Modal (sirf Accept ke baad dikhai dega) */}
+      {openSecond && (
+        <Box position="relative">
           <Typography
             variant="h5"
-            sx={{ mb: 3, fontWeight: "bold", color: "#1CA895", textAlign: "center" }}
+            sx={{
+              mb: 3,
+              fontWeight: "bold",
+              color: "#9d72f0",
+              textAlign: "center",
+            }}
           >
             Choose Your AEPS Service
           </Typography>
@@ -122,8 +152,8 @@ const Aeps = () => {
             <Button
               variant="contained"
               sx={{
-                bgcolor: "#1CA895",
-                "&:hover": { bgcolor: "#138f79" },
+                bgcolor: "#9d72f0",
+                "&:hover": { bgcolor: "#8756e5" },
                 px: { xs: 8, sm: 8 },
                 py: { xs: 2, sm: 3 },
                 borderRadius: "12px",
@@ -163,9 +193,9 @@ const Aeps = () => {
             <Button
               variant="outlined"
               sx={{
-                borderColor: "#1CA895",
-                color: "#1CA895",
-                "&:hover": { borderColor: "#138f79", color: "#138f79" },
+                borderColor: "#9d72f0",
+                color: "#9d72f0",
+                "&:hover": { borderColor: "#8756e5", color: "#8756e5" },
                 px: { xs: 4, sm: 4 },
                 py: { xs: 2, sm: 3 },
                 borderRadius: "12px",
@@ -201,9 +231,9 @@ const Aeps = () => {
             </Button>
           </Box>
         </Box>
-      </Modal>
+      )}
 
-      {/* AEPS2FA Modal */}
+      {/* AEPS 2FA Modal */}
       {openAEPS2FA && (
         <AEPS2FAModal
           open={openAEPS2FA}
@@ -214,6 +244,8 @@ const Aeps = () => {
           setTwoFAStatus={setTwoFAStatus}
         />
       )}
+
+      {openAepsMain && ""}
     </div>
   );
 };
