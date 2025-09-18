@@ -1,11 +1,5 @@
 import { useMemo, useContext, useState } from "react";
-import {
-  Box,
-  Tooltip,
-  IconButton,
-  Drawer,
-  Typography,
-} from "@mui/material";
+import { Box, Tooltip, IconButton, Drawer, Typography } from "@mui/material";
 import CommonTable from "../common/CommonTable";
 import ApiEndpoints from "../../api/ApiEndpoints";
 import AuthContext from "../../contexts/AuthContext";
@@ -15,7 +9,9 @@ import ComplaintForm from "../ComplaintForm";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import CloseIcon from "@mui/icons-material/Close";
 import TransactionDetailsCard from "../common/TransactionDetailsCard";
-import companylogo from '../../assets/Images/logo(1).png';
+import companylogo from "../../assets/Images/logo(1).png";
+import PrintIcon from "@mui/icons-material/Print";
+import { useNavigate } from "react-router-dom";
 
 const DmtTxn = ({ query }) => {
   const authCtx = useContext(AuthContext);
@@ -26,6 +22,7 @@ const DmtTxn = ({ query }) => {
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
+  const navigate = useNavigate();
 
   const filters = useMemo(
     () => [
@@ -186,6 +183,19 @@ const DmtTxn = ({ query }) => {
                       <VisibilityIcon />
                     </IconButton>
                   </Tooltip>
+                  <Tooltip title="Print DMT">
+                    <IconButton
+                      color="primary"
+                      onClick={() =>
+                        navigate("/customer/print-dmt", {
+                          state: { txnData: row },
+                        })
+                      }
+                      size="small"
+                    >
+                      <PrintIcon />
+                    </IconButton>
+                  </Tooltip>
                 </Box>
               ),
                 width: "40px",
@@ -227,15 +237,21 @@ const DmtTxn = ({ query }) => {
         anchor="right"
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
-       
       >
-        <Box sx={{ width: 400,  display: "flex", flexDirection: "column", height: "100%" }}>
+        <Box
+          sx={{
+            width: 400,
+            display: "flex",
+            flexDirection: "column",
+            height: "100%",
+          }}
+        >
           {selectedRow && (
             <TransactionDetailsCard
               amount={selectedRow.amount}
               status={selectedRow.status}
               onClose={() => setDrawerOpen(false)} // ✅ Close drawer
-             companyLogoUrl={companylogo}
+              companyLogoUrl={companylogo}
               dateTime={ddmmyyWithTime(selectedRow.created_at)}
               message={selectedRow.message || "No message"}
               details={[
