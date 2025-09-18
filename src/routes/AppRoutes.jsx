@@ -62,6 +62,8 @@ import KycPending from "../pages/KycPending";
 import { MoneyTransfer } from "../components/UI/MoneyTransfer/MoneyTransfer";
 import MD_Dashboard from "../pages/Dashboard";
 import { Transfer } from "../pages/Transfer";
+import DmtReceipt1 from "../pages/DmtReceipt1";
+import PrintDmt from "../pages/printDmt";
 
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated, loading, user } = useContext(AuthContext);
@@ -112,6 +114,7 @@ export default function AppRoutes() {
           <Route path="landingpageintro3" element={<LandingPageIntro3 />} /> */}
 
         <Route path="/login" element={<QrLoginPage />} />
+        <Route path="/print-receipt" element={<DmtReceipt1 />} />
 
         {/* Protected layout */}
         <Route
@@ -215,6 +218,7 @@ export default function AppRoutes() {
               <Route path="customer/bbps" element={<Bbps />} />
               <Route path="customer/profile" element={<ProfilePage />} />
               <Route path="customer/cms" element={<Cms />} />
+               <Route path="customer/print-dmt" element={<PrintDmt />} />
 
               <Route
                 path="customer/*"

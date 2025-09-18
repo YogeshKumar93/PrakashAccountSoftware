@@ -159,7 +159,7 @@ const SelectedBeneficiary = ({
         showSuccessToast({
           txnID: response?.data?.rrn,
           message: response?.message,
-          navigateUrl: "/dmt/history",
+          navigateUrl: "/customer/print-dmt",
         });
 
         setAmount("");
