@@ -165,7 +165,7 @@ const SelectedBeneficiary = ({
           txnID: response?.data?.rrn,
           message: response?.message,
         });
-        navigate("/customer/print-dmt", { state: { txnData: txnDetails } }),
+        navigate("/print-dmt", { state: { txnData: txnDetails } }),
           setAmount("");
         setOtp("");
         setMpin("");

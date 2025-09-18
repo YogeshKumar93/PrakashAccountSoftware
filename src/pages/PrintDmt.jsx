@@ -191,11 +191,7 @@ const user = authCtx.user;
               control={<Radio />}
               label="Portrait"
             />
-            <FormControlLabel
-              value="landscape"
-              control={<Radio />}
-              label="Landscape"
-            />
+          
           </RadioGroup>
         </Box>
 
