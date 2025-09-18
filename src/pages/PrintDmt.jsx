@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
   Box,
   Typography,
-  Divider,
   Button,
   RadioGroup,
   FormControlLabel,
@@ -15,8 +14,6 @@ import biggpayLogo from "../assets/logo(1).png";
 const PrintDmt = () => {
   const [receiptType, setReceiptType] = useState("large");
   const location = useLocation();
-
-
 
   // ✅ Transaction data passed from previous page (via navigate)
   const data = location.state?.txnData;
@@ -39,28 +36,24 @@ const PrintDmt = () => {
   const headers = [
     "Date",
     "UTR",
-   
     "Operator",
     "Sender",
     "Ben Name",
     "Account No",
     "IFSC Code",
     "Amount",
-  
     "Status",
   ];
 
   const values = [
-   ddmmyyWithTime(data.created_at) ,
+    ddmmyyWithTime(data.created_at),
     data.txn_id,
-  
     data.operator,
     data.sender_mobile,
     data.beneficiary_name,
     data.account_number,
     data.ifsc_code,
     `₹ ${data.amount}`,
-  
     data.status,
   ];
 
@@ -70,13 +63,12 @@ const PrintDmt = () => {
         @media print {
           .no-print { display: none !important; }
         }
-       .table-container table {
-  width: auto;
-  height: auto;
-  border: 1px solid blue;
-  border-collapse: collapse;
-}
-
+        .table-container table {
+          width: auto;
+          height: auto;
+          border: 1px solid blue;
+          border-collapse: collapse;
+        }
         .table-row {
           display: table-row;
         }
@@ -92,13 +84,17 @@ const PrintDmt = () => {
           font-weight: 600;
           background: #f9fafb;
         }
-        .highlight {
+        .amount {
           font-weight: 700;
           color: #d32f2f;
         }
-        .status {
+        .status-success {
           font-weight: 700;
           color: green;
+        }
+        .status-failed {
+          font-weight: 700;
+          color: red;
         }
       `}</style>
 
@@ -110,6 +106,7 @@ const PrintDmt = () => {
           alignItems: "center",
           minHeight: "100vh",
           p: 2,
+          pt: 4,
         }}
       >
         {/* Toggle Receipt Type */}
@@ -119,8 +116,16 @@ const PrintDmt = () => {
             value={receiptType}
             onChange={(e) => setReceiptType(e.target.value)}
           >
-            <FormControlLabel value="large" control={<Radio />} label="Large Receipt" />
-            <FormControlLabel value="small" control={<Radio />} label="Small Receipt" />
+            <FormControlLabel
+              value="large"
+              control={<Radio />}
+              label="Large Receipt"
+            />
+            <FormControlLabel
+              value="small"
+              control={<Radio />}
+              label="Small Receipt"
+            />
           </RadioGroup>
         </Box>
 
@@ -129,12 +134,12 @@ const PrintDmt = () => {
           className="receipt-container"
           sx={{
             width: "100%",
-            maxWidth: receiptType === "large" ? 1100 : 400,
+            maxWidth: receiptType === "large" ? 1200 : 400,
             border: "2px solid #d6e4ed",
             borderRadius: 2,
             background: "#fff",
             boxShadow: "0 8px 20px rgba(0,0,0,0.12)",
-            p: { xs: 2, md: 4 },
+            p: { xs: 2, md: 2 },
             fontFamily: "Roboto, sans-serif",
           }}
         >
@@ -142,58 +147,68 @@ const PrintDmt = () => {
           <Box
             display="flex"
             justifyContent="space-between"
-            alignItems="flex-start"
-            pb={3}
+            alignItems="center"
             borderBottom="2px solid #e0e0e0"
           >
-         <Box>
-  <Box
-    component="img"
-     src={biggpayLogo}
-    alt="IMPS GURU Logo"
-    sx={{
-      width: 60,   // adjust size
-      height: 60,
-      objectFit: "contain",
-    }}
-  />
-</Box>
+            <Box
+              sx={{
+                width: 140,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Box
+                component="img"
+                src={biggpayLogo}
+                alt="IMPS GURU Logo"
+                sx={{
+                  width: 120,
+                  height: 60,
+                  objectFit: "contain",
+                }}
+              />
+            </Box>
 
             <Box textAlign="right">
               <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
                 {data.company || "Company Name"}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {data.companyNumber }
+                {data.companyNumber}
               </Typography>
             </Box>
           </Box>
-          <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
-  <Button
-    variant="contained"
-    sx={{
-      borderRadius: "20px",
-      textTransform: "none",
-      px: 3,
-      py: 1,
-      background: "linear-gradient(45deg, #2b9bd7, #ff9a3c)",
-      color: "#fff",
-      fontWeight: "bold",
-      boxShadow: "0px 3px 6px rgba(0,0,0,0.2)",
-      "&:hover": {
-        background: "linear-gradient(45deg, #2386ba, #e6892f)",
-      },
-    }}
-  >
-    Transaction Summary
-  </Button>
-</Box>
 
+          {/* Transaction Summary Button only for large receipt */}
+          {receiptType === "large" && (
+            <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
+              <Button
+                variant="outlined"
+                sx={{
+                  borderRadius: "20px",
+                  textTransform: "none",
+                  px: 3,
+                  py: 1,
+                  border: "2px solid #2b9bd7",
+                  color: "#2b9bd7",
+                  fontWeight: "bold",
+                  background: "#fff",
+                  "&:hover": {
+                    background: "rgba(43, 155, 215, 0.1)",
+                    border: "2px solid #2386ba",
+                    color: "#2386ba",
+                  },
+                }}
+              >
+                Transaction Summary
+              </Button>
+            </Box>
+          )}
 
           {/* Receipt Content */}
           {receiptType === "large" ? (
             <>
-              {/* Large Receipt Table */}
               <Box className="table-container" mt={3}>
                 <Box className="table-row">
                   {headers.map((header, i) => (
@@ -203,22 +218,39 @@ const PrintDmt = () => {
                   ))}
                 </Box>
                 <Box className="table-row">
-                  {values.map((value, i) => (
-                    <Box
-                      key={i}
-                      className={`table-cell ${
-                        i === 8 ? "highlight" : i === 10 ? "status" : ""
-                      }`}
-                    >
-                      {value}
-                    </Box>
-                  ))}
+                  {values.map((value, i) => {
+                    if (i === 7) {
+                      return (
+                        <Box key={i} className="table-cell amount">
+                          {value}
+                        </Box>
+                      );
+                    }
+                    if (i === 8) {
+                      return (
+                        <Box
+                          key={i}
+                          className={`table-cell ${
+                            data.status?.toLowerCase() === "success"
+                              ? "status-success"
+                              : "status-failed"
+                          }`}
+                        >
+                          {value}
+                        </Box>
+                      );
+                    }
+                    return (
+                      <Box key={i} className="table-cell">
+                        {value}
+                      </Box>
+                    );
+                  })}
                 </Box>
               </Box>
             </>
           ) : (
             <>
-              {/* Small Receipt */}
               <Box
                 mt={2}
                 sx={{
@@ -228,13 +260,12 @@ const PrintDmt = () => {
                 }}
               >
                 {[
-                 { label: "Date", value:  ddmmyyWithTime(data.created_at) },
-
+                  { label: "Date", value: ddmmyyWithTime(data.created_at) },
                   { label: "Txn ID", value: data.txn_id },
                   { label: "Beneficiary", value: data.beneficiary_name },
                   { label: "Account No", value: data.account_number },
-                  { label: "Amount", value: `₹ ${data.amount}`, highlight: "amount" },
-                  { label: "Status", value: data.status, highlight: "status" },
+                  { label: "Amount", value: `₹ ${data.amount}`, type: "amount" },
+                  { label: "Status", value: data.status, type: "status" },
                 ].map((item, i) => (
                   <Box
                     key={i}
@@ -252,12 +283,15 @@ const PrintDmt = () => {
                     <Typography
                       variant="body2"
                       sx={{
-                        fontWeight: item.highlight ? "bold" : "normal",
+                        fontWeight: item.type ? "bold" : "normal",
                         color:
-                          item.highlight === "amount"
+                          item.type === "amount"
                             ? "#d32f2f"
-                            : item.highlight === "status"
+                            : item.type === "status" &&
+                              data.status?.toLowerCase() === "success"
                             ? "green"
+                            : item.type === "status"
+                            ? "red"
                             : "inherit",
                       }}
                     >
@@ -269,10 +303,13 @@ const PrintDmt = () => {
             </>
           )}
 
-          <Divider sx={{ my: 2 }} />
-
           {/* Footer */}
-          <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            mt={3}
+          >
             <Typography variant="caption" color="text.secondary">
               © 2024 All Rights Reserved
             </Typography>
@@ -284,7 +321,7 @@ const PrintDmt = () => {
                 borderRadius: 2,
                 background: "#2b9bd7",
                 textTransform: "none",
-                px: 3,
+             px:4,
                 "&:hover": { background: "#ff9a3c" },
               }}
             >
