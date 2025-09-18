@@ -998,7 +998,7 @@ const CommonTable = ({
                   </tr>
                   <tr
                     style={{
-                      height: "12px",
+                      height: "10px",
                       boxShadow: "0px 2px 8px rgba(0,0,0,0.08)",
                     }}
                   />{" "}
