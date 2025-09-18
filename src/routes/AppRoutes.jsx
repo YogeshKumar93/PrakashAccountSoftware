@@ -114,6 +114,7 @@ export default function AppRoutes() {
 
         <Route path="/login" element={<QrLoginPage />} />
         <Route path="/print-receipt" element={<DmtReceipt1 />} />
+         <Route path="/print-dmt" element={<PrintDmt />} />
 
         {/* Protected layout */}
         <Route
