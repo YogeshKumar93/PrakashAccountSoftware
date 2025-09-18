@@ -40,12 +40,19 @@ const OutletDmt1 = ({ open, handleClose, onSuccess }) => {
         response?.message || "DMT1 Outlet initiated successfully",
         "success"
       );
-      if (onSuccess) onSuccess();
-      handleClose();
+
+      // 🔑 Save the init payload + required otpReferenceId + hash
+      setInitPayload({
+        ...payload,
+        otpReferenceID: response?.data?.otpReferenceID,
+        hash: response?.data?.hash,
+        hash2: response?.data?.hash,
+      });
+
+      setOtpModalOpen(true); // Open OTP modal
     } else {
       if (error) {
-        setInitPayload(payload); // Store initial payload for OTP validation
-        setOtpModalOpen(true); // Open OTP modal
+        showToast(error, "error");
       } else {
         showToast(error?.message || "Failed to initiate DMT1 outlet", "error");
         handleClose();
@@ -53,12 +60,13 @@ const OutletDmt1 = ({ open, handleClose, onSuccess }) => {
     }
     setSubmitting(false);
   };
+
   const handleOtpSubmit = async () => {
     const { error, response } = await apiCall(
       "post",
       ApiEndpoints.VALIDATE_DMT1_OUTLET,
       {
-        ...initPayload,
+        ...initPayload, // includes formData + otpReferenceId + hash
         otp,
       }
     );
