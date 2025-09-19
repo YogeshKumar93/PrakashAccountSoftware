@@ -64,6 +64,11 @@ import MD_Dashboard from "../pages/Dashboard";
 import { Transfer } from "../pages/Transfer";
 import DmtReceipt1 from "../pages/DmtReceipt1";
 import PrintDmt from "../pages/printDmt";
+import AdminDistributorAgreement from "../pages/AdminDistributorAgreement";
+import AdminAgreement from "../pages/AdminAgreement";
+import RetailerAgreement from "../pages/RetailerAgreement";
+import DistributorAgreement from "../pages/DistributorAgreement";
+import IndemnityLetter from "../pages/IndemnityLetter ";
 
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated, loading, user } = useContext(AuthContext);
@@ -115,6 +120,20 @@ export default function AppRoutes() {
         <Route path="/login" element={<QrLoginPage />} />
         <Route path="/print-receipt" element={<DmtReceipt1 />} />
          <Route path="/print-dmt" element={<PrintDmt />} />
+          <Route path="/adminagreement" element={<AdminAgreement />} />
+           <Route
+            path="/admindistributoragreement"
+            element={<AdminDistributorAgreement />}
+          />
+       <Route path="/retaileragreement" element={<RetailerAgreement />} />
+         <Route path="/distributoragreement" element={<DistributorAgreement />} />
+
+             <Route path="/indemnityLetter" element={<IndemnityLetter />} />
+          
+          
+         
+        
+         
 
         {/* Protected layout */}
         <Route
@@ -173,6 +192,8 @@ export default function AppRoutes() {
                 element={<Virtual_Accounts />}
               />
               <Route path="admin/login_history" element={<Login_History />} />
+
+              
 
               {/* 
               <Route
