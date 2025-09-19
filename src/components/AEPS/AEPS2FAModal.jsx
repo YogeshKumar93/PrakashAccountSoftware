@@ -206,7 +206,7 @@ const AEPS2FAModal = ({
         return 0;
     }
   };
-  console.log("THe fomr naknadobtj", formData.banks);
+  console.log("THe fomr naknadobtj", formData?.banks);
   return (
     <Box
       sx={{
@@ -650,7 +650,7 @@ const AEPS2FAModal = ({
               <TextField
                 select
                 label="Select Bank"
-                value={formData.bank_iin || ""} // selected bank dikhega yaha
+                value={formData?.bank_iin || ""} // selected bank dikhega yaha
                 onChange={(e) => {
                   const selectedIIN = e.target.value;
                   const selectedBank = banks.find(
@@ -677,7 +677,7 @@ const AEPS2FAModal = ({
 
               <TextField
                 label="Mobile"
-                value={formData.mobile}
+                value={formData?.mobile}
                 onChange={(e) =>
                   setFormData((prev) => ({ ...prev, mobile: e.target.value }))
                 }
@@ -685,7 +685,7 @@ const AEPS2FAModal = ({
                 size="small"
               />
               {/* Amount only for Cash Withdrawal */}
-              {formData.activeTab === 0 && (
+              {formData?.activeTab === 0 && (
                 <TextField
                   label="Amount"
                   value={formData.amount}
