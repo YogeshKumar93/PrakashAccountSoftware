@@ -74,12 +74,12 @@ export const Admin_nav = [
   },
   { title: "Settings", icon: settingImage, icon2: "👥", to: "/admin/settings" },
 
-  {
-    title: "Layouts",
-    icon: layoutImage,
-    icon2: "👥",
-    to: "/admin/selectlayout",
-  },
+  // {
+  //   title: "Layouts",
+  //   icon: layoutImage,
+  //   icon2: "👥",
+  //   to: "/admin/selectlayout",
+  // },
 
   {
     title: "Complaint",

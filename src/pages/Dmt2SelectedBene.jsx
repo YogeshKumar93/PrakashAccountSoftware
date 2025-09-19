@@ -150,13 +150,31 @@ const Dmt2SelectedBene = ({
         payload
       );
       if (response) {
-        
+        const txnDetails = {
+          txnID: response?.data,
+          amount,
+          transferMode,
+          senderMobile,
+          beneficiary: {
+            name: beneficiary.beneficiary_name,
+            account: beneficiary.account_number,
+            bank: beneficiary.bank_name,
+            ifsc: beneficiary.ifsc_code,
+            mobile: beneficiary.mobile_number,
+          },
+          date: new Date().toLocaleString(),
+        };
 
+        // okSuccessToastAlt(txnDetails); // pass full details
         showSuccessToast({
-                 
-                 message: response?.message,
-               });
-              
+          txnID: response?.data,
+          message: response?.message,
+          redirectUrl: "/print-dmt", // can be anything
+        });
+        sessionStorage.setItem("txnData", JSON.stringify(txnDetails));
+
+        // Open PrintDmt in a new tab
+        // window.open("/print-dmt", "_blank");
         setAmount("");
         setOtp("");
         setMpin("");
@@ -258,9 +276,8 @@ const Dmt2SelectedBene = ({
                   size="small"
                   onClick={handleGetOtp}
                   disabled={loading}
-                
                   sx={{
-                     backgroundColor:"#5c3ac8",
+                    backgroundColor: "#5c3ac8",
                     minWidth: "60px",
                     px: 1,
                     py: 0.5,
