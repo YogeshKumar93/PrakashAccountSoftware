@@ -170,7 +170,7 @@ const Prepaid = () => {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              backgroundColor: step >= s ? "primary.main" : "grey.300",
+              backgroundColor: step >= s ? "#9D72F0" : "grey.300",
               color: step >= s ? "white" : "grey.600",
               fontWeight: "bold",
               zIndex: 2,
@@ -184,7 +184,7 @@ const Prepaid = () => {
               sx={{
                 flex: 1,
                 height: 3,
-                backgroundColor: step > s ? "primary.main" : "grey.300",
+                backgroundColor: step > s ? "#9D72F0" : "grey.300",
                 ml: -1,
                 mr: -1,
                 zIndex: 1,
@@ -217,7 +217,7 @@ const Prepaid = () => {
                   "&:hover": { transform: "scale(1.05)" },
                   border:
                     selectedService?.id === service.id
-                      ? "2px solid #1976d2"
+                      ? "2px solid #9D72F0"
                       : "1px solid transparent",
                   boxShadow:
                     selectedService?.id === service.id
@@ -281,11 +281,11 @@ const Prepaid = () => {
                         : "1px solid",
                     borderColor:
                       selectedService?.id === service.id
-                        ? "primary.main"
+                        ? "#9D72F0"
                         : "divider",
                     backgroundColor:
                       selectedService?.id === service.id
-                        ? "primary.light"
+                        ? "#9D72F0"
                         : "background.paper",
                   }}
                 >
@@ -300,11 +300,7 @@ const Prepaid = () => {
         {/* Right side - Plans */}
         <Box sx={{ flex: 1 }}>
           {selectedService ? (
-            <Box sx={{
-                p: 2,
-                borderRadius: "8px",
-                background: "#e6f0ff", // light blue background
-              }}>
+            <Box  >
               {/* Operator header */}
               <Paper
                 sx={{ p: 2, mb: 1, display: "flex", alignItems: "center" }}
@@ -342,7 +338,7 @@ const Prepaid = () => {
                             : "1px solid",
                         borderColor:
                           selectedPlan?.id === plan.id
-                            ? "primary.main"
+                            ? "#9D72F0"
                             : "divider",
                       }}
                     >
@@ -457,11 +453,11 @@ const Prepaid = () => {
                     selectedService?.id === service.id ? "2px solid" : "1px solid",
                   borderColor:
                     selectedService?.id === service.id
-                      ? "primary.main"
+                      ? "#9D72F0"
                       : "divider",
                   backgroundColor:
                     selectedService?.id === service.id
-                      ? "primary.light"
+                      ? "#9D72F0"
                       : "background.paper",
                 }}
               >
@@ -511,7 +507,7 @@ const Prepaid = () => {
             </Typography>
             <Box display="flex" justifyContent="space-between">
               <Typography variant="h6">{selectedPlan?.name}</Typography>
-              <Typography variant="h6" color="primary.main">
+              <Typography variant="h6" color="#9D72F0">
                 ₹{selectedPlan?.price}
               </Typography>
             </Box>
