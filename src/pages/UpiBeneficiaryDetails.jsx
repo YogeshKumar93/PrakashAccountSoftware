@@ -112,7 +112,7 @@ const UpiBeneficiaryDetails = ({ beneficiary, senderMobile, senderId }) => {
           date: new Date().toLocaleString(),
         };
 
-  showSuccessToast({
+      showSuccessToast({
           txnID: response?.data,
           message: response?.message,
           redirectUrl: "/print-dmt", // can be anything
