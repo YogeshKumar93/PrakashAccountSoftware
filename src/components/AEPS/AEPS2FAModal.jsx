@@ -12,6 +12,7 @@ import {
   LinearProgress,
   CircularProgress,
   MenuItem,
+  Select,
 } from "@mui/material";
 import {
   Close as CloseIcon,
@@ -48,7 +49,6 @@ const AEPS2FAModal = ({
   setAadhaar,
   onFingerSuccess,
 }) => {
-
   const [rdDeviceList, setRdDeviceList] = useState([]);
   const [rdDevice, setRdDevice] = useState(null);
   const [status, setStatus] = useState("NOT READY");
@@ -169,6 +169,17 @@ const AEPS2FAModal = ({
     );
   };
 
+  const handleBankChange = (e) => {
+    const selectedIIN = e.target.value; // IIN aa gaya
+    const selectedBank = banks.find((b) => b.iin === selectedIIN);
+
+    setFormData((prev) => ({
+      ...prev,
+      bank_iin: selectedBank?.iin || "",
+      bank_name: selectedBank?.bank_name || selectedBank?.name || "",
+    }));
+  };
+
   // Status color logic
   const getStatusColor = () => {
     if (status === "CONNECTED") return "#4caf50";
@@ -195,11 +206,11 @@ const AEPS2FAModal = ({
         return 0;
     }
   };
-
+  console.log("THe fomr naknadobtj", formData.banks);
   return (
     <Box
       sx={{
-        p: 2,
+        p: 1,
         borderRadius: 2,
         fontFamily: '"DM Sans", sans-serif',
         width: "100%",
@@ -232,7 +243,7 @@ const AEPS2FAModal = ({
         sx={{
           background: "linear-gradient(135deg, #9d72f0 0%, #7b4dff 100%)",
           color: "white",
-          p: 2,
+          p: 1,
           borderRadius: "12px 12px 0 0",
           mx: -2,
           mt: -2,
@@ -577,7 +588,7 @@ const AEPS2FAModal = ({
               p: 1.5,
               boxShadow: "0 4px 12px rgba(157, 114, 240, 0.08)",
               border: "1px solid rgba(157, 114, 240, 0.08)",
-              height: "100%",
+              height: "70%",
               display: "flex",
               flexDirection: "column",
             }}
@@ -636,7 +647,55 @@ const AEPS2FAModal = ({
                   }}
                 />
               </Box>
+              <TextField
+                select
+                label="Select Bank"
+                value={formData.bank_iin || ""} // selected bank dikhega yaha
+                onChange={(e) => {
+                  const selectedIIN = e.target.value;
+                  const selectedBank = banks.find(
+                    (b) => b.bank_iin === selectedIIN
+                  );
 
+                  if (selectedBank) {
+                    setFormData((prev) => ({
+                      ...prev,
+                      bank: selectedBank.bank_name, // payload ke liye
+                      bank_iin: selectedBank.bank_iin, // payload ke liye
+                    }));
+                  }
+                }}
+                fullWidth
+                size="small"
+              >
+                {banks.map((bank) => (
+                  <MenuItem key={bank.bank_iin} value={bank.bank_iin}>
+                    {bank.bank_name} ({bank.bank_iin})
+                  </MenuItem>
+                ))}
+              </TextField>
+
+              <TextField
+                label="Mobile"
+                value={formData.mobile}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, mobile: e.target.value }))
+                }
+                fullWidth
+                size="small"
+              />
+              {/* Amount only for Cash Withdrawal */}
+              {formData.activeTab === 0 && (
+                <TextField
+                  label="Amount"
+                  value={formData.amount}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, amount: e.target.value }))
+                  }
+                  fullWidth
+                  size="small"
+                />
+              )}
               <Box>
                 <TextField
                   select
@@ -680,71 +739,6 @@ const AEPS2FAModal = ({
                   {rdDeviceList.length} device(s) detected
                 </Typography>
               </Box>
-
-              <TextField
-                label="Device Info"
-                value={rdDevice ? rdDevice.info : "No device selected"}
-                size="small"
-                InputProps={{
-                  readOnly: true,
-                  startAdornment: rdDevice ? (
-                    <CheckCircleOutlineIcon
-                      sx={{ color: "#4caf50", mr: 1, fontSize: "18px" }}
-                    />
-                  ) : (
-                    <HighlightOffIcon
-                      sx={{ color: "#f44336", mr: 1, fontSize: "18px" }}
-                    />
-                  ),
-                }}
-                fullWidth
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: 1,
-                    fontFamily: '"DM Sans", sans-serif',
-                    bgcolor: "#f5f2ff",
-                    fontSize: "0.9rem",
-                  },
-                }}
-              />
-
-              <TextField
-                select
-                label="Select Bank"
-                value={formData.bank}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, bank: e.target.value }))
-                }
-                fullWidth
-                size="small"
-              >
-                {banks.map((b, i) => (
-                  <MenuItem key={i} value={b}>
-                    {b}
-                  </MenuItem>
-                ))}
-              </TextField>
-              <TextField
-                label="Mobile"
-                value={formData.mobile}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, mobile: e.target.value }))
-                }
-                fullWidth
-                size="small"
-              />
-              {/* Amount only for Cash Withdrawal */}
-              {formData.activeTab === 0 && (
-                <TextField
-                  label="Amount"
-                  value={formData.amount}
-                  onChange={(e) =>
-                    setFormData((prev) => ({ ...prev, amount: e.target.value }))
-                  }
-                  fullWidth
-                  size="small"
-                />
-              )}
               <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
                 <Button
                   variant="outlined"

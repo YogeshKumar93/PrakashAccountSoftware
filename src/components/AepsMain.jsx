@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   Box,
   Grid,
@@ -17,26 +17,48 @@ import ApiEndpoints from "../api/ApiEndpoints";
 import AuthContext from "../contexts/AuthContext";
 import { useToast } from "../utils/ToastContext";
 
-const banks = ["Bank A", "Bank B", "Bank C"];
-
-// ========================== AepsMainComponent.js ==========================
 const AepsMainComponent = () => {
   const [aadhaar, setAadhaar] = useState("");
   const [activeTab, setActiveTab] = useState(0);
   const [aeps2FAOpen, setAeps2FAOpen] = useState(false);
   const [fingerprintData, setFingerprintData] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [banks, setBanks] = useState([]);
+  const [loadingBanks, setLoadingBanks] = useState(false);
+
+  useEffect(() => {
+    fetchBanks();
+  }, []);
+
+  const fetchBanks = async () => {
+    setLoadingBanks(true);
+    try {
+      const { error, response } = await apiCall(
+        "POST",
+        ApiEndpoints.AEPS_BANKS
+      ); // your bank list API
+      if (response) {
+        setBanks(response.data);
+      } else {
+        showToast("Failed to load banks", "error");
+      }
+    } catch (err) {
+      showToast("Something went wrong while fetching banks", "error");
+    } finally {
+      setLoadingBanks(false);
+    }
+  };
 
   const [formData, setFormData] = useState({
-    bank: "",
     mobile: "",
-    amount: "",
+    amount: 0,
+    bank:"",
+     bank_iin: "",
     activeTab: 0,
   });
 
   const { location } = useContext(AuthContext) || {};
   const { showToast } = useToast() || { showToast: (msg) => alert(msg) };
-  const banks = ["HDFC", "ICICI", "SBI"]; // Example banks
 
   const handleTabChange = (e, val) => {
     setActiveTab(val);
@@ -44,20 +66,20 @@ const AepsMainComponent = () => {
   };
 
   const handleFingerSuccess = (scanData) => {
-    setFingerprintData(scanData);
     setAeps2FAOpen(false);
-    if (!formData.aadhaar || !formData.bank) {
-      showToast("Fill Aadhaar & Bank first", "error");
-      return;
-    }
+    // if (!formData.aadhaar || !formData.bank) {
+    //   showToast("Fill Aadhaar & Bank first", "error");
+    //   return;
+    // }
     handleAPICall(scanData);
   };
 
   const handleAPICall = async (scanData) => {
     setLoading(true);
     const payload = {
-      AadharNumber: aadhaar,
-      bank: formData.bank,
+      AadhaarNumber: aadhaar,
+      BankName: formData.bank,
+      bank_iin: formData.bank_iin,
       number: formData.mobile,
       pidData: scanData.pidData || scanData.pid,
       pidDataType: scanData.pidDataType || scanData.type,
@@ -67,6 +89,7 @@ const AepsMainComponent = () => {
       fCount: scanData.fCount,
       hmac: scanData.hmac || scanData.hMac,
       mc: scanData.mc || scanData.mC,
+      errInfo: scanData.errInfo,
       mi: scanData.mi || scanData.mI,
       nmPoints: scanData.nmPoints,
       qScore: scanData.qScore,
@@ -74,10 +97,11 @@ const AepsMainComponent = () => {
       rdsVer: scanData.rdsVer,
       sessionKey: scanData.sessionKey,
       srno: scanData.srno,
-      operator: 49,
+        operator: activeTab === 0 ? 50 : 49,
       latitude: location?.lat || 0,
       longitude: location?.long || 0,
       amount: formData.amount,
+       pf: "web", 
       type:
         activeTab === 0
           ? "CASH_WITHDRAWAL"
@@ -88,14 +112,14 @@ const AepsMainComponent = () => {
 
     let endpoint =
       activeTab === 0
-        ? ApiEndpoints.AEPS_CASH_WITHDRAWAL
+        ? ApiEndpoints.AEPS_CASHWITHDRAWAL
         : activeTab === 1
         ? ApiEndpoints.AEPS_BALANCE_ENQUIRY
         : ApiEndpoints.AEPS_MINI_STATEMENT;
 
     try {
       const { error, response } = await apiCall("post", endpoint, payload);
-      if (error) showToast("Operation failed", "error");
+      if (error) showToast(error?.message, "error");
       else {
         const resp = response?.data;
         showToast(
@@ -111,7 +135,7 @@ const AepsMainComponent = () => {
   };
 
   return (
-    <Box sx={{  }}>
+    <Box sx={{}}>
       <Tabs
         value={activeTab}
         onChange={handleTabChange}
@@ -139,6 +163,7 @@ const AepsMainComponent = () => {
         onFingerSuccess={handleFingerSuccess}
         banks={banks}
         aadhaar={aadhaar}
+        fingerData={setFingerprintData}
         setAadhaar={setAadhaar}
       />
     </Box>

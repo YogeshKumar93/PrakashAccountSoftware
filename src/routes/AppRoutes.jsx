@@ -84,7 +84,7 @@ const PrivateRoute = ({ children }) => {
   }
 
   // 🚨 Not logged in
-  return <Navigate to="/login" replace />;
+  return <Navigate to="/qrLogin" replace />;
 };
 
 export default function AppRoutes() {
@@ -290,7 +290,7 @@ export default function AppRoutes() {
                     ? "/admin/dashboard"
                     : isCustomer
                     ? "/customer/dashboard"
-                    : "/login"
+                    : "/qrLogin"
                 }
               />
             }
