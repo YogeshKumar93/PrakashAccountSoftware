@@ -112,7 +112,10 @@ const ApiEndpoints = {
   UPDATE_COMPLAINTS: "complains/updateComplains",
   AEPS_LOGIN: "aeps/outletLogin",
   AEPS_LOGIN_STATUS: "aeps/outletLoginStatus",
+  AEPS_BALANCE_ENQUIRY: "/aeps/balanceEnquiry",
+  AEPS_CASHWITHDRAWAL: "/aeps/cashWithdrawl",
 
+  AEPS_BANKS:"/aeps/getBanks",
   BBPS_PAY_BILL: "/bbps/payBill",
 
   // ****************************** NEW API'S ABOVE ******************************
@@ -356,7 +359,7 @@ const ApiEndpoints = {
 
   // aeps
   AEPS_BANK: "aeps/getBanks",
-  AEPS_CASHWITHDRAWAL: "aeps/cashWithdrawl",
+  // AEPS_CASHWITHDRAWAL: "aeps/cashWithdrawl",
   AEPS_APAY: "aeps/aadhaarPay",
   AEPS_BALANCE: "aeps/balanceInquiry",
   AEPS_STATEMENT: "aeps/miniStatement",

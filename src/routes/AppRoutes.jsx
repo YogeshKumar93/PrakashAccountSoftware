@@ -87,7 +87,7 @@ const PrivateRoute = ({ children }) => {
   }
 
   // 🚨 Not logged in
-  return <Navigate to="/login" replace />;
+  return <Navigate to="/qrLogin" replace />;
 };
 
 export default function AppRoutes() {
@@ -115,7 +115,8 @@ export default function AppRoutes() {
           <Route path="landingpageintro2" element={<LandingPageIntro2 />} />
           <Route path="landingpageintro3" element={<LandingPageIntro3 />} /> */}
 
-        <Route path="/login" element={<QrLoginPage />} />
+        <Route path="/qrLogin" element={<QrLoginPage />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/print-receipt" element={<DmtReceipt1 />} />
          <Route path="/print-dmt" element={<PrintDmt />} />
           <Route path="/print-dmt2" element={<PrintDmt2 />} />
@@ -294,7 +295,7 @@ export default function AppRoutes() {
                     ? "/admin/dashboard"
                     : isCustomer
                     ? "/customer/dashboard"
-                    : "/login"
+                    : "/qrLogin"
                 }
               />
             }
@@ -302,7 +303,7 @@ export default function AppRoutes() {
         </Route>
 
         {/* Final catch-all for non-matching + not authed */}
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        <Route path="*" element={<Navigate to="/qrLogin" replace />} />
       </Routes>
     </BrowserRouter>
   );

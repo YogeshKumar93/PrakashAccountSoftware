@@ -1,183 +1,172 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   Box,
+  Grid,
   Tabs,
   Tab,
-  Grid,
-  Typography,
-  TextField,
-  Button,
-  MenuItem,
   Stack,
+  TextField,
+  MenuItem,
+  Button,
+  Typography,
+  CircularProgress,
 } from "@mui/material";
-
 import AEPS2FAModal from "./AEPS/AEPS2FAModal";
-
-const banks = ["Bank A", "Bank B", "Bank C"];
+import { apiCall } from "../api/apiClient";
+import ApiEndpoints from "../api/ApiEndpoints";
+import AuthContext from "../contexts/AuthContext";
+import { useToast } from "../utils/ToastContext";
 
 const AepsMainComponent = () => {
+  const [aadhaar, setAadhaar] = useState("");
   const [activeTab, setActiveTab] = useState(0);
   const [aeps2FAOpen, setAeps2FAOpen] = useState(false);
   const [fingerprintData, setFingerprintData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [banks, setBanks] = useState([]);
+  const [loadingBanks, setLoadingBanks] = useState(false);
 
-  const [formData, setFormData] = useState({
-    bank: "",
-    mobile: "",
-    aadhaar: "",
-    amount: "",
-  });
+  useEffect(() => {
+    fetchBanks();
+  }, []);
 
-  const handleTabChange = (event, newValue) => setActiveTab(newValue);
-
-  const handleInputChange = (e) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  const fetchBanks = async () => {
+    setLoadingBanks(true);
+    try {
+      const { error, response } = await apiCall(
+        "POST",
+        ApiEndpoints.AEPS_BANKS
+      ); // your bank list API
+      if (response) {
+        setBanks(response.data);
+      } else {
+        showToast("Failed to load banks", "error");
+      }
+    } catch (err) {
+      showToast("Something went wrong while fetching banks", "error");
+    } finally {
+      setLoadingBanks(false);
+    }
   };
 
-  const handleStartAeps2FA = () => {
-    setAeps2FAOpen(true);
+  const [formData, setFormData] = useState({
+    mobile: "",
+    amount: 0,
+    bank:"",
+     bank_iin: "",
+    activeTab: 0,
+  });
+
+  const { location } = useContext(AuthContext) || {};
+  const { showToast } = useToast() || { showToast: (msg) => alert(msg) };
+
+  const handleTabChange = (e, val) => {
+    setActiveTab(val);
+    setFormData((prev) => ({ ...prev, activeTab: val }));
+  };
+
+  const handleFingerSuccess = (scanData) => {
+    setAeps2FAOpen(false);
+    // if (!formData.aadhaar || !formData.bank) {
+    //   showToast("Fill Aadhaar & Bank first", "error");
+    //   return;
+    // }
+    handleAPICall(scanData);
+  };
+
+  const handleAPICall = async (scanData) => {
+    setLoading(true);
+    const payload = {
+      AadhaarNumber: aadhaar,
+      BankName: formData.bank,
+      bank_iin: formData.bank_iin,
+      number: formData.mobile,
+      pidData: scanData.pidData || scanData.pid,
+      pidDataType: scanData.pidDataType || scanData.type,
+      ci: scanData.ci || scanData.cI,
+      dc: scanData.dc || scanData.dC,
+      dpId: scanData.dpId || scanData.dpID,
+      fCount: scanData.fCount,
+      hmac: scanData.hmac || scanData.hMac,
+      mc: scanData.mc || scanData.mC,
+      errInfo: scanData.errInfo,
+      mi: scanData.mi || scanData.mI,
+      nmPoints: scanData.nmPoints,
+      qScore: scanData.qScore,
+      rdsId: scanData.rdsId,
+      rdsVer: scanData.rdsVer,
+      sessionKey: scanData.sessionKey,
+      srno: scanData.srno,
+        operator: activeTab === 0 ? 50 : 49,
+      latitude: location?.lat || 0,
+      longitude: location?.long || 0,
+      amount: formData.amount,
+       pf: "web", 
+      type:
+        activeTab === 0
+          ? "CASH_WITHDRAWAL"
+          : activeTab === 1
+          ? "BALANCE_ENQUIRY"
+          : "MINI_STATEMENT",
+    };
+
+    let endpoint =
+      activeTab === 0
+        ? ApiEndpoints.AEPS_CASHWITHDRAWAL
+        : activeTab === 1
+        ? ApiEndpoints.AEPS_BALANCE_ENQUIRY
+        : ApiEndpoints.AEPS_MINI_STATEMENT;
+
+    try {
+      const { error, response } = await apiCall("post", endpoint, payload);
+      if (error) showToast(error?.message, "error");
+      else {
+        const resp = response?.data;
+        showToast(
+          resp?.message || "Success",
+          resp?.status ? "success" : "error"
+        );
+      }
+    } catch {
+      showToast("Something went wrong", "error");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <Box sx={{ p: { xs: 2, sm: 3 }, fontFamily: '"DM Sans", sans-serif"' }}>
-      <Grid container spacing={3}>
-        {/* Left Side: AEPS2FAModal */}
-        <Grid item xs={12} md={5} sx={{ order: { xs: 2, md: 1 } }}>
-          <Box
-            sx={{
-              position: { xs: "relative", md: "sticky" },
-              top: { md: 20 },
-            }}
-          >
-            <AEPS2FAModal
-              open={aeps2FAOpen}
-              onClose={() => setAeps2FAOpen(false)}
-              title="AEPS"
-              onScanSuccess={(data) => setFingerprintData(data)}
-              buttons={[
-                {
-                  label: "Start Scan",
-                  onClick: handleStartAeps2FA,
-                  variant: "contained",
-                  bgcolor: "#9d72f0",
-                  color: "#fff",
-                  hoverColor: "#8756e5",
-                },
-              ]}
-            />
-          </Box>
-        </Grid>
+    <Box sx={{}}>
+      <Tabs
+        value={activeTab}
+        onChange={handleTabChange}
+        variant="fullWidth"
+        sx={{
+          // mb: 1,
+          "& .MuiTabs-indicator": {
+            height: "4px",
+            borderRadius: "4px",
+            background: "linear-gradient(135deg,#9d72f0,#7b4dff)",
+          },
+        }}
+      >
+        <Tab label="Cash Withdrawal" />
+        <Tab label="Balance Enquiry" />
+        <Tab label="Mini Statement" />
+      </Tabs>
 
-        {/* Right Side: Tabs + Forms */}
-        <Grid item xs={12} md={7} sx={{ order: { xs: 1, md: 2 } }}>
-          <Box
-            sx={{
-              bgcolor: "#faf8ff",
-              p: { xs: 2, sm: 3 },
-              borderRadius: 2,
-              boxShadow: "0 4px 12px rgba(157,114,240,0.08)",
-            }}
-          >
-            <Tabs
-              value={activeTab}
-              onChange={handleTabChange}
-              variant="fullWidth"
-              sx={{
-                mb: 3,
-                "& .MuiTabs-indicator": {
-                  height: "4px",
-                  borderRadius: "4px",
-                  background: "linear-gradient(135deg,#9d72f0,#7b4dff)",
-                },
-              }}
-            >
-              <Tab label="Cash Withdrawal" />
-              <Tab label="Balance Enquiry" />
-              <Tab label="Mini Statement" />
-            </Tabs>
-
-            <Stack spacing={2}>
-              {/* Common Fields */}
-              <TextField
-                select
-                label="Select Bank"
-                name="bank"
-                value={formData.bank}
-                onChange={handleInputChange}
-                fullWidth
-                size="small"
-              >
-                {banks.map((bank, i) => (
-                  <MenuItem key={i} value={bank}>
-                    {bank}
-                  </MenuItem>
-                ))}
-              </TextField>
-
-              <TextField
-                label="Mobile Number"
-                name="mobile"
-                value={formData.mobile}
-                onChange={handleInputChange}
-                fullWidth
-                size="small"
-              />
-
-              <TextField
-                label="Aadhaar Number"
-                name="aadhaar"
-                value={formData.aadhaar}
-                onChange={handleInputChange}
-                fullWidth
-                size="small"
-              />
-
-              {/* Conditional Fields */}
-              {activeTab === 0 && (
-                <TextField
-                  label="Amount"
-                  name="amount"
-                  value={formData.amount}
-                  onChange={handleInputChange}
-                  fullWidth
-                  size="small"
-                />
-              )}
-
-              {/* AEPS 2FA Button */}
-              <Button
-                variant="contained"
-                onClick={handleStartAeps2FA}
-                sx={{
-                  bgcolor: "#9d72f0",
-                  "&:hover": { bgcolor: "#8756e5" },
-                  width: "100%",
-                  py: 1.5,
-                  fontWeight: 600,
-                  mt: 1,
-                }}
-              >
-                Authenticate via AEPS 2FA
-              </Button>
-
-              {/* Fingerprint Data Display */}
-              {fingerprintData && (
-                <Typography
-                  sx={{
-                    mt: 2,
-                    fontSize: "0.85rem",
-                    color: "#4caf50",
-                    wordBreak: "break-word",
-                  }}
-                >
-                  Fingerprint Captured: {JSON.stringify(fingerprintData)}
-                </Typography>
-              )}
-            </Stack>
-          </Box>
-        </Grid>
-      </Grid>
+      <AEPS2FAModal
+        open={aeps2FAOpen}
+        onClose={() => setAeps2FAOpen(false)}
+        title="AEPS"
+        formData={formData}
+        setFormData={setFormData}
+        onFingerSuccess={handleFingerSuccess}
+        banks={banks}
+        aadhaar={aadhaar}
+        fingerData={setFingerprintData}
+        setAadhaar={setAadhaar}
+      />
     </Box>
   );
 };
-
 export default AepsMainComponent;
