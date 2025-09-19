@@ -110,7 +110,7 @@ const Aeps1 = () => {
           gap={2}
         >
           <Typography variant="h6" color="text.secondary">
-            You need to complete Outlet Registration to use DMT1.
+            You need to complete Outlet Registration to use AEPS1.
           </Typography>
           <button
             onClick={() => setOpenDmt1Modal(true)}
