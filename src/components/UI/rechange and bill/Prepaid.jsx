@@ -143,16 +143,25 @@ const Prepaid = () => {
   <Container maxWidth="xl" sx={{ py: 2, }}>
   {/* Step Indicator */}
   <Box sx={{ display: "flex", justifyContent: "center", mb: 5 }}>
+    
     <Box
       sx={{
         display: "flex",
         alignItems: "center",
-        maxWidth: 500,
+        maxWidth: 1000,
         width: "100%",
       }}
     >
+ <Button
+        startIcon={<ArrowBack />}
+        onClick={() => setStep(1)}
+        sx={{  display:"flex", justifyContent:"flex-start",mr:5 }}
+      >
+        Back to Operators
+      </Button>
+
       {[1, 2, 3, 4].map((s, i) => (
-        <Box key={s} sx={{ display: "flex", alignItems: "center", flex: 1 }}>
+        <Box key={s} sx={{ display: "flex", alignItems: "center", flex: 1, }}>
           <Box
             sx={{
               width: 40,
@@ -245,13 +254,7 @@ const Prepaid = () => {
 {step === 2 && (
   <Slide direction="right" in mountOnEnter unmountOnExit>
     <Box>
-      <Button
-        startIcon={<ArrowBack />}
-        onClick={() => setStep(1)}
-        sx={{ mb: 3 }}
-      >
-        Back to Operators
-      </Button>
+     
 
       {/* Flex layout for Left & Right */}
       <Box sx={{ display: "flex", gap: 3 }}>
@@ -297,7 +300,11 @@ const Prepaid = () => {
         {/* Right side - Plans */}
         <Box sx={{ flex: 1 }}>
           {selectedService ? (
-            <Box>
+            <Box sx={{
+                p: 2,
+                borderRadius: "8px",
+                background: "#e6f0ff", // light blue background
+              }}>
               {/* Operator header */}
               <Paper
                 sx={{ p: 2, mb: 1, display: "flex", alignItems: "center" }}
