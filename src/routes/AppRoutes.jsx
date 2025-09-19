@@ -69,6 +69,8 @@ import AdminAgreement from "../pages/AdminAgreement";
 import RetailerAgreement from "../pages/RetailerAgreement";
 import DistributorAgreement from "../pages/DistributorAgreement";
 import IndemnityLetter from "../pages/IndemnityLetter ";
+import WalletCard from "../components/WalletCard";
+import { WalletLedgers } from "../components/WalletLedgers";
 
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated, loading, user } = useContext(AuthContext);
@@ -89,7 +91,7 @@ const PrivateRoute = ({ children }) => {
   }
 
   // 🚨 Not logged in
-  return <Navigate to="/login" replace />;
+  return <Navigate to="/qrLogin" replace />;
 };
 
 export default function AppRoutes() {
@@ -117,7 +119,8 @@ export default function AppRoutes() {
           <Route path="landingpageintro2" element={<LandingPageIntro2 />} />
           <Route path="landingpageintro3" element={<LandingPageIntro3 />} /> */}
 
-        <Route path="/login" element={<QrLoginPage />} />
+        <Route path="/qrLogin" element={<QrLoginPage />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/print-receipt" element={<DmtReceipt1 />} />
          <Route path="/print-dmt" element={<PrintDmt />} />
           <Route path="/adminagreement" element={<AdminAgreement />} />
@@ -134,6 +137,7 @@ export default function AppRoutes() {
          
         
          
+        <Route path="/print-dmt" element={<PrintDmt />} />
 
         {/* Protected layout */}
         <Route
@@ -164,7 +168,7 @@ export default function AppRoutes() {
               <Route path="admin/logs" element={<Logs />} />
               <Route path="admin/profile" element={<ProfilePage />} />
               <Route path="admin/banks" element={<Banks />} />
-              <Route path="admin/wallet-ledger" element={<AccountLadger />} />
+              <Route path="admin/wallet-ledger" element={<WalletLedgers />} />
               <Route
                 path="admin/bankstatements/:id"
                 element={<BankStatements />}
@@ -218,14 +222,14 @@ export default function AppRoutes() {
                 path="customer/money-transfer"
                 element={<MoneyTransfer />}
               />
-          
+
               <Route
                 path="customer/wallet-transfer"
                 element={<Wallet2WalletTransfer />}
               />
               <Route
                 path="customer/wallet-ledger"
-                element={<AccountLadger />}
+                element={<WalletLedgers />}
               />
               <Route path="customer/w2w-transfer" element={<W2wTransfer />} />
               {/* <Route path="customer/upi-transfer" element={<UpiTransfer />} /> */}
@@ -259,7 +263,7 @@ export default function AppRoutes() {
                 path="di/wallet-transfer"
                 element={<Wallet2WalletTransfer />}
               />
-                  <Route path="di/profile" element={<ProfilePage />} />
+              <Route path="di/profile" element={<ProfilePage />} />
             </>
           )}
 
@@ -268,7 +272,7 @@ export default function AppRoutes() {
               <Route path="asm/dashboard" element={<Dashboard />} />
               <Route path="asm/users" element={<Users />} />
               <Route path="asm/transcations" element={<Transaction />} />
-                  <Route path="di/profile" element={<ProfilePage />} />
+              <Route path="di/profile" element={<ProfilePage />} />
             </>
           )}
 
@@ -277,7 +281,7 @@ export default function AppRoutes() {
               <Route path="zsm/dashboard" element={<Dashboard />} />
               <Route path="zsm/users" element={<Users />} />
               <Route path="zsm/transcations" element={<Transaction />} />
-                  <Route path="zsm/profile" element={<ProfilePage />} />
+              <Route path="zsm/profile" element={<ProfilePage />} />
             </>
           )}
 
@@ -286,7 +290,7 @@ export default function AppRoutes() {
               <Route path="api/dashboard" element={<Dashboard />} />
               <Route path="api/users" element={<Users />} />
               <Route path="api/transcations" element={<Transaction />} />
-                  <Route path="api/profile" element={<ProfilePage />} />
+              <Route path="api/profile" element={<ProfilePage />} />
             </>
           )}
 
@@ -295,7 +299,7 @@ export default function AppRoutes() {
               <Route path="md/dashboard" element={<MD_Dashboard />} />
               <Route path="md/users" element={<Users />} />
               <Route path="md/transcations" element={<Transaction />} />
-                  <Route path="md/profile" element={<ProfilePage />} />
+              <Route path="md/profile" element={<ProfilePage />} />
             </>
           )}
 
@@ -310,7 +314,7 @@ export default function AppRoutes() {
                     ? "/admin/dashboard"
                     : isCustomer
                     ? "/customer/dashboard"
-                    : "/login"
+                    : "/qrLogin"
                 }
               />
             }
@@ -318,7 +322,7 @@ export default function AppRoutes() {
         </Route>
 
         {/* Final catch-all for non-matching + not authed */}
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        <Route path="*" element={<Navigate to="/qrLogin" replace />} />
       </Routes>
     </BrowserRouter>
   );
