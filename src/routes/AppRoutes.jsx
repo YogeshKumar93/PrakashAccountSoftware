@@ -64,6 +64,8 @@ import MD_Dashboard from "../pages/Dashboard";
 import { Transfer } from "../pages/Transfer";
 import DmtReceipt1 from "../pages/DmtReceipt1";
 import PrintDmt from "../pages/printDmt";
+import WalletCard from "../components/WalletCard";
+import { WalletLedgers } from "../components/WalletLedgers";
 
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated, loading, user } = useContext(AuthContext);
@@ -146,7 +148,7 @@ export default function AppRoutes() {
               <Route path="admin/logs" element={<Logs />} />
               <Route path="admin/profile" element={<ProfilePage />} />
               <Route path="admin/banks" element={<Banks />} />
-              <Route path="admin/wallet-ledger" element={<AccountLadger />} />
+              <Route path="admin/wallet-ledger" element={<WalletLedgers />} />
               <Route
                 path="admin/bankstatements/:id"
                 element={<BankStatements />}
@@ -205,7 +207,7 @@ export default function AppRoutes() {
               />
               <Route
                 path="customer/wallet-ledger"
-                element={<AccountLadger />}
+                element={<WalletLedgers />}
               />
               <Route path="customer/w2w-transfer" element={<W2wTransfer />} />
               {/* <Route path="customer/upi-transfer" element={<UpiTransfer />} /> */}
