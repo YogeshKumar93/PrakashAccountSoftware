@@ -21,6 +21,7 @@ import {
 import AuthContext from "../contexts/AuthContext";
 import { useToast } from "../utils/ToastContext";
 import ResetMpin from "../components/common/ResetMpin";
+import { showSuccessToast } from "../components/common/ShowSuccessToast";
 
 const Dmt2SelectedBene = ({
   beneficiary,
@@ -149,7 +150,13 @@ const Dmt2SelectedBene = ({
         payload
       );
       if (response) {
-        okSuccessToast(response?.message); // pass full details
+        
+
+        showSuccessToast({
+                 
+                 message: response?.message,
+               });
+              
         setAmount("");
         setOtp("");
         setMpin("");

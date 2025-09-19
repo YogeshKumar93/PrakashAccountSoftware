@@ -64,6 +64,7 @@ import MD_Dashboard from "../pages/Dashboard";
 import { Transfer } from "../pages/Transfer";
 import DmtReceipt1 from "../pages/DmtReceipt1";
 import PrintDmt from "../pages/printDmt";
+import PrintDmt2 from "../pages/PrintDmt2";
 
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated, loading, user } = useContext(AuthContext);
@@ -115,6 +116,7 @@ export default function AppRoutes() {
         <Route path="/login" element={<QrLoginPage />} />
         <Route path="/print-receipt" element={<DmtReceipt1 />} />
          <Route path="/print-dmt" element={<PrintDmt />} />
+          <Route path="/print-dmt2" element={<PrintDmt2 />} />
 
         {/* Protected layout */}
         <Route
