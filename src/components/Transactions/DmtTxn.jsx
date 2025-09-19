@@ -224,6 +224,8 @@ const DmtTxn = ({ query }) => {
         anchor="right"
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
+        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        
       >
         <Box
           sx={{
@@ -231,6 +233,7 @@ const DmtTxn = ({ query }) => {
             display: "flex",
             flexDirection: "column",
             height: "100%",
+            
           }}
         >
           {selectedRow && (
@@ -250,7 +253,7 @@ const DmtTxn = ({ query }) => {
                
                 { label: "Customer Number", value: selectedRow.sender_mobile },
                { label: "CCF", value: selectedRow.ccf },
-                { label: "Charge", value: selectedRow.ccf },
+                { label: "Charge", value: selectedRow.charges},
                 { label: "GST", value: selectedRow.gst },
               
                 { label: "TDS", value: selectedRow.tds },

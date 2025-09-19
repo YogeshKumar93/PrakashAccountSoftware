@@ -45,7 +45,7 @@ const TransactionDetailsCard = ({
         borderRadius: 0,
            position: "absolute", // <-- important
     zIndex: 900,
-     top: 64, // <-- add this! (replace 64 with your header height)
+   
     left: "50%",
     transform: "translateX(-50%)",
      
