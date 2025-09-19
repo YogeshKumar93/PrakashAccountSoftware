@@ -425,21 +425,69 @@ const Prepaid = () => {
 
 
 
-  {/* Step 3: Confirmation */}
-  {step === 3 && (
-    <Fade in>
-      <Box maxWidth={500} mx="auto">
-        <Typography variant="h5" fontWeight="bold" textAlign="center" mb={3}>
+ {/* Step 3: Confirmation */}
+{step === 3 && (
+  <Fade in>
+    <Box sx={{ display: "flex", gap: 2 }}>
+      {/* Left box */}
+      <Box sx={{ flex: "0 0 30%" }}>
+        <Paper sx={{ p: 2, borderRadius: 2, height: "100%" }}>
+          <Typography variant="h6" fontWeight="bold" mb={2}>
+            Select Operator
+          </Typography>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+            {services.map((service) => (
+              <Box
+                key={service.id}
+                onClick={() => fetchPlans(service)}
+                sx={{
+                  p: 1.5,
+                  display: "flex",
+                  alignItems: "center",
+                  borderRadius: 2,
+                  cursor: "pointer",
+                  border:
+                    selectedService?.id === service.id ? "2px solid" : "1px solid",
+                  borderColor:
+                    selectedService?.id === service.id
+                      ? "primary.main"
+                      : "divider",
+                  backgroundColor:
+                    selectedService?.id === service.id
+                      ? "primary.light"
+                      : "background.paper",
+                }}
+              >
+                <Avatar src={operatorImages[service.code]} sx={{ mr: 2 }} />
+                <Typography>{service.name}</Typography>
+              </Box>
+            ))}
+          </Box>
+        </Paper>
+      </Box>
+
+      {/* Right box */}
+      <Box sx={{ flex: 1   }}>
+        <Typography
+          variant="h5"
+          fontWeight="bold"
+          textAlign="center"
+          mb={3}
+        >
           Confirm Recharge
         </Typography>
-        <Paper sx={{ p: 4, borderRadius: 2 }}>
+        <Paper sx={{ p: 2, borderRadius: 2 }}>
           {/* Operator info */}
-          <Box display="flex" alignItems="center" mb={3}>
+          <Box display="flex" alignItems="center"  gap={2} sx={{
+                p: 2,
+                borderRadius: "8px",
+                background: "#e6f0ff", // light blue background
+              }}>
             <Avatar
               src={operatorImages[selectedService?.code]}
               sx={{ width: 50, height: 50, mr: 2 }}
             />
-            <Box>
+            <Box >
               <Typography variant="h6">{selectedService?.name}</Typography>
               <Typography variant="body2" color="text.secondary">
                 Prepaid Mobile
@@ -494,8 +542,10 @@ const Prepaid = () => {
           </Box>
         </Paper>
       </Box>
-    </Fade>
-  )}
+    </Box>
+  </Fade>
+)}
+
 
   {/* Step 4: Success */}
   {step === 4 && (
