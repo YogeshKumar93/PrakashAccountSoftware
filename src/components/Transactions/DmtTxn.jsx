@@ -3,14 +3,26 @@ import { Box, Tooltip, IconButton, Drawer, Typography } from "@mui/material";
 import CommonTable from "../common/CommonTable";
 import ApiEndpoints from "../../api/ApiEndpoints";
 import AuthContext from "../../contexts/AuthContext";
-import { dateToTime, dateToTime1, ddmmyy, ddmmyyWithTime } from "../../utils/DateUtils";
+import {
+  dateToTime,
+  dateToTime1,
+  ddmmyy,
+  ddmmyyWithTime,
+} from "../../utils/DateUtils";
 import CommonStatus from "../common/CommonStatus";
 import ComplaintForm from "../ComplaintForm";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import CloseIcon from "@mui/icons-material/Close";
 import TransactionDetailsCard from "../common/TransactionDetailsCard";
 import companylogo from "../../assets/Images/logo(1).png";
-
+import {
+  android2,
+  linux2,
+  macintosh2,
+  okhttp,
+  windows2,
+} from "../../utils/iconsImports";
+import LaptopIcon from "@mui/icons-material/Laptop";
 
 const DmtTxn = ({ query }) => {
   const authCtx = useContext(AuthContext);
@@ -21,7 +33,6 @@ const DmtTxn = ({ query }) => {
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
-
 
   const filters = useMemo(
     () => [
@@ -45,53 +56,191 @@ const DmtTxn = ({ query }) => {
 
   const columns = useMemo(
     () => [
-  {
-  name: "Date",
-  selector: (row) => (
-    <div style={{ display: "flex", flexDirection: "column", fontSize: "11px", fontWeight:"600" }}>
-      <Tooltip title={`Created: ${dateToTime(row.created_at)}`} arrow>
-        <span>{ddmmyy(row.created_at)}</span>
-      </Tooltip>
-      <Tooltip title={`Updated: ${dateToTime(row.updated_at)}`} arrow>
-        <span style={{ marginTop: "8px" }}>{ddmmyy(row.updated_at)}</span>
-      </Tooltip>
-    </div>
-  ),
-  wrap: true,
-  width: "80px",
-},
-
-
       {
-        name: "Route",
-        selector: (row) => <div style={{ fontSize: "10px", fontWeight:"600" }}>{row.route}</div>,
-        center: true,
-        width: "70px",
-      },
-      {
-        name: "TxnId/Ref",
+        name: "Date",
         selector: (row) => (
-          <div style={{ textAlign: "left", fontSize: "10px", fontWeight:"600" }}>
-            {row.txn_id}
-            <br />
-            {row.client_ref}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              fontSize: "11px",
+              fontWeight: "600",
+            }}
+          >
+            <Tooltip title={`Created: ${ddmmyyWithTime(row.created_at)}`} arrow>
+              <span>
+                {ddmmyy(row.created_at)} {dateToTime1(row.created_at)}
+              </span>
+            </Tooltip>
+
+            {/* Hide updated_at for ret and dd */}
+            {!(user?.role === "ret" || user?.role === "dd") && (
+              <Tooltip title={`Updated: ${dateToTime(row.updated_at)}`} arrow>
+                <span style={{ marginTop: "8px" }}>
+                  {ddmmyy(row.updated_at)}
+                </span>
+              </Tooltip>
+            )}
           </div>
         ),
         wrap: true,
-          width: "100px",
+        width: "80px",
+      },
+      ...(user?.role === "ret" || user?.role === "dd"
+        ? []
+        : [
+            {
+              name: "Route",
+              selector: (row) => (
+                <div style={{ fontSize: "10px", fontWeight: "600" }}>
+                  {row.route}
+                </div>
+              ),
+              center: true,
+              width: "70px",
+            },
+          ]),
+      {
+        name: "Platform",
+        selector: (row) => {
+          let icon;
+
+          if (row.pf.toLowerCase().includes("windows")) {
+            icon = (
+              <img
+                src={windows2}
+                style={{ width: "22px" }}
+                alt="description of image"
+              />
+            );
+          } else if (row.pf.toLowerCase().includes("android")) {
+            icon = (
+              <img
+                src={android2}
+                style={{ width: "22px" }}
+                alt="description of image"
+              />
+            );
+          } else if (row.pf.toLowerCase().includes("mac")) {
+            icon = (
+              <img
+                src={macintosh2}
+                style={{ width: "22px" }}
+                alt="description of image"
+              />
+            );
+          } else if (row.pf.toLowerCase().includes("linux")) {
+            icon = (
+              <img
+                src={linux2}
+                style={{ width: "22px" }}
+                alt="description of image"
+              />
+            );
+          } else if (row.pf.toLowerCase().includes("okhttp")) {
+            icon = (
+              <img
+                src={okhttp}
+                style={{ width: "22px" }}
+                alt="description of image"
+              />
+            );
+          } else {
+            icon = <LaptopIcon sx={{ color: "blue", width: "22px" }} />;
+          }
+
+          return (
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                fontSize: "13px",
+                textAlign: "justify",
+                gap: 2,
+              }}
+            >
+              {icon}
+            </Box>
+          );
+        },
+        width: "20px",
+        wrap: true,
+        left: true,
       },
       {
-        name: "Mobile",
-        selector: (row) => (<div style={{textAlign: "left", fontSize: "10px", fontWeight:"600"}}>
-          {row.sender_mobile}
-          </div>),
+        name: "Service",
+        selector: (row) => (
+          <div
+            style={{ textAlign: "left", fontSize: "10px", fontWeight: "600" }}
+          >
+            {row.operator}
+          </div>
+        ),
         wrap: true,
-          width: "80px",
+        width: "80px",
+      },
+      ...(user?.role === "ret" || user?.role === "dd"
+        ? [] // ❌ hide for ret and dd
+        : [
+            {
+              name: "TxnId/Ref",
+              selector: (row) => (
+                <div
+                  style={{
+                    textAlign: "left",
+                    fontSize: "10px",
+                    fontWeight: "600",
+                  }}
+                >
+                  {row.txn_id}
+                  <br />
+                  {row.client_ref}
+                </div>
+              ),
+              wrap: true,
+              width: "100px",
+            },
+          ]),
+      ...(user?.role === "adm"
+        ? []
+        : [
+            {
+              name: "TxnId",
+              selector: (row) => (
+                <div
+                  style={{
+                    textAlign: "left",
+                    fontSize: "10px",
+                    fontWeight: "600",
+                  }}
+                >
+                  {row.txn_id}
+                  <br />
+                  {/* {row.client_ref} */}
+                </div>
+              ),
+              wrap: true,
+              width: "100px",
+            },
+          ]),
+      {
+        name: "Mobile",
+        selector: (row) => (
+          <div
+            style={{ textAlign: "left", fontSize: "10px", fontWeight: "600" }}
+          >
+            {row.sender_mobile}
+          </div>
+        ),
+        wrap: true,
+        width: "80px",
       },
       {
         name: "Beneficiary",
         selector: (row) => (
-          <div style={{ textAlign: "left", fontSize: "10px", fontWeight:"600" }}>
+          <div
+            style={{ textAlign: "left", fontSize: "10px", fontWeight: "600" }}
+          >
             {row.beneficiary_name?.toUpperCase()} <br />
             {row.account_number} <br />
             {row.ifsc_code}
@@ -104,58 +253,97 @@ const DmtTxn = ({ query }) => {
       {
         name: "Amount",
         selector: (row) => (
-          <div style={{ color: "red", fontWeight: "600", textAlign: "right", fontSize: "10px" }}>
+          <div
+            style={{
+              color: "red",
+              fontWeight: "600",
+              textAlign: "right",
+              fontSize: "10px",
+            }}
+          >
             ₹{parseFloat(row.amount).toFixed(2)}
           </div>
         ),
         right: true,
-          width: "80px",
+        width: "80px",
       },
       {
         name: "CCF",
         selector: (row) => (
-          <div style={{ color: "red", fontWeight: "600", fontSize: "10px", textAlign: "right" }}>
+          <div
+            style={{
+              color: "red",
+              fontWeight: "600",
+              fontSize: "10px",
+              textAlign: "right",
+            }}
+          >
             {parseFloat(row.ccf).toFixed(2)}
           </div>
         ),
         right: true,
-          width: "60px",
+        width: "60px",
       },
-      {
-        name: "GST",
-        selector: (row) => (
-          <div style={{ color: "red", fontWeight: "600", fontSize: "10px", textAlign: "right" }}>
-            {parseFloat(row.gst).toFixed(2)}
-          </div>
-        ),
-        right: true,
-          width: "60px",
-      },
+      ...(user?.role === "ret" || user?.role === "dd"
+        ? [] // ❌ hide for ret and dd
+        : [
+            {
+              name: "GST",
+              selector: (row) => (
+                <div
+                  style={{
+                    color: "red",
+                    fontWeight: "600",
+                    fontSize: "10px",
+                    textAlign: "right",
+                  }}
+                >
+                  {parseFloat(row.gst).toFixed(2)}
+                </div>
+              ),
+              wrap: true,
+              width: "100px",
+            },
+          ]),
       {
         name: "Comm",
         selector: (row) => (
-          <div style={{ color: "green", fontWeight: "600", fontSize: "10px", textAlign: "right" }}>
+          <div
+            style={{
+              color: "green",
+              fontWeight: "600",
+              fontSize: "10px",
+              textAlign: "right",
+            }}
+          >
             {parseFloat(row.comm).toFixed(2)}
           </div>
         ),
         right: true,
-          width: "60px",
+        width: "60px",
       },
       {
         name: "TDS",
         selector: (row) => (
-          <div style={{ color: "red", fontWeight: "600", fontSize: "10px", textAlign: "right" }}>
+          <div
+            style={{
+              color: "red",
+              fontWeight: "600",
+              fontSize: "10px",
+              textAlign: "right",
+            }}
+          >
             {parseFloat(row.tds).toFixed(2)}
           </div>
         ),
         right: true,
-          width: "60px",
+        width: "60px",
       },
       {
         name: "Status",
         selector: (row) => <CommonStatus value={row.status} />,
         center: true,
-          width: "70px",
+        width: "70px",
       },
       ...(user?.role === "ret"
         ? [
@@ -182,10 +370,9 @@ const DmtTxn = ({ query }) => {
                       <VisibilityIcon />
                     </IconButton>
                   </Tooltip>
-                 
                 </Box>
               ),
-                width: "40px",
+              width: "40px",
               center: true,
             },
           ]
@@ -198,16 +385,15 @@ const DmtTxn = ({ query }) => {
 
   return (
     <>
-    <Box sx={{ mx: -4 }}>  
-  <CommonTable
-    columns={columns}
-    endpoint={ApiEndpoints.GET_DMT_TXN}
-    filters={filters}
-    queryParam={queryParam}
-    enableActionsHover={true}
-  />
-</Box>
-
+      <Box sx={{ mx: -4 }}>
+        <CommonTable
+          columns={columns}
+          endpoint={ApiEndpoints.GET_DMT_TXN}
+          filters={filters}
+          queryParam={queryParam}
+          enableActionsHover={true}
+        />
+      </Box>
 
       {/* Complaint Modal */}
       {openCreate && selectedTxn && (
@@ -242,17 +428,16 @@ const DmtTxn = ({ query }) => {
               dateTime={ddmmyyWithTime(selectedRow.created_at)}
               message={selectedRow.message || "No message"}
               details={[
-                  { label: "Operator", value: selectedRow.operator },
+                { label: "Operator", value: selectedRow.operator },
                 { label: "Operator Id", value: selectedRow.operator_id },
                 { label: "Order Id", value: selectedRow.order_id },
                 { label: "MOP", value: selectedRow.mop },
-              
-               
+
                 { label: "Customer Number", value: selectedRow.sender_mobile },
-               { label: "CCF", value: selectedRow.ccf },
+                { label: "CCF", value: selectedRow.ccf },
                 { label: "Charge", value: selectedRow.ccf },
                 { label: "GST", value: selectedRow.gst },
-              
+
                 { label: "TDS", value: selectedRow.tds },
               ]}
               onRaiseIssue={() => {

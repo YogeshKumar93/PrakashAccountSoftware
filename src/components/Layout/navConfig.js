@@ -115,6 +115,11 @@ export const customer_nav = [
     icon2: "🛠️",
     to: "/customer/transfer",
   },
+  { title: "AEPS", icon: aepsImage, icon2: "👥", to: "/customer/aeps" },
+
+  { title: "Bbps", icon: aepsImage, icon2: "📒", to: "/customer/bbps" },
+
+  { title: "Cms", icon: transImage, icon2: "📒", to: "/customer/cms" },
 
   //  {
   //   title: "Fund Transfer",
@@ -122,12 +127,7 @@ export const customer_nav = [
   //   icon2: "🛠️",
   //   to: "/customer/fund-transfer",
   // },
-  {
-    title: "Wallet Transfer",
-    icon: walletTransferImage,
-    icon2: "🛠️",
-    to: "/customer/wallet-transfer",
-  },
+
   //  {
   //   title: "Upi Transfer",
   //   icon: walletTransferImage,
@@ -139,6 +139,12 @@ export const customer_nav = [
     icon: serviceImage,
     icon2: "🛠️",
     to: "/customer/recharge-bill",
+  },
+  {
+    title: "Wallet Transfer",
+    icon: walletTransferImage,
+    icon2: "🛠️",
+    to: "/customer/wallet-transfer",
   },
   {
     title: "Transactions",
@@ -166,11 +172,6 @@ export const customer_nav = [
     icon2: "📒",
     to: "/customer/wallet-ledger",
   },
-  { title: "AEPS", icon: aepsImage, icon2: "👥", to: "/customer/aeps" },
-
-  { title: "Bbps", icon: aepsImage, icon2: "📒", to: "/customer/bbps" },
-
-  { title: "Cms", icon: transImage, icon2: "📒", to: "/customer/cms" },
 
   // {
   //   title: "My Purchase",
