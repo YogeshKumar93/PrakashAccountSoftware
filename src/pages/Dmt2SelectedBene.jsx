@@ -169,11 +169,12 @@ const Dmt2SelectedBene = ({
         showSuccessToast({
           txnID: response?.data,
           message: response?.message,
+          redirectUrl: "/print-dmt", // can be anything
         });
         sessionStorage.setItem("txnData", JSON.stringify(txnDetails));
 
         // Open PrintDmt in a new tab
-        window.open("/print-dmt", "_blank");
+        // window.open("/print-dmt", "_blank");
         setAmount("");
         setOtp("");
         setMpin("");
