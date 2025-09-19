@@ -71,6 +71,7 @@ import DistributorAgreement from "../pages/DistributorAgreement";
 import IndemnityLetter from "../pages/IndemnityLetter ";
 import WalletCard from "../components/WalletCard";
 import { WalletLedgers } from "../components/WalletLedgers";
+import MdDashboard from "../pages/MdDashboard";
 
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated, loading, user } = useContext(AuthContext);
@@ -254,7 +255,8 @@ export default function AppRoutes() {
           )}
           {isDi && (
             <>
-              <Route path="di/dashboard" element={<AdminTransactions />} />
+               <Route path="di/dashboard" element={<MdDashboard />} />
+              {/* <Route path="di/dashboard" element={<AdminTransactions />} /> */}
               <Route path="di/users" element={<Users />} />
 
               <Route path="di/wallet-ledger" element={<AccountLadger />} />
@@ -296,7 +298,7 @@ export default function AppRoutes() {
 
           {isMd && (
             <>
-              <Route path="md/dashboard" element={<MD_Dashboard />} />
+                <Route path="md/dashboard" element={<MdDashboard />} />
               <Route path="md/users" element={<Users />} />
               <Route path="md/transcations" element={<Transaction />} />
               <Route path="md/profile" element={<ProfilePage />} />
