@@ -16,6 +16,7 @@ import { apiCall } from "../api/apiClient";
 import ApiEndpoints from "../api/ApiEndpoints";
 import AuthContext from "../contexts/AuthContext";
 import { useToast } from "../utils/ToastContext";
+import Aeps2FaCommon from "./User/Aeps2FaCmmon";
 
 const AepsMainComponent = () => {
   const [aadhaar, setAadhaar] = useState("");
@@ -154,7 +155,7 @@ const AepsMainComponent = () => {
         <Tab label="Mini Statement" />
       </Tabs>
 
-      <AEPS2FAModal
+      <Aeps2FaCommon
         open={aeps2FAOpen}
         onClose={() => setAeps2FAOpen(false)}
         title="AEPS"

@@ -393,7 +393,7 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
           disableRipple
           onClick={() => {
             handleLogout();
-            navigate("/login");
+            navigate("/qrLogin");
           }}
           sx={{
             width: "100%",
