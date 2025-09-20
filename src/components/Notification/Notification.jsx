@@ -1,43 +1,58 @@
-import { useMemo, useCallback, useContext, useState, useEffect, useRef } from "react";
-import { Box, Button, IconButton, Tooltip, Typography } from "@mui/material";
+import { useMemo, useContext, useState, useEffect, useRef } from "react";
+import {
+  Box,
+  IconButton,
+  Tooltip,
+  Typography,
+  Chip,
+  Fade,
+} from "@mui/material";
 import AuthContext from "../../contexts/AuthContext";
 import { dateToTime, ddmmyy } from "../../utils/DateUtils";
-import { capitalize1 } from "../../utils/TextUtil";
-import { currencySetter } from "../../utils/Currencyutil";
 import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import AddIcon from "@mui/icons-material/Add";
 import ApiEndpoints from "../../api/ApiEndpoints";
 import CreateNotification from "./createNotification";
 import UpdateNotification from "./UpdateNotification";
-import CommonTable from "../common/CommonTable";
-import DeleteIcon from "@mui/icons-material/Delete";
 import DeleteNotification from "./DeleteNotification";
-import AddIcon from "@mui/icons-material/Add";
+import CommonTable from "../common/CommonTable";
 import CommonStatus from "../common/CommonStatus";
 import ReButton from "../common/ReButton";
 import CommonLoader from "../common/CommonLoader";
 
+// sound file (place a .mp3/.wav in your /public folder)
+const notificationSound = "/public/beep.mp3";
+
 const Notification = ({ filters = [], query }) => {
   const authCtx = useContext(AuthContext);
   const user = authCtx?.user;
-  const [selectedNotification, setSelectedNotification] = useState([])
 
-const [loading, setLoading] = useState(true); // initially true
-
- const fetchUsersRef = useRef(null);
+  const [selectedNotification, setSelectedNotification] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const fetchUsersRef = useRef(null);
 
   const handleFetchRef = (fetchFn) => {
     fetchUsersRef.current = fetchFn;
   };
+
   const refreshUsers = () => {
     if (fetchUsersRef.current) {
       fetchUsersRef.current();
+      playSound();
     }
+  };
+
+  const playSound = () => {
+    const audio = new Audio(notificationSound);
+    audio.volume = 0.6; // softer volume
+    audio.play().catch(() => {}); // ignore autoplay errors
   };
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setLoading(false); // stop loader after data is ready
-    }, 1000); // 1 second delay just as an example
+      setLoading(false);
+    }, 1000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -48,10 +63,10 @@ const [loading, setLoading] = useState(true); // initially true
   const [selectedId, setSelectedId] = useState(null);
 
   const handleEdit = (notification) => {
-    // setSelectedId(row.id);
-    setSelectedNotification(notification)
+    setSelectedNotification(notification);
     setOpenUpdate(true);
   };
+
   const handleDelete = (row) => {
     setSelectedId(row.id);
     setOpenDelete(true);
@@ -60,147 +75,154 @@ const [loading, setLoading] = useState(true); // initially true
   const columns = useMemo(
     () => [
       {
-        name: "Date/Time",
+        name: "Date / Time",
         selector: (row) => (
-          <div className="mb-1" style={{ textAlign: "left" }}>
-            {ddmmyy(row.created_at)} {dateToTime(row.created_at)}
-          </div>
+          <Box sx={{ textAlign: "left" }}>
+            <Typography variant="body2" color="text.secondary">
+              {ddmmyy(row.created_at)} • {dateToTime(row.created_at)}
+            </Typography>
+          </Box>
         ),
         wrap: true,
       },
       {
-        name: "User Id",
+        name: "User",
         selector: (row) => (
-          <Tooltip title={row?.user_id}>
-            <div style={{ textAlign: "left" }}>{row?.user_id}</div>
+          <Tooltip title={`User ID: ${row?.user_id}`}>
+            <Chip
+              label={row?.user_id}
+              color="primary"
+              variant="outlined"
+              size="small"
+            />
           </Tooltip>
         ),
-        width: "185px",
+        width: "150px",
         wrap: true,
       },
       {
         name: "Title",
         selector: (row) => (
           <Tooltip title={row?.title}>
-            <div style={{ textAlign: "left" }}>{row?.title}</div>
+            <Typography
+              variant="subtitle2"
+              sx={{ fontWeight: 600, textAlign: "left" }}
+            >
+              {row?.title}
+            </Typography>
           </Tooltip>
         ),
       },
       {
         name: "Message",
         selector: (row) => (
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              fontSize: "16px",
-              textAlign: "justify",
-              fontWeight: "500",
-            }}
-          >
-            <Tooltip title={row?.message}>
-              <div style={{ textAlign: "left" }}>{row?.message}</div>
-            </Tooltip>
-          </Box>
+          <Tooltip title={row?.message}>
+            <Typography
+              variant="body2"
+              sx={{ textAlign: "justify", fontSize: "14px" }}
+            >
+              {row?.message}
+            </Typography>
+          </Tooltip>
         ),
         wrap: true,
-        center: false,
       },
       {
         name: "Status",
-        selector: (row) => <CommonStatus is_read={row.is_read}  />,
+        selector: (row) => <CommonStatus is_read={row.is_read} />,
         center: true,
       },
-     {
-      name: "Actions",
-      selector: (row, { hoveredRow, enableActionsHover }) => {
-        const isHovered = hoveredRow === row.id || !enableActionsHover;
+      {
+        name: "Actions",
+        selector: (row, { hoveredRow, enableActionsHover }) => {
+          const isHovered = hoveredRow === row.id || !enableActionsHover;
 
-        return (
-          <Box sx={{ display: "flex", justifyContent: "center", minWidth: "120px" }}>
-            {isHovered ? (
-              <Box sx={{ display: "flex", gap: 1, transition: "opacity 0.2s" }}>
+          return (
+            <Fade in={isHovered}>
+              <Box sx={{ display: "flex", gap: 1, justifyContent: "center" }}>
                 <Tooltip title="Edit">
-                  <IconButton color="primary" size="small" onClick={() => handleEdit(row)}>
+                  <IconButton
+                    color="primary"
+                    size="small"
+                    onClick={() => handleEdit(row)}
+                  >
                     <EditIcon fontSize="small" />
                   </IconButton>
                 </Tooltip>
                 <Tooltip title="Delete">
-                  <IconButton color="error" size="small" onClick={() => handleDelete(row)}>
+                  <IconButton
+                    color="error"
+                    size="small"
+                    onClick={() => handleDelete(row)}
+                  >
                     <DeleteIcon fontSize="small" />
                   </IconButton>
                 </Tooltip>
               </Box>
-            ) : (
-              <Typography variant="body2" sx={{ color: "#999", textAlign: "center", minWidth: "120px" }}>
-                -
-              </Typography>
-            )}
-          </Box>
-        );
+            </Fade>
+          );
+        },
+        width: "120px",
+        center: true,
       },
-      width: "120px",
-      center: true,
-    },
     ],
     []
   );
 
   return (
-<>
-  <CommonLoader loading={loading} text="Loading Fund Requests" />
+    <>
+      <CommonLoader loading={loading} text="Loading Notifications..." />
 
       {!loading && (
-    <Box>
-      {/* Create Notification Button */}
+        <Box>
+          <CommonTable
+            columns={columns}
+            endpoint={ApiEndpoints.GET_NOTIFICATION}
+            filters={filters}
+            onFetchRef={handleFetchRef}
+            customHeader={
+              (user?.role === "sadm" || user?.role === "adm") && (
+                <ReButton
+                  label="New Notification"
+                  startIcon={<AddIcon />}
+                  onClick={() => setOpenCreate(true)}
+                />
+              )
+            }
+          />
 
-      {/* Notification Table */}
-      <CommonTable
-        columns={columns}
-        endpoint={ApiEndpoints.GET_NOTIFICATION}
-        filters={filters}
-           onFetchRef={handleFetchRef} 
-        customHeader={
-          (user?.role === "sadm" || user?.role === "adm") && (
-            <ReButton
-              label="Notification"
-              onClick={() => setOpenCreate(true)}
+          {/* Create Modal */}
+          {openCreate && (
+            <CreateNotification
+              open={openCreate}
+              onClose={() => setOpenCreate(false)}
+              onFetchRef={refreshUsers}
             />
-          )
-        }
-        
-      />
+          )}
 
-      {/* Create Notification Modal */}
-      {openCreate && (
-        <CreateNotification
-          open={openCreate}
-          onClose={() => setOpenCreate(false)}
-           onFetchRef={refreshUsers} 
-        />
-      )}
-      {/* Create Notification Modal */}
-      {openUpdate && (
-        <UpdateNotification
-          open={openUpdate}
-          row = {selectedNotification}
-          onClose={() => setOpenUpdate(false)}
-          notification={selectedId}
-           onFetchRef={refreshUsers} 
-        />
-      )}
-      {openDelete && (
-        <DeleteNotification
-          open={openDelete}
-          onClose={() => setOpenDelete(false)}
-          notificationId={selectedId}
-           onFetchRef={refreshUsers} 
-        />
-      )}
-    </Box>
-  )}
-</>
+          {/* Update Modal */}
+          {openUpdate && (
+            <UpdateNotification
+              open={openUpdate}
+              row={selectedNotification}
+              onClose={() => setOpenUpdate(false)}
+              notification={selectedId}
+              onFetchRef={refreshUsers}
+            />
+          )}
 
+          {/* Delete Modal */}
+          {openDelete && (
+            <DeleteNotification
+              open={openDelete}
+              onClose={() => setOpenDelete(false)}
+              notificationId={selectedId}
+              onFetchRef={refreshUsers}
+            />
+          )}
+        </Box>
+      )}
+    </>
   );
 };
 
