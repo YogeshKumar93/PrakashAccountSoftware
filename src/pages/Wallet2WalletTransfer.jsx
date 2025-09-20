@@ -11,15 +11,23 @@ import { Edit } from "@mui/icons-material";
 import CommonTable from "../components/common/CommonTable";
 import ApiEndpoints from "../api/ApiEndpoints";
 import AuthContext from "../contexts/AuthContext";
-import { dateToTime1, ddmmyy, ddmmyyWithTime } from "../utils/DateUtils";
+import {
+  dateToTime,
+  dateToTime1,
+  ddmmyy,
+  ddmmyyWithTime,
+} from "../utils/DateUtils";
 
 import CommonStatus from "../components/common/CommonStatus";
 import CommonLoader from "../components/common/CommonLoader";
 import DeleteIcon from "@mui/icons-material/Delete";
 
+import LaptopIcon from "@mui/icons-material/Laptop";
 import DescriptionIcon from "@mui/icons-material/Description";
 import { useNavigate } from "react-router-dom";
 import W2wTransfer from "./w2wTransfer";
+import { android2, linux2, macintosh2, windows2 } from "../iconsImports";
+import { okhttp } from "../utils/iconsImports";
 const Wallet2WalletTransfer = ({ filters = [] }) => {
   const authCtx = useContext(AuthContext);
   const user = authCtx?.user;
@@ -61,28 +69,131 @@ const Wallet2WalletTransfer = ({ filters = [] }) => {
               </span>
             </Tooltip>
 
-            <Tooltip title={`Updated: ${ddmmyyWithTime(row.updated_at)}`} arrow>
-              <span>
-                {ddmmyy(row.updated_at)} {dateToTime1(row.updated_at)}
-              </span>
-            </Tooltip>
+            {!(user?.role === "ret" || user?.role === "dd") && (
+              <Tooltip title={`Updated: ${dateToTime(row.updated_at)}`} arrow>
+                <span style={{ marginTop: "8px" }}>
+                  {ddmmyy(row.updated_at)}
+                </span>
+              </Tooltip>
+            )}
           </div>
         ),
         wrap: true,
         width: "140px",
       },
       {
-        name: "Txn ID",
+        name: "Platform",
+        selector: (row) => {
+          let icon;
+
+          if (row.pf.toLowerCase().includes("windows")) {
+            icon = (
+              <img
+                src={windows2}
+                style={{ width: "22px" }}
+                alt="description of image"
+              />
+            );
+          } else if (row.pf.toLowerCase().includes("android")) {
+            icon = (
+              <img
+                src={android2}
+                style={{ width: "22px" }}
+                alt="description of image"
+              />
+            );
+          } else if (row.pf.toLowerCase().includes("mac")) {
+            icon = (
+              <img
+                src={macintosh2}
+                style={{ width: "22px" }}
+                alt="description of image"
+              />
+            );
+          } else if (row.pf.toLowerCase().includes("linux")) {
+            icon = (
+              <img
+                src={linux2}
+                style={{ width: "22px" }}
+                alt="description of image"
+              />
+            );
+          } else if (row.pf.toLowerCase().includes("okhttp")) {
+            icon = (
+              <img
+                src={okhttp}
+                style={{ width: "22px" }}
+                alt="description of image"
+              />
+            );
+          } else {
+            icon = <LaptopIcon sx={{ color: "blue", width: "22px" }} />;
+          }
+
+          return (
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                fontSize: "13px",
+                textAlign: "justify",
+                gap: 2,
+              }}
+            >
+              {icon}
+            </Box>
+          );
+        },
+        width: "20px",
+        wrap: true,
+        left: true,
+      },
+      {
+        name: "Service",
         selector: (row) => (
-          <Tooltip title={row.txn_id}>
-            <div style={{ fontWeight: 500, textAlign: "left" }}>
-              {row.txn_id}
-            </div>
-          </Tooltip>
+          <div
+            style={{ textAlign: "left", fontSize: "10px", fontWeight: "600" }}
+          >
+            {row.operator || "N/A"}
+          </div>
         ),
         wrap: true,
-        width: "100px",
+        width: "80px",
       },
+      ...(user?.role === "ret" || user?.role === "dd"
+        ? [] // ❌ hide for ret and dd
+        : [
+            {
+              name: "TxnId/Ref",
+              selector: (row) => (
+                <>
+                  <div style={{ textAlign: "left", fontSize: "13px" }}>
+                    {row.txn_id}
+                    <br />
+                    {row.client_ref}
+                  </div>
+                </>
+              ),
+              wrap: true,
+              width: "100px",
+            },
+          ]),
+      ...(user?.role === "adm"
+        ? [] // ❌ hide for ret and dd
+        : [
+            {
+              name: "Txn ID",
+              selector: (row) => (
+                <Tooltip title={row.txn_id}>
+                  <div style={{ fontWeight: 500, textAlign: "left" }}>
+                    {row.txn_id}
+                  </div>
+                </Tooltip>
+              ),
+              wrap: true,
+              width: "100px",
+            },
+          ]),
       {
         name: "Amount",
         selector: (row) => {
@@ -109,19 +220,19 @@ const Wallet2WalletTransfer = ({ filters = [] }) => {
         center: true,
         width: "70px",
       },
-      {
-        name: "GST",
-        selector: (row) => <div>{row.gst}%</div>,
-        center: true,
-        width: "60px",
-      },
+
       {
         name: "Charge",
         selector: (row) => <div>₹ {parseFloat(row.charge).toFixed(2)}</div>,
         center: true,
         width: "80px",
       },
-
+      {
+        name: "GST",
+        selector: (row) => <div>{row.gst}</div>,
+        center: true,
+        width: "60px",
+      },
       {
         name: "Status",
         selector: (row) => <CommonStatus value={row.status} />,

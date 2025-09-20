@@ -600,49 +600,60 @@ const CommonModal = ({
       <DialogTitle
         sx={{
           m: 0,
-          p: 3,
-          display: "flex",
-          alignItems: "center",
-          borderBottom: dividers ? 1 : 0,
-          borderColor: "divider",
-          color: "#344357",
+          p: 0, // remove padding here to not interfere with line
           fontFamily: '"DM Sans", sans-serif',
-          backgroundColor: "#f8fafc",
         }}
       >
-        <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1 }}>
-          <Box sx={{ mr: 1.5, display: "flex", color: "#4f46e5" }}>
-            {getIcon()}
+        {/* Purple line at the top */}
+        <Box
+          sx={{
+            height: "4px", // thickness of the line
+            width: "100%", // full width
+            bgcolor: "#854fff", // purple color
+          }}
+        />
+
+        {/* Original header content */}
+        <Box
+          sx={{
+            p: 3,
+            display: "flex",
+            alignItems: "center",
+            borderBottom: dividers ? 1 : 0,
+            borderColor: "divider",
+            backgroundColor: "#f8fafc",
+          }}
+        >
+          <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1 }}>
+            <Box sx={{ mr: 1.5, display: "flex", color: "#4f46e5" }}>
+              {getIcon()}
+            </Box>
+            <Typography
+              variant="h5"
+              component="h2"
+              id="modal-title"
+              sx={{
+                color: "#364a63",
+                fontWeight: 550,
+                fontSize: { xs: "1.25rem", sm: "1.5rem" },
+              }}
+            >
+              {title}
+            </Typography>
           </Box>
-          <Typography
-            variant="h5"
-            component="h2"
-            id="modal-title"
-            sx={{
-              color: "#1e293b",
-              fontFamily: '"DM Sans", sans-serif',
-              fontWeight: 550,
-              fontSize: { xs: "1.25rem", sm: "1.5rem" },
-              color: "#364a63",
-            }}
-          >
-            {title}
-          </Typography>
+          {showCloseButton && (
+            <IconButton
+              aria-label="close"
+              onClick={onClose}
+              sx={{
+                color: (theme) => theme.palette.grey[500],
+                "&:hover": { backgroundColor: "rgba(0,0,0,0.04)" },
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+          )}
         </Box>
-        {showCloseButton && (
-          <IconButton
-            aria-label="close"
-            onClick={onClose}
-            sx={{
-              color: (theme) => theme.palette.grey[500],
-              "&:hover": {
-                backgroundColor: "rgba(0,0,0,0.04)",
-              },
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        )}
       </DialogTitle>
 
       {/* Content */}

@@ -61,7 +61,7 @@ const SenderDetails = ({ sender }) => {
         sx={{
           p: 1,
           cursor: isMobile ? "pointer" : "default",
-          background: "#5c3ac8",
+          background: "#9d72ff",
           color: "#fff",
         }}
         onClick={isMobile ? handleToggle : undefined}

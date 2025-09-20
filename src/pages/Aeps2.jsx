@@ -4,7 +4,6 @@ import myImage from "../assets/Images/aeps-guidelines-new.png";
 import myLogo from "../assets/Images/logo(1).png";
 import atmIcon from "../assets/Images/aeps_print.png";
 import Aeps1 from "./Aeps1";
-import Aeps2 from "./Aeps2";
 
 const style = {
   position: "absolute",
@@ -17,7 +16,7 @@ const style = {
   p: 3,
 };
 
-const Aeps = () => {
+const Aeps2 = () => {
   const [step, setStep] = useState(1);
 
   if (step === 1) {
@@ -162,10 +161,16 @@ const Aeps = () => {
 
   // Step 4 → AEPS2 Component (abhi example ke liye simple text)
   if (step === 4) {
-    return <Aeps2 />;
+    return (
+      <Box sx={{ textAlign: "center", mt: 5 }}>
+        <Typography variant="h4" color="primary">
+          AEPS2 Component Coming Soon 🚀
+        </Typography>
+      </Box>
+    );
   }
 
   return null;
 };
 
-export default Aeps;
+export default Aeps2;

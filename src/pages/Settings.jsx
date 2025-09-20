@@ -16,14 +16,16 @@ import ListAltIcon from "@mui/icons-material/ListAlt"; // Logs
 import AssignmentIcon from "@mui/icons-material/Assignment"; // Plans
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive"; // Notifications
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
+import News from "./News";
 
 export const Settings = () => {
   const tabItems = [
     { label: "Template", icon: <DescriptionIcon />, component: <Templates /> },
     { label: "Comm Rules", icon: <RuleIcon />, component: <CommissionRule /> },
-    { label: "WebHooks", icon: <HttpIcon />, component: <WebHooks /> },
+    // { label: "WebHooks", icon: <HttpIcon />, component: <WebHooks /> },
     { label: "Logs", icon: <ListAltIcon />, component: <Logs /> },
     { label: "Plans", icon: <AssignmentIcon />, component: <Plans /> },
+     { label: "News", icon: <AssignmentIcon />, component: <News /> },
     {
       label: "Notifications",
       icon: <NotificationsActiveIcon />,

@@ -157,7 +157,6 @@ const SelectedBeneficiary = ({
             mobile: beneficiary.mobile_number,
           },
           date: new Date().toLocaleString(),
-          
         };
 
         // okSuccessToastAlt(txnDetails); // pass full details
@@ -168,10 +167,10 @@ const SelectedBeneficiary = ({
         });
         sessionStorage.setItem("txnData", JSON.stringify(txnDetails));
 
-// Open PrintDmt in a new tab
-// window.open("/print-dmt", "_blank");
+        // Open PrintDmt in a new tab
+        // window.open("/print-dmt", "_blank");
 
-          setAmount("");
+        setAmount("");
         setOtp("");
         setMpin("");
         setOtpRef(null);
@@ -202,7 +201,7 @@ const SelectedBeneficiary = ({
       {/* Header */}
       <Box
         sx={{
-          bgcolor: "#0078B6",
+          bgcolor: "#9d72ff",
           color: "#fff",
           textAlign: "center",
           py: 1,

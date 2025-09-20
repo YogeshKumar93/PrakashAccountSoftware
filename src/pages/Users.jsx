@@ -141,6 +141,19 @@ const Users = ({ query }) => {
         width: "100px",
       },
       {
+        name: "Parent",
+        selector: (row) => {
+          const parentName = userMap[row.parent] || "-"; // Lookup parent name from userMap
+          return (
+            <Tooltip title={parentName}>
+              <div style={{ textAlign: "left", cursor: "pointer" }}>
+                {row.parent}
+              </div>
+            </Tooltip>
+          );
+        },
+      },
+      {
         name: "Status",
         selector: (row, { hoveredRow, enableActionsHover }) => {
           const isHovered = enableActionsHover && hoveredRow === row.id;

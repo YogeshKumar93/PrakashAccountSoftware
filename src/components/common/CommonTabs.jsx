@@ -32,7 +32,7 @@ const CommonTabs = ({ tabs = [], defaultTab = 0 }) => {
           width: "100%",
           overflowX: "auto",
           mx: "auto",
-          mt: { xs: -2, sm: -3 },
+          mt: { xs: -2, sm: -2.5 },
         }}
       >
         <Tabs
@@ -47,17 +47,18 @@ const CommonTabs = ({ tabs = [], defaultTab = 0 }) => {
               borderRadius: "10px",
               textTransform: "uppercase",
               fontSize: { xs: "0.7rem", sm: "0.8rem", md: "0.9rem" },
-              color: "#364a63",
+              color: "orange", // <-- default color
               display: "flex",
-              flexDirection: "column",
+              flexDirection: "row",
+              gap: "8px",
               padding: { xs: "4px 4px", sm: "4px 6px" },
             },
             "& .MuiTab-root .MuiTab-wrapper": {
-              fontFamily: `"DM Sans", sans-serif !important`, // 👈 yaha lagao
+              fontFamily: `"DM Sans", sans-serif !important`,
             },
             "& .Mui-selected": {
               backgroundColor: "#ebeef2",
-              color: "#9d72f0",
+              color: "orange", // <-- selected tab color
               fontWeight: 550,
             },
           }}

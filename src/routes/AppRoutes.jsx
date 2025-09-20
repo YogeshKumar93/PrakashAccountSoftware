@@ -65,8 +65,16 @@ import { Transfer } from "../pages/Transfer";
 import DmtReceipt1 from "../pages/DmtReceipt1";
 import PrintDmt from "../pages/printDmt";
 import PrintDmt2 from "../pages/PrintDmt2";
+import AdminDistributorAgreement from "../pages/AdminDistributorAgreement";
+import AdminAgreement from "../pages/AdminAgreement";
+import RetailerAgreement from "../pages/RetailerAgreement";
+import DistributorAgreement from "../pages/DistributorAgreement";
+import IndemnityLetter from "../pages/IndemnityLetter ";
 import WalletCard from "../components/WalletCard";
 import { WalletLedgers } from "../components/WalletLedgers";
+import MdDashboard from "../pages/MdDashboard";
+import Purposes from "../pages/Purposes";
+import News from "../pages/News";
 
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated, loading, user } = useContext(AuthContext);
@@ -121,6 +129,21 @@ export default function AppRoutes() {
          <Route path="/print-dmt" element={<PrintDmt />} />
           <Route path="/print-dmt2" element={<PrintDmt2 />} />
         
+      
+        <Route path="/adminagreement" element={<AdminAgreement />} />
+        <Route
+          path="/admindistributoragreement"
+          element={<AdminDistributorAgreement />}
+        />
+        <Route path="/retaileragreement" element={<RetailerAgreement />} />
+        <Route
+          path="/distributoragreement"
+          element={<DistributorAgreement />}
+        />
+
+        <Route path="/indemnityLetter" element={<IndemnityLetter />} />
+
+        <Route path="/print-dmt" element={<PrintDmt />} />
 
         {/* Protected layout */}
         <Route
@@ -152,6 +175,7 @@ export default function AppRoutes() {
               <Route path="admin/profile" element={<ProfilePage />} />
               <Route path="admin/banks" element={<Banks />} />
               <Route path="admin/wallet-ledger" element={<WalletLedgers />} />
+              <Route path="admin/purpose" element={<Purposes />} />
               <Route
                 path="admin/bankstatements/:id"
                 element={<BankStatements />}
@@ -174,6 +198,8 @@ export default function AppRoutes() {
               <Route path="admin/statements" element={<Statements />} />
               <Route path="admin/complaint" element={<Complaint />} />
               <Route path="admin/risk" element={<Risk />} />
+              <Route path="admin/news" element={<News />} />
+
               <Route
                 path="admin/virtual_accounts"
                 element={<Virtual_Accounts />}
@@ -231,11 +257,13 @@ export default function AppRoutes() {
               />
               <Route path="customer/accounts" element={<Accounts />} />
               <Route path="customer/allServices" element={<AllServices />} />
+              <Route path="customer/complaint" element={<Complaint />} />
             </>
           )}
           {isDi && (
             <>
-              <Route path="di/dashboard" element={<AdminTransactions />} />
+              <Route path="di/dashboard" element={<MdDashboard />} />
+              {/* <Route path="di/dashboard" element={<AdminTransactions />} /> */}
               <Route path="di/users" element={<Users />} />
 
               <Route path="di/wallet-ledger" element={<AccountLadger />} />
@@ -277,7 +305,7 @@ export default function AppRoutes() {
 
           {isMd && (
             <>
-              <Route path="md/dashboard" element={<MD_Dashboard />} />
+              <Route path="md/dashboard" element={<MdDashboard />} />
               <Route path="md/users" element={<Users />} />
               <Route path="md/transcations" element={<Transaction />} />
               <Route path="md/profile" element={<ProfilePage />} />

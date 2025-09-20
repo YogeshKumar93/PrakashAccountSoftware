@@ -176,7 +176,7 @@ const UpiBeneficiaryList = ({ sender, onSuccess, onSelect }) => {
         sx={{
           py: 1,
           px: 2,
-          background: "#5c3ac8",
+          background: "#9d72ff",
           borderBottom: openList ? "1px solid" : "none",
           borderColor: "divider",
         }}
