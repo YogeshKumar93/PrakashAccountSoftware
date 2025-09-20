@@ -71,6 +71,7 @@ export const Admin_nav = [
     to: "/admin/wallet-ledger",
   },
   { title: "Settings", icon: settingImage, icon2: "👥", to: "/admin/settings" },
+  { title: "Purpose", icon: settingImage, icon2: "👥", to: "/admin/settings" },
 
   // {
   //   title: "Layouts",
@@ -179,7 +180,12 @@ export const customer_nav = [
   //   icon2: "🛠️",
   //   to: "/customer/purchase",
   // },
-  // { title: "My Sale", icon: fundReqImage, icon2: "📒", to: "/customer/sale" },
+  {
+    title: "Complaints",
+    icon: fundReqImage,
+    icon2: "📒",
+    to: "/customer/complaint",
+  },
 
   {
     title: "Activity Logs",

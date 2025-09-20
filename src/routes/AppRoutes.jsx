@@ -72,6 +72,7 @@ import IndemnityLetter from "../pages/IndemnityLetter ";
 import WalletCard from "../components/WalletCard";
 import { WalletLedgers } from "../components/WalletLedgers";
 import MdDashboard from "../pages/MdDashboard";
+import Purposes from "../pages/Purposes";
 
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated, loading, user } = useContext(AuthContext);
@@ -123,21 +124,20 @@ export default function AppRoutes() {
         <Route path="/qrLogin" element={<QrLoginPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/print-receipt" element={<DmtReceipt1 />} />
-         <Route path="/print-dmt" element={<PrintDmt />} />
-          <Route path="/adminagreement" element={<AdminAgreement />} />
-           <Route
-            path="/admindistributoragreement"
-            element={<AdminDistributorAgreement />}
-          />
-       <Route path="/retaileragreement" element={<RetailerAgreement />} />
-         <Route path="/distributoragreement" element={<DistributorAgreement />} />
+        <Route path="/print-dmt" element={<PrintDmt />} />
+        <Route path="/adminagreement" element={<AdminAgreement />} />
+        <Route
+          path="/admindistributoragreement"
+          element={<AdminDistributorAgreement />}
+        />
+        <Route path="/retaileragreement" element={<RetailerAgreement />} />
+        <Route
+          path="/distributoragreement"
+          element={<DistributorAgreement />}
+        />
 
-             <Route path="/indemnityLetter" element={<IndemnityLetter />} />
-          
-          
-         
-        
-         
+        <Route path="/indemnityLetter" element={<IndemnityLetter />} />
+
         <Route path="/print-dmt" element={<PrintDmt />} />
 
         {/* Protected layout */}
@@ -170,6 +170,7 @@ export default function AppRoutes() {
               <Route path="admin/profile" element={<ProfilePage />} />
               <Route path="admin/banks" element={<Banks />} />
               <Route path="admin/wallet-ledger" element={<WalletLedgers />} />
+              <Route path="admin/purpose" element={<Purposes />} />
               <Route
                 path="admin/bankstatements/:id"
                 element={<BankStatements />}
@@ -197,8 +198,6 @@ export default function AppRoutes() {
                 element={<Virtual_Accounts />}
               />
               <Route path="admin/login_history" element={<Login_History />} />
-
-              
 
               {/* 
               <Route
@@ -251,11 +250,12 @@ export default function AppRoutes() {
               />
               <Route path="customer/accounts" element={<Accounts />} />
               <Route path="customer/allServices" element={<AllServices />} />
+              <Route path="customer/complaint" element={<Complaint />} />
             </>
           )}
           {isDi && (
             <>
-               <Route path="di/dashboard" element={<MdDashboard />} />
+              <Route path="di/dashboard" element={<MdDashboard />} />
               {/* <Route path="di/dashboard" element={<AdminTransactions />} /> */}
               <Route path="di/users" element={<Users />} />
 
@@ -298,7 +298,7 @@ export default function AppRoutes() {
 
           {isMd && (
             <>
-                <Route path="md/dashboard" element={<MdDashboard />} />
+              <Route path="md/dashboard" element={<MdDashboard />} />
               <Route path="md/users" element={<Users />} />
               <Route path="md/transcations" element={<Transaction />} />
               <Route path="md/profile" element={<ProfilePage />} />

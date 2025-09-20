@@ -95,6 +95,9 @@ const ApiEndpoints = {
   GET_LOG: "auditlog/getAuditLog",
   GET_WALLETLEDGER: "walletledger/getWalletLedgers",
   GET_WALLETLEDGER_2: "walletledger/getWalletLedger2",
+  GET_PURPOSES: "payout/getPurpose",
+  CREATE_PURPOSE: "payout/createPurpose",
+  AEPS2_SCHEMA: "aeps/aeps2Schema",
 
   // ****************************** NEW API'S ABOVE ******************************
 
@@ -115,7 +118,7 @@ const ApiEndpoints = {
   AEPS_BALANCE_ENQUIRY: "/aeps/balanceEnquiry",
   AEPS_CASHWITHDRAWAL: "/aeps/cashWithdrawl",
 
-  AEPS_BANKS:"/aeps/getBanks",
+  AEPS_BANKS: "/aeps/getBanks",
   BBPS_PAY_BILL: "/bbps/payBill",
 
   // ****************************** NEW API'S ABOVE ******************************

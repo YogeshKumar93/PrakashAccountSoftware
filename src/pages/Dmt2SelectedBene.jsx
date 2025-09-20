@@ -194,7 +194,7 @@ const Dmt2SelectedBene = ({
       {/* Header */}
       <Box
         sx={{
-          bgcolor: "#0078B6",
+          bgcolor: "#9d72ff",
           color: "#fff",
           textAlign: "center",
           py: 1,

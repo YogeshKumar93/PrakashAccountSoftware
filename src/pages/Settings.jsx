@@ -21,7 +21,7 @@ export const Settings = () => {
   const tabItems = [
     { label: "Template", icon: <DescriptionIcon />, component: <Templates /> },
     { label: "Comm Rules", icon: <RuleIcon />, component: <CommissionRule /> },
-    { label: "WebHooks", icon: <HttpIcon />, component: <WebHooks /> },
+    // { label: "WebHooks", icon: <HttpIcon />, component: <WebHooks /> },
     { label: "Logs", icon: <ListAltIcon />, component: <Logs /> },
     { label: "Plans", icon: <AssignmentIcon />, component: <Plans /> },
     {
