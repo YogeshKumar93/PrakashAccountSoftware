@@ -160,18 +160,40 @@ const Wallet2WalletTransfer = ({ filters = [] }) => {
         wrap: true,
         width: "80px",
       },
-      {
-        name: "Txn ID",
-        selector: (row) => (
-          <Tooltip title={row.txn_id}>
-            <div style={{ fontWeight: 500, textAlign: "left" }}>
-              {row.txn_id}
-            </div>
-          </Tooltip>
-        ),
-        wrap: true,
-        width: "100px",
-      },
+      ...(user?.role === "ret" || user?.role === "dd"
+        ? [] // ❌ hide for ret and dd
+        : [
+            {
+              name: "TxnId/Ref",
+              selector: (row) => (
+                <>
+                  <div style={{ textAlign: "left", fontSize: "13px" }}>
+                    {row.txn_id}
+                    <br />
+                    {row.client_ref}
+                  </div>
+                </>
+              ),
+              wrap: true,
+              width: "100px",
+            },
+          ]),
+      ...(user?.role === "adm"
+        ? [] // ❌ hide for ret and dd
+        : [
+            {
+              name: "Txn ID",
+              selector: (row) => (
+                <Tooltip title={row.txn_id}>
+                  <div style={{ fontWeight: 500, textAlign: "left" }}>
+                    {row.txn_id}
+                  </div>
+                </Tooltip>
+              ),
+              wrap: true,
+              width: "100px",
+            },
+          ]),
       {
         name: "Amount",
         selector: (row) => {

@@ -7,11 +7,11 @@ import { dateToTime1, ddmmyy, ddmmyyWithTime } from "../../utils/DateUtils";
 import CommonStatus from "../common/CommonStatus";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import CloseIcon from "@mui/icons-material/Close";
- 
-import companylogo from '../../assets/Images/logo(1).png';
+
+import companylogo from "../../assets/Images/logo(1).png";
 import TransactionDetailsCard from "../common/TransactionDetailsCard";
 
-const MatmTxn = ({  query }) => {
+const MatmTxn = ({ query }) => {
   const authCtx = useContext(AuthContext);
   const user = authCtx?.user;
   const [openCreate, setOpenCreate] = useState(false);
@@ -20,7 +20,7 @@ const MatmTxn = ({  query }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
 
-const filters = useMemo(
+  const filters = useMemo(
     () => [
       {
         id: "status",
@@ -41,7 +41,6 @@ const filters = useMemo(
   );
   const columns = useMemo(
     () => [
-            
       {
         name: "Date",
         selector: (row) => (
@@ -51,31 +50,61 @@ const filters = useMemo(
                 {ddmmyy(row.created_at)} {dateToTime1(row.created_at)}
               </span>
             </Tooltip>
-      
+
             <Tooltip title={`Updated: ${ddmmyyWithTime(row.updated_at)}`} arrow>
               <span>
-               {ddmmyy(row.updated_at)} {dateToTime1(row.updated_at)}
+                {ddmmyy(row.updated_at)} {dateToTime1(row.updated_at)}
               </span>
             </Tooltip>
           </div>
         ),
         wrap: true,
-        width: "140px", 
+        width: "140px",
       },
-      {
-        name: "Txn ID",
-        selector: (row) => (
-          <div style={{ textAlign: "left", fontWeight: 500 }}>{row.txn_id}</div>
-        ),
-        wrap: true,
-      },
-      {
-        name: "Client Ref",
-        selector: (row) => (
-          <div style={{ textAlign: "left" }}>{row.client_ref}</div>
-        ),
-        wrap: true,
-      },
+      ...(user?.role === "ret" || user?.role === "dd"
+        ? [] // ❌ hide for ret and dd
+        : [
+            {
+              name: "Txn ID /Ref",
+              selector: (row) => (
+                <div
+                  style={{
+                    textAlign: "left",
+                    fontSize: "10px",
+                    fontWeight: "600",
+                  }}
+                >
+                  {row.txn_id}
+                  <br />
+                  {row.client_ref}
+                </div>
+              ),
+              wrap: true,
+              width: "100px",
+            },
+          ]),
+      ...(user?.role === "adm"
+        ? []
+        : [
+            {
+              name: "TxnId",
+              selector: (row) => (
+                <div
+                  style={{
+                    textAlign: "left",
+                    fontSize: "10px",
+                    fontWeight: "600",
+                  }}
+                >
+                  {row.txn_id}
+                  <br />
+                  {/* {row.client_ref} */}
+                </div>
+              ),
+              wrap: true,
+              width: "100px",
+            },
+          ]),
       {
         name: "Biller",
         selector: (row) => (
@@ -130,9 +159,7 @@ const filters = useMemo(
         name: "GST",
         selector: (row) => (
           <div style={{ textAlign: "right", fontSize: "0.85rem" }}>
-           
             <div>GST: ₹{parseFloat(row.gst).toFixed(2)}</div>
-            
           </div>
         ),
         wrap: true,
@@ -142,10 +169,7 @@ const filters = useMemo(
         name: " Comm",
         selector: (row) => (
           <div style={{ textAlign: "right", fontSize: "0.85rem" }}>
-           
-            
             <div>Comm: ₹{parseFloat(row.commission).toFixed(2)}</div>
-            
           </div>
         ),
         wrap: true,
@@ -155,10 +179,7 @@ const filters = useMemo(
         name: "TDS",
         selector: (row) => (
           <div style={{ textAlign: "right", fontSize: "0.85rem" }}>
-           
-           
             <div>TDS: ₹{parseFloat(row.tds).toFixed(2)}</div>
- 
           </div>
         ),
         wrap: true,
@@ -168,8 +189,6 @@ const filters = useMemo(
         name: "NET",
         selector: (row) => (
           <div style={{ textAlign: "right", fontSize: "0.85rem" }}>
-           
-            
             <div style={{ fontWeight: 600, color: "#1976d2" }}>
               Net: ₹{parseFloat(row.net_commission).toFixed(2)}
             </div>
@@ -178,7 +197,7 @@ const filters = useMemo(
         wrap: true,
         right: true,
       },
-       {
+      {
         name: "RRN",
         selector: (row) => (
           <div style={{ textAlign: "left", fontSize: "0.85rem" }}>
@@ -189,12 +208,12 @@ const filters = useMemo(
       },
       {
         name: "Status",
-      selector: (row) => <CommonStatus value={row.status} />,
-      
+        selector: (row) => <CommonStatus value={row.status} />,
+
         center: true,
       },
-     
-       ...(user?.role === "ret"
+
+      ...(user?.role === "ret"
         ? [
             {
               name: "Actions",
@@ -239,30 +258,39 @@ const filters = useMemo(
         endpoint={ApiEndpoints.GET_MATM_TXN}
         filters={filters}
         queryParam={queryParam}
-         enableActionsHover={true}
+        enableActionsHover={true}
       />
 
-    {/* MATM Details Drawer */}
+      {/* MATM Details Drawer */}
       <Drawer
         anchor="right"
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
-       
       >
-        <Box sx={{ width: 400,  display: "flex", flexDirection: "column", height: "100%" }}>
+        <Box
+          sx={{
+            width: 400,
+            display: "flex",
+            flexDirection: "column",
+            height: "100%",
+          }}
+        >
           {selectedRow && (
             <TransactionDetailsCard
               amount={selectedRow.amount}
               status={selectedRow.status}
               onClose={() => setDrawerOpen(false)} // ✅ Close drawer
-             companyLogoUrl={companylogo}
+              companyLogoUrl={companylogo}
               dateTime={ddmmyyWithTime(selectedRow.created_at)}
               message={selectedRow.message || "No message"}
               details={[
                 { label: "Txn ID", value: selectedRow.txn_id },
                 { label: "Client Ref", value: selectedRow.client_ref },
                 { label: "Sender Mobile", value: selectedRow.sender_mobile },
-                { label: "Beneficiary Name", value: selectedRow.beneficiary_name },
+                {
+                  label: "Beneficiary Name",
+                  value: selectedRow.beneficiary_name,
+                },
                 { label: "Account Number", value: selectedRow.account_number },
                 { label: "IFSC Code", value: selectedRow.ifsc_code },
                 { label: "Bank Name", value: selectedRow.bank_name },
@@ -280,7 +308,6 @@ const filters = useMemo(
           )}
         </Box>
       </Drawer>
-
     </>
   );
 };

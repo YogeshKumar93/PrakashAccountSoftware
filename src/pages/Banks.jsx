@@ -98,9 +98,7 @@ const Banks = ({ filters = [] }) => {
         name: "Account Number",
         selector: (row) => (
           <Tooltip title={row.acc_number}>
-            <div style={{ textAlign: "left" }}>
-              **** **** {row.acc_number.toString().slice(-4)}
-            </div>
+            <div style={{ textAlign: "left" }}>{row.acc_number}</div>
           </Tooltip>
         ),
         wrap: true,
