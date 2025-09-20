@@ -122,7 +122,7 @@ const Banks = ({ filters = [] }) => {
         selector: (row) => <CommonStatus value={row.status} />,
         center: true,
       },
-  {
+{
   name: "Actions",
   selector: (row, { hoveredRow, enableActionsHover }) => {
     const isHovered = enableActionsHover && hoveredRow === row.id;
@@ -134,24 +134,19 @@ const Banks = ({ filters = [] }) => {
           alignItems: "center",
           justifyContent: "center",
           minWidth: "120px",
-          position: "relative", // needed for absolute overlay
+          position: "relative",
         }}
       >
-        {/* Icons (always rendered, just dim when not hovered) */}
+        {/* Icons are always rendered but hidden when not hovered */}
         <Box
           sx={{
             display: "flex",
             gap: 1,
-            opacity: isHovered ? 1 : 0.2, // fade effect
-            transition: "opacity 0.2s ease-in-out",
+            visibility: isHovered ? "visible" : "hidden", // keeps layout stable
           }}
         >
           <Tooltip title="Statement">
-            <IconButton
-              color="info"
-              size="small"
-              onClick={() => handleStatement(row)}
-            >
+            <IconButton color="info" size="small" onClick={() => handleStatement(row)}>
               <DescriptionIcon fontSize="small" />
             </IconButton>
           </Tooltip>
@@ -171,18 +166,14 @@ const Banks = ({ filters = [] }) => {
 
           {user?.role === "adm" && (
             <Tooltip title="Delete">
-              <IconButton
-                color="error"
-                size="small"
-                onClick={() => handleDelete(row)}
-              >
+              <IconButton color="error" size="small" onClick={() => handleDelete(row)}>
                 <DeleteIcon fontSize="small" />
               </IconButton>
             </Tooltip>
           )}
         </Box>
 
-        {/* Overlay dash when not hovered */}
+        {/* Overlay dash only when icons are hidden */}
         {!isHovered && (
           <Typography
             variant="body2"
@@ -192,7 +183,7 @@ const Banks = ({ filters = [] }) => {
               top: "50%",
               left: "50%",
               transform: "translate(-50%, -50%)",
-              pointerEvents: "none", // ensure clicks pass through to icons
+              pointerEvents: "none",
             }}
           >
             -
@@ -204,6 +195,9 @@ const Banks = ({ filters = [] }) => {
   width: "120px",
   center: true,
 }
+
+
+
 
 
     ],
