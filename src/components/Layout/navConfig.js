@@ -1,7 +1,9 @@
 import { Avatar } from "@mui/material";
 import {
+  aeps1,
   aepsImage,
   bankImage,
+  bbps_1,
   complainImage,
   dashboardImage,
   fundReqImage,
@@ -122,9 +124,9 @@ export const customer_nav = [
     icon2: "🛠️",
     to: "/customer/transfer",
   },
-  { title: "AEPS", icon: aepsImage, icon2: "👥", to: "/customer/aeps" },
+  { title: "AEPS", icon: aeps1, icon2: "👥", to: "/customer/aeps" },
 
-  { title: "Bbps(Online)", icon: aepsImage, icon2: "📒", to: "/customer/bbps" },
+  { title: "Bbps(Online)", icon: bbps_1, icon2: "📒", to: "/customer/bbps" },
   {
     title: "Bbps(Offline)",
     icon: aepsImage,
