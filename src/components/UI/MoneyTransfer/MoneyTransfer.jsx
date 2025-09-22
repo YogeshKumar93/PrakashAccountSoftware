@@ -22,7 +22,7 @@ export const MoneyTransfer = () => {
           }}
         >
           <CurrencyRupeeIcon fontSize="small" />
-          <span>Dmt1</span>
+          <span>Airtel Dmt</span>
         </div>
       ),
       component: <Dmt />,
@@ -39,7 +39,7 @@ export const MoneyTransfer = () => {
           }}
         >
           <CurrencyRupeeIcon fontSize="small" />
-          <span>Dmt2</span>
+          <span>Fino Dmt</span>
         </div>
       ),
       component: <Dmt2 />,

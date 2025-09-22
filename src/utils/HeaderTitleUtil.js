@@ -51,6 +51,7 @@ const titleMap = {
     "/customer/money-transfer": "Money Transfer",
     "/customer/express-transfer": "Express Transfer",
     "/customer/fund-transfer": "Fund Transfer",
+    "/customer/allServices": "All Services",
     "/customer/settlements": "Settlements",
     "/customer/nepal-transfer": "Nepal Transfer",
     "/customer/upi-transfer": "UPI Transfer",

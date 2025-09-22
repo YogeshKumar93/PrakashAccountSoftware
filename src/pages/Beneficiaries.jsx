@@ -151,7 +151,7 @@ const Beneficiaries = ({ beneficiaries, onSelect, sender, onSuccess }) => {
       } else {
         setVerifyOpen(false);
         setMpinDigits(Array(6).fill(""));
-        apiErrorToast(error?.errors || "Failed to verify beneficiary");
+        apiErrorToast(error?.message || "Failed to verify beneficiary");
       }
     } catch (err) {
       apiErrorToast(err);

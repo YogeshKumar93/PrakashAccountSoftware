@@ -43,7 +43,9 @@ const WalletCard = ({ label = "", amount = "" }) => {
         <Typography
           sx={{
             fontSize: "0.8rem",
+            fontWeight: 600,
             letterSpacing: 0.5,
+            color: "#000",
           }}
         >
           {label}
@@ -56,6 +58,7 @@ const WalletCard = ({ label = "", amount = "" }) => {
           fontSize: "1rem",
           fontWeight: 700,
           letterSpacing: 0.5,
+          color: "#000",
         }}
       >
         {amount}

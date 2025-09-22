@@ -13,30 +13,10 @@ import {
   Slide,
   Zoom,
 } from "@mui/material";
-import SendIcon from "@mui/icons-material/Send";
-import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
-import ReceiptIcon from "@mui/icons-material/Receipt";
-import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
-import TrainIcon from "@mui/icons-material/Train";
 import QrCodeIcon from "@mui/icons-material/QrCode";
-import PaymentsIcon from "@mui/icons-material/Payments";
-import WalletIcon from "@mui/icons-material/AccountBalanceWallet";
-import SecurityIcon from "@mui/icons-material/Security";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
-import ElectricBoltIcon from "@mui/icons-material/ElectricBolt";
-import WifiIcon from "@mui/icons-material/Wifi";
-import GasMeterIcon from "@mui/icons-material/GasMeter";
-import WaterDropIcon from "@mui/icons-material/WaterDrop";
-import LocalAtmIcon from "@mui/icons-material/LocalAtm";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import FlightIcon from "@mui/icons-material/Flight";
-import DirectionsBusIcon from "@mui/icons-material/DirectionsBus";
-import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
-import SatelliteAltIcon from "@mui/icons-material/SatelliteAlt";
-import AccountTreeIcon from "@mui/icons-material/AccountTree";
-import AssessmentIcon from "@mui/icons-material/Assessment";
+
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
@@ -62,6 +42,7 @@ import {
   upi_1,
   vapy_1,
   water_1,
+  airtel2,
 } from "../iconsImports";
 import SuperTransfer from "./SuperTransfer";
 
@@ -75,6 +56,7 @@ import Aeps from "./Aeps";
 import Cms from "./Cms";
 import Prepaid from "../components/UI/rechange and bill/Prepaid";
 import Dth from "../components/UI/rechange and bill/Dth";
+import { AIR1, FINO } from "../utils/iconsImports";
 
 const MenuCard = ({ icon, label, onClick, isActive, user }) => {
   return (
@@ -86,8 +68,8 @@ const MenuCard = ({ icon, label, onClick, isActive, user }) => {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          height: 85,
-          width: 85,
+          height: 120,
+          width: 120,
           borderRadius: 3,
           background: isActive
             ? "linear-gradient(135deg, #2563EB 0%, #1E40AF 100%)"
@@ -116,8 +98,8 @@ const MenuCard = ({ icon, label, onClick, isActive, user }) => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            width: 42,
-            height: 42,
+            width: 67,
+            height: 67,
             mb: 1,
             borderRadius: "12px",
             backgroundColor: isActive
@@ -147,7 +129,7 @@ const MenuCard = ({ icon, label, onClick, isActive, user }) => {
         <Typography
           sx={{
             fontWeight: 500,
-            fontSize: "0.60rem",
+            fontSize: "0.70rem",
             textAlign: "center",
             lineHeight: 1,
             letterSpacing: "0.3px",
@@ -156,7 +138,7 @@ const MenuCard = ({ icon, label, onClick, isActive, user }) => {
             whiteSpace: "nowrap",
             overflow: "hidden",
             textOverflow: "ellipsis",
-            maxWidth: "80px",
+            maxWidth: "90px",
           }}
         >
           {label}
@@ -280,16 +262,16 @@ export default function AllServices() {
       subMenu: [
         {
           key: "dmt1",
-          label: "Dmt1",
-          icon: mt,
+          label: " Airtel Dmt",
+          icon: AIR1,
           component: Dmt,
           type: "mobile",
           title: "Dmt1",
         },
         {
           key: "dmt2",
-          label: "Dmt2",
-          icon: mt,
+          label: "Fino Dmt",
+          icon: FINO,
           component: Dmt2,
           type: "mobile",
           title: "Dmt2",
@@ -515,7 +497,7 @@ export default function AllServices() {
         backgroundColor: "#F5F4FA",
       }}
     >
-      <Grid container spacing={2} sx={{ mb: 2 }}>
+      <Grid container spacing={3} sx={{ mb: 2 }}>
         {menuData.map((menu) => (
           <Grid
             item
@@ -536,7 +518,24 @@ export default function AllServices() {
           </Grid>
         ))}
       </Grid>
-
+      {!activeMenu && (
+        <Box
+          sx={{
+            mt: 4,
+            p: 6,
+            textAlign: "center",
+            color: "text.secondary",
+            border: "1px dashed #E9E8F5",
+            borderRadius: 3,
+            backgroundColor: "#FAFAFA",
+            boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
+          }}
+        >
+          <Typography variant="h6" sx={{ fontWeight: 500, color: "#5210c1" }}>
+            Select a service to proceed
+          </Typography>
+        </Box>
+      )}
       {/* ✅ Neeche wala section */}
       {activeMenuData && (
         <Box
