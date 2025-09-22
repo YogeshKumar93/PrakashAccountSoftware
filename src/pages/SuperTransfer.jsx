@@ -128,7 +128,7 @@ const SuperTransfer = () => {
           />
         )}
       </Box>
-      <Box display="flex" flexDirection="column" gap={2}>
+      <Box display="flex" flexDirection="column" gap={1}>
         {/* Sender Details */}
         <Box width="100%">
           <SenderDetails sender={sender} />

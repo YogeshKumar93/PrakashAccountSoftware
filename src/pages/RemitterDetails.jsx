@@ -37,7 +37,7 @@ const RemitterDetails = ({ sender }) => {
       }}
     >
       {/* Header */}
-      <Box
+      {/* <Box
         sx={{
           bgcolor: "#9d72ff",
           color: "#fff",
@@ -52,13 +52,13 @@ const RemitterDetails = ({ sender }) => {
       >
         <Typography variant="subtitle1" fontWeight="bold">
           Sender Details
-        </Typography>
-        {isMobile && (
-          <IconButton size="small" sx={{ color: "white" }}>
-            {open ? <ExpandLess /> : <ExpandMore />}
-          </IconButton>
-        )}
-      </Box>
+        </Typography> */}
+      {isMobile && (
+        <IconButton size="small" sx={{ color: "white" }}>
+          {open ? <ExpandLess /> : <ExpandMore />}
+        </IconButton>
+      )}
+      {/* </Box> */}
 
       {/* Content with collapse on mobile */}
       <Collapse in={open || !isMobile} timeout="auto" unmountOnExit>

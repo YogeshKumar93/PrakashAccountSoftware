@@ -12,6 +12,7 @@ import AuthContext from "../contexts/AuthContext";
 import Dmt2SelectedBene from "./Dmt2SelectedBene";
 import Dmt2Beneficiaries from "./Dmt2Beneficiaries";
 import CommonLoader from "../components/common/CommonLoader";
+import Loader from "../components/common/Loader";
 
 const Dmt2 = () => {
   const [mobile, setMobile] = useState("");
@@ -93,59 +94,60 @@ const Dmt2 = () => {
   };
 
   return (
-    <Box>
+    <Loader loading={loading}>
       <Box>
-        <Box display="flex" gap={1} mb={1}>
-          <TextField
-            label="Mobile Number"
-            variant="outlined"
-            value={mobile}
-            onChange={handleMobileChange}
-            inputProps={{ maxLength: 10 }}
-            fullWidth
-            autoComplete="tel"
-          />
-          <TextField
-            label="Account Number"
-            variant="outlined"
-            value={accountNumber}
-            onChange={handleAccountChange}
-            fullWidth
-          />
+        <Box>
+          <Box display="flex" gap={1} mb={1}>
+            <TextField
+              label="Mobile Number"
+              variant="outlined"
+              value={mobile}
+              onChange={handleMobileChange}
+              inputProps={{ maxLength: 10 }}
+              fullWidth
+              autoComplete="tel"
+            />
+            <TextField
+              label="Account Number"
+              variant="outlined"
+              value={accountNumber}
+              onChange={handleAccountChange}
+              fullWidth
+            />
+          </Box>
+
+          {loading && (
+            <CommonLoader
+              loading={loading}
+              size={24}
+              sx={{
+                position: "absolute",
+                top: "50%",
+                right: 16,
+                transform: "translateY(-50%)",
+              }}
+            />
+          )}
         </Box>
 
-        {loading && (
-          <CommonLoader
-            loading={loading}
-            size={24}
-            sx={{
-              position: "absolute",
-              top: "50%",
-              right: 16,
-              transform: "translateY(-50%)",
-            }}
+        {openRegisterModal && (
+          <RemitterRegister
+            open={openRegisterModal}
+            onClose={() => setOpenRegisterModal(false)}
+            mobile={mobile}
+            onSuccess={setSender}
           />
         )}
-      </Box>
 
-      {openRegisterModal && (
-        <RemitterRegister
-          open={openRegisterModal}
-          onClose={() => setOpenRegisterModal(false)}
-          mobile={mobile}
-          onSuccess={setSender}
-        />
-      )}
+        {/* 🔹 Full-width stacked layout */}
+        <Box display="flex" flexDirection="column" gap={1}>
+          {/* Remitter full width */}
+          <Box width="100%">
+            <RemitterDetails sender={sender} />
+          </Box>
 
-      {/* 🔹 Full-width stacked layout */}
-      <Box display="flex" flexDirection="column" gap={1}>
-        {/* Remitter full width */}
-        <Box width="100%">
-          <RemitterDetails sender={sender} />
-        </Box>
-
-        {/* Selected beneficiary (still below Remitter, full width) */}
-        {/* {selectedBeneficiary && (
+          {/* Selected beneficiary (still below Remitter, full width) */}
+          {/* {selectedBeneficiary && (
           <Box width="100%">
             <Dmt2SelectedBene
               beneficiary={selectedBeneficiary}
@@ -157,18 +159,19 @@ const Dmt2 = () => {
           </Box>
         )} */}
 
-        {/* Beneficiaries list full width */}
-        <Box width="100%">
-          <Dmt2Beneficiaries
-            sender={sender}
-            onSuccess={handleFetchSender}
-            beneficiaries={beneficiaries}
-            onSelect={setSelectedBeneficiary}
-            onDelete={handleDeleteBeneficiary}
-          />
+          {/* Beneficiaries list full width */}
+          <Box width="100%">
+            <Dmt2Beneficiaries
+              sender={sender}
+              onSuccess={handleFetchSender}
+              beneficiaries={beneficiaries}
+              onSelect={setSelectedBeneficiary}
+              onDelete={handleDeleteBeneficiary}
+            />
+          </Box>
         </Box>
       </Box>
-    </Box>
+    </Loader>
   );
 };
 

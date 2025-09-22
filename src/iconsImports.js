@@ -1,6 +1,6 @@
 import biggpayLogo from "./assets/logo.png";
 // import biggpayLogo from "./assets/festivalVideo.mp4";
-import biggpayLogo_sm from "./assets/impsguru.ico";
+import biggpayLogo_sm from "./assets/p2pae.png";
 import airIndia from "./assets_travel/images/icons/AI.png";
 import closeicon from "./assets_travel/images/icons/close1.png";
 import successVdo from "./assets/video/checkmark.mp4";
@@ -181,12 +181,6 @@ import TrainImage from "./assets/irctcimage.png";
 import HotelImage from "./assets/hotelimage.jpg";
 import lock_icon from "./assets/lock.png";
 
-
-
-
-
-
-
 import bank from "./assets/Images/Bank.png";
 import dashboardnew from "./assets/Images/dashboard.svg";
 import users from "./assets/Images/Users2.svg";
@@ -203,7 +197,6 @@ import complain from "./assets/Images/Settings.svg";
 import risk from "./assets/Images/Risk.svg";
 import virtualAccount from "./assets/sidenav/virtualaccount1.svg";
 import loginHistory from "./assets/Images/history.svg";
- 
 
 // side nav images
 
@@ -245,7 +238,7 @@ import elec from "../src/assets/sidebar_icons/electricity.svg";
 import ccard from "../src/assets/sidebar_icons/creditcard.svg";
 import gasI from "../src/assets/sidebar_icons/gas.svg";
 import bb from "../src/assets/sidebar_icons/broad band.svg";
- 
+
 import mtrans from "../src/assets/sidebar_icons/money transfer.svg";
 import etrans from "../src/assets/sidebar_icons/express transfer.svg";
 import strans from "../src/assets/sidebar_icons/super transfer.svg";
@@ -288,7 +281,7 @@ export const bbpsPng = bbps;
 //services
 export const cms1 = cms_1;
 export const wallet1 = wallet;
-export const  Nepal1= Nepal;
+export const Nepal1 = Nepal;
 export const aeps1 = aeps_1;
 export const dmt = dmt_1;
 export const electricity1 = elec_1;
@@ -336,7 +329,6 @@ export const cbi2 = cbi1;
 export const idib2 = idib1;
 export const stand2 = stand1;
 export const jk2 = jk1;
-
 
 // bbps icons . . .
 export const electricity_svg = electricity;
@@ -427,7 +419,7 @@ export const blueNoti = blueinfo;
 export const api = api_img;
 export const excelIcon = excelImage;
 export const sample = sample1;
-export const upload =upload1;
+export const upload = upload1;
 export const CableIcon = cable;
 export const CableInv = cableInverted;
 export const playstore = playstoreIcon;
@@ -537,9 +529,6 @@ export const windows2 = windows_1;
 export const linux2 = linux_1;
 export const festivalIMage = fest;
 
-
-
-
 // *************New Icons******************************************
 export const bankImage = bank;
 export const dashboardImage = dashboardnew;
@@ -554,22 +543,21 @@ export const bgImage = bgimage;
 // export const aepsImage = aeps;
 // export const complainImage = complain;
 // export const riskImage = risk;
-export const transImage = transctionNew; 
- 
+export const transImage = transctionNew;
+
 export const fundReqImage = fundReq;
 export const walletTransferImage = walletTransfer;
- 
+
 export const walletLdgerImage = walletLdger;
-export const settingImage = setting; 
-export const serviceImage = service; 
+export const settingImage = setting;
+export const serviceImage = service;
 export const layoutImage = layout;
- 
 
 export const aepsImage = aeps;
 export const complainImage = complain;
- 
+
 export const riskImage = risk;
- 
+
 export const virtuanAccountImage = virtualAccount;
- 
+
 export const loginHistoryImage = loginHistory;
