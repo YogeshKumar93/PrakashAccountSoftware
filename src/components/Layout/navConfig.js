@@ -105,20 +105,32 @@ export const customer_nav = [
     to: "/customer/dashboard",
   },
   {
+    title: "Recharge and bill",
+    icon: serviceImage,
+    icon2: "🛠️",
+    to: "/customer/recharge-bill",
+  },
+  {
     title: "Money transfer",
     icon: bankImage,
     icon2: "🛠️",
     to: "/customer/money-transfer",
   },
   {
-    title: "Transfer",
+    title: "Fund Transfer",
     icon: fundReqImage,
     icon2: "🛠️",
     to: "/customer/transfer",
   },
   { title: "AEPS", icon: aepsImage, icon2: "👥", to: "/customer/aeps" },
 
-  { title: "Bbps", icon: aepsImage, icon2: "📒", to: "/customer/bbps" },
+  { title: "Bbps(Online)", icon: aepsImage, icon2: "📒", to: "/customer/bbps" },
+  {
+    title: "Bbps(Offline)",
+    icon: aepsImage,
+    icon2: "📒",
+    to: "/customer/bbps",
+  },
 
   { title: "Cms", icon: transImage, icon2: "📒", to: "/customer/cms" },
 
@@ -135,12 +147,7 @@ export const customer_nav = [
   //   icon2: "🛠️",
   //   to: "/customer/upi-transfer",
   // },
-  {
-    title: "Recharge and bill",
-    icon: serviceImage,
-    icon2: "🛠️",
-    to: "/customer/recharge-bill",
-  },
+
   {
     title: "Wallet Transfer",
     icon: walletTransferImage,
@@ -148,16 +155,17 @@ export const customer_nav = [
     to: "/customer/wallet-transfer",
   },
   {
-    title: "Transactions",
-    icon: transImage,
-    icon2: "💳",
-    to: "/customer/transactions",
-  },
-  {
     title: "Fund Request",
     icon: bankImage,
     icon2: "🛠️",
     to: "/customer/fund-request",
+  },
+
+  {
+    title: "Transactions",
+    icon: transImage,
+    icon2: "💳",
+    to: "/customer/transactions",
   },
 
   // {
@@ -187,12 +195,12 @@ export const customer_nav = [
     to: "/customer/complaint",
   },
 
-  {
-    title: "Activity Logs",
-    icon: riskImage,
-    icon2: "📒",
-    to: "/customer/retailerlogs",
-  },
+  // {
+  //   title: "Activity Logs",
+  //   icon: riskImage,
+  //   icon2: "📒",
+  //   to: "/customer/retailerlogs",
+  // },
 ];
 export const di_nav = [
   {
@@ -246,6 +254,24 @@ export const service_nav = [
     icon: walletLdgerImage,
     icon2: "🛠️",
     to: "/customer/wallet-ledger",
+  },
+  {
+    title: "Transactions",
+    icon: transImage,
+    icon2: "💳",
+    to: "/customer/transactions",
+  },
+  {
+    title: "Fund Request",
+    icon: bankImage,
+    icon2: "🛠️",
+    to: "/customer/fund-request",
+  },
+  {
+    title: "Activity Logs",
+    icon: riskImage,
+    icon2: "📒",
+    to: "/customer/retailerlogs",
   },
 ];
 

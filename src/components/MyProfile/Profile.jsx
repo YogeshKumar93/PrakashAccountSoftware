@@ -58,7 +58,7 @@ const ProfilePage = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [editedUser, setEditedUser] = useState({ ...user });
-  const[businessModal,setBusinessModal]=useState(false)
+  const [businessModal, setBusinessModal] = useState(false);
 
   // Sync editedUser with user context when user changes
   useEffect(() => {
@@ -115,7 +115,7 @@ const ProfilePage = () => {
       label: "Reset MPIN",
       icon: <LockReset sx={{ fontSize: { xs: 18, sm: 20 } }} />,
       onClick: handleResetMpin,
-      gradient: "linear-gradient(135deg, #43cea2, #185a9d)",
+      gradient: "#000",
       hoverGradient: "linear-gradient(135deg, #36d1dc, #5b86e5)",
     },
     {
@@ -123,7 +123,7 @@ const ProfilePage = () => {
       label: "Change Password",
       icon: <VpnKey sx={{ fontSize: { xs: 18, sm: 20 } }} />,
       onClick: handleChangePassword,
-      gradient: "linear-gradient(135deg, #ff6b6b, #c0392b)",
+      gradient: "#000",
       hoverGradient: "linear-gradient(135deg, #ff8e8e, #d35400)",
     },
     {
@@ -131,7 +131,7 @@ const ProfilePage = () => {
       label: "New Number",
       icon: <Phone sx={{ fontSize: { xs: 18, sm: 20 } }} />,
       onClick: handleNewNumber,
-      gradient: "linear-gradient(135deg, #4facfe, #00f2fe)",
+      gradient: "#000",
       hoverGradient: "linear-gradient(135deg, #43e97b, #38f9d7)",
     },
     {
@@ -139,7 +139,7 @@ const ProfilePage = () => {
       label: "Change MPIN",
       icon: <VerifiedUser sx={{ fontSize: { xs: 18, sm: 20 } }} />,
       onClick: handleChangeMpin,
-      gradient: "linear-gradient(135deg, #ff9a9e, #f6416c)",
+      gradient: "#000",
       hoverGradient: "linear-gradient(135deg, #ff758c, #ff7eb3)",
     },
     {
@@ -147,7 +147,7 @@ const ProfilePage = () => {
       label: "Change Layout",
       icon: <Dashboard sx={{ fontSize: { xs: 18, sm: 20 } }} />,
       onClick: handleChangeLayout,
-      gradient: "linear-gradient(135deg, #a8ff78, #78ffd6)",
+      gradient: "#000",
       hoverGradient: "linear-gradient(135deg, #c9ffbf, #7bed9f)",
     },
     {
@@ -155,7 +155,7 @@ const ProfilePage = () => {
       label: "Business Information",
       icon: <Dashboard sx={{ fontSize: { xs: 18, sm: 20 } }} />,
       onClick: handleBusinessInfo,
-      gradient: "linear-gradient(135deg, #a8ff78, #78ffd6)",
+      gradient: "#000",
       hoverGradient: "linear-gradient(135deg, #c9ffbf, #7bed9f)",
     },
   ];
@@ -173,7 +173,7 @@ const ProfilePage = () => {
           sx={{
             borderRadius: { xs: 2, sm: 4 },
             overflow: "hidden",
-              background: "linear-gradient(90deg, #FFD700, #FFA500, #FFD700)",
+            background: "linear-gradient(90deg, #FFD700, #FFA500, #FFD700)",
             boxShadow: "0 8px 25px rgba(0,0,0,0.08)",
             transition: "transform 0.3s ease-in-out, box-shadow 0.3s ease",
             "&:hover": {
@@ -261,7 +261,7 @@ const ProfilePage = () => {
                     }}
                   />
                 </Avatar>
-                
+
                 <IconButton
                   sx={{
                     position: "absolute",
@@ -421,7 +421,6 @@ const ProfilePage = () => {
               </Grid>
             </Grid>
 
-         
             <Box
               sx={{
                 p: { xs: 2, sm: 3 },
@@ -447,7 +446,7 @@ const ProfilePage = () => {
                         fontSize: { xs: "0.9rem", sm: "1rem" },
                         justifyContent: "flex-start",
                         pl: 2,
-                        background: button.gradient,
+                        background: "#fff",
                         boxShadow: "0 3px 6px rgba(0,0,0,0.15)",
                         "&:hover": {
                           background: button.hoverGradient,
