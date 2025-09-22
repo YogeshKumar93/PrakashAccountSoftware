@@ -108,10 +108,10 @@ const themeSettings = {
   drawerWidth: 240,
   palette: {
     primary: {
-      main: "#0037D7",
+      main: "#6c4bc7",
     },
     secondary: {
-      main: "#dc004e",
+      main: "#13c3c1",
     },
     background: {
       default: "#f5f5f5",
@@ -246,12 +246,12 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
             sx={{
               position: "relative",
               backgroundColor: isItemActive ? "#ebeef2" : "transparent",
-              color: isItemActive ? "#5210c1" : "#6e82a5",
+              color: isItemActive ? "#6c4bc7" : "#6e82a5",
               borderRadius: "4px",
               mb: 0,
               "&:hover": {
                 backgroundColor: "#ebeef2", // hover pe bhi active jaisa bg
-                color: "#5210c1", // hover pe bhi active jaisa text color
+                color: "#6c4bc7", // hover pe bhi active jaisa text color
                 "& .MuiListItemIcon-root img": {
                   filter:
                     "invert(41%) sepia(83%) saturate(7421%) hue-rotate(261deg) brightness(97%) contrast(101%)",
@@ -266,9 +266,9 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
                     top: 0,
                     height: "100%",
                     width: "4px",
-                    backgroundColor: "#5210c1", // left border only for active
+                    backgroundColor: "#6c4bc7", // left border only for active
                     borderRadius: "2px",
-                    color: "#5210c1",
+                    color: "#6c4bc7",
                   }
                 : {},
             }}
@@ -302,10 +302,10 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
                       fontFamily: "DM Sans, sans-serif",
                       fontWeight: 550,
                       fontSize: "15px",
-                      color: isItemActive ? "#5210c1" : "#6e82a5", // ✅ active text color
+                      color: isItemActive ? "#6c4bc7" : "#6e82a5", // ✅ active text color
                     },
                     ".MuiListItem-root:hover & .MuiTypography-root": {
-                      color: "#5210c1",
+                      color: "#6c4bc7",
                     },
                   }}
                 />
@@ -403,12 +403,12 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
             display: "flex",
 
             alignItems: "center",
-            color: "#5210c1",
+            color: "#6c4bc7",
             borderRadius: "4px",
             mb: 0,
             "&:hover": {
               backgroundColor: "#ebeef2", // hover bg
-              color: "#5210c1", // hover text
+              color: "#6c4bc7", // hover text
             },
             gap: 1, // space between icon and text
           }}
@@ -464,7 +464,7 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
             variant="h5"
             noWrap
             component="div"
-            sx={{ flexGrow: 1, color: "#5210c1", fontWeight: 700 }}
+            sx={{ flexGrow: 1, color: "#6c4bc7", fontWeight: 700 }}
           >
             {title}
           </Typography>
@@ -482,7 +482,7 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
           </IconButton>
 
           <IconButton onClick={colour}>
-            <RefreshIcon sx={{ color: "#fff" }} />
+            <RefreshIcon sx={{ color: "#13c3c1" }} />
           </IconButton>
 
           <Box
@@ -502,7 +502,7 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
                 sx={{
                   width: 30,
                   height: 30,
-                  bgcolor: "#5210c1",
+                  bgcolor: "#6c4bc7",
                 }}
               >
                 <PersonOutlineIcon sx={{ color: "#FFF", fontSize: 20 }} />
@@ -522,7 +522,7 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
                 variant="caption"
                 sx={{
                   fontWeight: 500,
-                  color: "#5210c1",
+                  color: "#6c4bc7",
                   fontSize: "11px",
                   lineHeight: 1,
                 }}
@@ -535,7 +535,7 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
                   variant="subtitle1"
                   sx={{
                     fontWeight: 600,
-                    color: "#526484",
+                    color: "#13c3c1",
                     fontSize: "12px",
                     lineHeight: "16px",
                   }}
@@ -547,7 +547,7 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
                   onClick={handleUserMenuOpen}
                   sx={{ p: 0, ml: 1, width: 20, height: 20 }}
                 >
-                  <ExpandMoreIcon sx={{ fontSize: 20, color: "#5210c1" }} />
+                  <ExpandMoreIcon sx={{ fontSize: 20, color: "#6c4bc7" }} />
                 </IconButton>
               </Box>
             </Box>
@@ -580,7 +580,7 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
                 gap: 2,
                 color: "#220ad7ff",
                 bgcolor: "#e6eef4ff",
-                borderTop: "3px solid #5210c1 ",
+                borderTop: "3px solid #6c4bc7" ,
               }}
             >
               <Avatar
