@@ -73,7 +73,7 @@ export const Admin_nav = [
     to: "/admin/wallet-ledger",
   },
   { title: "Settings", icon: settingImage, icon2: "👥", to: "/admin/settings" },
-  { title: "Purpose", icon: settingImage, icon2: "👥", to: "/admin/settings" },
+  // { title: "Purpose", icon: settingImage, icon2: "👥", to: "/admin/purposes" },
 
   // {
   //   title: "Layouts",

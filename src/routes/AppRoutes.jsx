@@ -76,6 +76,7 @@ import MdDashboard from "../pages/MdDashboard";
 import Purposes from "../pages/Purposes";
 import News from "../pages/News";
 import { BbpsOffline } from "../pages/BbpsOffline";
+import RetDdDashboard from "../pages/RetDdDashboard";
 
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated, loading, user } = useContext(AuthContext);
@@ -175,7 +176,7 @@ export default function AppRoutes() {
               <Route path="admin/profile" element={<ProfilePage />} />
               <Route path="admin/banks" element={<Banks />} />
               <Route path="admin/wallet-ledger" element={<WalletLedgers />} />
-              <Route path="admin/purpose" element={<Purposes />} />
+              <Route path="admin/purposes" element={<Purposes />} />
               <Route
                 path="admin/bankstatements/:id"
                 element={<BankStatements />}
@@ -217,7 +218,7 @@ export default function AppRoutes() {
           {/* CUSTOMER (ret, dd) */}
           {isCustomer && (
             <>
-              <Route path="customer/dashboard" element={<Dashboard />} />
+              <Route path="customer/dashboard" element={<RetDdDashboard />} />
               <Route path="customer/services" element={<Dashboard />} />
               <Route path="customer/transfer" element={<Transfer />} />
               <Route

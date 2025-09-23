@@ -6,6 +6,7 @@ import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import QrCodeIcon from "@mui/icons-material/QrCode";
 
 import SyncAltIcon from "@mui/icons-material/SyncAlt";
+import { bankImage } from "../iconsImports";
 
 export const Transfer = () => {
   const tabItems = [
@@ -20,7 +21,8 @@ export const Transfer = () => {
             justifyContent: "flex-start",
           }}
         >
-          <SyncAltIcon fontSize="small" />
+          {/* <SyncAltIcon fontSize="small" /> */}
+          <img src={bankImage} style={{ width: 20, height: 20 }} />
           <span>Bank</span>
         </div>
       ),
