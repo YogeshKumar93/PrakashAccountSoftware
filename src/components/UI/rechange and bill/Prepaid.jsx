@@ -41,7 +41,7 @@ const Prepaid = () => {
   const [mobileNumber, setMobileNumber] = useState("");
   const [manualAmount, setManualAmount] = useState("");
   const [step, setStep] = useState(2); // start directly at plans step
-
+  const [MpinCallBackVal, setMpinCallBackVal] = useState("");
   const { location } = useContext(AuthContext);
 
   // Fetch services and auto-select first operator
@@ -84,8 +84,8 @@ const Prepaid = () => {
       { operator }
     );
     setPlansLoading(false);
-
-    if (error) return apiErrorToast(error);
+    setMpinCallBackVal("");
+    if (error) return apiErrorToast(error?.message);
 
     setPlans(response?.data || []);
   };
@@ -94,6 +94,9 @@ const Prepaid = () => {
   const handleRecharge = async () => {
     if (!selectedPlan || !mobileNumber)
       return apiErrorToast("Please select a plan and enter mobile number");
+    if (mobileNumber.length !== 10)
+      return apiErrorToast("Please enter valid 10-digit mobile number");
+    if (!MpinCallBackVal) return apiErrorToast("Please enter your MPIN");
     if (!location?.lat || !location?.long) {
       return apiErrorToast("Location not available, please enable GPS.");
     }
@@ -104,13 +107,10 @@ const Prepaid = () => {
       amount: selectedPlan.price,
       latitude: location?.lat || "",
       longitude: location?.long || "",
+      mpin: MpinCallBackVal, // include MPIN in payload
     };
 
-    const { error, response } = await apiCall(
-      "post",
-      ApiEndpoints.RECHARGE,
-      payload
-    );
+    const { error, response } = await apiCall("post", ApiEndpoints.RECHARGE, payload);
     if (error) return apiErrorToast(error?.message);
 
     okSuccessToast(`Recharge successful for ${mobileNumber}`);
@@ -122,18 +122,14 @@ const Prepaid = () => {
       setSelectedPlan(null);
       setMobileNumber("");
       setManualAmount("");
-      setStep(2); // back to plans with first operator reset
+      setMpinCallBackVal("");
+      setStep(2); // back to plans
     }, 3000);
   };
 
   if (loading) {
     return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        minHeight="60vh"
-      >
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
         <Box textAlign="center">
           <CircularProgress size={60} thickness={4} />
           <Typography variant="h6" sx={{ mt: 2 }}>
@@ -149,219 +145,187 @@ const Prepaid = () => {
       {/* Step 2 - Operators & Plans */}
       {step === 2 && (
         <Slide direction="right" in mountOnEnter unmountOnExit>
-          <Box>
-            <Box sx={{ display: "flex", gap: 3 }}>
-              {/* Left side - Operators */}
-              <Box sx={{ flex: "0 0 30%" }}>
-                <Paper sx={{ p: 2, borderRadius: 2, height: "100%" }}>
-                  <Typography variant="h6" fontWeight="bold" mb={2}>
-                    Select Operator
-                  </Typography>
-                  <Box
-                    sx={{ display: "flex", flexDirection: "column", gap: 1 }}
-                  >
-                    {services.map((service) => (
-                      <Box
-                        key={service.id}
-                        onClick={() => fetchPlans(service)}
-                        sx={{
-                          p: 1.5,
-                          display: "flex",
-                          alignItems: "center",
-                          borderRadius: 2,
-                          cursor: "pointer",
-                          border:
-                            selectedService?.id === service.id
-                              ? "2px solid #9D72F0"
-                              : "1px solid #e0e0e0",
-                          backgroundColor:
-                            selectedService?.id === service.id
-                              ? "#f3f0ff"
-                              : "background.paper",
-                          transition: "all 0.3s ease",
-                          "&:hover": {
-                            backgroundColor: "#f0ebff",
-                          },
-                        }}
-                      >
-                        <Avatar
-                          src={operatorImages[service.code]}
-                          sx={{
-                            mr: 2,
-                            border:
-                              selectedService?.id === service.id
-                                ? "2px solid #9D72F0"
-                                : "none",
-                          }}
-                        />
-                        <Typography
-                          sx={{
-                            color:
-                              selectedService?.id === service.id
-                                ? "#6c4bc7"
-                                : "#333",
-                            fontWeight:
-                              selectedService?.id === service.id
-                                ? "600"
-                                : "500",
-                          }}
-                        >
-                          {service.name}
-                        </Typography>
-                      </Box>
-                    ))}
-                  </Box>
-                </Paper>
-              </Box>
-
-              {/* Right side - Plans */}
-              <Box sx={{ flex: 1 }}>
-                {selectedService ? (
-                  <Box>
-                    {/* Operator header */}
-                    <Paper
+          <Box sx={{ display: "flex", gap: 3 }}>
+            {/* Left side - Operators */}
+            <Box sx={{ flex: "0 0 30%" }}>
+              <Paper sx={{ p: 2, borderRadius: 2, height: "100%" }}>
+                <Typography variant="h6" fontWeight="bold" mb={2}>
+                  Select Operator
+                </Typography>
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                  {services.map((service) => (
+                    <Box
+                      key={service.id}
+                      onClick={() => fetchPlans(service)}
                       sx={{
-                        p: 2,
-                        mb: 2,
+                        p: 1.5,
                         display: "flex",
                         alignItems: "center",
+                        borderRadius: 2,
+                        cursor: "pointer",
+                        border:
+                          selectedService?.id === service.id
+                            ? "2px solid #9D72F0"
+                            : "1px solid #e0e0e0",
+                        backgroundColor:
+                          selectedService?.id === service.id
+                            ? "#f3f0ff"
+                            : "background.paper",
+                        transition: "all 0.3s ease",
+                        "&:hover": {
+                          backgroundColor: "#f0ebff",
+                        },
                       }}
                     >
                       <Avatar
-                        src={operatorImages[selectedService?.code]}
-                        sx={{ width: 50, height: 50, mr: 2 }}
-                      />
-                      <Box sx={{ height: 22 }}>
-                        <Typography variant="h6" fontWeight="bold">
-                          {selectedService?.name} Prepaid Plans
-                        </Typography>
-                        {/* <Typography variant="body2" color="text.secondary">
-                          Choose from available plans or enter custom amount
-                        </Typography> */}
-                      </Box>
-                    </Paper>
-
-                    {/* Plans grid */}
-                    <Grid container spacing={2}>
-                      {plans.map((plan) => (
-                        <Grid item xs={12} sm={6} md={4} key={plan.id}>
-                          <Card
-                            onClick={() => {
-                              setSelectedPlan(plan);
-                              setStep(3);
-                            }}
-                            sx={{
-                              p: 2,
-                              borderRadius: 2,
-                              cursor: "pointer",
-                              border:
-                                selectedPlan?.id === plan.id
-                                  ? "2px solid"
-                                  : "1px solid",
-                              borderColor:
-                                selectedPlan?.id === plan.id
-                                  ? "#9D72F0"
-                                  : "divider",
-                            }}
-                          >
-                            <Typography variant="h5" fontWeight="700">
-                              ₹{plan.price}
-                            </Typography>
-                            <Typography variant="body2" sx={{ mb: 1 }}>
-                              {plan.name}
-                            </Typography>
-                            {plan.validity && (
-                              <Chip
-                                label={`Validity: ${plan.validity}`}
-                                size="small"
-                              />
-                            )}
-                          </Card>
-                        </Grid>
-                      ))}
-                    </Grid>
-
-                    {/* Custom Amount */}
-                    <Divider sx={{ my: 4 }}>
-                      <Chip label="OR" />
-                    </Divider>
-                    <Paper
-                      sx={{
-                        p: 3,
-                        textAlign: "center",
-                        border: "1px dashed",
-                        borderColor: "divider",
-                      }}
-                    >
-                      <Typography variant="h6" gutterBottom>
-                        Enter Custom Amount
-                      </Typography>
-                      <Box
+                        src={operatorImages[service.code]}
                         sx={{
-                          display: "flex",
-                          justifyContent: "center",
-                          gap: 2,
+                          mr: 2,
+                          border:
+                            selectedService?.id === service.id
+                              ? "2px solid #9D72F0"
+                              : "none",
+                        }}
+                      />
+                      <Typography
+                        sx={{
+                          color:
+                            selectedService?.id === service.id ? "#6c4bc7" : "#333",
+                          fontWeight:
+                            selectedService?.id === service.id ? "600" : "500",
                         }}
                       >
-                        <TextField
-                          label="Amount"
-                          type="number"
-                          value={manualAmount}
-                          onChange={(e) => setManualAmount(e.target.value)}
-                          InputProps={{
-                            startAdornment: (
-                              <InputAdornment position="start">
-                                ₹
-                              </InputAdornment>
-                            ),
-                          }}
-                          sx={{ width: 160 }}
-                        />
-                        <Button
-                          variant="contained"
-                          sx={{
-                            borderRadius: 2,
-                            fontWeight: "bold",
-                            fontSize: { xs: "0.9rem", sm: "1rem" },
-                            background: "#fff",
-                            color: "#6c4bc7",
-                            // boxShadow: "0 4px 12px rgba(79,70,229,0.25)",
-                            "&:hover": {
-                              background: " #2563eb)",
-                            },
-                          }}
-                          onClick={() => {
-                            if (!manualAmount)
-                              return apiErrorToast("Please enter amount");
-                            setSelectedPlan({
-                              id: "custom",
-                              name: "Custom Amount",
-                              price: manualAmount,
-                            });
-                            setStep(3);
-                          }}
-                          disabled={!manualAmount}
-                        >
-                          Continue
-                        </Button>
-                      </Box>
-                    </Paper>
-                  </Box>
-                ) : (
+                        {service.name}
+                      </Typography>
+                    </Box>
+                  ))}
+                </Box>
+              </Paper>
+            </Box>
+
+            {/* Right side - Plans */}
+            <Box sx={{ flex: 1 }}>
+              {selectedService ? (
+                <Box>
+                  {/* Operator header */}
+                  <Paper sx={{ p: 2, mb: 2, display: "flex", alignItems: "center" }}>
+                    <Avatar
+                      src={operatorImages[selectedService?.code]}
+                      sx={{ width: 50, height: 50, mr: 2 }}
+                    />
+                    <Box sx={{ height: 22 }}>
+                      <Typography variant="h6" fontWeight="bold">
+                        {selectedService?.name} Prepaid Plans
+                      </Typography>
+                    </Box>
+                  </Paper>
+
+                  {/* Plans grid */}
+   <Grid container spacing={2} justifyContent="center">
+  {plans.map((plan) => (
+    <Grid
+      item
+      key={plan.id}
+      sx={{ display: "flex", justifyContent: "center" }}
+    >
+      <Card
+        onClick={() => {
+          setSelectedPlan(plan);
+          setStep(3);
+        }}
+        sx={{
+          p: 2,
+          borderRadius: 2,
+          cursor: "pointer",
+          width: 250, // fixed width for all cards
+          border: selectedPlan?.id === plan.id ? "2px solid" : "1px solid",
+          borderColor: selectedPlan?.id === plan.id ? "#9D72F0" : "divider",
+          textAlign: "center",
+        }}
+      >
+        <Typography variant="h5" fontWeight="700">
+          ₹{plan.price}
+        </Typography>
+        <Typography variant="body2" sx={{ mb: 1 }}>
+          {plan.name}
+        </Typography>
+        {plan.validity && <Chip label={`Validity: ${plan.validity}`} size="small" />}
+      </Card>
+    </Grid>
+  ))}
+</Grid>
+
+
+
+                  {/* Custom Amount */}
+                  <Divider sx={{ my: 4 }}>
+                    <Chip label="OR" />
+                  </Divider>
                   <Paper
                     sx={{
-                      p: 4,
+                      p: 3,
                       textAlign: "center",
-                      color: "text.secondary",
-                      borderRadius: 2,
+                      border: "1px dashed",
+                      borderColor: "divider",
                     }}
                   >
-                    <Typography variant="h6">
-                      Please select an operator from the left
+                    <Typography variant="h6" gutterBottom>
+                      Enter Custom Amount
                     </Typography>
+                    <Box sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
+                      <TextField
+                        label="Amount"
+                        type="number"
+                        value={manualAmount}
+                        onChange={(e) => setManualAmount(e.target.value)}
+                        InputProps={{
+                          startAdornment: <InputAdornment position="start">₹</InputAdornment>,
+                        }}
+                        sx={{ width: 160 }}
+                      />
+                      <Button
+                        variant="contained"
+                        sx={{
+                          borderRadius: 2,
+                          fontWeight: "bold",
+                          fontSize: { xs: "0.9rem", sm: "1rem" },
+                          background: "#fff",
+                          color: "#6c4bc7",
+                          "&:hover": {
+                            background: "#2563eb",
+                          },
+                        }}
+                        onClick={() => {
+                          if (!manualAmount)
+                            return apiErrorToast("Please enter amount");
+                          setSelectedPlan({
+                            id: "custom",
+                            name: "Custom Amount",
+                            price: manualAmount,
+                          });
+                          setStep(3);
+                        }}
+                        disabled={!manualAmount}
+                      >
+                        Continue
+                      </Button>
+                    </Box>
                   </Paper>
-                )}
-              </Box>
+                </Box>
+              ) : (
+                <Paper
+                  sx={{
+                    p: 4,
+                    textAlign: "center",
+                    color: "text.secondary",
+                    borderRadius: 2,
+                  }}
+                >
+                  <Typography variant="h6">
+                    Please select an operator from the left
+                  </Typography>
+                </Paper>
+              )}
             </Box>
           </Box>
         </Slide>
@@ -415,9 +379,7 @@ const Prepaid = () => {
                       <Typography
                         sx={{
                           color:
-                            selectedService?.id === service.id
-                              ? "#6c4bc7"
-                              : "#333",
+                            selectedService?.id === service.id ? "#6c4bc7" : "#333",
                           fontWeight:
                             selectedService?.id === service.id ? "600" : "500",
                         }}
@@ -441,21 +403,12 @@ const Prepaid = () => {
                 >
                   Confirm Recharge
                 </Typography>
+
                 {/* Operator info */}
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  gap={2}
-                  sx={{ p: 2, borderRadius: "8px", background: "#fff" }}
-                >
-                  <Avatar
-                    src={operatorImages[selectedService?.code]}
-                    sx={{ width: 50, height: 50, mr: 2 }}
-                  />
+                <Box display="flex" alignItems="center" gap={2} sx={{ p: 2, borderRadius: "8px", background: "#fff" }}>
+                  <Avatar src={operatorImages[selectedService?.code]} sx={{ width: 50, height: 50, mr: 2 }} />
                   <Box>
-                    <Typography variant="h6">
-                      {selectedService?.name}
-                    </Typography>
+                    <Typography variant="h6">{selectedService?.name}</Typography>
                     <Typography variant="body2" color="text.secondary">
                       Prepaid Mobile
                     </Typography>
@@ -482,17 +435,16 @@ const Prepaid = () => {
                   )}
                 </Box>
 
-                {/* Mobile input */}
+                {/* Mobile Number */}
                 <TextField
                   fullWidth
                   label="Mobile Number"
                   value={mobileNumber}
                   onChange={(e) => {
-                    // Only allow digits 0-9
                     const val = e.target.value.replace(/[^0-9]/g, "");
                     setMobileNumber(val);
                   }}
-                  inputProps={{ maxLength: 10 }} // optional: max 10 digits
+                  inputProps={{ maxLength: 10 }}
                   sx={{ mb: 3 }}
                   InputProps={{
                     startAdornment: (
@@ -503,45 +455,83 @@ const Prepaid = () => {
                   }}
                 />
 
-                {/* Buttons */}
-                <Box display="flex" gap={2}>
-                  <Button
-                    fullWidth
-                    variant="contained"
-                    sx={{
-                      borderRadius: 2,
-                      fontWeight: "bold",
-                      fontSize: { xs: "0.9rem", sm: "1rem" },
-                      background: "#fff",
-                      color: "#6c4bc7",
-                      // boxShadow: "0 4px 12px rgba(79,70,229,0.25)",
-                      "&:hover": {
-                        background: " #2563eb)",
-                      },
-                    }}
-                    onClick={() => setStep(2)}
-                  >
-                    Back
-                  </Button>
-                  <Button
-                    fullWidth
-                    variant="contained"
-                    onClick={handleRecharge}
-                    sx={{
-                      borderRadius: 2,
-                      fontWeight: "bold",
-                      fontSize: { xs: "0.9rem", sm: "1rem" },
-                      background: "#fff",
-                      color: "#6c4bc7",
-                      // boxShadow: "0 4px 12px rgba(79,70,229,0.25)",
-                      "&:hover": {
-                        background: " #2563eb)",
-                      },
-                    }}
-                  >
-                    Pay ₹{selectedPlan?.price}
-                  </Button>
-                </Box>
+                {/* MPIN Field */}
+              {/* MPIN Field - show only when mobile number is 10 digits */}
+{mobileNumber.length === 10 && (
+  <Box sx={{ display: "flex", justifyContent: "center", gap: 1, mb: 3 }}>
+    {Array.from({ length: 6 }).map((_, index) => (
+      <TextField
+        key={index}
+        type="password"
+        inputProps={{
+          maxLength: 1,
+          style: { textAlign: "center", fontSize: 24, width: 35, padding: 8 },
+        }}
+        value={MpinCallBackVal[index] || ""}
+        onChange={(e) => {
+          const val = e.target.value.replace(/[^0-9]/g, "");
+          if (!val) return;
+
+          let newMpin = MpinCallBackVal.split("");
+          newMpin[index] = val;
+          setMpinCallBackVal(newMpin.join(""));
+
+          // focus next input
+          const next = document.getElementById(`mpin-${index + 1}`);
+          if (next) next.focus();
+        }}
+        id={`mpin-${index}`}
+      />
+    ))}
+  </Box>
+)}
+
+
+                
+{/* Buttons - always visible, disabled until mobile is 10 digits and MPIN is complete */}
+<Box display="flex" gap={2}>
+  <Button
+    fullWidth
+    variant="contained"
+    sx={{
+      borderRadius: 2,
+      fontWeight: "bold",
+      fontSize: { xs: "0.9rem", sm: "1rem" },
+      background: "#fff",
+      color: "#6c4bc7",
+      "&:hover": {
+        background: "#2563eb",
+      },
+    }}
+    onClick={() => setStep(2)}
+    disabled={!(mobileNumber.length === 10 && MpinCallBackVal.length === 6)}
+    
+  >
+    
+    Back
+  </Button>
+  <Button
+    fullWidth
+    variant="contained"
+    onClick={handleRecharge}
+    sx={{
+      borderRadius: 2,
+      fontWeight: "bold",
+      fontSize: { xs: "0.9rem", sm: "1rem" },
+      background: "#fff",
+      color: "#6c4bc7",
+      "&:hover": {
+        background: "#2563eb",
+      },
+    }}
+    disabled={!(mobileNumber.length === 10 && MpinCallBackVal.length === 6)}
+  >
+     
+    Pay ₹{selectedPlan?.price}
+  </Button>
+</Box>
+
+
               </Paper>
             </Box>
           </Box>
@@ -571,6 +561,7 @@ const Prepaid = () => {
                 setSelectedPlan(null);
                 setMobileNumber("");
                 setManualAmount("");
+                setMpinCallBackVal("");
                 setStep(2); // back to plans
               }}
             >
@@ -579,6 +570,7 @@ const Prepaid = () => {
           </Box>
         </Fade>
       )}
+      
     </Container>
   );
 };

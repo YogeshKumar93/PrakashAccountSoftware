@@ -129,7 +129,7 @@ const ProfilePage = () => {
     },
     {
       id: 3,
-      label: "New Number",
+      label: "Change Number",
       icon: <Phone sx={{ fontSize: { xs: 18, sm: 20 } }} />,
       onClick: handleNewNumber,
       gradient: "#fff",

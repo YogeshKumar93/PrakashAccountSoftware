@@ -518,17 +518,34 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
                 cursor: "pointer",
               }}
             >
-              <Typography
-                variant="caption"
-                sx={{
-                  fontWeight: 500,
-                  color: "#6c4bc7",
-                  fontSize: "11px",
-                  lineHeight: 1,
-                }}
-              >
-                {roleLabels[user?.role] || "User"}
-              </Typography>
+           <Typography
+  variant="caption"
+  sx={{
+    fontWeight: 500,
+    color: "#6c4bc7",
+    fontSize: "11px",
+    lineHeight: 1,
+  }}
+>
+  {user?.role === "adm"
+    ? "Admin"
+    : user?.role === "dd"
+    ? "Direct Dealer"
+    : user?.role === "di"
+    ? "Distributor"
+    : user?.role === "sadm"
+    ? "Super Admin"
+    : user?.role === "ret"
+    ? "Retailer"
+    : user?.role === "zsm"
+    ? "Zonal Sales Manager"
+    : user?.role === "asm"
+    ? "Area Sales Manager"
+    : user?.role === "md"
+    ? "Master Distributor"
+    : "User"}
+</Typography>
+
 
               <Box sx={{ display: "flex", alignItems: "center" }}>
                 <Typography
@@ -719,7 +736,7 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
       </Box>
 
       {/* Main Content */}
-      <MainContent
+    <MainContent
         sx={{
           width: {
             xs: "100%",
@@ -737,7 +754,47 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
       >
         <Toolbar sx={{ minHeight: "60px !important" }} />
         <Outlet />
+     
+
+    {/* Footer */}
+    <Box
+   component="footer"
+      sx={{
+        textAlign: "center",
+        py: { xs: 2, sm: 1.5 },
+        px: { xs: 1, sm: 2 },
+        mt: 4,
+        mb: -2,
+        backgroundColor: "#d4e8e8ff",
+        color: "#000",
+        boxShadow: "0 -2px 8px rgba(0,0,0,0.1)",
+        flexShrink: 0,
+        borderRadius:"10px",
+      }}
+    >
+      <Typography
+        sx={{
+          fontSize: { xs: "13px", sm: "15px", md: "17px" },
+          fontWeight: "bold",
+        }}
+      >
+        © 2025 <Box component="span" sx={{ fontWeight: 700 }}>P2PAE Solutions Pvt. Ltd.</Box> All Rights Reserved.
+      </Typography>
+      <Typography
+        sx={{
+          fontSize: { xs: "11.5px", sm: "13px", md: "14.5px" },
+          mt: 1,
+          color: "#000",
+        
+        }}
+      >
+        Disclaimer: Disputes shall be subject to the jurisdiction of the courts of Delhi.
+      </Typography>
+    </Box>
+
+
       </MainContent>
+
     </Box>
   );
 };

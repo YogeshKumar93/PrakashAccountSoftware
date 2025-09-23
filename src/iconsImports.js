@@ -15,7 +15,11 @@ import fest from "./assets/FestivalImage.png";
 import cms_1 from "./assets/dashboard_icons/cms2.png";
 import wallet from "./assets/dashboard_icons/wallet.png";
 import Nepal from "./assets/dashboard_icons/flag.png";
-import aeps_1 from "./assets/dashboard_icons/fingerprint.png";
+import aeps_1 from "./assets/new_dashboardIcon/aeps.png";
+import bbpsOff from "./assets/new_dashboardIcon/bbpsOfline.png";
+import settingnew from "./assets/new_dashboardIcon/setting.png";
+import cmsNew from "./assets/new_dashboardIcon/cms.png";
+import bbps2 from "./assets/new_dashboardIcon/bbps.png";
 import dmt_1 from "./assets/dashboard_icons/rupee.png";
 import elec_1 from "./assets/dashboard_icons/electrical.png";
 import credit_1 from "./assets/dashboard_icons/credit-card.png";
@@ -24,7 +28,7 @@ import gas1 from "./assets/dashboard_icons/gas-cylinder.png";
 import water1 from "./assets/dashboard_icons/water-tap.png";
 import insurance1 from "./assets/dashboard_icons/insurance (1).png";
 import landline1 from "./assets/dashboard_icons/fax.png";
-import bbps1 from "./assets/dashboard_icons/BBPS1.png";
+import bbps1 from "./assets/new_dashboardIcon/bbps2.png";
 import dth1 from "./assets/dashboard_icons/dth1.png";
 import plane1 from "./assets/dashboard_icons/airplan.png";
 import bus1 from "./assets/dashboard_icons/shuttle-bus.png";
@@ -181,22 +185,30 @@ import TrainImage from "./assets/irctcimage.png";
 import HotelImage from "./assets/hotelimage.jpg";
 import lock_icon from "./assets/lock.png";
 
-import bank from "./assets/Images/Bank.png";
-import dashboardnew from "./assets/Images/dashboard.svg";
+import bank from "./assets/new_dashboardIcon/fundRq.png";
+import dashboardnew from "./assets/new_dashboardIcon/dashboard.png";
+import walletLdgernew from "./assets/new_dashboardIcon/walletLedger.png";
 import users from "./assets/Images/Users2.svg";
-import transctionNew from "./assets/Images/Transctionns.png";
+import transctionNew from "./assets/new_dashboardIcon/fundTrnsfr.png";
 import bgimage from "./assets/Images/bgimage.png";
-import fundReq from "./assets/Images/FundRequest.svg";
+import fundReq from "./assets/new_dashboardIcon/rupee.png";
 import walletTransfer from "./assets/Images/Transfer.svg";
 import walletLdger from "./assets/Images/walletLedger.svg";
+import complnImg from "./assets/new_dashboardIcon/complaint.png";
 import setting from "./assets/ImageS/settings2.svg";
-import service from "./assets/ImageS/Services.svg";
+import service from "./assets/new_dashboardIcon/fundTrnsfr.png";
+import rechargeNewImg from "./assets/new_dashboardIcon/rechargeNew.png";
 import layout from "./assets/ImageS/layouts.svg";
 import aeps from "./assets/ImageS/AEPS.svg";
-import complain from "./assets/Images/Settings.svg";
+import complain from "./assets/new_dashboardIcon/complaint.png";
 import risk from "./assets/Images/Risk.svg";
 import virtualAccount from "./assets/sidenav/virtualaccount1.svg";
 import loginHistory from "./assets/Images/history.svg";
+import aepsAeps from "./assets/sidenav/aeps1.svg";
+import sendmoney_1 from "./assets/new_dashboardIcon/rupee.png";
+import sendmoney_2 from "./assets/new_dashboardIcon/moneyTrnsfr.png";
+import thumbPrint_1 from "./assets/svg/aeps.svg";
+import mobileRech_1 from "./assets/new_dashboardIcon/moneyTrnsfr.png";
 
 // side nav images
 
@@ -531,6 +543,7 @@ export const festivalIMage = fest;
 
 // *************New Icons******************************************
 export const bankImage = bank;
+export const walletLedgerImg = walletLdgernew;
 export const dashboardImage = dashboardnew;
 export const usersImage = users;
 export const bgImage = bgimage;
@@ -546,18 +559,29 @@ export const bgImage = bgimage;
 export const transImage = transctionNew;
 
 export const fundReqImage = fundReq;
+export const complainImageNew = complnImg;
 export const walletTransferImage = walletTransfer;
 
 export const walletLdgerImage = walletLdger;
 export const settingImage = setting;
 export const serviceImage = service;
+export const rechargeNew = rechargeNewImg;
 export const layoutImage = layout;
 
 export const aepsImage = aeps;
+export const bbpsOfline = bbpsOff;
 export const complainImage = complain;
-
+export const settingNew = settingnew;
+export const cmsImage = cmsNew;
+export const bbps_2 = bbps2;
 export const riskImage = risk;
 
 export const virtuanAccountImage = virtualAccount;
 
 export const loginHistoryImage = loginHistory;
+export const aepsaeps   = aepsAeps;
+export const sendmoney   = sendmoney_1;
+export const sendmoney2 = sendmoney_2;
+export const thumbPrint   = thumbPrint_1;
+export const mobileRechargeNew = mobileRech_1;
+

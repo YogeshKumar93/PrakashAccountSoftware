@@ -43,6 +43,12 @@ import {
   vapy_1,
   water_1,
   airtel2,
+  aepsImage,
+  
+  aepsaeps,
+  sendmoney,
+  thumbPrint,
+  mobileRechargeNew,
 } from "../iconsImports";
 import SuperTransfer from "./SuperTransfer";
 
@@ -57,6 +63,8 @@ import Cms from "./Cms";
 import Prepaid from "../components/UI/rechange and bill/Prepaid";
 import Dth from "../components/UI/rechange and bill/Dth";
 import { AIR1, FINO } from "../utils/iconsImports";
+import { bg } from "date-fns/locale";
+import { color } from "framer-motion";
 
 const MenuCard = ({ icon, label, onClick, isActive, user }) => {
   return (
@@ -258,7 +266,7 @@ export default function AllServices() {
     hasPermission("monettransfer") && {
       key: "monettransfer",
       label: "Money Transfer",
-      icon: mt,
+      icon: sendmoney,
       subMenu: [
         {
           key: "dmt1",
@@ -309,8 +317,9 @@ export default function AllServices() {
     hasPermission("aeps") && {
       key: "aeps",
       label: "AEPS",
-      icon: aeps1,
+      icon: thumbPrint,
       component: Aeps,
+      
     },
     hasPermission("billpay") && {
       key: "billPayments",
@@ -371,7 +380,7 @@ export default function AllServices() {
     hasPermission("mt") && {
       key: "recharge",
       label: "Recharge",
-      icon: recharge,
+      icon: mobileRechargeNew,
       subMenu: [
         {
           key: "prepaid",

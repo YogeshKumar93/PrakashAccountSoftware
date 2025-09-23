@@ -92,6 +92,7 @@ const CommonMpinModal = ({
         <Typography
           variant="body2"
           color="textSecondary"
+          type="password"
           sx={{
             textAlign: "center",
             mb: 3,
