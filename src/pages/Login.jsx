@@ -354,7 +354,7 @@ const passwordInputProps = (showPassword, setShowPassword) => ({
             position: "absolute",
             top: "50%",
             left: "50%",
-            type: "password",
+           
             transform: "translate(-50%, -50%)",
             width: { xs: "90%", sm: 500, md: 600 },
             // boxShadow: 24,
