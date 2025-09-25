@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import CommonTabs from "../components/common/CommonTabs";
+ 
 
 // Wallet components
  
@@ -11,6 +11,7 @@ import AuthContext from "../contexts/AuthContext";
 import Wallet2WalletTransfer from "./Wallet2WalletTransfer";
 import Wallet2Wallet1 from "./Wallet2Wallet1";
 import Wallet3ToWallet1 from "./Wallet3Wallet1";
+import CommonTabs from "../components/common/CommonTabs";
 
 export const WalletTransfer = () => {
   const authCtx = useContext(AuthContext);

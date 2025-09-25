@@ -77,6 +77,7 @@ import Purposes from "../pages/Purposes";
 import News from "../pages/News";
 import { BbpsOffline } from "../pages/BbpsOffline";
 import RetDdDashboard from "../pages/RetDdDashboard";
+import { WalletTransfer } from "../pages/WalletTransfer";
 
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated, loading, user } = useContext(AuthContext);
@@ -234,7 +235,7 @@ export default function AppRoutes() {
 
               <Route
                 path="customer/wallet-transfer"
-                element={<Wallet2WalletTransfer />}
+                element={<WalletTransfer />}
               />
               <Route
                 path="customer/wallet-ledger"
