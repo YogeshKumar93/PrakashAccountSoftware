@@ -55,7 +55,7 @@ export const WalletLedgers = () => {
         }}
       >
         <ReceiptIcon fontSize="small" />
-        <span>Wallet Ledger 2</span>
+        <span>Wallet Ledger 3</span>
       </div>
     ),
     component: <WalletLedger3 />,

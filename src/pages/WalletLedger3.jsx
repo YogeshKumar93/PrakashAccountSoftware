@@ -208,7 +208,7 @@ const WalletLedger3 = ({ query }) => {
       {!loading && (
         <CommonTable
           columns={columns}
-          endpoint={ApiEndpoints.GET_WALLETLEDGER_2}
+          endpoint={ApiEndpoints.GET_WALLETLEDGER_3}
           filters={filters}
           queryParam={queryParam}
           refresh={true}
