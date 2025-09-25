@@ -1,5 +1,5 @@
 import { useMemo, useCallback, useContext, useState } from "react";
-import { Box, Tooltip, Typography, Button, Drawer } from "@mui/material";
+import { Box, Tooltip, Typography, Button, Drawer, IconButton } from "@mui/material";
 import CommonTable from "../common/CommonTable";
 import ApiEndpoints from "../../api/ApiEndpoints";
 import AuthContext from "../../contexts/AuthContext";
@@ -50,13 +50,13 @@ const AepsTxn = ({ query }) => {
           <div style={{ display: "flex", flexDirection: "column" }}>
             <Tooltip title={`Created: ${ddmmyyWithTime(row.created_at)}`} arrow>
               <span>
-                {ddmmyy(row.created_at)} {dateToTime1(row.created_at)}
+                {ddmmyy(row.created_at)} 
               </span>
-            </Tooltip>
+            </Tooltip><br/>
 
             <Tooltip title={`Updated: ${ddmmyyWithTime(row.updated_at)}`} arrow>
               <span>
-                {ddmmyy(row.updated_at)} {dateToTime1(row.updated_at)}
+                {ddmmyy(row.updated_at)} 
               </span>
             </Tooltip>
           </div>
@@ -193,6 +193,15 @@ const AepsTxn = ({ query }) => {
         ),
         wrap: true,
       },
+        {
+        name: "Service",
+        selector: (row) => (
+          <div style={{ textAlign: "left" }}>
+            {row.operator}  
+          </div>
+        ),
+        wrap: true,
+      },
       {
         name: "Txn Type",
         selector: (row) => (
@@ -240,7 +249,7 @@ const AepsTxn = ({ query }) => {
 
         center: true,
       },
-      ...(user?.role === "ret"
+      ...(user?.role === "ret" || "adm"
         ? [
             {
               name: "Actions",

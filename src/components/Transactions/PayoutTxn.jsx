@@ -1,5 +1,5 @@
 import { useMemo, useCallback, useContext, useState } from "react";
-import { Box, Tooltip, Typography, Button, Drawer } from "@mui/material";
+import { Box, Tooltip, Typography, Button, Drawer, IconButton } from "@mui/material";
 import CommonTable from "../common/CommonTable";
 import ApiEndpoints from "../../api/ApiEndpoints";
 import AuthContext from "../../contexts/AuthContext";
@@ -288,7 +288,7 @@ const PayoutTxn = ({ query }) => {
 
         center: true,
       },
-      ...(user?.role === "ret"
+      ...(user?.role === "ret" || "adm"
         ? [
             {
               name: "Actions",

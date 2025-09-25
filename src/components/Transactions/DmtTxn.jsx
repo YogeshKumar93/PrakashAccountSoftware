@@ -69,13 +69,14 @@ const DmtTxn = ({ query }) => {
           >
             <Tooltip title={`Created: ${ddmmyyWithTime(row.created_at)}`} arrow>
               <span>
-                {ddmmyy(row.created_at)} {dateToTime1(row.created_at)}
+                {ddmmyy(row.created_at)}  
               </span>
             </Tooltip>
 
+
             {/* Hide updated_at for ret and dd */}
             {!(user?.role === "ret" || user?.role === "dd") && (
-              <Tooltip title={`Updated: ${dateToTime(row.updated_at)}`} arrow>
+              <Tooltip title={`Updated: ${ddmmyyWithTime(row.updated_at)}`} arrow>
                 <span style={{ marginTop: "8px" }}>
                   {ddmmyy(row.updated_at)}
                 </span>
@@ -345,7 +346,7 @@ const DmtTxn = ({ query }) => {
         center: true,
         width: "70px",
       },
-      ...(user?.role === "ret" || user?.role === "dd"
+      ...(user?.role === "ret" || user?.role === "dd" || "adm"
         ? [
             {
               name: "View",
