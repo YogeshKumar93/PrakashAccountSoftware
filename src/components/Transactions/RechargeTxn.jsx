@@ -26,6 +26,9 @@ import CloseIcon from "@mui/icons-material/Close";
 import companylogo from "../../assets/Images/logo(1).png";
 import TransactionDetailsCard from "../common/TransactionDetailsCard";
 import ComplaintForm from "../ComplaintForm";
+import PrintIcon from "@mui/icons-material/Print";
+import { useNavigate } from "react-router-dom";
+import { Logo } from "../../iconsImports";
 
 const RechargeTxn = ({ query }) => {
   const authCtx = useContext(AuthContext);
@@ -35,6 +38,7 @@ const RechargeTxn = ({ query }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
 
+  const navigate = useNavigate();
   const filters = useMemo(
     () => [
       {
@@ -49,8 +53,15 @@ const RechargeTxn = ({ query }) => {
         ],
         defaultValue: "pending",
       },
-      { id: "sender_mobile", label: "Sender Mobile", type: "textfield" },
+      { id: "mobile_number", label: "Mobile Number", type: "textfield" },
       { id: "txn_id", label: "Txn ID", type: "textfield" },
+      { id: "route", label: "Route", type: "textfield", roles: ["adm"] },
+      {
+        id: "client_ref",
+        label: "Client Ref",
+        type: "textfield",
+        roles: ["adm"],
+      },
     ],
     []
   );
@@ -58,29 +69,41 @@ const RechargeTxn = ({ query }) => {
   const columns = useMemo(
     () => [
       {
-        name: "Date/Time",
+        name: "Date",
         selector: (row) => (
           <div style={{ display: "flex", flexDirection: "column" }}>
             <Tooltip title={`Created: ${ddmmyyWithTime(row.created_at)}`} arrow>
               <span>
-                {ddmmyy(row.created_at)}  
+                {ddmmyy(row.created_at)} {dateToTime1(row.created_at)}
               </span>
             </Tooltip>
 
-            {!(user?.role === "ret" || user?.role === "dd") && (
-              <Tooltip title={`Updated: ${ddmmyyWithTime(row.updated_at)}`} arrow>
-                <span style={{ marginTop: "8px" }}>
-                  {ddmmyy(row.updated_at)}
-                </span>
-              </Tooltip>
-            )}
+            <Tooltip title={`Updated: ${ddmmyyWithTime(row.updated_at)}`} arrow>
+              <span>
+                {ddmmyy(row.updated_at)} {dateToTime1(row.updated_at)}
+              </span>
+            </Tooltip>
           </div>
         ),
         wrap: true,
-        width: "140px",
+        width: "190px",
       },
+      ...(user?.role === "ret" || user?.role === "dd"
+        ? []
+        : [
+            {
+              name: "Route",
+              selector: (row) => (
+                <div style={{ fontSize: "10px", fontWeight: "600" }}>
+                  {row.route}
+                </div>
+              ),
+              center: true,
+              width: "70px",
+            },
+          ]),
       {
-        name: "Platform",
+        name: "Pf",
         selector: (row) => {
           let icon;
 
@@ -151,10 +174,10 @@ const RechargeTxn = ({ query }) => {
         ? []
         : [
             {
-              name: "User",
+              name: "Est.",
               selector: (row) => (
                 <div style={{ fontSize: "10px", fontWeight: "600" }}>
-                  {row.user_id}
+                  {row.establishment}
                 </div>
               ),
               center: true,
@@ -199,20 +222,6 @@ const RechargeTxn = ({ query }) => {
               width: "70px",
             },
           ]),
-      ...(user?.role === "ret" || user?.role === "dd"
-        ? []
-        : [
-            {
-              name: "Route",
-              selector: (row) => (
-                <div style={{ fontSize: "10px", fontWeight: "600" }}>
-                  {row.route}
-                </div>
-              ),
-              center: true,
-              width: "70px",
-            },
-          ]),
 
       {
         name: "Mobile",
@@ -225,7 +234,7 @@ const RechargeTxn = ({ query }) => {
       {
         name: "Amount",
         selector: (row) => (
-          <div style={{ color: "green", fontWeight: 700, textAlign: "right" }}>
+          <div style={{ color: "red", fontWeight: 700, textAlign: "right" }}>
             ₹ {parseFloat(row.amount).toFixed(2)}
           </div>
         ),
@@ -233,7 +242,7 @@ const RechargeTxn = ({ query }) => {
         right: true,
       },
       {
-        name: "Comm",
+        name: "Discount",
         selector: (row) => (
           <div style={{ textAlign: "left" }}>
             {/* GST: ₹{parseFloat(row.gst).toFixed(2)} <br /> */}₹
@@ -243,76 +252,117 @@ const RechargeTxn = ({ query }) => {
         wrap: true,
         right: true,
       },
-      ...(user?.role === "ret" || user?.role === "dd"
-        ? []
-        : [
+      ...(user?.role === "adm"
+        ? [
             {
-              name: "Di Comm",
+              name: "Di Comm/ tds",
               selector: (row) => (
-                <div style={{ textAlign: "left" }}>
-                  ₹{parseFloat(row.di_comm).toFixed(2)}
-                </div>
-              ),
-              center: true,
-              width: "70px",
-            },
-          ]),
-      ...(user?.role === "ret" || user?.role === "dd"
-        ? []
-        : [
-            {
-              name: "Md Comm",
-              selector: (row) => (
-                <div style={{ textAlign: "left" }}>
-                  ₹{parseFloat(row.md_comm).toFixed(2)}
+                <div
+                  style={{
+                    textAlign: "right",
+                    fontSize: "10px",
+                    fontWeight: 600,
+                  }}
+                >
+                  <div style={{ color: "green" }}>
+                    {parseFloat(row?.di_comm || 0).toFixed(2)}
+                  </div>
+                  <div style={{ color: "blue" }}>
+                    {parseFloat(row?.di_tds || 0).toFixed(2)}
+                  </div>
                 </div>
               ),
               right: true,
-              wrap: true,
+              width: "60px",
             },
-          ]),
+            {
+              name: "Md Comm/ tds",
+              selector: (row) => (
+                <div
+                  style={{
+                    textAlign: "right",
+                    fontSize: "10px",
+                    fontWeight: 600,
+                  }}
+                >
+                  <div style={{ color: "green" }}>
+                    {parseFloat(row?.md_comm || 0).toFixed(2)}
+                  </div>
+                  <div style={{ color: "blue" }}>
+                    {parseFloat(row?.md_tds || 0).toFixed(2)}
+                  </div>
+                </div>
+              ),
+              right: true,
+              width: "60px",
+            },
+          ]
+        : []),
+
       {
         name: "Status",
         selector: (row) => (
           <div style={{ textAlign: "left" }}>
             <CommonStatus value={row.status} /> <br />
-            {row.operator_id}
+            {row.operator_id || "N/A"}
           </div>
         ),
         center: true,
       },
-      ...(user?.role === "ret" || "adm"
-        ? [
-            {
-              name: "Actions",
-              selector: (row) => (
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    minWidth: "80px",
-                  }}
+      {
+        name: "Action",
+        selector: (row) => (
+          <div style={{ textAlign: "left" }}>{row.action || "N/A"}</div>
+        ),
+        center: true,
+      },
+      {
+        name: "View",
+        selector: (row) => (
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              minWidth: "80px",
+              gap: 1, // spacing between icons
+            }}
+          >
+            {/* View Transaction visible to all */}
+            <Tooltip title="View Transaction">
+              <IconButton
+                color="info"
+                onClick={() => {
+                  setSelectedRow(row);
+                  setDrawerOpen(true);
+                }}
+                size="small"
+                sx={{ backgroundColor: "transparent" }}
+              >
+                <VisibilityIcon />
+              </IconButton>
+            </Tooltip>
+
+            {/* Print Recharge visible only to ret and dd */}
+            {(user?.role === "ret" || user?.role === "dd") && (
+              <Tooltip title="Print Recharge">
+                <IconButton
+                  color="secondary"
+                  size="small"
+                  onClick={() =>
+                    navigate("/print-recharge", { state: { txnData: row } })
+                  }
+                  sx={{ backgroundColor: "transparent" }}
                 >
-                  <Tooltip title="View Transaction">
-                    <IconButton
-                      color="info"
-                      onClick={() => {
-                        setSelectedRow(row);
-                        setDrawerOpen(true);
-                      }}
-                      size="small"
-                    >
-                      <VisibilityIcon />
-                    </IconButton>
-                  </Tooltip>
-                </Box>
-              ),
-              width: "100px",
-              center: true,
-            },
-          ]
-        : []),
+                  <PrintIcon />
+                </IconButton>
+              </Tooltip>
+            )}
+          </Box>
+        ),
+        width: "100px",
+        center: true,
+      },
     ],
     []
   );
@@ -360,7 +410,7 @@ const RechargeTxn = ({ query }) => {
               amount={selectedRow.amount}
               status={selectedRow.status}
               onClose={() => setDrawerOpen(false)} // ✅ Close drawer
-              companyLogoUrl={companylogo}
+              companyLogoUrl={Logo}
               dateTime={ddmmyyWithTime(selectedRow.created_at)}
               message={selectedRow.message || "No message"}
               details={[

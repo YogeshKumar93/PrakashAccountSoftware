@@ -21,14 +21,14 @@ import {
 import CommonStatus from "../components/common/CommonStatus";
 import CommonLoader from "../components/common/CommonLoader";
 import DeleteIcon from "@mui/icons-material/Delete";
-
+import PrintIcon from "@mui/icons-material/Print";
 import LaptopIcon from "@mui/icons-material/Laptop";
 import DescriptionIcon from "@mui/icons-material/Description";
 import { useNavigate } from "react-router-dom";
 import W2wTransfer from "./w2wTransfer";
 import { android2, linux2, macintosh2, windows2 } from "../iconsImports";
 import { okhttp } from "../utils/iconsImports";
-const Wallet2WalletTransfer = ({ filters = [] }) => {
+const Wallet2WalletTransfer = ({}) => {
   const authCtx = useContext(AuthContext);
   const user = authCtx?.user;
   const navigate = useNavigate();
@@ -57,6 +57,26 @@ const Wallet2WalletTransfer = ({ filters = [] }) => {
       ? ApiEndpoints.WALLET_LIST
       : ApiEndpoints.WALLET_GET_W2W_TRANSACTION;
 
+  const filters = useMemo(
+    () => [
+      {
+        id: "status",
+        label: "Status",
+        type: "dropdown",
+        options: [
+          { value: "success", label: "Success" },
+          { value: "failed", label: "Failed" },
+          { value: "refund", label: "Refund" },
+          { value: "pending", label: "Pending" },
+        ],
+        defaultValue: "pending",
+        roles: ["adm"],
+      },
+      // { id: "sender_mobile", label: "Sender Mobile", type: "textfield" },
+      { id: "txn_id", label: "Txn ID", type: "textfield", roles: ["adm"] },
+    ],
+    []
+  );
   const columns = useMemo(
     () => [
       {
@@ -69,20 +89,19 @@ const Wallet2WalletTransfer = ({ filters = [] }) => {
               </span>
             </Tooltip>
 
-            {!(user?.role === "ret" || user?.role === "dd") && (
-              <Tooltip title={`Updated: ${dateToTime(row.updated_at)}`} arrow>
-                <span style={{ marginTop: "8px" }}>
-                  {ddmmyy(row.updated_at)}
-                </span>
-              </Tooltip>
-            )}
+            <Tooltip title={`Updated: ${ddmmyyWithTime(row.updated_at)}`} arrow>
+              <span>
+                {ddmmyy(row.updated_at)} {dateToTime1(row.updated_at)}
+              </span>
+            </Tooltip>
           </div>
         ),
         wrap: true,
-        width: "140px",
+        width: "190px",
       },
+
       {
-        name: "Platform",
+        name: "Pf",
         selector: (row) => {
           let icon;
 
@@ -149,6 +168,30 @@ const Wallet2WalletTransfer = ({ filters = [] }) => {
         left: true,
       },
       {
+        name: "Sender",
+        selector: (row) => (
+          <div
+            style={{ textAlign: "left", fontSize: "10px", fontWeight: "600" }}
+          >
+            {row.sender_est || "N/A"}
+          </div>
+        ),
+        wrap: true,
+        width: "80px",
+      },
+      {
+        name: "Reciever",
+        selector: (row) => (
+          <div
+            style={{ textAlign: "left", fontSize: "10px", fontWeight: "600" }}
+          >
+            {row.receiver_est || "N/A"}
+          </div>
+        ),
+        wrap: true,
+        width: "80px",
+      },
+      {
         name: "Service",
         selector: (row) => (
           <div
@@ -164,12 +207,22 @@ const Wallet2WalletTransfer = ({ filters = [] }) => {
         ? [] // ❌ hide for ret and dd
         : [
             {
-              name: "TxnId/Ref",
+              name: "TxnId",
               selector: (row) => (
                 <>
                   <div style={{ textAlign: "left", fontSize: "13px" }}>
                     {row.txn_id}
-                    <br />
+                  </div>
+                </>
+              ),
+              wrap: true,
+              width: "100px",
+            },
+            {
+              name: "Client Ref",
+              selector: (row) => (
+                <>
+                  <div style={{ textAlign: "left", fontSize: "13px" }}>
                     {row.client_ref}
                   </div>
                 </>
@@ -216,7 +269,17 @@ const Wallet2WalletTransfer = ({ filters = [] }) => {
 
       {
         name: "Remarks",
-        selector: (row) => <div>{row.remark || "N/A"}</div>,
+        selector: (row) => {
+          const text = row.remark || "N/A";
+          const displayText =
+            text.length > 10 ? `${text.slice(0, 10)}...` : text;
+
+          return (
+            <Tooltip title={text}>
+              <div>{displayText}</div>
+            </Tooltip>
+          );
+        },
         center: true,
         width: "70px",
       },
@@ -233,12 +296,57 @@ const Wallet2WalletTransfer = ({ filters = [] }) => {
         center: true,
         width: "60px",
       },
-      // {
-      //   name: "Status",
-      //   selector: (row) => <CommonStatus value={row.status} />,
-      //   center: true,
-      //   width: "90px",
-      // },
+      {
+        name: "Status",
+        selector: (row) => <CommonStatus value={row.status} />,
+        center: true,
+        width: "90px",
+      },
+      ...(user?.role === "ret"
+        ? [
+            {
+              name: "Actions",
+              selector: (row) => (
+                <>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      minWidth: "80px",
+                    }}
+                  >
+                    {/* <Tooltip title="View Transaction">
+                    <IconButton
+                      color="info"
+                      onClick={() => {
+                        setSelectedRow(row);
+                        setDrawerOpen(true);
+                      }}
+                      size="small"
+                    >
+                      <VisibilityIcon />
+                    </IconButton>
+                  </Tooltip> */}
+                    <Tooltip title="Print W2W">
+                      <IconButton
+                        color="secondary"
+                        size="small"
+                        onClick={() =>
+                          navigate("/print-w2w", { state: { txnData: row } })
+                        }
+                      >
+                        <PrintIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
+                </>
+              ),
+              width: "100px",
+              center: true,
+            },
+          ]
+        : []),
     ],
     []
   );
@@ -268,7 +376,8 @@ const Wallet2WalletTransfer = ({ filters = [] }) => {
             endpoint={tableEndpoint}
             filters={filters}
             queryParam=""
-            refresh={false}
+            refresh={true}
+            includeClientRef={false}
           />
         )}
       </Box>

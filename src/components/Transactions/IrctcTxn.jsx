@@ -1,5 +1,12 @@
 import { useMemo, useCallback, useContext, useState } from "react";
-import { Box, Tooltip, Typography, Button, Drawer, IconButton } from "@mui/material";
+import {
+  Box,
+  Tooltip,
+  Typography,
+  Button,
+  Drawer,
+  IconButton,
+} from "@mui/material";
 import CommonTable from "../common/CommonTable";
 import ApiEndpoints from "../../api/ApiEndpoints";
 import AuthContext from "../../contexts/AuthContext";
@@ -7,20 +14,22 @@ import { dateToTime1, ddmmyy, ddmmyyWithTime } from "../../utils/DateUtils";
 import CommonStatus from "../common/CommonStatus";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import CloseIcon from "@mui/icons-material/Close";
- 
-import companylogo from '../../assets/Images/logo(1).png';
+
+import companylogo from "../../assets/Images/logo(1).png";
 import TransactionDetailsCard from "../common/TransactionDetailsCard";
+import PrintIcon from "@mui/icons-material/Print";
+import { useNavigate } from "react-router-dom";
 
 const IrctcTxn = ({ query }) => {
   const authCtx = useContext(AuthContext);
   const user = authCtx?.user;
   const [openCreate, setOpenCreate] = useState(false);
   const [selectedTxn, setSelectedTxn] = useState(null);
-
+  const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
 
-const filters = useMemo(
+  const filters = useMemo(
     () => [
       {
         id: "status",
@@ -34,33 +43,32 @@ const filters = useMemo(
         ],
         defaultValue: "pending",
       },
-      { id: "sender_mobile", label: "Sender Mobile", type: "textfield" },
+      // { id: "sender_mobile", label: "Sender Mobile", type: "textfield" },
       { id: "txn_id", label: "Txn ID", type: "textfield" },
     ],
     []
   );
   const columns = useMemo(
     () => [
-            
       {
         name: "Date",
         selector: (row) => (
           <div style={{ display: "flex", flexDirection: "column" }}>
             <Tooltip title={`Created: ${ddmmyyWithTime(row.created_at)}`} arrow>
               <span>
-                {ddmmyy(row.created_at)}  
+                {ddmmyy(row.created_at)} {dateToTime1(row.created_at)}
               </span>
-            </Tooltip><br/>
-      
+            </Tooltip>
+
             <Tooltip title={`Updated: ${ddmmyyWithTime(row.updated_at)}`} arrow>
               <span>
-               {ddmmyy(row.updated_at)}  
+                {ddmmyy(row.updated_at)} {dateToTime1(row.updated_at)}
               </span>
             </Tooltip>
           </div>
         ),
         wrap: true,
-        width: "140px", 
+        width: "140px",
       },
       {
         name: "Txn ID",
@@ -115,13 +123,13 @@ const filters = useMemo(
       },
       {
         name: "Status",
-        selector: (row) => <CommonStatus  value={row.status} />,
-       center:"true",
+        selector: (row) => <CommonStatus value={row.status} />,
+        center: "true",
       },
-      ...(user?.role === "ret" || "adm"
+      ...(user?.role === "ret" || user?.role === "dd"
         ? [
             {
-              name: "Actions",
+              name: "View",
               selector: (row) => (
                 <Box
                   sx={{
@@ -141,6 +149,17 @@ const filters = useMemo(
                       size="small"
                     >
                       <VisibilityIcon />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Print Irctc Txn">
+                    <IconButton
+                      color="secondary"
+                      size="small"
+                      onClick={() =>
+                        navigate("/print-recharge", { state: { txnData: row } })
+                      }
+                    >
+                      <PrintIcon />
                     </IconButton>
                   </Tooltip>
                 </Box>
@@ -163,29 +182,38 @@ const filters = useMemo(
         endpoint={ApiEndpoints.GET_IRCTC_TXN}
         filters={filters}
         queryParam={queryParam}
-          enableActionsHover={true}
+        enableActionsHover={true}
       />
-        {/* Transaction Details Drawer */}
+      {/* Transaction Details Drawer */}
       <Drawer
         anchor="right"
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
-       
       >
-        <Box sx={{ width: 400,  display: "flex", flexDirection: "column", height: "100%" }}>
+        <Box
+          sx={{
+            width: 400,
+            display: "flex",
+            flexDirection: "column",
+            height: "100%",
+          }}
+        >
           {selectedRow && (
             <TransactionDetailsCard
               amount={selectedRow.amount}
               status={selectedRow.status}
               onClose={() => setDrawerOpen(false)} // ✅ Close drawer
-             companyLogoUrl={companylogo}
+              companyLogoUrl={companylogo}
               dateTime={ddmmyyWithTime(selectedRow.created_at)}
               message={selectedRow.message || "No message"}
               details={[
                 { label: "Txn ID", value: selectedRow.txn_id },
                 { label: "Client Ref", value: selectedRow.client_ref },
                 { label: "Sender Mobile", value: selectedRow.sender_mobile },
-                { label: "Beneficiary Name", value: selectedRow.beneficiary_name },
+                {
+                  label: "Beneficiary Name",
+                  value: selectedRow.beneficiary_name,
+                },
                 { label: "Account Number", value: selectedRow.account_number },
                 { label: "IFSC Code", value: selectedRow.ifsc_code },
                 { label: "Bank Name", value: selectedRow.bank_name },

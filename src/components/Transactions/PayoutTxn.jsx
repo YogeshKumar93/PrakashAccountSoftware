@@ -1,5 +1,12 @@
 import { useMemo, useCallback, useContext, useState } from "react";
-import { Box, Tooltip, Typography, Button, Drawer, IconButton } from "@mui/material";
+import {
+  Box,
+  Tooltip,
+  Typography,
+  Button,
+  Drawer,
+  IconButton,
+} from "@mui/material";
 import CommonTable from "../common/CommonTable";
 import ApiEndpoints from "../../api/ApiEndpoints";
 import AuthContext from "../../contexts/AuthContext";
@@ -23,13 +30,16 @@ import {
   windows2,
 } from "../../utils/iconsImports";
 import LaptopIcon from "@mui/icons-material/Laptop";
+import PrintIcon from "@mui/icons-material/Print";
+import { useNavigate } from "react-router-dom";
+import { Logo } from "../../iconsImports";
 
 const PayoutTxn = ({ query }) => {
   const authCtx = useContext(AuthContext);
   const user = authCtx?.user;
   const [openCreate, setOpenCreate] = useState(false);
   const [selectedTxn, setSelectedTxn] = useState(null);
-
+  const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
 
@@ -47,8 +57,15 @@ const PayoutTxn = ({ query }) => {
         ],
         defaultValue: "pending",
       },
-      { id: "sender_mobile", label: "Sender Mobile", type: "textfield" },
+      { id: "mobile_number", label: "Mobile Number", type: "textfield" },
       { id: "txn_id", label: "Txn ID", type: "textfield" },
+      { id: "route", label: "Route", type: "textfield", roles: ["adm"] },
+      {
+        id: "client_ref",
+        label: "Client Ref",
+        type: "textfield",
+        roles: ["adm"],
+      },
     ],
     []
   );
@@ -57,34 +74,37 @@ const PayoutTxn = ({ query }) => {
       {
         name: "Date",
         selector: (row) => (
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              fontSize: "13px",
-            }}
-          >
+          <div style={{ display: "flex", flexDirection: "column" }}>
             <Tooltip title={`Created: ${ddmmyyWithTime(row.created_at)}`} arrow>
               <span>
                 {ddmmyy(row.created_at)} {dateToTime1(row.created_at)}
               </span>
             </Tooltip>
 
-            {/* Hide updated_at for ret and dd */}
-            {!(user?.role === "ret" || user?.role === "dd") && (
-              <Tooltip title={`Updated: ${dateToTime(row.updated_at)}`} arrow>
-                <span style={{ marginTop: "8px" }}>
-                  {ddmmyy(row.updated_at)}
-                </span>
-              </Tooltip>
-            )}
+            <Tooltip title={`Updated: ${ddmmyyWithTime(row.updated_at)}`} arrow>
+              <span>
+                {ddmmyy(row.updated_at)} {dateToTime1(row.updated_at)}
+              </span>
+            </Tooltip>
           </div>
         ),
-        wrap: true,
-        width: "140px",
       },
+      ...(user?.role === "ret" || user?.role === "dd"
+        ? []
+        : [
+            {
+              name: "Route",
+              selector: (row) => (
+                <div style={{ fontSize: "10px", fontWeight: "600" }}>
+                  {row.route}
+                </div>
+              ),
+              center: true,
+              width: "70px",
+            },
+          ]),
       {
-        name: "Platform",
+        name: "Pf",
         selector: (row) => {
           let icon;
 
@@ -150,11 +170,25 @@ const PayoutTxn = ({ query }) => {
         wrap: true,
         left: true,
       },
+      ...(user?.role === "ret" || user?.role === "dd"
+        ? []
+        : [
+            {
+              name: "Est.",
+              selector: (row) => (
+                <div style={{ fontSize: "10px", fontWeight: "600" }}>
+                  {row.establishment}
+                </div>
+              ),
+              center: true,
+              width: "70px",
+            },
+          ]),
       {
         name: "Service",
         selector: (row) => (
           <div
-            style={{ textAlign: "left", fontSize: "14px", fontWeight: "600" }}
+            style={{ textAlign: "left", fontSize: "10px", fontWeight: "600" }}
           >
             {row.operator}
           </div>
@@ -162,20 +196,7 @@ const PayoutTxn = ({ query }) => {
         wrap: true,
         width: "80px",
       },
-      ...(user?.role === "ret" || user?.role === "dd"
-        ? []
-        : [
-            {
-              name: "Route",
-              selector: (row) => (
-                <div style={{ fontSize: "10px", fontWeight: "600" }}>
-                  {row.route}
-                </div>
-              ),
-              center: true,
-              width: "70px",
-            },
-          ]),
+
       ...(user?.role === "ret" || user?.role === "dd"
         ? [] // ❌ hide for ret and dd
         : [
@@ -195,11 +216,11 @@ const PayoutTxn = ({ query }) => {
             },
           ]),
       {
-        name: "TxnId",
+        name: "Operator Id",
         selector: (row) => (
           <>
             <div style={{ textAlign: "left", fontSize: "13px" }}>
-              {row.txn_id}
+              {row?.operator}
             </div>
           </>
         ),
@@ -220,15 +241,15 @@ const PayoutTxn = ({ query }) => {
         ),
         wrap: true,
       },
-      {
-        name: "Purpose",
-        selector: (row) => (
-          <div style={{ textAlign: "left", fontWeight: 500 }}>
-            {row?.purpose || "N/A"}
-          </div>
-        ),
-        wrap: true,
-      },
+      // {
+      //   name: "Purpose",
+      //   selector: (row) => (
+      //     <div style={{ textAlign: "left", fontWeight: 500 }}>
+      //       {row?.purpose || "N/A"}
+      //     </div>
+      //   ),
+      //   wrap: true,
+      // },
       {
         name: "Beneficiary Details",
         selector: (row) => (
@@ -251,6 +272,53 @@ const PayoutTxn = ({ query }) => {
         wrap: true,
         right: true,
       },
+      ...(user?.role === "adm"
+        ? [
+            {
+              name: "Di Comm/ tds",
+              selector: (row) => (
+                <div
+                  style={{
+                    textAlign: "right",
+                    fontSize: "10px",
+                    fontWeight: 600,
+                  }}
+                >
+                  <div style={{ color: "green" }}>
+                    {parseFloat(row?.di_comm || 0).toFixed(2)}
+                  </div>
+                  <div style={{ color: "blue" }}>
+                    {parseFloat(row?.di_tds || 0).toFixed(2)}
+                  </div>
+                </div>
+              ),
+              right: true,
+              width: "60px",
+            },
+            {
+              name: "Md Comm/ tds",
+              selector: (row) => (
+                <div
+                  style={{
+                    textAlign: "right",
+                    fontSize: "10px",
+                    fontWeight: 600,
+                  }}
+                >
+                  <div style={{ color: "green" }}>
+                    {parseFloat(row?.md_comm || 0).toFixed(2)}
+                  </div>
+                  <div style={{ color: "blue" }}>
+                    {parseFloat(row?.md_tds || 0).toFixed(2)}
+                  </div>
+                </div>
+              ),
+              right: true,
+              width: "60px",
+            },
+          ]
+        : []),
+
       {
         name: "Charges",
         selector: (row) => (
@@ -288,38 +356,70 @@ const PayoutTxn = ({ query }) => {
 
         center: true,
       },
-      ...(user?.role === "ret" || "adm"
-        ? [
-            {
-              name: "Actions",
-              selector: (row) => (
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    minWidth: "80px",
-                  }}
+      {
+        name: "Action",
+        selector: (row) => (
+          <div
+            style={{
+              // color: "red",
+              fontWeight: "600",
+              fontSize: "10px",
+              textAlign: "right",
+            }}
+          >
+            {row.action || "N/A"}
+          </div>
+        ),
+        center: true,
+        width: "70px",
+      },
+      {
+        name: "View",
+        selector: (row) => (
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              minWidth: "80px",
+              gap: 1, // spacing between icons
+            }}
+          >
+            {/* View Transaction visible to all */}
+            <Tooltip title="View Transaction">
+              <IconButton
+                color="info"
+                onClick={() => {
+                  setSelectedRow(row);
+                  setDrawerOpen(true);
+                }}
+                size="small"
+                sx={{ backgroundColor: "transparent" }}
+              >
+                <VisibilityIcon />
+              </IconButton>
+            </Tooltip>
+
+            {/* Print payout visible only to ret and dd */}
+            {(user?.role === "ret" || user?.role === "dd") && (
+              <Tooltip title="Print payout">
+                <IconButton
+                  color="secondary"
+                  size="small"
+                  onClick={() =>
+                    navigate("/print-payout", { state: { txnData: row } })
+                  }
+                  sx={{ backgroundColor: "transparent" }}
                 >
-                  <Tooltip title="View Transaction">
-                    <IconButton
-                      color="info"
-                      onClick={() => {
-                        setSelectedRow(row);
-                        setDrawerOpen(true);
-                      }}
-                      size="small"
-                    >
-                      <VisibilityIcon />
-                    </IconButton>
-                  </Tooltip>
-                </Box>
-              ),
-              width: "100px",
-              center: true,
-            },
-          ]
-        : []),
+                  <PrintIcon />
+                </IconButton>
+              </Tooltip>
+            )}
+          </Box>
+        ),
+        width: "100px",
+        center: true,
+      },
     ],
     []
   );
@@ -355,7 +455,7 @@ const PayoutTxn = ({ query }) => {
               amount={selectedRow.amount}
               status={selectedRow.status}
               onClose={() => setDrawerOpen(false)} // ✅ Close drawer
-              companyLogoUrl={companylogo}
+              companyLogoUrl={Logo}
               dateTime={ddmmyyWithTime(selectedRow.created_at)}
               message={selectedRow.message || "No message"}
               details={[
@@ -374,6 +474,7 @@ const PayoutTxn = ({ query }) => {
                 { label: "GST", value: selectedRow.gst },
                 { label: "Commission", value: selectedRow.comm },
                 { label: "TDS", value: selectedRow.tds },
+                { label: "purpose", value: selectedRow.purpose },
               ]}
               onRaiseIssue={() => {
                 setSelectedTxn(selectedRow.txn_id);

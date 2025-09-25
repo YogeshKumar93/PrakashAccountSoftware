@@ -1,5 +1,5 @@
 import { useMemo, useCallback, useContext, useState } from "react";
-import { Box, Tooltip, Typography, Button, Drawer, IconButton } from "@mui/material";
+import { Box, Tooltip, Typography, Button, Drawer } from "@mui/material";
 import CommonTable from "../common/CommonTable";
 import ApiEndpoints from "../../api/ApiEndpoints";
 import AuthContext from "../../contexts/AuthContext";
@@ -19,7 +19,6 @@ const MatmTxn = ({ query }) => {
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
-
   const filters = useMemo(
     () => [
       {
@@ -34,8 +33,15 @@ const MatmTxn = ({ query }) => {
         ],
         defaultValue: "pending",
       },
-      { id: "sender_mobile", label: "Sender Mobile", type: "textfield" },
+      // { id: "customer_mobile", label: "Customer Mobile", type: "textfield" },
       { id: "txn_id", label: "Txn ID", type: "textfield" },
+      { id: "route", label: "Route", type: "textfield",roles: ["adm"],},
+      {
+        id: "client_ref",
+        label: "Client Ref",
+        type: "textfield",
+      roles: ["adm"],
+      },
     ],
     []
   );
@@ -47,13 +53,13 @@ const MatmTxn = ({ query }) => {
           <div style={{ display: "flex", flexDirection: "column" }}>
             <Tooltip title={`Created: ${ddmmyyWithTime(row.created_at)}`} arrow>
               <span>
-                {ddmmyy(row.created_at)}  
+                {ddmmyy(row.created_at)} {dateToTime1(row.created_at)}
               </span>
-            </Tooltip><br/>
+            </Tooltip>
 
             <Tooltip title={`Updated: ${ddmmyyWithTime(row.updated_at)}`} arrow>
               <span>
-                {ddmmyy(row.updated_at)}  
+                {ddmmyy(row.updated_at)} {dateToTime1(row.updated_at)}
               </span>
             </Tooltip>
           </div>
@@ -61,6 +67,21 @@ const MatmTxn = ({ query }) => {
         wrap: true,
         width: "140px",
       },
+      ...(user?.role === "ret" || user?.role === "dd"
+        ? []
+        : [
+            {
+              name: "User",
+              selector: (row) => (
+                <div style={{ fontSize: "10px", fontWeight: "600" }}>
+                  {row.user_id}
+                </div>
+              ),
+              center: true,
+              width: "70px",
+            },
+          ]),
+
       ...(user?.role === "ret" || user?.role === "dd"
         ? [] // ❌ hide for ret and dd
         : [
@@ -213,10 +234,10 @@ const MatmTxn = ({ query }) => {
         center: true,
       },
 
-      ...(user?.role === "ret" || "adm"
+      ...(user?.role === "ret"
         ? [
             {
-              name: "Actions",
+              name: "View",
               selector: (row) => (
                 <Box
                   sx={{
