@@ -12,6 +12,7 @@ import AuthContext from "../contexts/AuthContext";
 import Dmt2SelectedBene from "./Dmt2SelectedBene";
 import Dmt2Beneficiaries from "./Dmt2Beneficiaries";
 import CommonLoader from "../components/common/CommonLoader";
+import Loader from "../components/common/Loader";
 
 const Dmt2 = () => {
   const [mobile, setMobile] = useState("");
@@ -23,6 +24,7 @@ const Dmt2 = () => {
   const { showToast } = useToast();
   const { location } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
+  const [accountNumber, setAccountNumber] = useState("");
 
   const handleFetchSender = async (number = mobile) => {
     if (!number || number.length !== 10) return;
@@ -68,7 +70,7 @@ const Dmt2 = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const handleChange = (e) => {
+  const handleMobileChange = (e) => {
     const value = e.target.value.replace(/\D/g, "");
     if (value.length <= 10) {
       setMobile(value);
@@ -81,6 +83,10 @@ const Dmt2 = () => {
       }
     }
   };
+  const handleAccountChange = (e) => {
+    const value = e.target.value.replace(/\D/g, "");
+    setAccountNumber(value);
+  };
 
   const handleDeleteBeneficiary = (id) => {
     setBeneficiaries((prev) => prev.filter((b) => b.id !== id));
@@ -88,46 +94,61 @@ const Dmt2 = () => {
   };
 
   return (
-    <Box>
+    <Loader loading={loading}>
       <Box>
-        <TextField
-          label="Mobile Number"
-          variant="outlined"
-          fullWidth
-          value={mobile}
-          onChange={handleChange}
-          inputProps={{ maxLength: 10 }}
-          sx={{ mb: 1 }}
-        />
-        {loading && (
-          <CommonLoader
-            loading={loading}
-            size={24}
-            sx={{
-              position: "absolute",
-              top: "50%",
-              right: 16,
-              transform: "translateY(-50%)",
-            }}
+        <Box>
+          <Box display="flex" gap={1} mb={1}>
+            <TextField
+              label="Mobile Number"
+              variant="outlined"
+              value={mobile}
+              onChange={handleMobileChange}
+              inputProps={{ maxLength: 10 }}
+              fullWidth
+              autoComplete="tel"
+            />
+            <TextField
+              label="Account Number"
+              variant="outlined"
+              value={accountNumber}
+              onChange={handleAccountChange}
+              fullWidth
+            />
+          </Box>
+
+          {loading && (
+            <CommonLoader
+              loading={loading}
+              size={24}
+              sx={{
+                position: "absolute",
+                top: "50%",
+                right: 16,
+                transform: "translateY(-50%)",
+              }}
+            />
+          )}
+        </Box>
+
+        {openRegisterModal && (
+          <RemitterRegister
+            open={openRegisterModal}
+            onClose={() => setOpenRegisterModal(false)}
+            mobile={mobile}
+            onSuccess={setSender}
           />
         )}
-      </Box>
 
-      {openRegisterModal && (
-        <RemitterRegister
-          open={openRegisterModal}
-          onClose={() => setOpenRegisterModal(false)}
-          mobile={mobile}
-          onSuccess={setSender}
-        />
-      )}
+        {/* 🔹 Full-width stacked layout */}
+        <Box display="flex" flexDirection="column" gap={1}>
+          {/* Remitter full width */}
+          <Box width="100%">
+            <RemitterDetails sender={sender} />
+          </Box>
 
-      <Box display="flex" flexDirection={{ xs: "column", md: "row" }} gap={0.5}>
-        {/* Left column: Remitter + selected beneficiary */}
-        <Box flex="0 0 30%" display="flex" flexDirection="column">
-          <RemitterDetails sender={sender} />
-
-          {selectedBeneficiary && (
+          {/* Selected beneficiary (still below Remitter, full width) */}
+          {/* {selectedBeneficiary && (
+          <Box width="100%">
             <Dmt2SelectedBene
               beneficiary={selectedBeneficiary}
               senderId={sender.id}
@@ -135,21 +156,22 @@ const Dmt2 = () => {
               senderMobile={sender.mobile}
               referenceKey={sender.referenceKey}
             />
-          )}
-        </Box>
+          </Box>
+        )} */}
 
-        {/* Right column: Beneficiaries list */}
-        <Box flex="0 0 70%">
-          <Dmt2Beneficiaries
-            sender={sender}
-            onSuccess={handleFetchSender}
-            beneficiaries={beneficiaries}
-            onSelect={setSelectedBeneficiary}
-            onDelete={handleDeleteBeneficiary}
-          />
+          {/* Beneficiaries list full width */}
+          <Box width="100%">
+            <Dmt2Beneficiaries
+              sender={sender}
+              onSuccess={handleFetchSender}
+              beneficiaries={beneficiaries}
+              onSelect={setSelectedBeneficiary}
+              onDelete={handleDeleteBeneficiary}
+            />
+          </Box>
         </Box>
       </Box>
-    </Box>
+    </Loader>
   );
 };
 

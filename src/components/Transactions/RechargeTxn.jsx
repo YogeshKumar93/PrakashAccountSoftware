@@ -63,12 +63,12 @@ const RechargeTxn = ({ query }) => {
           <div style={{ display: "flex", flexDirection: "column" }}>
             <Tooltip title={`Created: ${ddmmyyWithTime(row.created_at)}`} arrow>
               <span>
-                {ddmmyy(row.created_at)} {dateToTime1(row.created_at)}
+                {ddmmyy(row.created_at)}  
               </span>
             </Tooltip>
 
             {!(user?.role === "ret" || user?.role === "dd") && (
-              <Tooltip title={`Updated: ${dateToTime(row.updated_at)}`} arrow>
+              <Tooltip title={`Updated: ${ddmmyyWithTime(row.updated_at)}`} arrow>
                 <span style={{ marginTop: "8px" }}>
                   {ddmmyy(row.updated_at)}
                 </span>
@@ -281,7 +281,7 @@ const RechargeTxn = ({ query }) => {
         ),
         center: true,
       },
-      ...(user?.role === "ret"
+      ...(user?.role === "ret" || "adm"
         ? [
             {
               name: "Actions",

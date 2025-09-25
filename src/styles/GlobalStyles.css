@@ -1,6 +1,6 @@
 :root {
   /* Primary Colors - Blue */
-  --primary-color: #112B6E;
+  --primary-color: #112b6e;
   --primary-light: #3f83f8;
   --primary-dark: #1e429f;
 
@@ -44,35 +44,30 @@
   --border-radius-lg: 12px;
 }
 
-
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-   font-family: "DM Sans", sans-serif !important;
+  font-family: "DM Sans", sans-serif !important;
 }
 
 body {
- font-family: "DM Sans", sans-serif !important;
+  font-family: "DM Sans", sans-serif !important;
   background-color: var(--background-color);
   color: var(--text-primary);
   line-height: 1.6;
-
 }
 
 /* By default icons hidden */
 
-
-
-
 .textFieldCustom .MuiOutlinedInput-root {
-  height: 34px; 
+  height: 34px;
   border: 1px solid #dbdfea;
   border-radius: 6px;
   background-color: #fff;
   font-family: "DM Sans", sans-serif;
   font-size: 13px;
-  padding: 0 8px; 
+  padding: 0 8px;
   transition: all 0.2s ease-in-out;
 }
 
@@ -107,7 +102,6 @@ body {
 .container {
   max-width: 1300px;
   margin: 0 auto;
-  
 }
 
 /* Header Styles */
@@ -141,14 +135,13 @@ body {
 .side-nav {
   width: 240px;
   /* background: var(--surface-color); */
- 
+
   box-shadow: var(--shadow-sm);
   overflow: hidden;
   flex-shrink: 0;
 }
 
 .nav-header {
- 
   border-bottom: 1px solid var(--border-color);
   background: var(--background-color);
   color: rgb(21, 7, 7);
@@ -170,7 +163,7 @@ body {
 .nav-link {
   display: flex;
   align-items: center;
- justify-content: center;
+  justify-content: center;
   color: var(--text-primary);
   text-decoration: none;
   transition: all 0.3s ease;
@@ -182,15 +175,14 @@ body {
 }
 
 .nav-link.active {
-  background:#ebeef2;
-  color:#5210c1;
+  background: #ebeef2;
+  color: #5210c1;
 }
 
 .nav-icon {
- margin-left: 5px;
+  margin-left: 5px;
   width: 40px;
   height: 40px;
-  
 }
 
 /* Content Area */
@@ -577,7 +569,6 @@ th:last-child::after {
   display: none;
 }
 
-
 /* ************Landing pages *********** */
 
 /* Navbar Container */
@@ -588,7 +579,7 @@ th:last-child::after {
   background-color: #1a0468 !important;
   color: white;
   z-index: 1000;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 
   /* display: flex;
   justify-content: space-between;
@@ -596,16 +587,14 @@ th:last-child::after {
   padding: 15px 40px; */
 }
 
-
 /* Inner container */
 .navbar-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0.8rem 1.5rem;
   display: flex;
-  align-items: center;   
+  align-items: center;
   justify-content: space-between;
-
 }
 
 /* Logo */
@@ -622,7 +611,6 @@ th:last-child::after {
   color: white;
   font-size: 1rem;
   transition: color 0.3s ease;
-
 }
 
 .navbar-links .nav-link {
@@ -631,7 +619,6 @@ th:last-child::after {
   font-size: 1rem;
   font-weight: 500;
   transition: all 0.3s ease;
-    
 }
 
 .navbar-links .nav-link:hover {
@@ -654,12 +641,9 @@ th:last-child::after {
   }
 
   .navbar-links .nav-link {
-    padding: .5rem 0;
+    padding: 0.5rem 0;
   }
 }
-
-
-
 
 .landing-section {
   display: flex;
@@ -740,9 +724,8 @@ th:last-child::after {
   justify-content: center !important;
   top: 8px !important;
   right: 8px !important;
-/* .rs-picker-dropdown, .rs-picker-container { */
+  /* .rs-picker-dropdown, .rs-picker-container { */
   z-index: 9999 !important;
 }
-
 
 /* ******************************************************* */

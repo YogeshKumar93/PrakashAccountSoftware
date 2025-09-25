@@ -47,7 +47,7 @@ const CommonTabs = ({ tabs = [], defaultTab = 0 }) => {
               borderRadius: "10px",
               textTransform: "uppercase",
               fontSize: { xs: "0.7rem", sm: "0.8rem", md: "0.9rem" },
-              color: "orange", // <-- default color
+              color: "#6c4bc7", // <-- default color
               display: "flex",
               flexDirection: "row",
               gap: "8px",
@@ -57,8 +57,8 @@ const CommonTabs = ({ tabs = [], defaultTab = 0 }) => {
               fontFamily: `"DM Sans", sans-serif !important`,
             },
             "& .Mui-selected": {
-              backgroundColor: "#ebeef2",
-              color: "orange", // <-- selected tab color
+              backgroundColor: "#f2f2ebff",
+              color: "#13c3c1", // <-- selected tab color
               fontWeight: 550,
             },
           }}

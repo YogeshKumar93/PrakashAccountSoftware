@@ -513,6 +513,7 @@ const VerifyMpinLogin = ({
               value={digit}
               onChange={(e) => handleInputChange(index, e.target.value)}
               onKeyDown={(e) => handleKeyDown(index, e)}
+              type="password"
               onPaste={index === 0 ? handlePaste : undefined}
               inputProps={{
                 maxLength: 1,

@@ -15,10 +15,9 @@ import Beneficiaries from "./Beneficiaries";
 import SelectedBeneficiary from "./SelectedBeneficiary";
 import { useToast } from "../utils/ToastContext";
 import RemitterRegister from "./RemitterRegister";
-import CommonLoader from "../components/common/CommonLoader";
-
 import OutletDmt1 from "./OutletDnt1";
 import AuthContext from "../contexts/AuthContext";
+import Loader from "../components/common/Loader";
 
 const Dmt = () => {
   const [mobile, setMobile] = useState("");
@@ -111,109 +110,111 @@ const Dmt = () => {
   />;
   console.log("THe insti fin dmt1", instId);
   return (
-    <Box>
-      {!instId ? (
-        <Box
-          textAlign="center"
-          mt={4}
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          gap={2}
-        >
-          <Typography variant="h6" color="text.secondary">
-            You need to complete Outlet Registration to use DMT1.
-          </Typography>
-          <button
-            onClick={() => setOpenDmt1Modal(true)}
-            style={{
-              padding: "10px 20px",
-              backgroundColor: "#1976d2",
-              color: "#fff",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer",
-            }}
-          >
-            Register Outlet
-          </button>
-
-          <OutletDmt1
-            open={openDmt1Modal}
-            handleClose={() => setOpenDmt1Modal(false)}
-            onSuccess={() => {
-              setOpenDmt1Modal(false);
-              window.location.reload(); // Or refresh instId via context if dynamic
-            }}
-          />
-        </Box>
-      ) : (
-        <>
-          {/* ✅ Full DMT UI goes here when instId is present */}
-
+    <Loader loading={loading}>
+      <Box>
+        {!instId ? (
           <Box
+            textAlign="center"
+            mt={4}
             display="flex"
-            flexDirection={{ xs: "column", sm: "row" }}
+            flexDirection="column"
             alignItems="center"
-            gap={1}
-            mb={1}
+            gap={2}
           >
-            <TextField
-              label="Mobile Number"
-              variant="outlined"
-              value={mobile}
-              onChange={handleMobileChange}
-              inputProps={{ maxLength: 10 }}
-              sx={{ flex: 1 }}
-              fullWidth
-            />
-
-            <Box
-              sx={{
-                display: { xs: "flex", sm: "none" },
-                justifyContent: "center",
-                width: "100%",
-                my: 0.5,
+            <Typography variant="h6" color="text.secondary">
+              You need to complete Outlet Registration to use DMT1.
+            </Typography>
+            <button
+              onClick={() => setOpenDmt1Modal(true)}
+              style={{
+                padding: "10px 20px",
+                backgroundColor: "#1976d2",
+                color: "#fff",
+                border: "none",
+                borderRadius: "4px",
+                cursor: "pointer",
               }}
             >
-              <Divider sx={{ width: "30%", textAlign: "center" }}>
-                <Typography variant="body2" color="text.secondary">
-                  OR
-                </Typography>
-              </Divider>
-            </Box>
+              Register Outlet
+            </button>
 
-            <TextField
-              label="Account Number"
-              variant="outlined"
-              value={account}
-              onChange={(e) => setAccount(e.target.value.replace(/\D/g, ""))}
-              inputProps={{ maxLength: 18 }}
-              sx={{ flex: 1 }}
-              fullWidth
+            <OutletDmt1
+              open={openDmt1Modal}
+              handleClose={() => setOpenDmt1Modal(false)}
+              onSuccess={() => {
+                setOpenDmt1Modal(false);
+                window.location.reload(); // Or refresh instId via context if dynamic
+              }}
             />
           </Box>
+        ) : (
+          <>
+            {/* ✅ Full DMT UI goes here when instId is present */}
 
-          {/* <Divider sx={{ my: 1, display: { xs: "none", sm: "block" } }} /> */}
+            <Box
+              display="flex"
+              flexDirection={{ xs: "column", sm: "row" }}
+              alignItems="center"
+              gap={1}
+              mb={1}
+            >
+              <TextField
+                label="Mobile Number"
+                variant="outlined"
+                value={mobile}
+                onChange={handleMobileChange}
+                inputProps={{ maxLength: 10 }}
+                sx={{ flex: 1 }}
+                fullWidth
+                autoComplete="tel" // ✅ enables browser autocomplete
+              />
 
-          {openRegisterModal && (
-            <RemitterRegister
-              open={openRegisterModal}
-              onClose={() => setOpenRegisterModal(false)}
-              mobile={mobile}
-              onSuccess={setSender}
-            />
-          )}
+              <Box
+                sx={{
+                  display: { xs: "flex", sm: "none" },
+                  justifyContent: "center",
+                  width: "100%",
+                  my: 0.5,
+                }}
+              >
+                <Divider sx={{ width: "30%", textAlign: "center" }}>
+                  <Typography variant="body2" color="text.secondary">
+                    OR
+                  </Typography>
+                </Divider>
+              </Box>
 
-          <Box
-            display="flex"
-            flexDirection={{ xs: "column", md: "row" }}
-            gap={0.5}
-          >
-            <Box flex="0 0 30%" display="flex" flexDirection="column">
-              <RemitterDetails sender={sender} />
+              <TextField
+                label="Account Number"
+                variant="outlined"
+                value={account}
+                onChange={(e) => setAccount(e.target.value.replace(/\D/g, ""))}
+                inputProps={{ maxLength: 18 }}
+                sx={{ flex: 1 }}
+                fullWidth
+              />
+            </Box>
 
-              {selectedBeneficiary && (
+            {/* <Divider sx={{ my: 1, display: { xs: "none", sm: "block" } }} /> */}
+
+            {openRegisterModal && (
+              <RemitterRegister
+                open={openRegisterModal}
+                onClose={() => setOpenRegisterModal(false)}
+                mobile={mobile}
+                onSuccess={setSender}
+              />
+            )}
+
+            <Box display="flex" flexDirection="column" gap={1} width="100%">
+              {/* Remitter Details */}
+              <Box width="100%">
+                <RemitterDetails sender={sender} />
+              </Box>
+
+              {/* Selected Beneficiary */}
+              {/* {selectedBeneficiary && (
+              <Box width="100%">
                 <SelectedBeneficiary
                   beneficiary={selectedBeneficiary}
                   senderId={sender.id}
@@ -221,22 +222,24 @@ const Dmt = () => {
                   senderMobile={sender.mobileNumber}
                   referenceKey={sender.referenceKey}
                 />
-              )}
-            </Box>
+              </Box>
+            )} */}
 
-            <Box flex="0 0 70%">
-              <Beneficiaries
-                sender={sender}
-                onSuccess={handleFetchSender}
-                beneficiaries={beneficiaries}
-                onSelect={setSelectedBeneficiary}
-                onDelete={handleDeleteBeneficiary}
-              />
+              {/* Beneficiaries List */}
+              <Box width="100%">
+                <Beneficiaries
+                  sender={sender}
+                  onSuccess={handleFetchSender}
+                  beneficiaries={beneficiaries}
+                  onSelect={setSelectedBeneficiary}
+                  onDelete={handleDeleteBeneficiary}
+                />
+              </Box>
             </Box>
-          </Box>
-        </>
-      )}
-    </Box>
+          </>
+        )}
+      </Box>
+    </Loader>
   );
 };
 

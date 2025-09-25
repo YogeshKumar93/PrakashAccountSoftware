@@ -1,5 +1,5 @@
 import { useMemo, useCallback, useContext, useState } from "react";
-import { Box, Tooltip, Typography, Button, Drawer } from "@mui/material";
+import { Box, Tooltip, Typography, Button, Drawer, IconButton } from "@mui/material";
 import CommonTable from "../common/CommonTable";
 import ApiEndpoints from "../../api/ApiEndpoints";
 import AuthContext from "../../contexts/AuthContext";
@@ -154,7 +154,7 @@ const PayoutTxn = ({ query }) => {
         name: "Service",
         selector: (row) => (
           <div
-            style={{ textAlign: "left", fontSize: "10px", fontWeight: "600" }}
+            style={{ textAlign: "left", fontSize: "14px", fontWeight: "600" }}
           >
             {row.operator}
           </div>
@@ -288,7 +288,7 @@ const PayoutTxn = ({ query }) => {
 
         center: true,
       },
-      ...(user?.role === "ret"
+      ...(user?.role === "ret" || "adm"
         ? [
             {
               name: "Actions",

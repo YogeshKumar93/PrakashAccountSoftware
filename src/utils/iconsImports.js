@@ -22,6 +22,8 @@ import upi12 from "../assets/bankicons/upi.jpg";
 import yes1 from "../assets/bankicons/yes.png";
 import indus1 from "../assets/bankicons/indus.jpg";
 import airtel1 from "../assets/bankicons/airtel.jpg";
+import AIR from "../assets/bankicons/AIR.png";
+import FINO1 from "../assets/bankicons/FINO.png";
 import abhy1 from "../assets/bankicons/ABHY.png";
 import canara1 from "../assets/bankicons/canara.jpg";
 import bandhan1 from "../assets/bankicons/bandhan.png";
@@ -38,7 +40,6 @@ import macintosh_1 from "../assets/macintosh.png";
 import windows_1 from "../assets/windows1.png";
 import linux_1 from "../assets/linux.png";
 import okhttp_1 from "../assets/okhttp.png";
-
 
 export const sbi2 = sbi1;
 export const pnb2 = pnb1;
@@ -57,6 +58,8 @@ export const upi2 = upi12;
 export const yes2 = yes1;
 export const indus2 = indus1;
 export const airtel2 = airtel1;
+export const AIR1 = AIR;
+export const FINO = FINO1;
 export const abhy2 = abhy1;
 export const canara2 = canara1;
 export const bandhan2 = bandhan1;

@@ -1,65 +1,7 @@
 import { Box } from "@mui/material";
 import React from "react";
-import styled, { keyframes } from "styled-components";
 import { smLogo } from "../../iconsImports";
 
-
-// Orbit animation
-const orbit = keyframes`
-  0% { transform: rotate(0deg) translateX(40px) rotate(0deg); }
-  100% { transform: rotate(360deg) translateX(40px) rotate(-360deg); }
-`;
-
-// Loader Overlay
-const Overlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(6px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-`;
-
-// Loader Container
-const LoaderWrapper = styled.div`
-  position: relative;
-  width: 120px;
-  height: 120px;
-`;
-
-// Center Text
-const CenterText = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 20px;
-  font-weight: bold;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(90deg, #6BCBFF, #FFB142);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-align: center;
-`;
-
-// Orbiting Dot
-const Dot = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 15px;
-  height: 15px;
-  margin: -7.5px;
-  border-radius: 50%;
-  background: ${(props) => props.color || "#6BCBFF"};
-  animation: ${orbit} 0.6s linear infinite;
-  animation-delay: ${(props) => props.delay || "0s"};
-`;
 const CommonLoader = ({ loading, children }) => {
   return (
     <div>
@@ -119,14 +61,14 @@ const CommonLoader = ({ loading, children }) => {
         .circle1 {
           width: 120px;
           height: 120px;
-          border: 5px solid #1877f2;
+          border: 5px solid #2563eb; /* Blue */
           animation: rotateAnimation1 3.2s linear infinite;
         }
 
         .circle2 {
           width: 150px;
           height: 150px;
-          border: 5px solid #f18d18;
+          border: 5px solid #7b3fe3; /* Purple */
           animation: rotateAnimation2 3.2s linear infinite;
           opacity: 0.25;
         }

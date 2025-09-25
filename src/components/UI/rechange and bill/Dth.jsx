@@ -1,18 +1,19 @@
 import { useContext, useEffect, useState } from "react";
 import {
-  Grid,
-  Card,
-  Typography,
-  CircularProgress,
   Box,
+  Container,
+  Avatar,
+  Typography,
   TextField,
   Button,
-  Avatar,
-  Dialog,
-  DialogContent,
-  IconButton,
+  CircularProgress,
+  Paper,
+  InputAdornment,
+  Fade,
+  Slide,
 } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+import { CheckCircle } from "@mui/icons-material";
+import OTPInput from "react-otp-input"; // ✅ Import OTPInput
 import { apiCall } from "../../../api/apiClient";
 import ApiEndpoints from "../../../api/ApiEndpoints";
 import { apiErrorToast, okSuccessToast } from "../../../utils/ToastUtil";
@@ -24,56 +25,26 @@ const Dth = () => {
   const [loading, setLoading] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
   const [customerId, setCustomerId] = useState("");
-  const [amount, setAmount] = useState("");
+  const [manualAmount, setManualAmount] = useState("");
+  const [step, setStep] = useState(2);
+  const [MpinCallBackVal, setMpinCallBackVal] = useState("");
+
   const { location } = useContext(AuthContext);
 
+  // Fetch DTH services
   const fetchServices = async () => {
     setLoading(true);
-    const { error, response } = await apiCall(
-      "post",
-      ApiEndpoints.GET_SERVICES,
-      { sub_type: "dth" }
-    );
+    const { error, response } = await apiCall("post", ApiEndpoints.GET_SERVICES, {
+      sub_type: "dth",
+    });
     setLoading(false);
+    if (error) return apiErrorToast(error);
 
-    if (error) {
-      apiErrorToast(error);
-      return;
-    }
+    const fetchedServices = response?.data || [];
+    setServices(fetchedServices);
 
-    setServices(response?.data || []);
-  };
-
-  const handleRecharge = async () => {
-    if (!selectedService || !customerId || !amount) {
-      apiErrorToast("Please select a service, enter Customer ID and amount");
-      return;
-    }
-
-    try {
-      const payload = {
-        customer_id: customerId,
-        operator: selectedService.id,
-        amount,
-        latitude: location?.lat || "",
-        longitude: location?.long || "",
-      };
-
-      const { error } = await apiCall("post", ApiEndpoints.RECHARGE, payload);
-
-      if (error) {
-        apiErrorToast(error);
-        return;
-      }
-
-      okSuccessToast(`Recharge successful for ${customerId}`);
-
-      // reset fields
-      setSelectedService(null);
-      setCustomerId("");
-      setAmount("");
-    } catch (err) {
-      apiErrorToast(err);
+    if (fetchedServices.length > 0) {
+      setSelectedService(fetchedServices[0]);
     }
   };
 
@@ -81,109 +52,243 @@ const Dth = () => {
     fetchServices();
   }, []);
 
+  const selectService = (service) => {
+    setSelectedService(service);
+    setCustomerId("");
+    setManualAmount("");
+    setMpinCallBackVal("");
+  };
+
+  const handleRecharge = async () => {
+    if (!customerId) return apiErrorToast("Please enter Customer ID");
+    if (!manualAmount || parseFloat(manualAmount) <= 0)
+      return apiErrorToast("Please enter a valid amount");
+    if (MpinCallBackVal.length < 6)
+      return apiErrorToast("Please enter a valid 6-digit MPIN");
+    if (!location?.lat || !location?.long)
+      return apiErrorToast("Location not available, please enable GPS.");
+
+    const payload = {
+      customer_id: customerId,
+      operator: selectedService?.id,
+      amount: parseFloat(manualAmount),
+      mpin: MpinCallBackVal, // send MPIN in payload
+      latitude: location?.lat,
+      longitude: location?.long,
+    };
+
+    const { error } = await apiCall("post", ApiEndpoints.RECHARGE, payload);
+    if (error) return apiErrorToast(error.message);
+
+    okSuccessToast(`Recharge successful for ${customerId}`);
+    setStep(4);
+
+    setTimeout(() => {
+      setSelectedService(services[0] || null);
+      setCustomerId("");
+      setManualAmount("");
+      setMpinCallBackVal("");
+      setStep(2);
+    }, 3000);
+  };
+
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" p={3}>
-        <CircularProgress />
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
+        <Box textAlign="center">
+          <CircularProgress size={60} thickness={4} />
+          <Typography variant="h6" sx={{ mt: 2 }}>
+            Loading DTH Services...
+          </Typography>
+        </Box>
       </Box>
     );
   }
 
+  // Check if MPIN is fully entered
+  const isMpinComplete = MpinCallBackVal.length === 6;
+
   return (
-    <Box sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
-      {/* Service Cards Grid */}
-      <Grid container spacing={3}>
-        {services.map((service) => (
-          <Grid item xs={12} sm={6} md={4} lg={3} key={service.id}>
-            <Card
-              sx={{
-                borderRadius: 3,
-                boxShadow: 4,
-                p: 2,
-                transition: "0.3s",
-                cursor: "pointer",
-                "&:hover": {
-                  boxShadow: 8,
-                  transform: "translateY(-6px)",
-                },
-                textAlign: "center",
-              }}
-              onClick={() => setSelectedService(service)}
-            >
-              <Box sx={{ display: "flex", justifyContent: "center", mb: 2, bgcolor: "#f5f5f5", borderRadius: 6, p: 1 }}>
-                <Avatar
-                  src={operatorImages[service.code]}
-                  alt={service.name}
+    <Container maxWidth="xl" sx={{ py: 1 }}>
+      {step === 2 && (
+        <Slide direction="right" in mountOnEnter unmountOnExit>
+          <Box sx={{ display: "flex", gap: 3 }}>
+            {/* Left: DTH Services */}
+            <Box sx={{ flex: "0 0 30%" }}>
+              <Paper sx={{ p: 2, borderRadius: 2 }}>
+                <Typography variant="h6" fontWeight="bold" mb={2}>
+                  Select DTH Service
+                </Typography>
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                  {services.map((service) => (
+                    <Box
+                      key={service.id}
+                      onClick={() => selectService(service)}
+                      sx={{
+                        p: 1.5,
+                        display: "flex",
+                        alignItems: "center",
+                        borderRadius: "6px",
+                        cursor: "pointer",
+                        position: "relative",
+                        mb: 1.2,
+                        backgroundColor:
+                          selectedService?.id === service.id ? "#ebeef2" : "background.paper",
+                        color: selectedService?.id === service.id ? "#2275b7" : "text.secondary",
+                        border: "1px solid",
+                        borderColor:
+                          selectedService?.id === service.id ? "#2275b7" : "divider",
+                        "&:hover": {
+                          backgroundColor: "#ebeef2",
+                          color: "#2275b7",
+                          borderColor: "#2275b7",
+                        },
+                        "&::before":
+                          selectedService?.id === service.id
+                            ? {
+                                content: '""',
+                                position: "absolute",
+                                left: 0,
+                                top: 0,
+                                height: "100%",
+                                width: "4px",
+                                backgroundColor: "#2275b7",
+                              }
+                            : {},
+                      }}
+                    >
+                      <Avatar
+                        src={operatorImages[service.code] || ""}
+                        sx={{ width: 50, height: 50, mr: 2 }}
+                      />
+                      <Typography
+                        sx={{
+                          fontFamily: "DM Sans, sans-serif",
+                          fontWeight: 550,
+                          fontSize: "15px",
+                          color: selectedService?.id === service.id ? "#2275b7" : "#6e82a5",
+                        }}
+                      >
+                        {service.name}
+                      </Typography>
+                    </Box>
+                  ))}
+                </Box>
+              </Paper>
+            </Box>
+
+            {/* Right: Confirm Recharge */}
+            <Box sx={{ flex: 1 }}>
+              <Paper sx={{ p: 3, borderRadius: 2 }}>
+                <Typography variant="h5" textAlign="center" fontWeight="bold" mb={2}>
+                  Confirm Recharge
+                </Typography>
+                <Paper
                   sx={{
-                    width: 70,
-                    height: 70,
-                    border: "3px solid #1976d2",
-                    background: "linear-gradient(135deg, #42a5f5, #1e88e5)",
+                    p: 2,
+                    mb: 2,
+                    display: "flex",
+                    alignItems: "center",
+                    bgcolor: "#ebeef2",
                   }}
+                >
+                  <Avatar
+                    src={operatorImages[selectedService?.code] || ""}
+                    sx={{ width: 50, height: 50 }}
+                  />
+                  <Typography variant="h6">{selectedService?.name}</Typography>
+                </Paper>
+                <TextField
+                  fullWidth
+                  label="Customer ID"
+                  value={customerId}
+                  onChange={(e) => setCustomerId(e.target.value)}
+                  sx={{ mb: 2 }}
                 />
-              </Box>
-              <Typography variant="h6" sx={{ fontWeight: 600, color: "#333" }}>
-                {service.name}
-              </Typography>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
+                <TextField
+                  fullWidth
+                  label="Amount"
+                  type="number"
+                  value={manualAmount}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (/^\d*\.?\d*$/.test(val)) setManualAmount(val);
+                  }}
+                  InputProps={{
+                    startAdornment: <InputAdornment position="start">₹</InputAdornment>,
+                    inputProps: { min: 1 },
+                  }}
+                  sx={{ mb: 2 }}
+                />
 
-      {/* Modal for Selected Service */}
-      <Dialog
-        open={!!selectedService}
-        onClose={() => setSelectedService(null)}
-        maxWidth="xs"
-        fullWidth
-      >
-        <DialogContent>
-          <Box sx={{ position: "relative", p: 3, borderRadius: 4, boxShadow: 3,    border: "2px solid",      // 👈 border thickness
-    borderColor: "primary.main",}}>
-            <IconButton
-              onClick={() => setSelectedService(null)}
-              sx={{ position: "absolute", top: -2, right: -8, color: "blue" }}
-            >
-              <CloseIcon />
-            </IconButton>
+                {/* MPIN boxes: show only if amount is filled */}
+                {manualAmount && (
+                  <Box sx={{ display: "flex", justifyContent: "center", mb: 3 }}>
+                    <OTPInput
+                      value={MpinCallBackVal}
+                      onChange={setMpinCallBackVal}
+                      numInputs={6} // 6 digits for MPIN
+                      inputType="password"
+                      renderInput={(props) => <input {...props} />}
+                      inputStyle={{
+                        width: 40,
+                        height: 40,
+                        margin: "0 5px",
+                        fontSize: 20,
+                        border: "1px solid #D0D5DD",
+                        borderRadius: 6,
+                        textAlign: "center",
+                      }}
+                    />
+                  </Box>
+                )}
 
-            <Typography
-              variant="h6"
-              sx={{ fontWeight: 700, mb: 2, textAlign: "center" }}
-            >
-              Selected Service: {selectedService?.name}
+                {/* Pay button */}
+                {manualAmount && (
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    sx={{ backgroundColor: "#2275b7" }}
+                    onClick={handleRecharge}
+                    disabled={!isMpinComplete}
+                  >
+                    Pay ₹{manualAmount || 0}
+                  </Button>
+                )}
+              </Paper>
+            </Box>
+          </Box>
+        </Slide>
+      )}
+
+      {/* Step 4: Success */}
+      {step === 4 && (
+        <Fade in>
+          <Box textAlign="center" maxWidth={500} mx="auto" py={4}>
+            <CheckCircle sx={{ fontSize: 80, color: "success.main", mb: 2 }} />
+            <Typography variant="h4" color="success.main" gutterBottom>
+              Recharge Successful!
             </Typography>
-
-            <TextField
-              fullWidth
-              label="Customer ID / Number"
-              value={customerId}
-              onChange={(e) => setCustomerId(e.target.value)}
-              sx={{ mb: 2 }}
-            />
-
-            <TextField
-              fullWidth
-              label="Amount"
-              type="number"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              sx={{ mb: 3 }}
-            />
-
+            <Typography variant="h6">
+              ₹{manualAmount} recharge for {customerId}
+            </Typography>
             <Button
               variant="contained"
-              color="primary"
-              fullWidth
-              sx={{ py: 1.5, fontWeight: 600 }}
-              onClick={handleRecharge}
+              sx={{ backgroundColor: "#2275b7" }}
+              onClick={() => {
+                setSelectedService(services[0] || null);
+                setCustomerId("");
+                setManualAmount("");
+                setMpinCallBackVal("");
+                setStep(2);
+              }}
             >
-              Recharge
+              New Recharge
             </Button>
           </Box>
-        </DialogContent>
-      </Dialog>
-    </Box>
+        </Fade>
+      )}
+    </Container>
   );
 };
 

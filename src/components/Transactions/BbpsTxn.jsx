@@ -48,13 +48,13 @@ const BbpxTxn = ({ query }) => {
           <div style={{ display: "flex", flexDirection: "column" }}>
             <Tooltip title={`Created: ${ddmmyyWithTime(row.created_at)}`} arrow>
               <span>
-                {ddmmyy(row.created_at)} {dateToTime1(row.created_at)}
+                {ddmmyy(row.created_at)}  
               </span>
-            </Tooltip>
+            </Tooltip><br/>
 
             <Tooltip title={`Updated: ${ddmmyyWithTime(row.updated_at)}`} arrow>
               <span>
-                {ddmmyy(row.updated_at)} {dateToTime1(row.updated_at)}
+                {ddmmyy(row.updated_at)}  
               </span>
             </Tooltip>
           </div>
@@ -178,7 +178,7 @@ const BbpxTxn = ({ query }) => {
         ),
         center: true,
       },
-      ...(user?.role === "ret"
+      ...(user?.role === "ret" || "adm"
         ?[
             {
         name: "Actions",

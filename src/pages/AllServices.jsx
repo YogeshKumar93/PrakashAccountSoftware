@@ -13,30 +13,10 @@ import {
   Slide,
   Zoom,
 } from "@mui/material";
-import SendIcon from "@mui/icons-material/Send";
-import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
-import ReceiptIcon from "@mui/icons-material/Receipt";
-import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
-import TrainIcon from "@mui/icons-material/Train";
 import QrCodeIcon from "@mui/icons-material/QrCode";
-import PaymentsIcon from "@mui/icons-material/Payments";
-import WalletIcon from "@mui/icons-material/AccountBalanceWallet";
-import SecurityIcon from "@mui/icons-material/Security";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
-import ElectricBoltIcon from "@mui/icons-material/ElectricBolt";
-import WifiIcon from "@mui/icons-material/Wifi";
-import GasMeterIcon from "@mui/icons-material/GasMeter";
-import WaterDropIcon from "@mui/icons-material/WaterDrop";
-import LocalAtmIcon from "@mui/icons-material/LocalAtm";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import FlightIcon from "@mui/icons-material/Flight";
-import DirectionsBusIcon from "@mui/icons-material/DirectionsBus";
-import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
-import SatelliteAltIcon from "@mui/icons-material/SatelliteAlt";
-import AccountTreeIcon from "@mui/icons-material/AccountTree";
-import AssessmentIcon from "@mui/icons-material/Assessment";
+
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
@@ -62,6 +42,13 @@ import {
   upi_1,
   vapy_1,
   water_1,
+  airtel2,
+  aepsImage,
+  
+  aepsaeps,
+  sendmoney,
+  thumbPrint,
+  mobileRechargeNew,
 } from "../iconsImports";
 import SuperTransfer from "./SuperTransfer";
 
@@ -70,6 +57,14 @@ import { Recharge } from "./Recharge";
 import UpiTransfer from "./UpiTransfer";
 import Bbps from "./Bbps";
 import Dmt from "./Dmt";
+import Dmt2 from "./Dmt2";
+import Aeps from "./Aeps";
+import Cms from "./Cms";
+import Prepaid from "../components/UI/rechange and bill/Prepaid";
+import Dth from "../components/UI/rechange and bill/Dth";
+import { AIR1, FINO } from "../utils/iconsImports";
+import { bg } from "date-fns/locale";
+import { color } from "framer-motion";
 
 const MenuCard = ({ icon, label, onClick, isActive, user }) => {
   return (
@@ -81,8 +76,8 @@ const MenuCard = ({ icon, label, onClick, isActive, user }) => {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          height: 85,
-          width: 85,
+          height: 120,
+          width: 120,
           borderRadius: 3,
           background: isActive
             ? "linear-gradient(135deg, #2563EB 0%, #1E40AF 100%)"
@@ -111,8 +106,8 @@ const MenuCard = ({ icon, label, onClick, isActive, user }) => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            width: 42,
-            height: 42,
+            width: 67,
+            height: 67,
             mb: 1,
             borderRadius: "12px",
             backgroundColor: isActive
@@ -142,7 +137,7 @@ const MenuCard = ({ icon, label, onClick, isActive, user }) => {
         <Typography
           sx={{
             fontWeight: 500,
-            fontSize: "0.60rem",
+            fontSize: "0.70rem",
             textAlign: "center",
             lineHeight: 1,
             letterSpacing: "0.3px",
@@ -151,7 +146,7 @@ const MenuCard = ({ icon, label, onClick, isActive, user }) => {
             whiteSpace: "nowrap",
             overflow: "hidden",
             textOverflow: "ellipsis",
-            maxWidth: "80px",
+            maxWidth: "90px",
           }}
         >
           {label}
@@ -243,24 +238,55 @@ const SubMenuCard = ({ icon, label, onClick, isActive, user }) => {
   );
 };
 export default function AllServices() {
-  const [activeMenu, setActiveMenu] = useState("qrUpi");
+  const [activeMenu, setActiveMenu] = useState(null);
   const [activeSubMenu, setActiveSubMenu] = useState(null);
 
   const authCtx = useContext(AuthContext);
-  const user = authCtx.user;
+  const user = authCtx.user || {};
   const theme = useTheme();
-  const setCurrentView = authCtx.setCurrentView;
-  const currentView = authCtx.currentView;
+  const [currentView, setCurrentView] = useState("");
+
+  const hasPermission = (permissionKey) => {
+    if (!user) return false;
+    return user[permissionKey] !== 1; // Show menu if permission is NOT 1
+  };
+
+  const hasNonZeroPermission = (permissionKey) => {
+    if (!user) return false;
+    return user[permissionKey] !== 0; // Show menu if permission is NOT 0
+  };
 
   const menuData = [
-    (user?.dmt1 !== 1 || user?.dmt2 !== 1) && {
-      key: "moneyTransfer",
+    // (hasPermission("dmt1") || hasPermission("dmt2")) && {
+    //   key: "moneyTransfer",
+    //   label: "Money Transfer",
+    //   icon: mt,
+    //   component: Dmt,
+    // },
+    hasPermission("monettransfer") && {
+      key: "monettransfer",
       label: "Money Transfer",
-      icon: mt,
-      component: Dmt,
+      icon: sendmoney,
+      subMenu: [
+        {
+          key: "dmt1",
+          label: " Airtel Dmt",
+          icon: AIR1,
+          component: Dmt,
+          type: "mobile",
+          title: "Dmt1",
+        },
+        {
+          key: "dmt2",
+          label: "Fino Dmt",
+          icon: FINO,
+          component: Dmt2,
+          type: "mobile",
+          title: "Dmt2",
+        },
+      ],
     },
-
-    user?.dmt4 !== 0 && {
+    hasNonZeroPermission("dmt4") && {
       key: "ppiWallet",
       label: "Fund Transfer",
       icon: vapy_1,
@@ -274,7 +300,7 @@ export default function AllServices() {
         },
       ],
     },
-    user?.upi_transfer !== 1 && {
+    hasPermission("upi") && {
       key: "qrUpi",
       label: "UPI Transfer",
       icon: upi_1,
@@ -288,36 +314,79 @@ export default function AllServices() {
         },
       ],
     },
-    user?.aeps !== 1 && {
+    hasPermission("aeps") && {
       key: "aeps",
       label: "AEPS",
-      icon: aeps1,
+      icon: thumbPrint,
+      component: Aeps,
+      
+    },
+    hasPermission("billpay") && {
+      key: "billPayments",
+      label: "BBPS(OFFLINE)",
+      icon: BBPS,
       subMenu: [
         {
-          key: "aepsTxn",
-          label: "AEPS 1",
-          icon: LocalAtmIcon,
+          key: "electricity",
+          label: "Electricity",
+          icon: electricity1,
+          component: BBPS,
+          type: "C04",
+        },
+        {
+          key: "broadband",
+          label: "Broadband",
+          icon: broadband_1,
+          component: BBPS,
+          type: "C05",
+        },
+        {
+          key: "gas",
+          label: "Gas Bill",
+          icon: gas_1,
+          component: BBPS,
+          type: "C07",
+        },
+        {
+          key: "water",
+          label: "Water Bill",
+          icon: water_1,
+          component: BBPS,
+          type: "C08",
+        },
+        {
+          key: "insurance",
+          label: "Insurance",
+          icon: insurance_1,
+          component: BBPS,
+          type: "C11",
+        },
+        {
+          key: "landline",
+          label: "Landline Bill",
+          icon: landline_1,
+          component: BBPS,
+          type: "C02",
         },
       ],
     },
-
-    user?.bbps !== 1 && {
+    hasPermission("bbps") && {
       key: "bbps",
       label: "BBPS ",
       icon: BBPS,
       component: Bbps,
     },
 
-    user?.recharge !== 1 && {
+    hasPermission("mt") && {
       key: "recharge",
       label: "Recharge",
-      icon: recharge,
+      icon: mobileRechargeNew,
       subMenu: [
         {
           key: "prepaid",
           label: "Prepaid",
           icon: recharge,
-          component: Recharge,
+          component: Prepaid,
           type: "mobile",
           title: "Prepaid",
         },
@@ -325,7 +394,7 @@ export default function AllServices() {
           key: "postpaid",
           label: "Postpaid",
           icon: postpaid_1,
-          component: Recharge,
+          component: Prepaid,
           type: "mobile",
           title: "Postpaid",
         },
@@ -333,7 +402,7 @@ export default function AllServices() {
           key: "dth",
           label: "DTH",
           icon: dth_1,
-          component: Recharge,
+          component: Dth,
           type: "dth",
         },
       ],
@@ -365,6 +434,7 @@ export default function AllServices() {
           key: "cms",
           label: "Cms",
           icon: DashboardIcon,
+          component: Cms,
           type: "C04",
         },
       ],
@@ -397,7 +467,18 @@ export default function AllServices() {
   const handleMenuClick = (menu) => {
     setActiveMenu(menu.key);
     setActiveSubMenu(null);
-    setCurrentView(null); // reset hamesha
+
+    if (!menu.subMenu) {
+      setCurrentView({
+        component: menu.component,
+        menuLabel: menu.label,
+        subMenuLabel: null,
+        type: null,
+        title: null,
+      });
+    } else {
+      setCurrentView(null);
+    }
   };
 
   const handleSubMenuClick = (sub, parentMenu) => {
@@ -414,20 +495,18 @@ export default function AllServices() {
   const resetView = () => {
     setCurrentView(null);
     setActiveSubMenu(null);
+    setActiveMenu(null); // 👈 forcefully null
   };
-
-  const activeMenuData = menuData.find((m) => m.key === activeMenu);
+  const activeMenuData = menuData.find((m) => m.key === activeMenu) || null;
 
   return (
     <Box
       sx={{
         p: { xs: 1, md: 2 },
         backgroundColor: "#F5F4FA",
-        //  minHeight: "100vh",
       }}
     >
-      {/* ✅ Main Menu - hamesha dikhega */}
-      <Grid container spacing={2} sx={{ mb: 2 }}>
+      <Grid container spacing={3} sx={{ mb: 2 }}>
         {menuData.map((menu) => (
           <Grid
             item
@@ -448,7 +527,24 @@ export default function AllServices() {
           </Grid>
         ))}
       </Grid>
-
+      {!activeMenu && (
+        <Box
+          sx={{
+            mt: 4,
+            p: 6,
+            textAlign: "center",
+            color: "text.secondary",
+            border: "1px dashed #E9E8F5",
+            borderRadius: 3,
+            backgroundColor: "#FAFAFA",
+            boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
+          }}
+        >
+          <Typography variant="h6" sx={{ fontWeight: 500, color: "#5210c1" }}>
+            Select a service to proceed
+          </Typography>
+        </Box>
+      )}
       {/* ✅ Neeche wala section */}
       {activeMenuData && (
         <Box
@@ -485,11 +581,9 @@ export default function AllServices() {
               },
             }}
           >
-            {activeMenuData.label}
-            {currentView?.subMenuLabel && ` / ${currentView.subMenuLabel}`}
+            {currentView?.subMenuLabel || activeMenuData.label}
           </Typography>
 
-          {/* 👇 Agar submenu hai aur abhi koi component select nahi hua */}
           {activeMenuData.subMenu && !currentView && (
             <Grid container spacing={2}>
               {activeMenuData.subMenu.map((sub) => (
@@ -515,7 +609,7 @@ export default function AllServices() {
           )}
 
           {/* 👇 Agar submenu me se koi component select ho gaya */}
-          {currentView && (
+          {currentView && currentView.component && (
             <Box sx={{ mt: 1 }}>
               <currentView.component
                 type={currentView.type}
@@ -525,10 +619,20 @@ export default function AllServices() {
             </Box>
           )}
 
-          {/* 👇 Agar submenu hi nahi tha (direct component menu tha) */}
-          {!activeMenuData.subMenu && activeMenuData.component && (
-            <Box sx={{ mt: 1 }}>
-              <activeMenuData.component />
+          {!activeMenuData.subMenu &&
+            activeMenuData.component &&
+            !currentView && (
+              <Box sx={{ mt: 1 }}>
+                <activeMenuData.component />
+              </Box>
+            )}
+
+          {/* 👇 Fallback for menus without components */}
+          {!activeMenuData.subMenu && !activeMenuData.component && (
+            <Box
+              sx={{ mt: 2, p: 2, textAlign: "center", color: "text.secondary" }}
+            >
+              <Typography>No content available for this menu</Typography>
             </Box>
           )}
         </Box>

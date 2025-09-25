@@ -48,6 +48,7 @@ const AccountLadger = ({ query }) => {
       {
         name: "Date/Time",
         selector: (row) => (
+          
           <div className="mb-1" style={{ textAlign: "left" }}>
             {ddmmyy(row.created_at)} {dateToTime(row.created_at)}
           </div>
