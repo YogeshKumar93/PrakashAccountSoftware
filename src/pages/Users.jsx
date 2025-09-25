@@ -13,6 +13,15 @@ import ReButton from "../components/common/ReButton";
 import CreateUser from "../components/User/createUser";
 import EditIcon from "@mui/icons-material/Edit";
 import { apiCall } from "../api/apiClient";
+const roleLabels = {
+  ret: "Retailer",
+  adm: "Admin",
+  sadm: "Super Admin",
+  di: "Distributor",
+  asm: "Asm",
+  zsm: "Zsm",
+  api: "Api",
+};
 const Users = ({ query }) => {
   const authCtx = useContext(AuthContext);
   const fetchUsersRef = useRef(null);
@@ -111,7 +120,7 @@ const Users = ({ query }) => {
         name: "Id",
         selector: (row) => (
           <Tooltip title={row?.id}>
-            <div style={{ textAlign: "left" }}>{row?.id}</div>
+            <div style={{ textAlign: "left" }}>Trans_{row?.id}</div>
           </Tooltip>
         ),
       },
@@ -123,11 +132,22 @@ const Users = ({ query }) => {
           </Tooltip>
         ),
       },
-      {
+         {
+        name: "Establishment",
+        selector: (row) => (
+          <Tooltip title={row?.establishment}>
+            <div style={{ textAlign: "left" }}>{row?.establishment}</div>
+          </Tooltip>
+        ),
+        width: "100px",
+      },
+          {
         name: "Role",
         selector: (row) => (
-          <Tooltip title={row?.role}>
-            <div style={{ textAlign: "left" }}>{row?.role}</div>
+          <Tooltip title={roleLabels[row?.role] || row?.role}>
+            <div style={{ textAlign: "left" }}>
+              {roleLabels[row?.role] || row?.role}
+            </div>
           </Tooltip>
         ),
       },
@@ -156,7 +176,7 @@ const Users = ({ query }) => {
       {
         name: "Status",
         selector: (row, { hoveredRow, enableActionsHover }) => {
-          const isHovered = enableActionsHover && hoveredRow === row.id;
+          
 
           return (
             <Box
@@ -183,8 +203,8 @@ const Users = ({ query }) => {
                   display: "flex",
                   alignItems: "center",
                   gap: 0.5,
-                  opacity: isHovered ? 1 : 0, // fade effect
-                  pointerEvents: isHovered ? "auto" : "none", // only clickable on hover
+                  opacity:  1 , // fade effect
+                  pointerEvents:  "auto" ,  
                   transition: "opacity 0.2s ease-in-out",
                   minWidth: "40px", // reserve space
                 }}
@@ -212,27 +232,67 @@ const Users = ({ query }) => {
                 )}
               </Box>
 
-              {/* Dash overlay when not hovered */}
-              {!isHovered && (
-                <Typography
-                  variant="body2"
-                  sx={{
-                    color: "#999",
-                    position: "absolute",
-                  }}
-                >
-                  -
-                </Typography>
-              )}
+            
             </Box>
           );
         },
       },
-
+{
+        name: "Wallet 1",
+        selector: (row) => {
+          const parentName = userMap[row.parent] || "-"; // Lookup parent name from userMap
+          return (
+            <Tooltip title={parentName}>
+              <div style={{ textAlign: "left", cursor: "pointer" }}>
+                {row.w1}
+              </div>
+            </Tooltip>
+          );
+        },
+      },
+      {
+        name: "Wallet 2",
+        selector: (row) => {
+          const parentName = userMap[row.parent] || "-"; // Lookup parent name from userMap
+          return (
+            <Tooltip title={parentName}>
+              <div style={{ textAlign: "left", cursor: "pointer" }}>
+                {row.w2}
+              </div>
+            </Tooltip>
+          );
+        },
+      },
+      {
+        name: "Wallet 3",
+        selector: (row) => {
+          const parentName = userMap[row.parent] || "-"; // Lookup parent name from userMap
+          return (
+            <Tooltip title={row.w3}>
+              <div style={{ textAlign: "left", cursor: "pointer" }}>
+                {row.w3}
+              </div>
+            </Tooltip>
+          );
+        },
+      },
+      {
+        name: "Lien",
+        selector: (row) => {
+          const parentName = userMap[row.lien] || "-"; // Lookup parent name from userMap
+          return (
+            <Tooltip title={row.lien}>
+              <div style={{ textAlign: "left", cursor: "pointer" }}>
+                {row.lien}
+              </div>
+            </Tooltip>
+          );
+        },
+      },
       {
         name: "Actions",
         selector: (row, { hoveredRow, enableActionsHover }) => {
-          const isHovered = enableActionsHover && hoveredRow === row.id;
+          
 
           return (
             <Box
@@ -250,8 +310,8 @@ const Users = ({ query }) => {
                   sx={{
                     display: "flex",
                     gap: 1,
-                    opacity: isHovered ? 1 : 0, // fade effect
-                    pointerEvents: isHovered ? "auto" : "none",
+                    opacity:   1 ,
+                    pointerEvents:   "auto"  ,
                     transition: "opacity 0.2s ease-in-out",
                   }}
                 >
@@ -276,18 +336,7 @@ const Users = ({ query }) => {
                 </Box>
               )}
 
-              {/* Show dash for non-hover state visually */}
-              {!isHovered && (
-                <Typography
-                  variant="body2"
-                  sx={{
-                    color: "#999",
-                    position: "absolute", // overlay dash without affecting layout
-                  }}
-                >
-                  -
-                </Typography>
-              )}
+           
             </Box>
           );
         },
