@@ -37,6 +37,7 @@ const RechargeTxn = ({ query }) => {
   const [selectedTxn, setSelectedTxn] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
   const filters = useMemo(

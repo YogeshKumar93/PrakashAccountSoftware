@@ -6,6 +6,8 @@ import {
   Button,
   Modal,
   IconButton,
+  Tabs,
+  Tab,
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -33,6 +35,7 @@ const FundRequest = () => {
   const [status, setStatus] = useState("");
   const [openImage, setOpenImage] = useState(false);
   const [imageSrc, setImageSrc] = useState(null);
+  const [tabValue, setTabValue] = useState("pending");
 
   const handleImageOpen = (receiptUrl) => {
     if (!receiptUrl) return;
@@ -58,6 +61,10 @@ const FundRequest = () => {
   const handleSaveCreate = () => {
     setOpenCreate(false);
     refreshUsers();
+  };
+
+  const handleTabChange = (event, newValue) => {
+    setTabValue(newValue);
   };
 
   const columns = useMemo(
@@ -213,33 +220,47 @@ const FundRequest = () => {
     [user]
   );
 
-  const filters = useMemo(
-    () => [
-      {
-        id: "status",
-        label: "Status",
-        type: "dropdown",
-        options: [
-          { value: "success", label: "Success" },
-          { value: "refund", label: "Refund" },
-          { value: "pending", label: "Pending" },
-          { value: "approved", label: "Approved" },
-          { value: "rejected", label: "Rejected" },
-        ],
-        defaultValue: "pending",
-      },
-    ],
-    []
-  );
+  // const filters = useMemo(
+  //   () => [
+  //     {
+  //       id: "status",
+  //       label: "Status",
+  //       type: "dropdown",
+  //       options: [
+  //         { value: "success", label: "Success" },
+  //         { value: "refund", label: "Refund" },
+  //         { value: "pending", label: "Pending" },
+  //         { value: "approved", label: "Approved" },
+  //         { value: "rejected", label: "Rejected" },
+  //       ],
+  //       defaultValue: "pending",
+  //     },
+  //   ],
+  //   []
+  // );
 
   return (
     <Box>
+      <Tabs
+        value={tabValue}
+        onChange={handleTabChange}
+        sx={{ mb: 2 }}
+        textColor="primary"
+        indicatorColor="primary"
+      >
+        <Tab label="All" value="all" />
+        <Tab label="Pending" value="pending" />
+        <Tab label="Approved" value="approved" />
+        <Tab label="Rejected" value="rejected" />
+      </Tabs>
+
       <CommonTable
         columns={columns}
         endpoint={ApiEndpoints.GET_FUND_REQUESTS}
-        filters={filters}
         onFetchRef={handleFetchRef}
         enableActionsHover={true}
+        // ✅ only pass status if not "all"
+        queryParam={tabValue === "all" ? {} : { status: tabValue }}
         customHeader={
           user?.role !== "sadm" &&
           user?.role !== "adm" && (

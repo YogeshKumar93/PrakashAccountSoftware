@@ -13,44 +13,42 @@ import UpdateAccountStatement from "./UpdateAccountStatement";
 import { useLocation, useParams } from "react-router-dom";
 
 const AccountStatement = ({ filters = [], query }) => {
-
-
   const [openCreate, setOpenCreate] = useState(false);
   const [openUpdate, setOpenUpdate] = useState(false);
   const [selectedAccount, setSelectedAccount] = useState(null);
-   const [loading, setLoading] = useState(true);
- const authCtx = useContext(AuthContext);
- const user = authCtx?.user;
+  const [loading, setLoading] = useState(true);
+  const authCtx = useContext(AuthContext);
+  const user = authCtx?.user;
 
- const {id} = useParams;
- const location = useLocation();
- const account_id = location.state?.account_id || id;
+  const { id } = useParams;
+  const location = useLocation();
+  const account_id = location.state?.account_id || id;
 
-   const fetchUsersRef = useRef(null);
-  
-    const handleFetchRef = (fetchFn) => {
-      fetchUsersRef.current = fetchFn;
-    };
-    const refreshUsers = () => {
-      if (fetchUsersRef.current) {
-        fetchUsersRef.current();
-      }
-    };
+  const fetchUsersRef = useRef(null);
 
-    const handleSaveCreate = () =>{
-      setOpenCreate(false);
-      refreshUsers();
+  const handleFetchRef = (fetchFn) => {
+    fetchUsersRef.current = fetchFn;
+  };
+  const refreshUsers = () => {
+    if (fetchUsersRef.current) {
+      fetchUsersRef.current();
     }
+  };
 
-    const handleSaveUpdate = () => {
-      setOpenUpdate(false);
+  const handleSaveCreate = () => {
+    setOpenCreate(false);
+    refreshUsers();
+  };
+
+  const handleSaveUpdate = () => {
+    setOpenUpdate(false);
+  };
+
+  useEffect(() => {
+    if (account_id) {
+      setLoading(false);
     }
-
-     useEffect(() => {
-        if (account_id) {
-          setLoading(false);
-        }
-      }, [account_id]);
+  }, [account_id]);
 
   const columns = useMemo(
     () => [
@@ -90,7 +88,7 @@ const AccountStatement = ({ filters = [], query }) => {
         ),
         width: "150px",
       },
-       {
+      {
         name: "Debit",
         selector: (row) => (
           <Tooltip title={row?.debit}>
@@ -99,7 +97,7 @@ const AccountStatement = ({ filters = [], query }) => {
         ),
         width: "150px",
       },
-       {
+      {
         name: "Balance",
         selector: (row) => (
           <Tooltip title={row?.balance}>
@@ -108,7 +106,7 @@ const AccountStatement = ({ filters = [], query }) => {
         ),
         width: "150px",
       },
-       {
+      {
         name: "Particulars",
         selector: (row) => (
           <Tooltip title={row?.particulars}>
@@ -119,8 +117,7 @@ const AccountStatement = ({ filters = [], query }) => {
       },
       {
         name: "Status",
-        selector: (row) =>
- <CommonStatus value={row.is_active} />
+        selector: (row) => <CommonStatus value={row.is_active} />,
       },
       // {
       //   name: "Actions",
@@ -143,54 +140,48 @@ const AccountStatement = ({ filters = [], query }) => {
 
   return (
     <Box>
-     
-       <h2>Account Statements for Bank ID: {id}</h2>
-         <p>Account ID: {account_id}</p>
+      <h2>Account Statements for Bank ID: {id}</h2>
+      <p>Account ID: {account_id}</p>
 
-         <CreateAccountStatement 
-open={openCreate}
-      handleClose={()=> setOpenCreate(false)}
-      handleSave={handleSaveCreate}
-      onFetchRef={refreshUsers}
-      accountId={account_id}
-/>
+      <CreateAccountStatement
+        open={openCreate}
+        handleClose={() => setOpenCreate(false)}
+        handleSave={handleSaveCreate}
+        onFetchRef={refreshUsers}
+        accountId={account_id}
+      />
 
       {/* Services Table */}
       <CommonTable
-        onFetchRef={handleFetchRef} 
+        onFetchRef={handleFetchRef}
         columns={columns}
         endpoint={ApiEndpoints.GET_ACCOUNT_STATEMENTS}
         filters={filters}
-        Button= {Button}
+        Button={Button}
         queryParam={`account_id=${account_id}`}
-  //        customHeader={
-  //              (user?.role !== "sadm" || user?.role !== "adm") && (
-  //   <ReButton
-  //     variant="contained"
-  //    label="Create"
-     
-  //     onClick={() => setOpenCreate(true)}
-  //   >
-  
-  //   </ReButton>
-  //              )
-  // }
-/>
+        //        customHeader={
+        //              (user?.role !== "sadm" || user?.role !== "adm") && (
+        //   <ReButton
+        //     variant="contained"
+        //    label="Create"
 
+        //     onClick={() => setOpenCreate(true)}
+        //   >
 
+        //   </ReButton>
+        //              )
+        // }
+      />
 
-<UpdateAccountStatement 
- open={openUpdate}
-      row={selectedAccount}
-      handleClose={()=>{
-        setOpenUpdate(false);
-             
-      }}
-      handleSave={handleSaveUpdate}
-      onFetchRef={refreshUsers}
-/>
-      
-
+      <UpdateAccountStatement
+        open={openUpdate}
+        row={selectedAccount}
+        handleClose={() => {
+          setOpenUpdate(false);
+        }}
+        handleSave={handleSaveUpdate}
+        onFetchRef={refreshUsers}
+      />
     </Box>
   );
 };

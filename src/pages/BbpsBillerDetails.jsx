@@ -39,7 +39,7 @@ const BbpsBillerDetails = ({ billerId, onBack, selectedBillerIdImage }) => {
       );
 
       if (response) {
-        const details = response?.data?.records?.[0] || response?.data || null;
+        const details = response?.data || null;
         setBillerDetails(details);
 
         const params = details?.parameters || [];
