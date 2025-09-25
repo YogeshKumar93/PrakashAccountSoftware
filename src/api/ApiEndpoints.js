@@ -95,6 +95,7 @@ const ApiEndpoints = {
   GET_LOG: "auditlog/getAuditLog",
   GET_WALLETLEDGER: "walletledger/getWalletLedgers",
   GET_WALLETLEDGER_2: "walletledger/getWalletLedger2",
+   GET_WALLETLEDGER_3: "walletledger/getWalletLedger3",
   GET_PURPOSES: "payout/getPurpose",
   CREATE_PURPOSE: "payout/createPurpose",
   AEPS2_SCHEMA: "aeps/aeps2Schema",
