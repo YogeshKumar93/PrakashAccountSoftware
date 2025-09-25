@@ -7,6 +7,7 @@ import {
   Button,
   IconButton,
   Stack,
+  Tooltip,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import DownloadIcon from "@mui/icons-material/Download";
@@ -143,13 +144,15 @@ const TransactionDetailsCard = ({
               Transaction Details
             </Typography>
             <Box sx={{ display: "flex", gap: 1 }}>
-              <IconButton
-                size="small"
-                onClick={onRaiseIssue}
-                sx={{ color: "#55a3f1ff" }}
-              >
-                <PanToolIcon fontSize="small" />
-              </IconButton>
+              <Tooltip title="Raise Complaint">
+                <IconButton
+                  size="small"
+                  onClick={onRaiseIssue}
+                  sx={{ color: "#55a3f1ff" }}
+                >
+                  <PanToolIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
               <IconButton size="small" onClick={() => window.print()}>
                 <DownloadIcon fontSize="small" />
               </IconButton>
