@@ -22,56 +22,56 @@ const CommonTabs = ({ tabs = [], defaultTab = 0 }) => {
   return (
     <Box sx={{ width: "100%" }}>
       {/* Custom Styled Tabs */}
-      <Box
-        sx={{
-          bgcolor: "white",
-          borderRadius: { xs: "0 0 16px 16px", sm: "0 0 24px 24px" },
-          display: "flex",
-          p: { xs: 0.5, sm: 1 },
-          boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
-          width: "100%",
-          overflowX: "auto",
-          mx: "auto",
-          mt: { xs: -2, sm: -2.5 },
-        }}
-      >
-        <Tabs
-          value={tab}
-          onChange={handleChange}
-          variant="scrollable"
-          scrollButtons="auto"
-          TabIndicatorProps={{ style: { display: "none" } }}
-          sx={{
-            "& .MuiTab-root": {
-              minWidth: { xs: 80, sm: 100, md: 130 },
-              borderRadius: "10px",
-              textTransform: "uppercase",
-              fontSize: { xs: "0.7rem", sm: "0.8rem", md: "0.9rem" },
-              color: "#6c4bc7", // <-- default color
-              display: "flex",
-              flexDirection: "row",
-              gap: "8px",
-              padding: { xs: "4px 4px", sm: "4px 6px" },
-            },
-            "& .MuiTab-root .MuiTab-wrapper": {
-              fontFamily: `"DM Sans", sans-serif !important`,
-            },
-            "& .Mui-selected": {
-              backgroundColor: "#f2f2ebff",
-              color: "#13c3c1", // <-- selected tab color
-              fontWeight: 550,
-            },
-          }}
-        >
-          {tabs.map((tabItem, index) => (
-            <Tab
-              key={index}
-              icon={tabItem.icon}
-              label={isMobile ? null : tabItem.label}
-            />
-          ))}
-        </Tabs>
-      </Box>
+    <Box
+  sx={{
+    bgcolor: "#d4e8e8ff",
+    borderRadius: { xs: "0 0 8px 8px", sm: "0 0 8px 8px" },
+    display: "flex",
+    justifyContent: "center", // <-- Center the tabs
+    p: { xs: 0.5, sm: 1 },
+    boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+    width: "100%",
+    overflowX: "auto",
+    mx: "auto",
+    mt: { xs: -2, sm: -2.5 },
+  }}
+>
+  <Tabs
+    value={tab}
+    onChange={handleChange}
+    variant="scrollable"
+    scrollButtons="auto"
+    TabIndicatorProps={{ style: { display: "none" } }}
+    sx={{
+       minHeight: "24px", // <-- reduce Tabs height
+    "& .MuiTab-root": {
+      minWidth: { xs: 80, sm: 100, md: 130 },
+      minHeight: "24px", // <-- reduce Tab height
+      borderRadius: "10px",
+      textTransform: "uppercase",
+      fontSize: { xs: "0.7rem", sm: "0.8rem", md: "0.9rem" },
+      color: "#49299eff",
+      display: "flex",
+      flexDirection: "row",
+      gap: "8px",
+      padding: { xs: "2px 4px", sm: "2px 6px" }, // <-- reduce padding
+    },
+    "& .MuiTab-root .MuiTab-wrapper": {
+      fontFamily: `"DM Sans", sans-serif !important`,
+    },
+    "& .Mui-selected": {
+      backgroundColor: "#f2f2ebff",
+      color: "#2ecb46ff",
+      fontWeight: 500,
+    },
+    }}
+  >
+    {tabs.map((tabItem, index) => (
+      <Tab key={index} icon={tabItem.icon} label={isMobile ? null : tabItem.label} />
+    ))}
+  </Tabs>
+</Box>
+
 
       {/* Tab Panels */}
       {tabs.map((tabItem, index) => (

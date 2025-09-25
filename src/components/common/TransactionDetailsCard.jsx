@@ -79,7 +79,7 @@ const TransactionDetailsCard = ({
               component="img"
               src={companyLogoUrl}
               alt="Company Logo"
-              sx={{ height: 72, width: 122, objectFit: "contain" }}
+              sx={{ height: 72, width: 122, objectFit: "contain", mr:18 }}
             />
           )}
         </Box>

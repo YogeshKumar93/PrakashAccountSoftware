@@ -3,7 +3,7 @@ import { Box, Tooltip, IconButton, Drawer } from "@mui/material";
 import CommonTable from "../common/CommonTable";
 import ApiEndpoints from "../../api/ApiEndpoints";
 import AuthContext from "../../contexts/AuthContext";
-import { ddmmyy, ddmmyyWithTime } from "../../utils/DateUtils";
+import { dateToTime1, ddmmyy, ddmmyyWithTime } from "../../utils/DateUtils";
 import CommonStatus from "../common/CommonStatus";
 import ComplaintForm from "../ComplaintForm";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -51,34 +51,32 @@ const DmtTxn = ({ query }) => {
 
   const columns = useMemo(() => {
     const baseColumns = [
-      {
-        name: "Date",
-        selector: (row) => (
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              fontSize: "11px",
-              fontWeight: "600",
-            }}
-          >
-            <Tooltip title={`Created: ${ddmmyyWithTime(row.created_at)}`} arrow>
-              <span>{ddmmyy(row.created_at)}</span>
-            </Tooltip>
-
-            {/* Hide updated_at for ret and dd */}
-            {!(user?.role === "ret" || user?.role === "dd") && (
-              <Tooltip title={`Updated: ${ddmmyyWithTime(row.updated_at)}`} arrow>
-                <span style={{ marginTop: "8px" }}>
-                  {ddmmyy(row.updated_at)}
+     {
+          name: "Date",
+          selector: (row) => (
+            <div style={{ display: "flex", flexDirection: "column", fontSize:"10px", fontWeight:"bold" }}>
+              <Tooltip
+                title={`Created: ${ddmmyyWithTime(row?.created_at)}`}
+                arrow
+              >
+                <span>
+                  {ddmmyy(row?.created_at)} {dateToTime1(row?.created_at)}
                 </span>
               </Tooltip>
-            )}
-          </div>
-        ),
-        wrap: true,
-        width: "80px",
-      },
+  
+              <Tooltip
+                title={`Updated: ${ddmmyyWithTime(row?.updated_at)}`}
+                arrow
+              >
+                <span>
+                  {ddmmyy(row?.updated_at)} {dateToTime1(row?.updated_at)}
+                </span>
+              </Tooltip>
+            </div>
+          ),
+          wrap: true,
+          width: "140px",
+        },
       ...(user?.role === "ret" || user?.role === "dd"
         ? []
         : [

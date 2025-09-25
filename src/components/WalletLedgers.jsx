@@ -4,6 +4,7 @@ import ReceiptIcon from "@mui/icons-material/Receipt";
 
 import AccountLadger from "./UI/AccountLadger";
 import WalletLedger2 from "./UI/WalletLedger2";
+import WalletLedger3 from "../pages/WalletLedger3";
 
 export const WalletLedgers = () => {
   const tabItems = [
@@ -42,7 +43,23 @@ export const WalletLedgers = () => {
     ),
     component: <WalletLedger2 />,
   },
-    
+         {
+    label: (
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "12px",
+          minWidth: "80px",
+          justifyContent: "flex-start",
+        }}
+      >
+        <ReceiptIcon fontSize="small" />
+        <span>Wallet Ledger 2</span>
+      </div>
+    ),
+    component: <WalletLedger3 />,
+  },
     
   ];
 
