@@ -19,7 +19,6 @@ const MatmTxn = ({ query }) => {
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
-
   const filters = useMemo(
     () => [
       {
@@ -34,8 +33,15 @@ const MatmTxn = ({ query }) => {
         ],
         defaultValue: "pending",
       },
-      { id: "sender_mobile", label: "Sender Mobile", type: "textfield" },
+      // { id: "customer_mobile", label: "Customer Mobile", type: "textfield" },
       { id: "txn_id", label: "Txn ID", type: "textfield" },
+      { id: "route", label: "Route", type: "textfield",roles: ["adm"],},
+      {
+        id: "client_ref",
+        label: "Client Ref",
+        type: "textfield",
+      roles: ["adm"],
+      },
     ],
     []
   );
@@ -61,6 +67,21 @@ const MatmTxn = ({ query }) => {
         wrap: true,
         width: "140px",
       },
+      ...(user?.role === "ret" || user?.role === "dd"
+        ? []
+        : [
+            {
+              name: "User",
+              selector: (row) => (
+                <div style={{ fontSize: "10px", fontWeight: "600" }}>
+                  {row.user_id}
+                </div>
+              ),
+              center: true,
+              width: "70px",
+            },
+          ]),
+
       ...(user?.role === "ret" || user?.role === "dd"
         ? [] // ❌ hide for ret and dd
         : [
@@ -216,7 +237,7 @@ const MatmTxn = ({ query }) => {
       ...(user?.role === "ret"
         ? [
             {
-              name: "Actions",
+              name: "View",
               selector: (row) => (
                 <Box
                   sx={{

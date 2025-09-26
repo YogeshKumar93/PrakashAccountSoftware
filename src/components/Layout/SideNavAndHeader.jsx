@@ -62,7 +62,7 @@ import { setTitleFunc } from "../../utils/HeaderTitleUtil";
 import TimelineIcon from "@mui/icons-material/Timeline";
 import defaultMaleAvatar from "../../assets/Images/male_avtar.jpg";
 import defaultMaleAvatar2 from "../../assets/Images/male_avtar2.jpg";
-import logo from "../../assets/Images/logo(1).png"; // adjust path
+import logo from "../../assets/Images/PPALogo.jpeg"; // adjust path
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 // import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -108,10 +108,10 @@ const themeSettings = {
   drawerWidth: 240,
   palette: {
     primary: {
-      main: "#0037D7",
+      main: "#6c4bc7",
     },
     secondary: {
-      main: "#dc004e",
+      main: "#13c3c1",
     },
     background: {
       default: "#f5f5f5",
@@ -246,12 +246,12 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
             sx={{
               position: "relative",
               backgroundColor: isItemActive ? "#ebeef2" : "transparent",
-              color: isItemActive ? "#9769ff" : "#6e82a5",
+              color: isItemActive ? "#6c4bc7" : "#6e82a5",
               borderRadius: "4px",
               mb: 0,
               "&:hover": {
                 backgroundColor: "#ebeef2", // hover pe bhi active jaisa bg
-                color: "#9769ff", // hover pe bhi active jaisa text color
+                color: "#6c4bc7", // hover pe bhi active jaisa text color
                 "& .MuiListItemIcon-root img": {
                   filter:
                     "invert(41%) sepia(83%) saturate(7421%) hue-rotate(261deg) brightness(97%) contrast(101%)",
@@ -266,9 +266,9 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
                     top: 0,
                     height: "100%",
                     width: "4px",
-                    backgroundColor: "#9769ff", // left border only for active
+                    backgroundColor: "#6c4bc7", // left border only for active
                     borderRadius: "2px",
-                    color: "#9769ff",
+                    color: "#6c4bc7",
                   }
                 : {},
             }}
@@ -302,10 +302,10 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
                       fontFamily: "DM Sans, sans-serif",
                       fontWeight: 550,
                       fontSize: "15px",
-                      color: isItemActive ? "#9769ff" : "#6e82a5", // ✅ active text color
+                      color: isItemActive ? "#6c4bc7" : "#6e82a5", // ✅ active text color
                     },
                     ".MuiListItem-root:hover & .MuiTypography-root": {
-                      color: "#9769ff",
+                      color: "#6c4bc7",
                     },
                   }}
                 />
@@ -351,6 +351,7 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
           height: "64px",
           borderBottom: `1px solid rgba(0, 0, 0, 0.12)`,
           minHeight: "64px", // Matching the header height
+          width: "100%",
         }}
       >
         {desktopOpen && (
@@ -359,7 +360,7 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
             src={logo}
             alt="App Logo"
             sx={{
-              height: 30, // adjust as needed
+              height: 50, // adjust as needed
               width: "auto",
             }}
           />
@@ -402,18 +403,32 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
             display: "flex",
 
             alignItems: "center",
-            color: "#9769ff",
+            color: "#6c4bc7",
             borderRadius: "4px",
             mb: 0,
             "&:hover": {
               backgroundColor: "#ebeef2", // hover bg
-              color: "#9769ff", // hover text
+              color: "#6c4bc7", // hover text
             },
             gap: 1, // space between icon and text
           }}
         >
           <LogoutIcon fontSize="small" /> Logout
         </MenuItem>
+
+          {/* App Version text */}
+        <Typography
+          variant="body2"
+          sx={{
+            textAlign: "center",
+            mt: 1.5,
+            mb: 1,
+            fontSize: "14px",
+            color: "#000",
+          }}
+        >
+          App Version 2.0.0
+        </Typography>
       </List>
     </Box>
   );
@@ -463,7 +478,7 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
             variant="h5"
             noWrap
             component="div"
-            sx={{ flexGrow: 1, color: "#9769FF", fontWeight: 700 }}
+            sx={{ flexGrow: 1, color: "#6c4bc7", fontWeight: 700 }}
           >
             {title}
           </Typography>
@@ -481,7 +496,7 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
           </IconButton>
 
           <IconButton onClick={colour}>
-            <RefreshIcon sx={{ color: "#fff" }} />
+            <RefreshIcon sx={{ color: "#13c3c1" }} />
           </IconButton>
 
           <Box
@@ -501,7 +516,7 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
                 sx={{
                   width: 30,
                   height: 30,
-                  bgcolor: "#9769FF",
+                  bgcolor: "#6c4bc7",
                 }}
               >
                 <PersonOutlineIcon sx={{ color: "#FFF", fontSize: 20 }} />
@@ -517,24 +532,41 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
                 cursor: "pointer",
               }}
             >
-              <Typography
-                variant="caption"
-                sx={{
-                  fontWeight: 500,
-                  color: "#9769FF",
-                  fontSize: "11px",
-                  lineHeight: 1,
-                }}
-              >
-                {roleLabels[user?.role] || "User"}
-              </Typography>
+           <Typography
+  variant="caption"
+  sx={{
+    fontWeight: 500,
+    color: "#6c4bc7",
+    fontSize: "11px",
+    lineHeight: 1,
+  }}
+>
+  {user?.role === "adm"
+    ? "Admin"
+    : user?.role === "dd"
+    ? "Direct Dealer"
+    : user?.role === "di"
+    ? "Distributor"
+    : user?.role === "sadm"
+    ? "Super Admin"
+    : user?.role === "ret"
+    ? "Retailer"
+    : user?.role === "zsm"
+    ? "Zonal Sales Manager"
+    : user?.role === "asm"
+    ? "Area Sales Manager"
+    : user?.role === "md"
+    ? "Master Distributor"
+    : "User"}
+</Typography>
+
 
               <Box sx={{ display: "flex", alignItems: "center" }}>
                 <Typography
                   variant="subtitle1"
                   sx={{
                     fontWeight: 600,
-                    color: "#526484",
+                    color: "#13c3c1",
                     fontSize: "12px",
                     lineHeight: "16px",
                   }}
@@ -546,7 +578,7 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
                   onClick={handleUserMenuOpen}
                   sx={{ p: 0, ml: 1, width: 20, height: 20 }}
                 >
-                  <ExpandMoreIcon sx={{ fontSize: 20, color: "#9769FF" }} />
+                  <ExpandMoreIcon sx={{ fontSize: 20, color: "#6c4bc7" }} />
                 </IconButton>
               </Box>
             </Box>
@@ -579,7 +611,7 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
                 gap: 2,
                 color: "#220ad7ff",
                 bgcolor: "#e6eef4ff",
-                borderTop: "3px solid #9769FF ",
+                borderTop: "3px solid #6c4bc7" ,
               }}
             >
               <Avatar
@@ -718,7 +750,7 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
       </Box>
 
       {/* Main Content */}
-      <MainContent
+    <MainContent
         sx={{
           width: {
             xs: "100%",
@@ -728,14 +760,56 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
           },
           position: "fixed",
           top: 0,
+          pb: 0.3,
           right: 0,
           height: "100vh",
           overflowY: "auto",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between", // ensures footer stays at bottom
         }}
         className="content"
       >
-        <Toolbar sx={{ minHeight: "60px !important" }} />
-        <Outlet />
+        <Box>
+          <Toolbar sx={{ minHeight: "60px !important" }} />
+          <Outlet />
+        </Box>
+
+        <Box
+          sx={{
+            textAlign: "center",
+            py: { xs: 2, sm: 1.5 },
+            px: { xs: 1, sm: 2 },
+            backgroundColor: "#d4e8e8ff",
+            color: "#6c4bc7",
+            borderRadius: "10px",
+            mt: 4,
+            flexShrink: 0,
+          }}
+        >
+          <Typography
+            sx={{
+              fontSize: { xs: "13px", sm: "15px", md: "17px" },
+              fontWeight: "bold",
+            }}
+          >
+            © 2025{" "}
+            <Box component="span" sx={{ fontWeight: 700 }}>
+              P2PA SOLUTIONS PVT LTD.
+            </Box>{" "}
+            All Rights Reserved.
+          </Typography>
+          <Typography
+            sx={{
+              fontSize: { xs: "11.5px", sm: "13px", md: "14.5px" },
+              mt: 1,
+              color: "#6c4bc7",
+            }}
+          >
+            Disclaimer: Disputes shall be subject to the jurisdiction of the
+            courts of Delhi.
+          </Typography>
+        </Box>
       </MainContent>
     </Box>
   );

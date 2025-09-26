@@ -38,21 +38,12 @@ export const WalletTransfer = () => {
       {
         label: (
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <WalletIcon fontSize="small" />
-            W2 TO W1 Transfer
+            <CurrencyRupee fontSize="small" />
+            Wallet2toWallet1
           </div>
         ),
         content: <Wallet2Wallet1 />,
       },
-      // {
-      //   label: (
-      //     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-      //       <CurrencyRupee fontSize="small" />
-      //       WALLET 3 TO WALLET 1
-      //     </div>
-      //   ),
-      //   content: <Wallet3ToWallet1 />,
-      // },
     ];
   } else if (user?.role === "di" || user?.role === "md") {
     // Distributor / Master Distributor

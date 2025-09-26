@@ -22,6 +22,8 @@ import ApiEndpoints from "../../api/ApiEndpoints";
 import CommonMpinModal from "../common/CommonMpinModal";
 import Loader from "../common/Loader";
 import CommonLoader from "../common/CommonLoader";
+import defaultLayout from '../../assets/Images/defaultLayout.png';
+import servicelayout  from "../../assets/Images/layout2.png";
 
 const style = {
   position: "absolute",
@@ -43,11 +45,13 @@ const ChangeLayoutModal = ({ open, onClose, onSuccess, username }) => {
   const [mpinModalOpen, setMpinModalOpen] = useState(false);
   const [MpinCallBackVal, setMpinCallBackVal] = useState(false);
   const [selectedLayout, setSelectedLayout] = useState(null);
-
+  const [otpRef, setOtpRef] = useState(null);
+  const [otp, setOtp] = useState("");
+  const [mpin, setMpin] = useState("");
   const authCtx = useContext(AuthContext);
   const user = authCtx.user;
   const loadUserProfile = authCtx?.loadUserProfile;
-
+  
   const [value, setValue] = React.useState(user?.layout * 1);
   const navigate = useNavigate();
 
@@ -144,6 +148,7 @@ const changeSwitch = useCallback(
                       display: "flex",
                       flexDirection: "column",
                       alignItems: "center",
+                      border: "2px solid #7d7fa8ff",
                     }}
                   >
                     <Typography
@@ -158,11 +163,21 @@ const changeSwitch = useCallback(
                     >
                       Default Layout
                     </Typography>
+                    <img
+        src={defaultLayout} 
+        alt="default layout"
+        style={{
+          width: 300,
+          height: 150,
+          borderRadius: 8,
+          objectFit: "cover",
+        }}
+      />
                     {/* <img src={defaultLayout} alt="default" width="300px" /> */}
                     <Box
                       sx={{
                         width: { xs: 200, sm: 250, md: 300 },
-                        height: 150,
+                        height: 25,
                         bgcolor: value === 1 ? "primary.main" : "grey.200",
                         borderRadius: 2,
                         display: "flex",
@@ -187,6 +202,7 @@ const changeSwitch = useCallback(
                       display: "flex",
                       flexDirection: "column",
                       alignItems: "center",
+                         border: "2px solid #7d7fa8ff",
                     }}
                   >
                     <Typography
@@ -201,11 +217,21 @@ const changeSwitch = useCallback(
                     >
                       Services Layout
                     </Typography>
+                              <img
+        src={servicelayout} 
+        alt="default layout"
+        style={{
+          width: 300,
+          height: 150,
+          borderRadius: 8,
+          objectFit: "cover",
+        }}
+      />
                     {/* <img src={servicelayout} alt="new_nav" width="300px" /> */}
                     <Box
                       sx={{
                         width: { xs: 200, sm: 250, md: 300 },
-                        height: 150,
+                        height: 25,
                         bgcolor: value === 2 ? "secondary.main" : "grey.200",
                         borderRadius: 2,
                         display: "flex",

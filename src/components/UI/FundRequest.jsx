@@ -13,19 +13,23 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import OpenInFullIcon from "@mui/icons-material/OpenInFull";
 import { Tooltip, Button, Box as MuiBox } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit"; // ✅ import icon from MUI
+// import EditFundRequest from "./EditFundRequest";
+import { Delete } from "@mui/icons-material";
+import { IconButton } from "rsuite";
+import DeleteFundRequestModal from "./DelelteFundReques";
+import DeleteFundRequest from "./DelelteFundReques";
+import ReceiptButton from "../ReceiptButton";
 
 const FundRequest = () => {
   const authCtx = useContext(AuthContext);
   const user = authCtx.user;
 
-  const fetchUsersRef = useRef(null); // ref to call table fetch
+  const fetchUsersRef = useRef(null);
 
-  const [openCreate, setOpenCreate] = useState(false);
-  const [openModal, setOpenModal] = useState(false);
-  const [selectedRow, setSelectedRow] = useState(null);
-  const [status, setStatus] = useState("");
+  // ✅ Single modal state
+  const [modal, setModal] = useState({ type: null, row: null, status: null });
 
-  // Expose CommonTable fetch function
   const handleFetchRef = (fetchFn) => {
     fetchUsersRef.current = fetchFn;
   };
@@ -34,20 +38,14 @@ const FundRequest = () => {
     if (fetchUsersRef.current) fetchUsersRef.current();
   };
 
-  // Open approve/reject/reopen modal
-  const handleOpen = (row, statusType) => {
-    setSelectedRow(row);
-    setStatus(statusType);
-    setOpenModal(true);
+  const handleOpenModal = (type, row = null, status = null) => {
+    setModal({ type, row, status });
   };
 
-  // After creating a fund request
-  const handleSaveCreate = () => {
-    setOpenCreate(false);
-    refreshUsers(); // refresh table
+  const handleCloseModal = () => {
+    setModal({ type: null, row: null, status: null });
   };
 
-  // Table columns
   const columns = useMemo(
     () => [
       {
@@ -69,12 +67,40 @@ const FundRequest = () => {
         width: "140px",
         wrap: true,
       },
-      { name: "ID", selector: (row) => row?.id, width: "70px" },
-      {
-        name: "Name",
-        selector: (row) => <Typography>{row?.name}</Typography>,
-        wrap: true,
-      },
+      ...(user?.role !== "md" && user?.role !== "di"
+        ? [
+            {
+              name: "ID",
+              selector: (row) => row?.id,
+              width: "70px",
+            },
+          ]
+        : []),
+      ...(user?.role === "adm" || user?.role === "sadm"
+        ? [
+            {
+              name: "Role",
+              selector: (row) => (
+                <Typography sx={{ fontSize: "10px", fontWeight: 600 }}>
+                  {row.role}
+                </Typography>
+              ),
+              width: "100px",
+              wrap: true,
+            },
+          ]
+        : []),
+
+      ...(user?.role === "adm" || user?.role === "sadm"
+        ? [
+            {
+              name: "Name",
+              selector: (row) => <Typography>{row?.name}</Typography>,
+              wrap: true,
+            },
+          ]
+        : []),
+
       {
         name: "Bank",
         selector: (row) => <Typography>{row?.bank_name}</Typography>,
@@ -105,6 +131,15 @@ const FundRequest = () => {
             <Typography noWrap>{row?.remark}</Typography>
           </Tooltip>
         ),
+        width: "100px",
+      },
+      {
+        name: "Admin Remark",
+        selector: (row) => (
+          <Tooltip title={row?.admin_remark}>
+            <Typography noWrap>{row?.admin_remark || "N/A"}</Typography>
+          </Tooltip>
+        ),
         grow: 2,
       },
       {
@@ -113,28 +148,33 @@ const FundRequest = () => {
         center: true,
       },
       {
-        name: "Actions",
-        selector: (row, { hoveredRow, enableActionsHover }) => {
-          if (user?.role !== "adm") return null;
+        name: "Reciept",
+        selector: (row) => <ReceiptButton row={row} />,
+        center: true,
+      },
 
-          const isHovered = enableActionsHover && hoveredRow === row.id;
-          return (
-            <MuiBox
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              gap={1}
-              width="120px"
-            >
-              {isHovered &&
-                row.status !== "approved" &&
-                row.status !== "rejected" && (
-                  <MuiBox display="flex" gap={1}>
+      {
+        name: "Actions",
+        selector: (row) => (
+          <MuiBox
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            gap={1}
+            width="150px"
+          >
+            {/* Admin actions */}
+            {user?.role === "adm" && (
+              <>
+                {row.status !== "approved" && row.status !== "rejected" && (
+                  <>
                     <Tooltip title="Approve">
                       <Button
                         size="small"
                         color="success"
-                        onClick={() => handleOpen(row, "approved")}
+                        onClick={() =>
+                          handleOpenModal("status", row, "approved")
+                        }
                       >
                         <CheckCircleIcon fontSize="small" />
                       </Button>
@@ -143,33 +183,52 @@ const FundRequest = () => {
                       <Button
                         size="small"
                         color="error"
-                        onClick={() => handleOpen(row, "rejected")}
+                        onClick={() =>
+                          handleOpenModal("status", row, "rejected")
+                        }
                       >
                         <CancelIcon fontSize="small" />
                       </Button>
                     </Tooltip>
-                  </MuiBox>
+                  </>
                 )}
-              {isHovered && row.status === "rejected" && (
-                <Tooltip title="Reopen">
-                  <Button
-                    size="small"
-                    color="warning"
-                    onClick={() => handleOpen(row, "reopen")}
-                  >
-                    <OpenInFullIcon fontSize="small" />
-                  </Button>
-                </Tooltip>
-              )}
-              {!isHovered && (
-                <Typography variant="body2" sx={{ color: "#999" }}>
-                  -
-                </Typography>
-              )}
-            </MuiBox>
-          );
-        },
-        width: "120px",
+                {row.status === "rejected" && (
+                  <Tooltip title="Reopen">
+                    <Button
+                      size="small"
+                      color="warning"
+                      onClick={() => handleOpenModal("status", row, "reopen")}
+                    >
+                      <OpenInFullIcon fontSize="small" />
+                    </Button>
+                  </Tooltip>
+                )}
+              </>
+            )}
+            {/* ✅ Edit - only if pending */}
+            {row.status === "pending" && (
+              <Tooltip title="Edit">
+                <EditIcon
+                  fontSize="small"
+                  sx={{ color: "blue", cursor: "pointer" }}
+                  onClick={() => handleOpenModal("edit", row)}
+                />
+              </Tooltip>
+            )}
+
+            {/* ✅ Delete - only if pending */}
+            {row.status === "pending" && (
+              <Tooltip title="Delete">
+                <Delete
+                  fontSize="small"
+                  sx={{ color: "red", cursor: "pointer" }}
+                  onClick={() => handleOpenModal("delete", row)}
+                />
+              </Tooltip>
+            )}
+          </MuiBox>
+        ),
+        width: "150px",
       },
     ],
     [user]
@@ -191,6 +250,7 @@ const FundRequest = () => {
         ],
         defaultValue: "pending",
       },
+      { id: "date_range", type: "daterange" },
     ],
     []
   );
@@ -201,36 +261,54 @@ const FundRequest = () => {
         columns={columns}
         endpoint={ApiEndpoints.GET_FUND_REQUESTS}
         filters={filters}
-        onFetchRef={handleFetchRef} // ✅ pass fetchData to parent
-        enableActionsHover={true}
+        onFetchRef={handleFetchRef}
+        enableActionsHover
         customHeader={
           user?.role !== "sadm" &&
           user?.role !== "adm" && (
             <ReButton
               variant="contained"
               label="Request"
-              onClick={() => setOpenCreate(true)}
+              onClick={() => handleOpenModal("create")}
             />
           )
         }
       />
 
-      {/* Create Fund Request */}
-      <CreateFundRequest
-        open={openCreate}
-        handleClose={() => setOpenCreate(false)}
-        handleSave={handleSaveCreate}
-        onFetchRef={refreshUsers}
-      />
+      {/* ✅ Centralised modal rendering */}
+      {modal.type === "create" && (
+        <CreateFundRequest
+          open
+          handleClose={handleCloseModal}
+          handleSave={refreshUsers}
+        />
+      )}
 
-      {/* Approve / Reject / Reopen modal */}
-      {openModal && (
+      {/* {modal.type === "edit" && (
+        <EditFundRequest
+          open
+          handleClose={handleCloseModal}
+          row={modal.row}
+          onFetchRef={refreshUsers}
+        />
+      )} */}
+
+      {modal.type === "delete" && (
+        <DeleteFundRequest
+          open
+          handleClose={handleCloseModal}
+          row={modal.row}
+          onFetchRef={refreshUsers}
+        />
+      )}
+
+      {modal.type === "status" && (
         <FundRequestModal
-          open={openModal}
-          handleClose={() => setOpenModal(false)}
-          row={selectedRow}
-          status={status}
-          onFetchRef={refreshUsers} // refresh table after modal action
+          open
+          handleClose={handleCloseModal}
+          row={modal.row}
+          status={modal.status}
+          onFetchRef={refreshUsers}
         />
       )}
     </Box>

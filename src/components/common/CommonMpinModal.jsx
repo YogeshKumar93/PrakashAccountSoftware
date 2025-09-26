@@ -1,4 +1,4 @@
-import { Button, FormControl, Grid, Modal,Typography  } from "@mui/material";
+import { Button, FormControl, Grid, Modal, Typography } from "@mui/material";
 import { Box, useMediaQuery, useTheme } from "@mui/system";
 import React, { useState } from "react";
 import PinInput from "react-pin-input";
@@ -32,7 +32,7 @@ const CommonMpinModal = ({
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  
+
   const [err, setErr] = useState("");
   const [otp, setOtp] = useState("");
   const authCtx = useContext(AuthContext);
@@ -81,39 +81,42 @@ const CommonMpinModal = ({
         component="form"
         noValidate
         autoComplete="off"
-        sx={{ 
-          display: 'flex', 
-          flexDirection: 'column', 
-          alignItems: 'center',
-          width: '100%',
-          px: { xs: 1, sm: 2 }
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          width: "100%",
+          px: { xs: 1, sm: 2 },
         }}
       >
-        <Typography 
-          variant="body2" 
-          color="textSecondary" 
-          sx={{ 
-            textAlign: 'center', 
+        <Typography
+          variant="body2"
+          color="textSecondary"
+          type="password"
+          sx={{
+            textAlign: "center",
             mb: 3,
-            px: 1
+            px: 1,
           }}
         >
           Please enter your 6-digit MPIN to continue
         </Typography>
 
         {/* OTP Input */}
-        <Box sx={{ 
-          display: 'flex', 
-          justifyContent: 'center', 
-          width: '100%',
-          mb: 2
-        }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            width: "100%",
+            mb: 2,
+          }}
+        >
           <OtpInput
             value={otp}
             onChange={handleChange}
             numInputs={6}
             isInputSecure={true}
-            renderInput={(props) => <input {...props} />}
+            renderInput={(props) => <input {...props} type="password" />}
             inputStyle={{
               width: isMobile ? "35px" : "45px",
               height: isMobile ? "35px" : "45px",
@@ -150,17 +153,19 @@ const CommonMpinModal = ({
               border: "1px solid #ffcdd2",
             }}
           >
-            <ErrorOutline sx={{ 
-              color: "#d32f2f", 
-              fontSize: "18px", 
-              mr: 1 
-            }} />
-            <Typography 
-              variant="body2" 
-              sx={{ 
-                color: "#d32f2f", 
+            <ErrorOutline
+              sx={{
+                color: "#d32f2f",
+                fontSize: "18px",
+                mr: 1,
+              }}
+            />
+            <Typography
+              variant="body2"
+              sx={{
+                color: "#d32f2f",
                 fontSize: "0.85rem",
-                fontWeight: "500"
+                fontWeight: "500",
               }}
             >
               {err}
@@ -169,25 +174,27 @@ const CommonMpinModal = ({
         )}
 
         {/* Reset MPIN Link */}
-        <Box sx={{ 
-          display: "flex", 
-          justifyContent: "center", 
-          width: "100%",
-          mb: 3
-        }}>
-          <ResetMpin 
-            variant="text" 
-            py 
-            mt 
-            username={username} 
-            sx={{ 
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            width: "100%",
+            mb: 3,
+          }}
+        >
+          <ResetMpin
+            variant="text"
+            py
+            mt
+            username={username}
+            sx={{
               fontSize: isMobile ? "0.8rem" : "0.9rem",
               color: "#4045A1",
               fontWeight: "500",
               "&:hover": {
                 color: "#30347a",
-                backgroundColor: "transparent"
-              }
+                backgroundColor: "transparent",
+              },
             }}
           />
         </Box>
@@ -215,14 +222,14 @@ const CommonMpinModal = ({
         </Button>
 
         {/* Helper Text */}
-        <Typography 
-          variant="caption" 
-          color="textSecondary" 
-          sx={{ 
-            textAlign: 'center', 
+        <Typography
+          variant="caption"
+          color="textSecondary"
+          sx={{
+            textAlign: "center",
             mt: 2,
-            display: 'block',
-            fontSize: '0.75rem'
+            display: "block",
+            fontSize: "0.75rem",
           }}
         >
           For security reasons, your MPIN is required to complete this action

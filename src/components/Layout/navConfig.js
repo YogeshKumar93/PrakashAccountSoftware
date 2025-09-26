@@ -1,27 +1,37 @@
 import { Avatar } from "@mui/material";
 import {
+  aeps1,
   aepsImage,
   bankImage,
+  bbps_1,
+  bbps_2,
+  cmsImage,
   complainImage,
+  complainImageNew,
   dashboardImage,
   fundReqImage,
   loginHistoryImage,
+  rechargeNew,
   riskImage,
+  sendmoney,
+  sendmoney2,
   serviceImage,
   settingImage,
+  settingNew,
   transImage,
   usersImage,
   walletLdgerImage,
+  walletLedgerImg,
   walletTransferImage,
 } from "../../iconsImports";
 
 // Normal User Navigation
 export const nav = [
   { title: "Dashboard", icon: dashboardImage, icon2: "📊", to: "/dashboard" },
-  { title: "Recharge", icon: "🔋", icon2: "🔋", to: "/recharge" },
+  { title: "Recharge", icon: rechargeNew, icon2: "🔋", to: "/recharge" },
   {
     title: "Money Transfer",
-    icon: transImage,
+    icon: fundReqImage,
     icon2: "💸",
     to: "/money-transfer",
   },
@@ -38,7 +48,7 @@ export const Admin_nav = [
   { title: "Manage Users", icon: usersImage, icon2: "👥", to: "/admin/users" },
   {
     title: "Fund Request",
-    icon: fundReqImage,
+    icon: bankImage,
     icon2: "🛠️",
     to: "/admin/fund-request",
   },
@@ -66,12 +76,12 @@ export const Admin_nav = [
   // },
   {
     title: "Wallet Ledger",
-    icon: walletLdgerImage,
+    icon: walletLedgerImg,
     icon2: "🛠️",
     to: "/admin/wallet-ledger",
   },
   { title: "Settings", icon: settingImage, icon2: "👥", to: "/admin/settings" },
-  { title: "Purpose", icon: settingImage, icon2: "👥", to: "/admin/settings" },
+  // { title: "Purpose", icon: settingImage, icon2: "👥", to: "/admin/purposes" },
 
   // {
   //   title: "Layouts",
@@ -82,7 +92,7 @@ export const Admin_nav = [
 
   {
     title: "Complaint",
-    icon: complainImage,
+    icon: complainImageNew,
     icon2: "👥",
     to: "/admin/complaint",
   },
@@ -105,22 +115,34 @@ export const customer_nav = [
     to: "/customer/dashboard",
   },
   {
+    title: "Recharge",
+    icon: rechargeNew,
+    icon2: "🛠️",
+    to: "/customer/recharge-bill",
+  },
+  {
     title: "Money transfer",
-    icon: bankImage,
+    icon: fundReqImage,
     icon2: "🛠️",
     to: "/customer/money-transfer",
   },
   {
-    title: "Transfer",
-    icon: fundReqImage,
+    title: "Fund Transfer",
+    icon: sendmoney2,
     icon2: "🛠️",
     to: "/customer/transfer",
   },
-  { title: "AEPS", icon: aepsImage, icon2: "👥", to: "/customer/aeps" },
+  { title: "AEPS", icon: aeps1, icon2: "👥", to: "/customer/aeps" },
 
-  { title: "Bbps", icon: aepsImage, icon2: "📒", to: "/customer/bbps" },
+  { title: "Bbps(Online)", icon: bbps_1, icon2: "📒", to: "/customer/bbps" },
+  {
+    title: "Bbps(Offline)",
+    icon: bbps_2,
+    icon2: "📒",
+    to: "/customer/bbpsoffline",
+  },
 
-  { title: "Cms", icon: transImage, icon2: "📒", to: "/customer/cms" },
+  { title: "Cms", icon: cmsImage, icon2: "📒", to: "/customer/cms" },
 
   //  {
   //   title: "Fund Transfer",
@@ -135,12 +157,7 @@ export const customer_nav = [
   //   icon2: "🛠️",
   //   to: "/customer/upi-transfer",
   // },
-  {
-    title: "Recharge and bill",
-    icon: serviceImage,
-    icon2: "🛠️",
-    to: "/customer/recharge-bill",
-  },
+
   {
     title: "Wallet Transfer",
     icon: walletTransferImage,
@@ -148,16 +165,17 @@ export const customer_nav = [
     to: "/customer/wallet-transfer",
   },
   {
-    title: "Transactions",
-    icon: transImage,
-    icon2: "💳",
-    to: "/customer/transactions",
-  },
-  {
     title: "Fund Request",
     icon: bankImage,
     icon2: "🛠️",
     to: "/customer/fund-request",
+  },
+
+  {
+    title: "Transactions",
+    icon: transImage,
+    icon2: "💳",
+    to: "/customer/transactions",
   },
 
   // {
@@ -169,7 +187,7 @@ export const customer_nav = [
 
   {
     title: "Wallet Ledger",
-    icon: bankImage,
+    icon: walletLedgerImg,
     icon2: "📒",
     to: "/customer/wallet-ledger",
   },
@@ -182,17 +200,17 @@ export const customer_nav = [
   // },
   {
     title: "Complaints",
-    icon: fundReqImage,
+    icon: complainImageNew,
     icon2: "📒",
     to: "/customer/complaint",
   },
 
-  {
-    title: "Activity Logs",
-    icon: riskImage,
-    icon2: "📒",
-    to: "/customer/retailerlogs",
-  },
+  // {
+  //   title: "Activity Logs",
+  //   icon: riskImage,
+  //   icon2: "📒",
+  //   to: "/customer/retailerlogs",
+  // },
 ];
 export const di_nav = [
   {
@@ -216,7 +234,7 @@ export const di_nav = [
   },
   {
     title: "Wallet Ledger",
-    icon: bankImage,
+    icon: walletLedgerImg,
     icon2: "📒",
     to: "/di/wallet-ledger",
   },
@@ -247,6 +265,24 @@ export const service_nav = [
     icon2: "🛠️",
     to: "/customer/wallet-ledger",
   },
+  {
+    title: "Transactions",
+    icon: transImage,
+    icon2: "💳",
+    to: "/customer/transactions",
+  },
+  {
+    title: "Fund Request",
+    icon: bankImage,
+    icon2: "🛠️",
+    to: "/customer/fund-request",
+  },
+  {
+    title: "Activity Logs",
+    icon: riskImage,
+    icon2: "📒",
+    to: "/customer/retailerlogs",
+  },
 ];
 
 export const asm_nav = [
@@ -257,7 +293,12 @@ export const asm_nav = [
     to: "/asm/dashboard",
   },
   { title: "Users", icon: "📊", icon2: "📊", to: "/asm/users" },
-  { title: "Transcations", icon: "📊", icon2: "📊", to: "/asm/transcations" },
+  {
+    title: "Transcations",
+    icon: transImage,
+    icon2: "📊",
+    to: "/asm/transcations",
+  },
 ];
 
 export const zsm_nav = [
@@ -268,7 +309,12 @@ export const zsm_nav = [
     to: "/zsm/dashboard",
   },
   { title: "Users", icon: "📊", icon2: "📊", to: "/zsm/users" },
-  { title: "Transcations", icon: "📊", icon2: "📊", to: "/zsm/transcations" },
+  {
+    title: "Transcations",
+    icon: transImage,
+    icon2: "📊",
+    to: "/zsm/transcations",
+  },
 ];
 
 export const api_nav = [
@@ -279,7 +325,12 @@ export const api_nav = [
     to: "/api/dashboard",
   },
   { title: "Users", icon: "📊", icon2: "📊", to: "/api/users" },
-  { title: "Transcations", icon: "📊", icon2: "📊", to: "/api/transcations" },
+  {
+    title: "Transcations",
+    icon: transImage,
+    icon2: "📊",
+    to: "/api/transcations",
+  },
 ];
 
 export const md_nav = [
@@ -290,5 +341,10 @@ export const md_nav = [
     to: "/md/dashboard",
   },
   { title: "Users", icon: "📊", icon2: "📊", to: "/md/users" },
-  { title: "Transcations", icon: "📊", icon2: "📊", to: "/md/transcations" },
+  {
+    title: "Transcations",
+    icon: transImage,
+    icon2: "📊",
+    to: "/md/transcations",
+  },
 ];

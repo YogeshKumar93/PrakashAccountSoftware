@@ -23,12 +23,12 @@ import AuthContext from "../contexts/AuthContext";
 import ApiEndpoints from "../api/ApiEndpoints";
 import { apiCall } from "../api/apiClient";
 import { ReTextField } from "../components/common/ReTextField";
-import backImg from "../assets/Images/BackgroundLogin2.png";
+import backImg from "../assets/Images/LoginNew.svg";
 import VerifyMpinLogin from "../components/UI/VerifyMpinLogin";
 import { getGeoLocation } from "../utils/GeoLocationUtil";
 import { okErrorToast } from "../utils/ToastUtil";
 import ForgotPassword from "../components/common/ForgotPassword";
-import biggpayLogo from "../assets/logo(1).png";
+import biggpayLogo from "../assets/Images/PPALogo.jpeg";
 import lockicon from "../assets/lock.png";
 import mobilelogin from "../assets/mobile.png";
 import ReCAPTCHA from "react-google-recaptcha";
@@ -178,16 +178,26 @@ const passwordInputProps = (showPassword, setShowPassword) => ({
   xs={false}
   md={7}
   sx={{
-    backgroundImage: `url(${backImg})`,
-    backgroundRepeat: "no-repeat",
-    backgroundSize: "auto 88%", // <-- height is 50% of container
-    backgroundPosition: "center",
-    display: { xs: "none", md: "block" },
-    backgroundColor: "#0052CC",
+    display: { xs: "none", md: "flex" },
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#5224a3ff",
     width: "55%",
+    border: "3px solid #4adc51ff",
   }}
-/>
-
+>
+  <Box
+    component="img"
+    src={backImg}
+    alt="Background"
+    sx={{
+      height: "80%",
+      objectFit: "contain",
+      boxShadow: "0px 4px 20px rgba(0,0,0,0.5)", // 👈 shadow only on image
+      borderRadius: 2, // optional if you want rounded corners
+    }}
+  />
+</Grid>
 
 
       {/* Right Side - Login Form */}
@@ -344,6 +354,7 @@ const passwordInputProps = (showPassword, setShowPassword) => ({
             position: "absolute",
             top: "50%",
             left: "50%",
+           
             transform: "translate(-50%, -50%)",
             width: { xs: "90%", sm: 500, md: 600 },
             // boxShadow: 24,

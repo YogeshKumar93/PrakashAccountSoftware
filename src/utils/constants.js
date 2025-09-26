@@ -1,5 +1,3 @@
-import { icon } from "@fortawesome/fontawesome-svg-core";
-import ApiEndpoints from "../network/ApiEndPoints";
 import InterpreterModeIcon from "@mui/icons-material/InterpreterMode";
 import PermIdentityIcon from "@mui/icons-material/PermIdentity";
 import RecordVoiceOverIcon from "@mui/icons-material/RecordVoiceOver";
@@ -10,6 +8,7 @@ import Person4Icon from "@mui/icons-material/Person4";
 import Diversity2Icon from "@mui/icons-material/Diversity2";
 import TrainIcon from "@mui/icons-material/Train";
 import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
+import ApiEndpoints from "../api/ApiEndpoints";
 export const RDDeviceStatus = {
   UNKNOWN: "UNKNOWN",
   NOT_READY: "NOTREADY",
@@ -160,14 +159,14 @@ export const vendor_tab_value = {
 };
 
 export const USER_ROLES = {
-  ADMIN: "Admin",
-  ASM: "Asm",
-  API: "Api",
-  ACC: "Acc",
-  RET: "Ret",
-  DD: "Dd",
-  MD: "Md",
-  AD: "Ad",
+  ADMIN: "adm",
+  ASM: "asm",
+  API: "api",
+  ACC: "acc",
+  RET: "ret",
+  DD: "dd",
+  MD: "md",
+  AD: "di",
 };
 
 export const ROLE_LIST = [
@@ -306,18 +305,18 @@ export const navigate_routes = {
 };
 
 // user table styled tab map
-export const adminTab = [
-  { label: "All", value: 0, icon: <Diversity2Icon /> },
-  { label: "Corporates", value: 1, icon: <InterpreterModeIcon /> },
-  { label: "ZSM", value: 2, icon: <Person2Icon /> },
-  { label: "ASM", value: 3, icon: <RecordVoiceOverIcon /> },
-  { label: "MD", value: 4, icon: <PersonIcon /> },
-  { label: "AD", value: 5, icon: <SensorOccupiedIcon /> },
-  { label: "DD", value: 6, icon: <Person4Icon /> },
-  { label: "RET", value: 7, icon: <PersonIcon /> },
-  { label: "IRCTC", value: 8, icon: <TrainIcon /> },
-  { label: "UNVERIFIED", value: 9, icon: <PrivacyTipIcon /> },
-];
+// export const adminTab = [
+//   { label: "All", value: 0, icon: <Diversity2Icon /> },
+//   { label: "Corporates", value: 1, icon: <InterpreterModeIcon /> },
+//   { label: "ZSM", value: 2, icon: <Person2Icon /> },
+//   { label: "ASM", value: 3, icon: <RecordVoiceOverIcon /> },
+//   { label: "MD", value: 4, icon: <PersonIcon /> },
+//   { label: "AD", value: 5, icon: <SensorOccupiedIcon /> },
+//   { label: "DD", value: 6, icon: <Person4Icon /> },
+//   { label: "RET", value: 7, icon: <PersonIcon /> },
+//   { label: "IRCTC", value: 8, icon: <TrainIcon /> },
+//   { label: "UNVERIFIED", value: 9, icon: <PrivacyTipIcon /> },
+// ];
 export const asmTab = [
   { label: "All", value: 0 },
   { label: "Corporates", value: 1 },
@@ -384,7 +383,7 @@ export const BeneKycStatus = [
 export const PaymentMethods = [
   { label: "Paytm", value: "paytm" },
   { label: "PhonePe", value: "ybl" },
-  { label: "Google Pay (okhdfcbank)", value: "okhdfcbank"},
+  { label: "Google Pay (okhdfcbank)", value: "okhdfcbank" },
   { label: "Google Pay (okicici)", value: "okicici" },
   { label: "Google Pay (oksbi)", value: "oksbi" },
   { label: "Amazon Pay", value: "apl" },
@@ -397,7 +396,7 @@ export const PaymentMethods = [
   { label: "Punjab National Bank (PNB)", value: "pnb" },
   { label: "Bank of Baroda", value: "barodampay" },
   { label: "Yes Bank", value: "yesbank" },
-  { label: "Other", value: "Other" }
+  { label: "Other", value: "Other" },
 ];
 
 export const mt_tab_value = {
@@ -453,78 +452,77 @@ export const Admin_profile = {
   3: "authentication",
   4: "service",
 };
-export const Categories =
-[
+export const Categories = [
   {
-      "id": 1,
-      "name": "PREPAID",
-      "created_at": "2022-05-24T05:14:04.000000Z",
-      "updated_at": "2022-05-24T05:14:04.000000Z"
+    id: 1,
+    name: "PREPAID",
+    created_at: "2022-05-24T05:14:04.000000Z",
+    updated_at: "2022-05-24T05:14:04.000000Z",
   },
   {
-      "id": 2,
-      "name": "DTH",
-      "created_at": "2022-05-24T05:14:04.000000Z",
-      "updated_at": "2022-05-24T05:14:04.000000Z"
+    id: 2,
+    name: "DTH",
+    created_at: "2022-05-24T05:14:04.000000Z",
+    updated_at: "2022-05-24T05:14:04.000000Z",
   },
   {
-      "id": 3,
-      "name": "UTILITY",
-      "created_at": "2022-05-24T05:14:35.000000Z",
-      "updated_at": "2022-05-24T05:14:35.000000Z"
+    id: 3,
+    name: "UTILITY",
+    created_at: "2022-05-24T05:14:35.000000Z",
+    updated_at: "2022-05-24T05:14:35.000000Z",
   },
   {
-      "id": 4,
-      "name": "VERIFICATION",
-      "created_at": "2022-05-24T05:14:35.000000Z",
-      "updated_at": "2022-05-24T05:14:35.000000Z"
+    id: 4,
+    name: "VERIFICATION",
+    created_at: "2022-05-24T05:14:35.000000Z",
+    updated_at: "2022-05-24T05:14:35.000000Z",
   },
   {
-      "id": 5,
-      "name": "MONEY TRANSFER",
-      "created_at": "2022-05-24T05:15:00.000000Z",
-      "updated_at": "2022-05-24T05:15:25.000000Z"
+    id: 5,
+    name: "MONEY TRANSFER",
+    created_at: "2022-05-24T05:15:00.000000Z",
+    updated_at: "2022-05-24T05:15:25.000000Z",
   },
   {
-      "id": 6,
-      "name": "COLLECTIONS",
-      "created_at": "2022-05-24T05:15:00.000000Z",
-      "updated_at": "2022-05-24T05:15:00.000000Z"
+    id: 6,
+    name: "COLLECTIONS",
+    created_at: "2022-05-24T05:15:00.000000Z",
+    updated_at: "2022-05-24T05:15:00.000000Z",
   },
   {
-      "id": 7,
-      "name": "IRCTC",
-      "created_at": "2022-05-24T05:15:08.000000Z",
-      "updated_at": "2022-05-24T05:15:08.000000Z"
+    id: 7,
+    name: "IRCTC",
+    created_at: "2022-05-24T05:15:08.000000Z",
+    updated_at: "2022-05-24T05:15:08.000000Z",
   },
   {
-      "id": 8,
-      "name": "ADMIN TRANSFER",
-      "created_at": "2022-05-24T05:16:19.000000Z",
-      "updated_at": "2022-08-22T07:44:44.000000Z"
+    id: 8,
+    name: "ADMIN TRANSFER",
+    created_at: "2022-05-24T05:16:19.000000Z",
+    updated_at: "2022-08-22T07:44:44.000000Z",
   },
   {
-      "id": 9,
-      "name": "SECONDARY",
-      "created_at": "2022-05-24T05:16:19.000000Z",
-      "updated_at": "2022-05-24T05:16:19.000000Z"
+    id: 9,
+    name: "SECONDARY",
+    created_at: "2022-05-24T05:16:19.000000Z",
+    updated_at: "2022-05-24T05:16:19.000000Z",
   },
   {
-      "id": 10,
-      "name": "W2W TRANSFER",
-      "created_at": "2022-05-24T05:16:46.000000Z",
-      "updated_at": "2022-05-24T05:16:46.000000Z"
+    id: 10,
+    name: "W2W TRANSFER",
+    created_at: "2022-05-24T05:16:46.000000Z",
+    updated_at: "2022-05-24T05:16:46.000000Z",
   },
   {
-      "id": 11,
-      "name": "PAYMENTS",
-      "created_at": "2022-05-24T05:16:46.000000Z",
-      "updated_at": "2022-05-24T05:16:46.000000Z"
+    id: 11,
+    name: "PAYMENTS",
+    created_at: "2022-05-24T05:16:46.000000Z",
+    updated_at: "2022-05-24T05:16:46.000000Z",
   },
   {
-      "id": 12,
-      "name": "CMS",
-      "created_at": "2022-05-24T05:16:46.000000Z",
-      "updated_at": "2022-05-24T05:16:46.000000Z"
-  }
-]
+    id: 12,
+    name: "CMS",
+    created_at: "2022-05-24T05:16:46.000000Z",
+    updated_at: "2022-05-24T05:16:46.000000Z",
+  },
+];

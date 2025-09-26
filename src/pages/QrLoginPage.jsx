@@ -35,7 +35,7 @@ import VerifyMpinLogin from "../components/UI/VerifyMpinLogin";
 import { getGeoLocation } from "../utils/GeoLocationUtil";
 import { okErrorToast } from "../utils/ToastUtil";
 import ForgotPassword from "../components/common/ForgotPassword";
-import biggpayLogo from "../assets/logo(1).png";
+import biggpayLogo from "../assets/Images/PPALogor.png";
 import QRCode from "react-qr-code";
 
 const QrLoginPage = () => {
@@ -339,7 +339,7 @@ const QrLoginPage = () => {
                 }}
               >
                 Scan this QR with your{" "}
-                <strong style={{ color: "#854fff" }}>IMPS GURU</strong> app to
+                <strong style={{ color: "#854fff" }}>P2PAE</strong> app to
                 login instantly
               </Typography>
 
@@ -451,7 +451,7 @@ const QrLoginPage = () => {
                 }}
               >
                 {[
-                  "Open the IMPS GURU app on your phone",
+                  "Open the P2PAE app on your phone",
                   "Tap on 'Scan QR' in the app side menu",
                   "Point your camera at this QR code",
                   "Confirm login on your device",

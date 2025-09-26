@@ -13,7 +13,6 @@ import {
   apiErrorToast,
   okSuccessToastAlt,
 } from "../utils/ToastUtil";
-import BeneficiaryList from "./BeneficiaryList";
 import SenderDetails from "./SenderDetails";
 import SenderRegisterModal from "./SenderRegisterModal";
 import VerifySenderModal from "./VerifySenderModal";
@@ -94,16 +93,16 @@ const UpiTransfer = () => {
   return (
     <Box p={0}>
       {/* Always show mobile input */}
-      <Box>
+      <Box position="relative">
         <TextField
           label="Mobile Number"
           variant="outlined"
           fullWidth
           value={mobile}
-          autoComplete="on" // <-- enable autocomplete for phone numbers
           onChange={handleChange}
           inputProps={{ maxLength: 10 }}
           sx={{ mb: 1 }}
+          autoComplete="tel" // ✅ enables browser autocomplete
         />
         {loading && (
           <CommonLoader
@@ -118,28 +117,33 @@ const UpiTransfer = () => {
           />
         )}
       </Box>
-      {/* Main Content (Sender + Beneficiaries) */}
-      <Box display="flex" flexDirection={isMobile ? "column" : "row"} gap={0.5}>
-        {/* Left: Sender Details + Selected Beneficiary */}
-        <Box flex={isMobile ? "1 1 100%" : "0 0 30%"}>
-          <SenderDetails sender={sender} />
 
-          {selectedBeneficiary && (
-            <UpiBeneficiaryDetails
-              beneficiary={selectedBeneficiary}
-              senderMobile={mobile}
-            />
-          )}
-        </Box>
+      {/* Sender Details - Full width */}
+      <Box mb={1}>
+        <SenderDetails sender={sender} />
+      </Box>
 
-        {/* Right: Beneficiary List */}
-        <Box flex={isMobile ? "1 1 100%" : "0 0 70%"}>
+      {/* Beneficiaries - 70/30 split */}
+      <Box display="flex" flexDirection={isMobile ? "column" : "row"} gap={1}>
+        {/* Left: Beneficiary List - 70% */}
+        {/* Beneficiary List - Full width */}
+        <Box width="100%">
           <UpiBeneficiaryList
             sender={sender}
             onSuccess={() => handleFetchSender()}
             onSelect={(b) => setSelectedBeneficiary(b)}
           />
         </Box>
+
+        {/* Right: Beneficiary Details - 30% */}
+        {/* {selectedBeneficiary && (
+      <Box flex={isMobile ? "1 1 100%" : "0 0 30%"}>
+        <UpiBeneficiaryDetails
+          beneficiary={selectedBeneficiary}
+          senderMobile={mobile}
+        />
+      </Box>
+    )} */}
       </Box>
 
       {/* Register Modal */}

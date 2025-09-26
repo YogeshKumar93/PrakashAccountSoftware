@@ -14,6 +14,7 @@ import {
   Avatar,
   Stack,
   Tooltip,
+  TextField,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
@@ -50,16 +51,20 @@ import {
   stand2,
   jk2,
 } from "../utils/iconsImports";
+import UpiBeneficiaryDetails from "./UpiBeneficiaryDetails";
 
 const UpiBeneficiaryList = ({ sender, onSuccess, onSelect }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const [searchText, setSearchText] = useState("");
 
   const [openModal, setOpenModal] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [openList, setOpenList] = useState(true);
   const [verifyModal, setVerifyModal] = useState(false);
   const [selectedBene, setSelectedBene] = useState(null);
+  const [detailsModalOpen, setDetailsModalOpen] = useState(false);
+  const [selectedForDetails, setSelectedForDetails] = useState(null);
 
   const { schema, formData, handleChange, errors, setErrors, loading } =
     useSchemaForm(ApiEndpoints.GET_UPI_SCHEMA, openModal, {
@@ -156,6 +161,9 @@ const UpiBeneficiaryList = ({ sender, onSuccess, onSelect }) => {
             bank_name: null,
           },
         ];
+  const filteredBeneficiaries = beneficiaries.filter((b) =>
+    b.beneficiary_name.toLowerCase().includes(searchText.toLowerCase())
+  );
 
   return (
     <Card
@@ -229,8 +237,20 @@ const UpiBeneficiaryList = ({ sender, onSuccess, onSelect }) => {
 
       <Collapse in={openList}>
         <CardContent sx={{ p: 2 }}>
+          {beneficiaries.length > 1 && (
+            <Box mb={2}>
+              <TextField
+                fullWidth
+                size="small"
+                placeholder="Search beneficiary by name"
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+              />
+            </Box>
+          )}
+
           <List dense sx={{ py: 0, maxHeight: 300, overflowY: "auto" }}>
-            {beneficiaries.map((b) => (
+            {filteredBeneficiaries.map((b) => (
               <ListItem
                 key={b.id}
                 sx={{
@@ -267,14 +287,13 @@ const UpiBeneficiaryList = ({ sender, onSuccess, onSelect }) => {
                         <Button
                           size="small"
                           variant="outlined"
-                        
                           onClick={() => {
                             setSelectedBene(b);
                             setVerifyModal(true);
                           }}
                           sx={{
                             borderRadius: 1,
-                              color: "#000",
+                            color: "#000",
                             backgroundColor: "#FFC107",
                             textTransform: "none",
                             fontSize: "0.7rem",
@@ -289,7 +308,10 @@ const UpiBeneficiaryList = ({ sender, onSuccess, onSelect }) => {
                       <Button
                         size="small"
                         variant="contained"
-                        onClick={() => onSelect?.(b)}
+                        onClick={() => {
+                          setSelectedForDetails(b); // set the selected beneficiary
+                          setDetailsModalOpen(true); // open modal
+                        }}
                         sx={{
                           color: "#fff",
                           backgroundColor: "#5c3ac8",
@@ -387,6 +409,15 @@ const UpiBeneficiaryList = ({ sender, onSuccess, onSelect }) => {
                 </Box>
               </ListItem>
             ))}
+            {filteredBeneficiaries.length === 0 && (
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{ mt: 1 }}
+              >
+                No beneficiaries found
+              </Typography>
+            )}
           </List>
         </CardContent>
       </Collapse>
@@ -436,6 +467,15 @@ const UpiBeneficiaryList = ({ sender, onSuccess, onSelect }) => {
             setVerifyModal(false);
             onSuccess?.(sender.mobile_number);
           }}
+        />
+      )}
+      {selectedForDetails && (
+        <UpiBeneficiaryDetails
+          open={detailsModalOpen}
+          onClose={() => setDetailsModalOpen(false)}
+          beneficiary={selectedForDetails}
+          senderMobile={sender?.mobile_number}
+          senderId={sender?.id}
         />
       )}
     </Card>

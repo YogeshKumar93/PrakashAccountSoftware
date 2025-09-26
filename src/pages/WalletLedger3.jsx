@@ -1,18 +1,32 @@
 import { useMemo, useCallback, useContext, useEffect, useState } from "react";
-import { Box, IconButton, Tooltip, Typography } from "@mui/material";
+import { Box, Drawer, IconButton, Tooltip, Typography } from "@mui/material";
+ 
+ 
+
+ 
+// import { capitalize1 } from "../../utils/TextUtil";
+ 
+// import CommonStatus from "../common/CommonStatus";
+ 
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import CommonLoader from "../components/common/CommonLoader";
 import CommonTable from "../components/common/CommonTable";
 import ApiEndpoints from "../api/ApiEndpoints";
-import { dateToTime, ddmmyy } from "../utils/DateUtils";
-import { capitalize1 } from "../utils/TextUtil";
 import AuthContext from "../contexts/AuthContext";
+import { dateToTime, ddmmyy, ddmmyyWithTime } from "../utils/DateUtils";
 import CommonStatus from "../components/common/CommonStatus";
-import CommonLoader from "../components/common/CommonLoader";
+import { capitalize1 } from "../utils/TextUtil";
+import TransactionDetailsCard from "../components/common/TransactionDetailsCard";
+import ComplaintForm from "../components/ComplaintForm";
+import companylogo from "../assets/Images/PPALogor.png";
 
 const WalletLedger3 = ({ query }) => {
   const authCtx = useContext(AuthContext);
   const user = authCtx?.user;
   const [loading, setLoading] = useState(true); // initially true
+   const [selectedRow, setSelectedRow] = useState(null);
+    const [openCreate, setOpenCreate] = useState(false);
+    const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -135,20 +149,49 @@ const WalletLedger3 = ({ query }) => {
       {
         name: "View",
         selector: (row) => (
-          <Tooltip title="View wallet ledger">
-            <IconButton
-              color="info"
-              // onClick={() => {
-              //   setSelectedRow(row);
-              //   setDrawerOpen(true);
-              // }}
-              size="small"
-              sx={{ backgroundColor: "transparent" }}
-            >
-              <VisibilityIcon />
-            </IconButton>
-          </Tooltip>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              minWidth: "80px",
+              gap: 1,
+            }}
+          >
+            {/* View Transaction visible to all */}
+            <Tooltip title="View Transaction">
+              <IconButton
+                color="info"
+                onClick={() => {
+                  setSelectedRow(row);
+                  setDrawerOpen(true);
+                }}
+                size="small"
+                sx={{ backgroundColor: "transparent" }}
+              >
+                <VisibilityIcon />
+              </IconButton>
+            </Tooltip>
+
+            {/* Print payout visible only to ret and dd */}
+            {(user?.role === "ret" || user?.role === "dd") && (
+              <Tooltip title="Print payout">
+                <IconButton
+                  color="secondary"
+                  size="small"
+                  onClick={() =>
+                    navigate("/print-payout", { state: { txnData: row } })
+                  }
+                  sx={{ backgroundColor: "transparent" }}
+                >
+                  <PrintIcon />
+                </IconButton>
+              </Tooltip>
+            )}
+          </Box>
         ),
+        width: "100px",
+        center: true,
       },
     ],
     [user]
@@ -171,6 +214,60 @@ const WalletLedger3 = ({ query }) => {
           refresh={true}
         />
       )}
+
+   {/* Complaint Modal */}
+      {openCreate && selectedTxn && (
+        <ComplaintForm
+          open={openCreate}
+          onClose={() => setOpenCreate(false)}
+          txnId={selectedTxn}
+          type="dmt"
+        />
+      )}
+
+      {/* Transaction Details Drawer */}
+      <Drawer
+        anchor="right"
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      >
+        <Box
+          sx={{
+            width: 400,
+            display: "flex",
+            flexDirection: "column",
+            height: "100%",
+          }}
+        >
+          {selectedRow && (
+            <TransactionDetailsCard
+              amount={selectedRow.amount}
+              status={selectedRow.status}
+              onClose={() => setDrawerOpen(false)}
+              companyLogoUrl={companylogo}
+              dateTime={ddmmyyWithTime(selectedRow.created_at)}
+              message={selectedRow.message || "No message"}
+              details={[
+                { label: "Operator", value: selectedRow.operator },
+                { label: "Operator Id", value: selectedRow.operator_id },
+                { label: "Order Id", value: selectedRow.order_id },
+                { label: "MOP", value: selectedRow.mop },
+                { label: "Customer Number", value: selectedRow.sender_mobile },
+                { label: "CCF", value: selectedRow.ccf },
+                { label: "Charge", value: selectedRow.charges },
+                { label: "GST", value: selectedRow.gst },
+                { label: "TDS", value: selectedRow.tds },
+              ]}
+              onRaiseIssue={() => {
+                setSelectedTxn(selectedRow.txn_id);
+                setOpenCreate(true);
+              }}
+            />
+          )}
+        </Box>
+      </Drawer>
+
     </>
   );
 };

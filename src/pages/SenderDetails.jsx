@@ -54,7 +54,7 @@ const SenderDetails = ({ sender }) => {
       }}
     >
       {/* Header */}
-      <Box
+      {/* <Box
         display="flex"
         alignItems="center"
         justifyContent="space-between"
@@ -71,13 +71,13 @@ const SenderDetails = ({ sender }) => {
           <Typography variant="subtitle2" fontWeight={600}>
             Sender Details
           </Typography>
-        </Box>
-        {isMobile && (
-          <IconButton size="small" sx={{ color: "white" }}>
-            {open ? <ExpandLess /> : <ExpandMore />}
-          </IconButton>
-        )}
-      </Box>
+        </Box> */}
+      {isMobile && (
+        <IconButton size="small" sx={{ color: "white" }}>
+          {open ? <ExpandLess /> : <ExpandMore />}
+        </IconButton>
+      )}
+      {/* </Box> */}
 
       {/* Collapsible Content */}
       <Collapse in={open} timeout="auto" unmountOnExit>

@@ -1,20 +1,15 @@
 import { useMemo, useContext, useState } from "react";
-import { Box, Tooltip, IconButton, Drawer, Typography } from "@mui/material";
+import { Box, Tooltip, IconButton, Drawer } from "@mui/material";
 import CommonTable from "../common/CommonTable";
 import ApiEndpoints from "../../api/ApiEndpoints";
 import AuthContext from "../../contexts/AuthContext";
-import {
-  dateToTime,
-  dateToTime1,
-  ddmmyy,
-  ddmmyyWithTime,
-} from "../../utils/DateUtils";
+import { dateToTime1, ddmmyy, ddmmyyWithTime } from "../../utils/DateUtils";
 import CommonStatus from "../common/CommonStatus";
 import ComplaintForm from "../ComplaintForm";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import CloseIcon from "@mui/icons-material/Close";
+import PrintIcon from "@mui/icons-material/Print";
 import TransactionDetailsCard from "../common/TransactionDetailsCard";
-import companylogo from "../../assets/Images/logo(1).png";
+import companylogo from "../../assets/Images/PPALogor.png";
 import {
   android2,
   linux2,
@@ -54,38 +49,34 @@ const DmtTxn = ({ query }) => {
     []
   );
 
-  const columns = useMemo(
-    () => [
-      {
-        name: "Date",
-        selector: (row) => (
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              fontSize: "11px",
-              fontWeight: "600",
-            }}
-          >
-            <Tooltip title={`Created: ${ddmmyyWithTime(row.created_at)}`} arrow>
-              <span>
-                {ddmmyy(row.created_at)} {dateToTime1(row.created_at)}
-              </span>
-            </Tooltip>
-
-            {/* Hide updated_at for ret and dd */}
-            {!(user?.role === "ret" || user?.role === "dd") && (
-              <Tooltip title={`Updated: ${dateToTime(row.updated_at)}`} arrow>
-                <span style={{ marginTop: "8px" }}>
-                  {ddmmyy(row.updated_at)}
+  const columns = useMemo(() => {
+    const baseColumns = [
+     {
+          name: "Date",
+          selector: (row) => (
+            <div style={{ display: "flex", flexDirection: "column", fontSize:"10px", fontWeight:"bold" }}>
+              <Tooltip
+                title={`Created: ${ddmmyyWithTime(row?.created_at)}`}
+                arrow
+              >
+                <span>
+                  {ddmmyy(row?.created_at)} {dateToTime1(row?.created_at)}
                 </span>
               </Tooltip>
-            )}
-          </div>
-        ),
-        wrap: true,
-        width: "80px",
-      },
+  
+              <Tooltip
+                title={`Updated: ${ddmmyyWithTime(row?.updated_at)}`}
+                arrow
+              >
+                <span>
+                  {ddmmyy(row?.updated_at)} {dateToTime1(row?.updated_at)}
+                </span>
+              </Tooltip>
+            </div>
+          ),
+          wrap: true,
+          width: "140px",
+        },
       ...(user?.role === "ret" || user?.role === "dd"
         ? []
         : [
@@ -101,54 +92,20 @@ const DmtTxn = ({ query }) => {
             },
           ]),
       {
-        name: "Platform",
+        name: "Pf",
         selector: (row) => {
           let icon;
-
-          if (row.pf.toLowerCase().includes("windows")) {
-            icon = (
-              <img
-                src={windows2}
-                style={{ width: "22px" }}
-                alt="description of image"
-              />
-            );
-          } else if (row.pf.toLowerCase().includes("android")) {
-            icon = (
-              <img
-                src={android2}
-                style={{ width: "22px" }}
-                alt="description of image"
-              />
-            );
-          } else if (row.pf.toLowerCase().includes("mac")) {
-            icon = (
-              <img
-                src={macintosh2}
-                style={{ width: "22px" }}
-                alt="description of image"
-              />
-            );
-          } else if (row.pf.toLowerCase().includes("linux")) {
-            icon = (
-              <img
-                src={linux2}
-                style={{ width: "22px" }}
-                alt="description of image"
-              />
-            );
-          } else if (row.pf.toLowerCase().includes("okhttp")) {
-            icon = (
-              <img
-                src={okhttp}
-                style={{ width: "22px" }}
-                alt="description of image"
-              />
-            );
-          } else {
-            icon = <LaptopIcon sx={{ color: "blue", width: "22px" }} />;
-          }
-
+          if (row.pf.toLowerCase().includes("windows"))
+            icon = <img src={windows2} style={{ width: "22px" }} alt="" />;
+          else if (row.pf.toLowerCase().includes("android"))
+            icon = <img src={android2} style={{ width: "22px" }} alt="" />;
+          else if (row.pf.toLowerCase().includes("mac"))
+            icon = <img src={macintosh2} style={{ width: "22px" }} alt="" />;
+          else if (row.pf.toLowerCase().includes("linux"))
+            icon = <img src={linux2} style={{ width: "22px" }} alt="" />;
+          else if (row.pf.toLowerCase().includes("okhttp"))
+            icon = <img src={okhttp} style={{ width: "22px" }} alt="" />;
+          else icon = <LaptopIcon sx={{ color: "blue", width: "22px" }} />;
           return (
             <Box
               sx={{
@@ -167,11 +124,25 @@ const DmtTxn = ({ query }) => {
         wrap: true,
         left: true,
       },
+      ...(user?.role === "ret" || user?.role === "dd"
+        ? []
+        : [
+            {
+              name: "Est.",
+              selector: (row) => (
+                <div style={{ fontSize: "10px", fontWeight: "600" }}>
+                  {row.establishment || "N/A"}
+                </div>
+              ),
+              center: true,
+              width: "70px",
+            },
+          ]),
       {
         name: "Service",
         selector: (row) => (
           <div
-            style={{ textAlign: "left", fontSize: "10px", fontWeight: "600" }}
+            style={{ textAlign: "left", fontSize: "14px", fontWeight: "600" }}
           >
             {row.operator}
           </div>
@@ -179,55 +150,29 @@ const DmtTxn = ({ query }) => {
         wrap: true,
         width: "80px",
       },
-      ...(user?.role === "ret" || user?.role === "dd"
-        ? [] // ❌ hide for ret and dd
-        : [
-            {
-              name: "TxnId/Ref",
-              selector: (row) => (
-                <div
-                  style={{
-                    textAlign: "left",
-                    fontSize: "10px",
-                    fontWeight: "600",
-                  }}
-                >
-                  {row.txn_id}
-                  <br />
-                  {row.client_ref}
-                </div>
-              ),
-              wrap: true,
-              width: "100px",
-            },
-          ]),
-      ...(user?.role === "adm"
-        ? []
-        : [
-            {
-              name: "TxnId",
-              selector: (row) => (
-                <div
-                  style={{
-                    textAlign: "left",
-                    fontSize: "10px",
-                    fontWeight: "600",
-                  }}
-                >
-                  {row.txn_id}
-                  <br />
-                  {/* {row.client_ref} */}
-                </div>
-              ),
-              wrap: true,
-              width: "100px",
-            },
-          ]),
+      {
+        name: "TxnId",
+        selector: (row) => (
+          <div
+            style={{
+              textAlign: "left",
+              fontSize: "10px",
+              fontWeight: "600",
+            }}
+          >
+            {row.txn_id}
+            <br />
+            {row.client_ref}
+          </div>
+        ),
+        wrap: true,
+        width: "100px",
+      },
       {
         name: "Mobile",
         selector: (row) => (
           <div
-            style={{ textAlign: "left", fontSize: "10px", fontWeight: "600" }}
+            style={{ textAlign: "left", fontSize: "12px", fontWeight: "600" }}
           >
             {row.sender_mobile}
           </div>
@@ -248,7 +193,7 @@ const DmtTxn = ({ query }) => {
         ),
         wrap: true,
         center: true,
-        width: "150px",
+        width: "100px",
       },
       {
         name: "Amount",
@@ -284,46 +229,11 @@ const DmtTxn = ({ query }) => {
         right: true,
         width: "60px",
       },
-      ...(user?.role === "ret" || user?.role === "dd"
-        ? [] // ❌ hide for ret and dd
-        : [
-            {
-              name: "GST",
-              selector: (row) => (
-                <div
-                  style={{
-                    color: "red",
-                    fontWeight: "600",
-                    fontSize: "10px",
-                    textAlign: "right",
-                  }}
-                >
-                  {parseFloat(row.gst).toFixed(2)}
-                </div>
-              ),
-              wrap: true,
-              width: "100px",
-            },
-          ]),
-      {
-        name: "Comm",
-        selector: (row) => (
-          <div
-            style={{
-              color: "green",
-              fontWeight: "600",
-              fontSize: "10px",
-              textAlign: "right",
-            }}
-          >
-            {parseFloat(row.comm).toFixed(2)}
-          </div>
-        ),
-        right: true,
-        width: "60px",
-      },
-      {
-        name: "TDS",
+    ];
+
+    if (user?.role === "adm") {
+      baseColumns.push({
+        name: "GST",
         selector: (row) => (
           <div
             style={{
@@ -333,53 +243,151 @@ const DmtTxn = ({ query }) => {
               textAlign: "right",
             }}
           >
-            {parseFloat(row.tds).toFixed(2)}
+            {parseFloat(row.gst).toFixed(2)}
+          </div>
+        ),
+        wrap: true,
+        width: "100px",
+      });
+    }
+
+    const remainingColumns = [
+      {
+        name: "Comm / Tds",
+        selector: (row) => (
+          <div
+            style={{ textAlign: "right", fontSize: "10px", fontWeight: 600 }}
+          >
+            <div style={{ color: "green" }}>
+              {parseFloat(row.comm).toFixed(2)}
+            </div>
+            <div style={{ color: "blue" }}>
+              {parseFloat(row.tds).toFixed(2)}
+            </div>
           </div>
         ),
         right: true,
         width: "60px",
       },
+      ...(user?.role === "adm"
+        ? [
+            {
+              name: "di Comm/ tds",
+              selector: (row) => (
+                <div
+                  style={{
+                    textAlign: "right",
+                    fontSize: "10px",
+                    fontWeight: 600,
+                  }}
+                >
+                  <div style={{ color: "green" }}>
+                    {parseFloat(row.di_comm).toFixed(2)}
+                  </div>
+                  <div style={{ color: "blue" }}>
+                    {parseFloat(row.di_tds).toFixed(2)}
+                  </div>
+                </div>
+              ),
+              right: true,
+              width: "60px",
+            },
+            {
+              name: "Md Comm/ tds",
+              selector: (row) => (
+                <div
+                  style={{
+                    textAlign: "right",
+                    fontSize: "10px",
+                    fontWeight: 600,
+                  }}
+                >
+                  <div style={{ color: "green" }}>
+                    {parseFloat(row.md_comm).toFixed(2)}
+                  </div>
+                  <div style={{ color: "blue" }}>
+                    {parseFloat(row.md_tds).toFixed(2)}
+                  </div>
+                </div>
+              ),
+              right: true,
+              width: "60px",
+            },
+          ]
+        : []),
       {
         name: "Status",
         selector: (row) => <CommonStatus value={row.status} />,
         center: true,
         width: "70px",
       },
-      ...(user?.role === "ret"
-        ? [
-            {
-              name: "Actions",
-              selector: (row) => (
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    minWidth: "80px",
-                  }}
+      {
+        name: "Action",
+        selector: (row) => (
+          <div
+            style={{
+              fontWeight: "600",
+              fontSize: "10px",
+              textAlign: "right",
+            }}
+          >
+            {row.action || "N/A"}
+          </div>
+        ),
+        center: true,
+        width: "70px",
+      },
+      {
+        name: "View",
+        selector: (row) => (
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              minWidth: "80px",
+              gap: 1,
+            }}
+          >
+            {/* View Transaction visible to all */}
+            <Tooltip title="View Transaction">
+              <IconButton
+                color="info"
+                onClick={() => {
+                  setSelectedRow(row);
+                  setDrawerOpen(true);
+                }}
+                size="small"
+                sx={{ backgroundColor: "transparent" }}
+              >
+                <VisibilityIcon />
+              </IconButton>
+            </Tooltip>
+
+            {/* Print payout visible only to ret and dd */}
+            {(user?.role === "ret" || user?.role === "dd") && (
+              <Tooltip title="Print payout">
+                <IconButton
+                  color="secondary"
+                  size="small"
+                  onClick={() =>
+                    navigate("/print-payout", { state: { txnData: row } })
+                  }
+                  sx={{ backgroundColor: "transparent" }}
                 >
-                  <Tooltip title="View Transaction">
-                    <IconButton
-                      color="info"
-                      onClick={() => {
-                        setSelectedRow(row);
-                        setDrawerOpen(true);
-                      }}
-                      size="small"
-                    >
-                      <VisibilityIcon />
-                    </IconButton>
-                  </Tooltip>
-                </Box>
-              ),
-              width: "40px",
-              center: true,
-            },
-          ]
-        : []),
-    ],
-    [user]
-  );
+                  <PrintIcon />
+                </IconButton>
+              </Tooltip>
+            )}
+          </Box>
+        ),
+        width: "100px",
+        center: true,
+      },
+    ];
+
+    return [...baseColumns, ...remainingColumns];
+  }, [user]);
 
   const queryParam = "";
 
@@ -411,7 +419,6 @@ const DmtTxn = ({ query }) => {
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
         sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        
       >
         <Box
           sx={{
@@ -419,14 +426,13 @@ const DmtTxn = ({ query }) => {
             display: "flex",
             flexDirection: "column",
             height: "100%",
-            
           }}
         >
           {selectedRow && (
             <TransactionDetailsCard
               amount={selectedRow.amount}
               status={selectedRow.status}
-              onClose={() => setDrawerOpen(false)} // ✅ Close drawer
+              onClose={() => setDrawerOpen(false)}
               companyLogoUrl={companylogo}
               dateTime={ddmmyyWithTime(selectedRow.created_at)}
               message={selectedRow.message || "No message"}
@@ -435,12 +441,10 @@ const DmtTxn = ({ query }) => {
                 { label: "Operator Id", value: selectedRow.operator_id },
                 { label: "Order Id", value: selectedRow.order_id },
                 { label: "MOP", value: selectedRow.mop },
-
                 { label: "Customer Number", value: selectedRow.sender_mobile },
-               { label: "CCF", value: selectedRow.ccf },
-                { label: "Charge", value: selectedRow.charges},
+                { label: "CCF", value: selectedRow.ccf },
+                { label: "Charge", value: selectedRow.charges },
                 { label: "GST", value: selectedRow.gst },
-
                 { label: "TDS", value: selectedRow.tds },
               ]}
               onRaiseIssue={() => {

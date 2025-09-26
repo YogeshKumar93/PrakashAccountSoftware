@@ -1,5 +1,5 @@
 import { useMemo, useCallback, useContext, useEffect, useState } from "react";
-import { Box, Tooltip, Typography } from "@mui/material";
+import { Box, IconButton, Tooltip, Typography } from "@mui/material";
 import CommonTable from "../common/CommonTable";
 import ApiEndpoints from "../../api/ApiEndpoints";
 import { currencySetter } from "../../utils/Currencyutil";
@@ -8,6 +8,7 @@ import { capitalize1 } from "../../utils/TextUtil";
 import AuthContext from "../../contexts/AuthContext";
 import CommonStatus from "../common/CommonStatus";
 import CommonLoader from "../common/CommonLoader";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 const AccountLadger = ({ query }) => {
   const authCtx = useContext(AuthContext);
@@ -48,6 +49,7 @@ const AccountLadger = ({ query }) => {
       {
         name: "Date/Time",
         selector: (row) => (
+          
           <div className="mb-1" style={{ textAlign: "left" }}>
             {ddmmyy(row.created_at)} {dateToTime(row.created_at)}
           </div>
@@ -130,11 +132,30 @@ const AccountLadger = ({ query }) => {
         ),
       },
 
-      {
-        name: "Status",
-        selector: (row) => <CommonStatus value={row.status} />,
-        center: true,
+ {
+        name: "View",
+        selector: (row) => (
+          <Tooltip title="View wallet ledger">
+            <IconButton
+              color="info"
+              // onClick={() => {
+              //   setSelectedRow(row);
+              //   setDrawerOpen(true);
+              // }}
+              size="small"
+              sx={{ backgroundColor: "transparent" }}
+            >
+              <VisibilityIcon />
+            </IconButton>
+          </Tooltip>
+        ),
       },
+
+      // {
+      //   name: "Status",
+      //   selector: (row) => <CommonStatus value={row.status} />,
+      //   center: true,
+      // },
     ],
     [user]
   );

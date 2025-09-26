@@ -128,23 +128,22 @@ const SuperTransfer = () => {
           />
         )}
       </Box>
-      {/* Main Content (Sender + Beneficiaries) */}
-      <Box display="flex" flexDirection={isMobile ? "column" : "row"} gap={0.5}>
-        {/* Left: Sender Details + Selected Beneficiary */}
-        <Box flex={isMobile ? "1 1 100%" : "0 0 30%"}>
+      <Box display="flex" flexDirection="column" gap={1}>
+        {/* Sender Details */}
+        <Box width="100%">
           <SenderDetails sender={sender} />
 
-          {selectedBeneficiary && (
-            <BeneficiaryDetails
-              beneficiary={selectedBeneficiary}
-              senderMobile={mobile}
-              sender={sender}
-            />
-          )}
+          {/* {selectedBeneficiary && (
+      <BeneficiaryDetails
+        beneficiary={selectedBeneficiary}
+        senderMobile={mobile}
+        sender={sender}
+      />
+    )} */}
         </Box>
 
-        {/* Right: Beneficiary List */}
-        <Box flex={isMobile ? "1 1 100%" : "0 0 70%"}>
+        {/* Beneficiary List */}
+        <Box width="100%">
           <BeneficiaryList
             sender={sender}
             onSuccess={() => handleFetchSender()}

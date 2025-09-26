@@ -1,5 +1,12 @@
 import { useMemo, useCallback, useContext, useState } from "react";
-import { Box, Tooltip, Typography, Button, Drawer } from "@mui/material";
+import {
+  Box,
+  Tooltip,
+  Typography,
+  Button,
+  Drawer,
+  IconButton,
+} from "@mui/material";
 import CommonTable from "../common/CommonTable";
 import ApiEndpoints from "../../api/ApiEndpoints";
 import AuthContext from "../../contexts/AuthContext";
@@ -8,11 +15,13 @@ import CommonStatus from "../common/CommonStatus";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import CloseIcon from "@mui/icons-material/Close";
 
-import companylogo from "../../assets/Images/logo(1).png";
+import biggpayLogo from "../../assets/Images/PPALogor.png";
 import TransactionDetailsCard from "../common/TransactionDetailsCard";
 import { android2, linux2, macintosh2, windows2 } from "../../iconsImports";
 import { okhttp } from "../../utils/iconsImports";
 import LaptopIcon from "@mui/icons-material/Laptop";
+import PrintIcon from "@mui/icons-material/Print";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const AepsTxn = ({ query }) => {
   const authCtx = useContext(AuthContext);
@@ -22,7 +31,7 @@ const AepsTxn = ({ query }) => {
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
-
+  const navigate = useNavigate();
   const filters = useMemo(
     () => [
       {
@@ -37,8 +46,15 @@ const AepsTxn = ({ query }) => {
         ],
         defaultValue: "pending",
       },
-      { id: "sender_mobile", label: "Sender Mobile", type: "textfield" },
+      // { id: "customer_mobile", label: "Customer Mobile", type: "textfield" },
       { id: "txn_id", label: "Txn ID", type: "textfield" },
+      { id: "route", label: "Route", type: "textfield", roles: ["admin"] },
+      {
+        id: "client_ref",
+        label: "Client Ref",
+        type: "textfield",
+        roles: ["admin"],
+      },
     ],
     []
   );
@@ -65,7 +81,15 @@ const AepsTxn = ({ query }) => {
         width: "190px",
       },
       {
-        name: "Platform",
+        name: "Route",
+        selector: (row) => (
+          <div style={{ fontSize: "10px", fontWeight: "600" }}>{row.route}</div>
+        ),
+        center: true,
+        width: "70px",
+      },
+      {
+        name: "Pf",
         selector: (row) => {
           let icon;
 
@@ -153,6 +177,21 @@ const AepsTxn = ({ query }) => {
               width: "100px",
             },
           ]),
+      ...(user?.role === "ret" || user?.role === "dd"
+        ? []
+        : [
+            {
+              name: "Est.",
+              selector: (row) => (
+                <div style={{ fontSize: "10px", fontWeight: "600" }}>
+                  {row.establishment}
+                </div>
+              ),
+              center: true,
+              width: "70px",
+            },
+          ]),
+
       ...(user?.role === "adm"
         ? []
         : [
@@ -185,14 +224,21 @@ const AepsTxn = ({ query }) => {
         wrap: true,
       },
       {
-        name: "Bank / IIN",
+        name: "Service",
         selector: (row) => (
-          <div style={{ textAlign: "left" }}>
-            {row.bank_name?.toUpperCase()} <br /> {row.iin}
-          </div>
+          <div style={{ textAlign: "left" }}>{row.operator}</div>
         ),
         wrap: true,
       },
+      // {
+      //   name: "Bank / IIN",
+      //   selector: (row) => (
+      //     <div style={{ textAlign: "left" }}>
+      //       {row.bank_name?.toUpperCase()} <br /> {row.iin}
+      //     </div>
+      //   ),
+      //   wrap: true,
+      // },
       {
         name: "Txn Type",
         selector: (row) => (
@@ -212,14 +258,69 @@ const AepsTxn = ({ query }) => {
         right: true,
       },
       {
-        name: "Commission",
+        name: " RetComm / Tds",
         selector: (row) => (
-          <div style={{ textAlign: "right" }}>
-            ₹ {parseFloat(row.comm).toFixed(2)}
+          <div
+            style={{ textAlign: "right", fontSize: "10px", fontWeight: 600 }}
+          >
+            <div style={{ color: "green" }}>
+              {parseFloat(row.ret_comm).toFixed(2)}
+            </div>
+            <div style={{ color: "blue" }}>
+              {parseFloat(row.ret_tds).toFixed(2)}
+            </div>
           </div>
         ),
         right: true,
+        width: "60px",
       },
+      ...(user?.role === "adm"
+        ? [
+            {
+              name: "Di Comm/ tds",
+              selector: (row) => (
+                <div
+                  style={{
+                    textAlign: "right",
+                    fontSize: "10px",
+                    fontWeight: 600,
+                  }}
+                >
+                  <div style={{ color: "green" }}>
+                    {parseFloat(row.di_comm).toFixed(2)}
+                  </div>
+                  <div style={{ color: "blue" }}>
+                    {parseFloat(row.di_tds).toFixed(2)}
+                  </div>
+                </div>
+              ),
+              right: true,
+              width: "60px",
+            },
+            {
+              name: "Md Comm/ tds",
+              selector: (row) => (
+                <div
+                  style={{
+                    textAlign: "right",
+                    fontSize: "10px",
+                    fontWeight: 600,
+                  }}
+                >
+                  <div style={{ color: "green" }}>
+                    {parseFloat(row.md_comm).toFixed(2)}
+                  </div>
+                  <div style={{ color: "blue" }}>
+                    {parseFloat(row.md_tds).toFixed(2)}
+                  </div>
+                </div>
+              ),
+              right: true,
+              width: "60px",
+            },
+          ]
+        : []),
+
       {
         name: "Balance",
         selector: (row) => (
@@ -240,38 +341,53 @@ const AepsTxn = ({ query }) => {
 
         center: true,
       },
-      ...(user?.role === "ret"
-        ? [
-            {
-              name: "Actions",
-              selector: (row) => (
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    minWidth: "80px",
-                  }}
+      {
+        name: "View",
+        selector: (row) => (
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              minWidth: "80px",
+              gap: 1, // space between icons
+            }}
+          >
+            {/* View Transaction visible to all */}
+            <Tooltip title="View Transaction">
+              <IconButton
+                color="info"
+                onClick={() => {
+                  setSelectedRow(row);
+                  setDrawerOpen(true);
+                }}
+                size="small"
+                sx={{ backgroundColor: "transparent" }}
+              >
+                <VisibilityIcon />
+              </IconButton>
+            </Tooltip>
+
+            {/* Print Aeps visible only to ret and dd */}
+            {(user?.role === "ret" || user?.role === "dd") && (
+              <Tooltip title="Print Aeps">
+                <IconButton
+                  color="secondary"
+                  size="small"
+                  onClick={() =>
+                    navigate("/print-aeps", { state: { txnData: row } })
+                  }
+                  sx={{ backgroundColor: "transparent" }}
                 >
-                  <Tooltip title="View Transaction">
-                    <IconButton
-                      color="info"
-                      onClick={() => {
-                        setSelectedRow(row);
-                        setDrawerOpen(true);
-                      }}
-                      size="small"
-                    >
-                      <VisibilityIcon />
-                    </IconButton>
-                  </Tooltip>
-                </Box>
-              ),
-              width: "100px",
-              center: true,
-            },
-          ]
-        : []),
+                  <PrintIcon />
+                </IconButton>
+              </Tooltip>
+            )}
+          </Box>
+        ),
+        width: "100px",
+        center: true,
+      },
     ],
     []
   );
@@ -307,7 +423,7 @@ const AepsTxn = ({ query }) => {
               amount={selectedRow.amount}
               status={selectedRow.status}
               onClose={() => setDrawerOpen(false)} // ✅ Close drawer
-              companyLogoUrl={companylogo}
+              companyLogoUrl={biggpayLogo}
               dateTime={ddmmyyWithTime(selectedRow.created_at)}
               message={selectedRow.message || "No message"}
               details={[

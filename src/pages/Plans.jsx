@@ -2,7 +2,7 @@ import { useMemo, useContext, useState, useEffect, useRef } from "react";
 import { Box, Tooltip, Chip, IconButton, Typography } from "@mui/material";
 import { Delete, Info as InfoIcon } from "@mui/icons-material";
 import AuthContext from "../contexts/AuthContext";
-import { dateToTime, ddmmyy } from "../utils/DateUtils";
+import { dateToTime, ddmmyy, ddmmyyWithTime } from "../utils/DateUtils";
 import CommonTable from "../components/common/CommonTable";
 import ApiEndpoints from "../api/ApiEndpoints";
 import CommonLoader from "../components/common/CommonLoader";
@@ -23,7 +23,7 @@ const Plans = ({ filters = [], query }) => {
 
  const fetchUsersRef = useRef(null);
  
-   const handleFetchRef = (fetchFn) => {
+  const handleFetchRef = (fetchFn) => {
      fetchUsersRef.current = fetchFn;
    };
    const refreshPlans = () => {
@@ -54,9 +54,11 @@ const Plans = ({ filters = [], query }) => {
       {
         name: "Date/Time",
         selector: (row) => (
-          <div style={{ textAlign: "left" }}>
-            {ddmmyy(row.created_at)} {dateToTime(row.created_at)}
-          </div>
+            <Tooltip title={`Created: ${ddmmyyWithTime(row.created_at)}`} arrow>
+                       <span>
+                         {ddmmyy(row.created_at)}  
+                       </span>
+                     </Tooltip>
         ),
         wrap: true,
       },

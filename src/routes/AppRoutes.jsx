@@ -75,6 +75,9 @@ import { WalletLedgers } from "../components/WalletLedgers";
 import MdDashboard from "../pages/MdDashboard";
 import Purposes from "../pages/Purposes";
 import News from "../pages/News";
+import { BbpsOffline } from "../pages/BbpsOffline";
+import RetDdDashboard from "../pages/RetDdDashboard";
+import { WalletTransfer } from "../pages/WalletTransfer";
 
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated, loading, user } = useContext(AuthContext);
@@ -107,29 +110,28 @@ export default function AppRoutes() {
   const isAsm = role === "asm";
   const isZsm = role === "zsm";
   const isApi = role === "api";
-  const isMd = role === "api";
+  const isMd = role === "md";
 
   return (
     <BrowserRouter>
       <Routes>
-        {/* <Route path="" element={<LandingPage />}/>
-          <Route path="navbar" element={<NavBar />} />
-          <Route path="footer" element={<Footer />} />
-          <Route path="landingservices" element={<LandingServices />} />
-          <Route path="landingaboutus" element={<LandingAboutUs />} />
-          <Route path="landingcontactus" element={<LandingContactUs />} />
-          <Route path="landingpageintro" element={<LandingPageIntro />} />
-          <Route path="landingpageintro1" element={<LandingPageIntro1 />} />
-          <Route path="landingpageintro2" element={<LandingPageIntro2 />} />
-          <Route path="landingpageintro3" element={<LandingPageIntro3 />} /> */}
+        <Route path="" element={<LandingPage />} />
+        <Route path="navbar" element={<NavBar />} />
+        <Route path="footer" element={<Footer />} />
+        <Route path="landingservices" element={<LandingServices />} />
+        <Route path="landingaboutus" element={<LandingAboutUs />} />
+        <Route path="landingcontactus" element={<LandingContactUs />} />
+        <Route path="landingpageintro" element={<LandingPageIntro />} />
+        <Route path="landingpageintro1" element={<LandingPageIntro1 />} />
+        <Route path="landingpageintro2" element={<LandingPageIntro2 />} />
+        <Route path="landingpageintro3" element={<LandingPageIntro3 />} />
 
         <Route path="/qrLogin" element={<QrLoginPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/print-receipt" element={<DmtReceipt1 />} />
-         <Route path="/print-dmt" element={<PrintDmt />} />
-          <Route path="/print-dmt2" element={<PrintDmt2 />} />
-        
-      
+        <Route path="/print-dmt" element={<PrintDmt />} />
+        <Route path="/print-dmt2" element={<PrintDmt2 />} />
+
         <Route path="/adminagreement" element={<AdminAgreement />} />
         <Route
           path="/admindistributoragreement"
@@ -175,7 +177,7 @@ export default function AppRoutes() {
               <Route path="admin/profile" element={<ProfilePage />} />
               <Route path="admin/banks" element={<Banks />} />
               <Route path="admin/wallet-ledger" element={<WalletLedgers />} />
-              <Route path="admin/purpose" element={<Purposes />} />
+              <Route path="admin/purposes" element={<Purposes />} />
               <Route
                 path="admin/bankstatements/:id"
                 element={<BankStatements />}
@@ -217,7 +219,7 @@ export default function AppRoutes() {
           {/* CUSTOMER (ret, dd) */}
           {isCustomer && (
             <>
-              <Route path="customer/dashboard" element={<Dashboard />} />
+              <Route path="customer/dashboard" element={<RetDdDashboard />} />
               <Route path="customer/services" element={<Dashboard />} />
               <Route path="customer/transfer" element={<Transfer />} />
               <Route
@@ -225,6 +227,7 @@ export default function AppRoutes() {
                 element={<AccountLadger />}
               />
               <Route path="customer/retailerlogs" element={<RetailerLogs />} />
+              <Route path="customer/bbpsoffline" element={<BbpsOffline />} />
               <Route
                 path="customer/money-transfer"
                 element={<MoneyTransfer />}
@@ -232,7 +235,7 @@ export default function AppRoutes() {
 
               <Route
                 path="customer/wallet-transfer"
-                element={<Wallet2WalletTransfer />}
+                element={<WalletTransfer />}
               />
               <Route
                 path="customer/wallet-ledger"
@@ -268,6 +271,7 @@ export default function AppRoutes() {
 
               <Route path="di/wallet-ledger" element={<AccountLadger />} />
               <Route path="di/transactions" element={<Transaction />} />
+              <Route path="di/wallet-ledgers" element={<WalletLedgers />} />
               <Route
                 path="di/wallet-transfer"
                 element={<Wallet2WalletTransfer />}

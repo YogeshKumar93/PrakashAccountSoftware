@@ -91,7 +91,7 @@ const CreateFundRequest = ({ open, handleClose, handleSave, onFetchRef }) => {
     "date",
     "amount",
     "remark",
-    "request_image",
+    "receipt",
   ];
 
   // ✅ Pick only required fields from schema
