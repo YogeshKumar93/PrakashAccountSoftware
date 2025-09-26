@@ -5,41 +5,124 @@ import { useSchemaForm } from "../hooks/useSchemaForm";
 import { useToast } from "../utils/ToastContext";
 import {
   Box,
-  Button,
-  Grid,
   TextField,
-  Typography,
   MenuItem,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
-
+import ReButton from "../components/common/ReButton";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 const CreateBankStatement = ({ onFetchRef, bankId, balance }) => {
-  const { schema, errors, loading } =
-    useSchemaForm(ApiEndpoints.GET_BANK_STATEMENT_SCHEMA, true);
+  const { schema, errors, loading } = useSchemaForm(
+    ApiEndpoints.GET_BANK_STATEMENT_SCHEMA,
+    true
+  );
 
-  const [submitting, setSubmitting] = useState(false);
   const { showToast } = useToast();
+  const [submitting, setSubmitting] = useState(false);
   const [formData, setFormData] = useState({});
 
-  // Set default values when bankId or balance changes
+  // Function to generate default form data
+  const getDefaultFormData = () => ({
+    bank_id: bankId,
+    balance: balance || 0,
+    date: new Date().toISOString().split("T")[0],
+    credit: 0,
+    debit: 0,
+    mop: "",
+    handle_by: "",
+    particulars: "",
+  });
+
+  // Initialize form when bankId or balance changes
   useEffect(() => {
     if (bankId) {
-      setFormData((prev) => ({
-        ...prev,
-        bank_id: bankId,
-        balance: balance || 0,
-        date: new Date().toISOString().split("T")[0], // default today in YYYY-MM-DD
-      }));
+      setFormData(getDefaultFormData());
     }
   }, [bankId, balance]);
 
+  // Handle form changes with mutually exclusive credit/debit
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    if (name === "select_transaction") {
+      const transactionField = schema.find(
+        (f) => f.name === "select_transaction"
+      );
+      const selected = transactionField?.options?.find(
+        (opt) => String(opt.id) === String(value)
+      );
+
+      const isStatic = value === "credit_option" || value === "value_option";
+
+      let newFormData = {
+        account_id: accountId,
+        select_transaction: isStatic
+          ? value === "credit_option"
+            ? "Credit"
+            : "Value"
+          : `${selected.created_at} / ${selected.particulars} / ${
+              parseFloat(selected.credit) > 0 ? selected.credit : selected.debit
+            }`,
+        bank_id: isStatic
+          ? value === "credit_option"
+            ? "Credit"
+            : "Value"
+          : selected?.bank_id,
+        _bank_name_display: isStatic
+          ? value === "credit_option"
+            ? "Credit"
+            : "Value"
+          : selected?.bank_name || "",
+        credit: isStatic ? 0 : selected?.credit,
+        debit: isStatic ? 0 : selected?.debit,
+        balance: isStatic
+          ? balance
+          : parseFloat(balance) +
+            (parseFloat(selected.credit) > 0
+              ? parseFloat(selected.credit)
+              : -parseFloat(selected.debit)),
+        remarks: selected?.remark || "",
+        particulars: selected?.particulars || "",
+        id: selected?.id || null,
+      };
+
+      setFormData(newFormData);
+
+      // Disable fields only for normal transactions
+      setDisabledFields(
+        isStatic
+          ? []
+          : schema.map((f) => f.name).filter((n) => n !== "select_transaction")
+      );
+
+      return;
+    }
+
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
 
+  // Clear 0 on focus
+  const handleFocus = (e) => {
+    const { name } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: prev[name] === 0 ? "" : prev[name],
+    }));
+  };
+
+  // Restore 0 on blur if empty
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+    if ((name === "credit" || name === "debit") && value === "") {
+      setFormData((prev) => ({ ...prev, [name]: 0 }));
+    }
+  };
+
+  // Handle form submission
   const handleSubmit = async () => {
     setSubmitting(true);
     const { error, response } = await apiCall(
@@ -51,6 +134,7 @@ const CreateBankStatement = ({ onFetchRef, bankId, balance }) => {
     if (response) {
       showToast(response?.message || "Statement Created", "success");
       onFetchRef?.();
+      setFormData(getDefaultFormData()); // reset form after submission
     } else {
       showToast(error?.message || "Failed to create Statement", "error");
     }
@@ -61,63 +145,75 @@ const CreateBankStatement = ({ onFetchRef, bankId, balance }) => {
   const requiredFields = [
     "mop",
     "credit",
-    "status",
+    "handle_by",
+    // "remark",
     "date",
     "debit",
-    "balance",
+
     "particulars",
   ];
-  const visibleFields = schema.filter((f) =>
-    requiredFields.includes(f.name)
-  );
+  const visibleFields = schema.filter((f) => requiredFields.includes(f.name));
 
   return (
-    <Box sx={{  }}>
-       
+    <Box
+      sx={{
+        display: "flex",
+        gap: 1,
+        alignItems: "center",
+        flexWrap: "nowrap",
+      }}
+    >
+      {visibleFields.map((field) => (
+        <TextField
+          key={field.name}
+          select={field.type === "dropdown"}
+          label={field.label || field.name}
+          name={field.name}
+          value={formData[field.name] ?? ""}
+          onChange={handleChange}
+          size="small"
+          error={Boolean(errors[field.name])}
+          helperText={errors[field.name]}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          InputProps={{
+            endAdornment:
+              field.type === "date" ? (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={() => {
+                      document.getElementsByName(field.name)[0].showPicker?.();
+                    }}
+                  >
+                    <CalendarTodayIcon fontSize="small" />
+                  </IconButton>
+                </InputAdornment>
+              ) : null,
+          }}
+          disabled={
+            field.name === "balance" ||
+            (field.name === "credit" && Number(formData.debit) > 0) ||
+            (field.name === "debit" && Number(formData.credit) > 0)
+          }
+          type={
+            field.type === "date"
+              ? "date"
+              : field.type === "number"
+              ? "number"
+              : "text"
+          }
+          sx={{ width: field.name === "particulars" ? 350 : 200 }} // ✅ wider for particulars
+        >
+          {field.type === "dropdown" &&
+            field.options?.map((opt) => (
+              <MenuItem key={opt} value={opt}>
+                {opt}
+              </MenuItem>
+            ))}
+        </TextField>
+      ))}
 
-      <Grid container spacing={2}>
-        {visibleFields.map((field) => (
-          <Grid item xs={12} sm={6} md={3} key={field.name}>
-           <TextField
-  select={field.type === "dropdown"} // handle dropdown dynamically
-  label={field.label || field.name}
-  name={field.name}
-  value={formData[field.name] || ""}
-  onChange={handleChange}
-  size="small"
-  error={Boolean(errors[field.name])}
-  helperText={errors[field.name]}
-  disabled={field.name === "balance"} // only disable balance
-  type={
-    field.type === "date"
-      ? "date"
-      : field.type === "number"
-      ? "number"
-      : "text"
-  } // handle type
-  sx={{ width: 200 }} // fixed width in px, adjust as needed
->
-  {field.type === "dropdown" &&
-    field.options?.map((opt) => (
-      <MenuItem key={opt} value={opt}>
-        {opt}
-      </MenuItem>
-    ))}
-</TextField>
-
-          </Grid>
-        ))}
-      </Grid>
-
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleSubmit}
-        disabled={submitting || loading}
-        sx={{ mt: 2 }}
-      >
-        {submitting ? "Submitting..." : "Create Statement"}
-      </Button>
+      <ReButton label="Add" onClick={handleSubmit} loading={submitting} />
     </Box>
   );
 };
