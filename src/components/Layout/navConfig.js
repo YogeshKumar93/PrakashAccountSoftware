@@ -292,12 +292,24 @@ export const asm_nav = [
     icon2: "📊",
     to: "/asm/dashboard",
   },
-  { title: "Users", icon: "📊", icon2: "📊", to: "/asm/users" },
   {
-    title: "Transcations",
-    icon: transImage,
+    title: "Manage Users",
+    icon: usersImage,
+    icon2: usersImage,
+    to: "/asm/users",
+  },
+  {
+    title: "Transactions",
+    icon: serviceImage,
     icon2: "📊",
     to: "/asm/transcations",
+  },
+  // { title: "Profile", icon: serviceImage, icon2: "📊", to: "/asm/profile" },
+  {
+    title: "Wallet Ledger",
+    icon: walletLdgerImage,
+    icon2: "📊",
+    to: "/asm/wallet-ledger",
   },
 ];
 
