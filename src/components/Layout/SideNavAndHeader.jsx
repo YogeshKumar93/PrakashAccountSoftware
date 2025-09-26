@@ -92,16 +92,13 @@ const roleNavigation = {
 const roleRoutes = {
   adm: "/admin/profile",
   sadm: "/admin/profile",
-  Asm: "/asm/profile",
+  asm: "/asm/profile",
   di: "/di/profile",
   dd: "/customer/profile",
   ret: "/customer/profile",
-  Ret: "/customer/profile",
-  Dd: "/customer/profile",
-  Zsm: "/zsm/profile",
-  Ad: "/ad/profile",
-  Md: "/md/profile",
-  Api: "/api-user/profile",
+  zsm: "/zsm/profile",
+  md: "/md/profile",
+  api: "/api-user/profile",
 };
 
 const themeSettings = {
@@ -416,7 +413,7 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
           <LogoutIcon fontSize="small" /> Logout
         </MenuItem>
 
-          {/* App Version text */}
+        {/* App Version text */}
         <Typography
           variant="body2"
           sx={{
@@ -532,34 +529,33 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
                 cursor: "pointer",
               }}
             >
-           <Typography
-  variant="caption"
-  sx={{
-    fontWeight: 500,
-    color: "#6c4bc7",
-    fontSize: "11px",
-    lineHeight: 1,
-  }}
->
-  {user?.role === "adm"
-    ? "Admin"
-    : user?.role === "dd"
-    ? "Direct Dealer"
-    : user?.role === "di"
-    ? "Distributor"
-    : user?.role === "sadm"
-    ? "Super Admin"
-    : user?.role === "ret"
-    ? "Retailer"
-    : user?.role === "zsm"
-    ? "Zonal Sales Manager"
-    : user?.role === "asm"
-    ? "Area Sales Manager"
-    : user?.role === "md"
-    ? "Master Distributor"
-    : "User"}
-</Typography>
-
+              <Typography
+                variant="caption"
+                sx={{
+                  fontWeight: 500,
+                  color: "#6c4bc7",
+                  fontSize: "11px",
+                  lineHeight: 1,
+                }}
+              >
+                {user?.role === "adm"
+                  ? "Admin"
+                  : user?.role === "dd"
+                  ? "Direct Dealer"
+                  : user?.role === "di"
+                  ? "Distributor"
+                  : user?.role === "sadm"
+                  ? "Super Admin"
+                  : user?.role === "ret"
+                  ? "Retailer"
+                  : user?.role === "zsm"
+                  ? "Zonal Sales Manager"
+                  : user?.role === "asm"
+                  ? "Area Sales Manager"
+                  : user?.role === "md"
+                  ? "Master Distributor"
+                  : "User"}
+              </Typography>
 
               <Box sx={{ display: "flex", alignItems: "center" }}>
                 <Typography
@@ -611,7 +607,7 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
                 gap: 2,
                 color: "#220ad7ff",
                 bgcolor: "#e6eef4ff",
-                borderTop: "3px solid #6c4bc7" ,
+                borderTop: "3px solid #6c4bc7",
               }}
             >
               <Avatar
@@ -750,7 +746,7 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
       </Box>
 
       {/* Main Content */}
-    <MainContent
+      <MainContent
         sx={{
           width: {
             xs: "100%",
