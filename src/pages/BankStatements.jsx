@@ -10,21 +10,32 @@ import {
 } from "@mui/material";
 import { DateRangePicker } from "rsuite";
 import CachedIcon from "@mui/icons-material/Cached";
-
+import DownloadIcon from "@mui/icons-material/Download";
+import UploadFileIcon from "@mui/icons-material/UploadFile"; // Upload icon
+import Icon from "@mdi/react";
+import { mdiFileExcel } from "@mdi/js";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CommonTable from "../components/common/CommonTable";
 import CreateBankStatement from "./CreateBankStatement";
 import CommonLoader from "../components/common/CommonLoader";
 
 import predefinedRanges from "../utils/predefinedRanges";
-import { yyyymmdd, datemonthYear1 } from "../utils/DateUtils";
+import {
+  yyyymmdd,
+  datemonthYear1,
+  ddmmyy,
+  ddmmyyWithTime,
+  dateToTime1,
+} from "../utils/DateUtils";
 import { capitalize1 } from "../utils/TextUtil";
 import { currencySetter } from "../utils/Currencyutil";
 import ApiEndpoints from "../api/ApiEndpoints";
-import sampleFileImg from "../assets/sampleFile.png";
-import excelImg from "../assets/ExcelFile.png";
-import uploadImg from "../assets/uploadFile.png";
+import excel from "../assets/excel.png";
+import sampleFileImg from "../assets/animate-icons/sampleFile.png";
+import excelImg from "../assets/animate-icons/ExcelFile.png";
+import uploadImg from "../assets/animate-icons/uploadFile.png";
 import AuthContext from "../contexts/AuthContext";
-// import { primaryColor, secondaryColor } from "../utils/setThemeColor";
+import { primaryColor, secondaryColor } from "../utils/setThemeColor";
 
 const BankStatements = () => {
   const location = useLocation();
@@ -58,12 +69,32 @@ const BankStatements = () => {
   };
 
   const columns = [
+    {
+      name: "Date",
+      selector: (row) => (
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <Tooltip title={`Created: ${ddmmyyWithTime(row.created_at)}`} arrow>
+            <span>
+              {ddmmyy(row.created_at)} {dateToTime1(row.created_at)}
+            </span>
+          </Tooltip>
+
+          <Tooltip title={`Updated: ${ddmmyyWithTime(row.updated_at)}`} arrow>
+            <span>
+              {ddmmyy(row.updated_at)} {dateToTime1(row.updated_at)}
+            </span>
+          </Tooltip>
+        </div>
+      ),
+      wrap: true,
+      width: "190px",
+    },
     { name: "ID", selector: (row) => row.bank_id, width: "80px" },
     {
       name: (
         <DateRangePicker
           showOneCalendar
-          placeholder="Date"
+          placeholder="Deposited Date"
           size="medium"
           cleanable
           ranges={predefinedRanges}
@@ -74,24 +105,24 @@ const BankStatements = () => {
               setQuery(`bank_id=${bank_id}`);
               return;
             }
-
             const dates = { start: value[0], end: value[1] };
-            const startDate = yyyymmdd(dates.start);
-            const endDate = yyyymmdd(dates.end);
-
             setFilterValues({
               ...filterValues,
-              date: { start: startDate, end: endDate },
+              date: { start: yyyymmdd(dates.start), end: yyyymmdd(dates.end) },
               dateVal: value,
             });
-
-            setQuery(`bank_id=${bank_id}&start=${startDate}&end=${endDate}`);
+            setQuery(
+              `bank_id=${bank_id}&start=${yyyymmdd(dates.start)}&end=${yyyymmdd(
+                dates.end
+              )}`
+            );
           }}
-          style={{ width: 200 }}
+          style={{ width: 200 }} // <-- set the width you want
         />
       ),
       selector: (row) => datemonthYear1(row.created_at),
     },
+
     { name: "By", selector: (row) => row.handle_by },
     {
       name: (
@@ -183,30 +214,33 @@ const BankStatements = () => {
                   sx={{
                     backgroundColor: "#2275b7",
                     color: "#fff",
-                    "&:hover": { backgroundColor: "orange" },
+                    "&:hover": { backgroundColor: primaryColor() },
                   }}
                   onClick={() => navigate(-1)}
-                  startIcon={<CachedIcon />}
+                  startIcon={<ArrowBackIcon />}
                 >
                   Back
                 </Button>
 
                 <Box sx={{ display: "flex", gap: 1 }}>
-                  {/* Upload Excel */}
                   <Tooltip title="Upload Excel">
                     <IconButton
                       component="label"
                       size="small"
                       sx={{
                         color: "#fff",
-                        "&:hover": { backgroundColor: "rgba(80, 11, 185, 0.27)" },
+                        "&:hover": {
+                          backgroundColor: "rgba(80, 11, 185, 0.27)",
+                        },
                       }}
                     >
+                      {/* Use the imported image */}
                       <img
                         src={uploadImg}
-                        alt="Upload"
+                        alt="Excel"
                         style={{ width: 23, height: 23 }}
                       />
+
                       <input
                         type="file"
                         accept=".xlsx, .xls"
@@ -227,7 +261,6 @@ const BankStatements = () => {
                     </IconButton>
                   </Tooltip>
 
-                  {/* Download Sample */}
                   <Tooltip title="Download Sample Excel">
                     <IconButton
                       size="small"
@@ -239,13 +272,13 @@ const BankStatements = () => {
                     >
                       <img
                         src={sampleFileImg}
-                        alt="Sample Excel"
+                        alt="Excel"
                         style={{ width: 23, height: 23 }}
                       />
                     </IconButton>
                   </Tooltip>
 
-                  {/* Download Excel */}
+                  {/* Upload Excel */}
                   <Tooltip title="Download Excel">
                     <IconButton
                       component="label"
@@ -255,6 +288,7 @@ const BankStatements = () => {
                         "&:hover": { backgroundColor: "#098f60ff" },
                       }}
                     >
+                      {/* Use the imported image */}
                       <img
                         src={excelImg}
                         alt="Excel"

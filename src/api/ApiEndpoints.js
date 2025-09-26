@@ -353,6 +353,7 @@ const ApiEndpoints = {
   //recharges and bill payment
   RECH_FETCH_BILL: "prepaid/fetchBill",
   RECH_PAY_BILL: "prepaid/payBill",
+  GET_UNCLAIMED_ENTERIES: "bankStatement/getUnclaimedEntries",
 
   // user
   GET_ROLL: "",
