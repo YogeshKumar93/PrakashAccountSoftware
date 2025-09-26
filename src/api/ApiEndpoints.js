@@ -238,7 +238,7 @@ const ApiEndpoints = {
 
   WALLET_LEDGER_TXNDATA: "walletledger/getTxnData",
 
-  WALLET_LIST: "wallet/getW2WTransactions",
+  WALLET_LIST: "wallet/getW2WTransaction",
   WALLET_GET_RECEIVER: "wallet/getReceiver",
   WALLET_GET_W2W_TRANSACTION: "wallet/getW2WTransaction",
   WALLET_CREATE: "wallet/createW2W",
