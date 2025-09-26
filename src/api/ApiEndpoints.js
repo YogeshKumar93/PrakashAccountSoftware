@@ -4,6 +4,8 @@
 // export const BASE_URL = "http://192.168.1.14/impsguru-php/";
 // export const BASE_URL = "https://newapi.impsguru.com/";
 
+import { Dashboard } from "@mui/icons-material";
+
 export const BASE_URL = "https://api.transup.in/";
 
 const ApiEndpoints = {
@@ -252,6 +254,8 @@ const ApiEndpoints = {
   // WALLET_UPDATE: "wallet/update",
   // WALLET_DELETE: "wallet/delete",
 
+  GET_DASHBOARD1: "dashboard/getRoleWiseCounts",
+  GET_DASHBOARD2: "dashboard/getServiceWiseSummary",
   // ****************************** NEW API'S ABOVE ******************************
 
   GET_ACC_BANKS: "",
