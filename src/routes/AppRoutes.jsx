@@ -110,7 +110,7 @@ export default function AppRoutes() {
   const isAsm = role === "asm";
   const isZsm = role === "zsm";
   const isApi = role === "api";
-  const isMd = role === "api";
+  const isMd = role === "md";
 
   return (
     <BrowserRouter>
@@ -271,7 +271,7 @@ export default function AppRoutes() {
 
               <Route path="di/wallet-ledger" element={<AccountLadger />} />
               <Route path="di/transactions" element={<Transaction />} />
-                           <Route path="di/wallet-ledgers" element={<WalletLedgers />} />
+              <Route path="di/wallet-ledgers" element={<WalletLedgers />} />
               <Route
                 path="di/wallet-transfer"
                 element={<Wallet2WalletTransfer />}
