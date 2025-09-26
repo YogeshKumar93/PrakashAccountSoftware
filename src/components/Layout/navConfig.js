@@ -293,15 +293,25 @@ export const asm_nav = [
     icon2: "📊",
     to: "/asm/dashboard",
   },
-  { title: "Users", icon: usersImage, icon2: "📊", to: "/asm/users" },
   {
-    title: "Transcations",
-    icon: transImage,
+    title: "Manage Users",
+    icon: usersImage,
+    icon2: usersImage,
+    to: "/asm/users",
+  },
+  {
+    title: "Transactions",
+    icon: serviceImage,
     icon2: "📊",
     to: "/asm/transcations",
   },
-    { title: "Profile", icon: profileNewImage, icon2: "📊", to: "/asm/profile" },
-  { title: "Wallet Ledger", icon: walletLdgerImage, icon2: "📊", to: "/asm/wallet-ledger" },
+  // { title: "Profile", icon: serviceImage, icon2: "📊", to: "/asm/profile" },
+  {
+    title: "Wallet Ledger",
+    icon: walletLdgerImage,
+    icon2: "📊",
+    to: "/asm/wallet-ledger",
+  },
 ];
 
 export const zsm_nav = [
@@ -318,8 +328,13 @@ export const zsm_nav = [
     icon2: "📊",
     to: "/zsm/transcations",
   },
-    { title: "Profile", icon: profileNewImage, icon2: "📊", to: "/zsm/profile" },
-  { title: "Wallet Ledger", icon: walletLdgerImage, icon2: "📊", to: "/zsm/wallet-ledger" },
+  { title: "Profile", icon: profileNewImage, icon2: "📊", to: "/zsm/profile" },
+  {
+    title: "Wallet Ledger",
+    icon: walletLdgerImage,
+    icon2: "📊",
+    to: "/zsm/wallet-ledger",
+  },
 ];
 
 export const api_nav = [
@@ -336,9 +351,19 @@ export const api_nav = [
     icon2: "📊",
     to: "/api/transcations",
   },
-    { title: "Profile", icon: profileNewImage, icon2: "📊", to: "/api/profile" },
-  { title: "Complaint", icon: complainImageNew, icon2: "📊", to: "/api/complaint" },
-  { title: "Fund Request", icon: bankImage, icon2: "📊", to: "/api/fund-request" },
+  { title: "Profile", icon: profileNewImage, icon2: "📊", to: "/api/profile" },
+  {
+    title: "Complaint",
+    icon: complainImageNew,
+    icon2: "📊",
+    to: "/api/complaint",
+  },
+  {
+    title: "Fund Request",
+    icon: bankImage,
+    icon2: "📊",
+    to: "/api/fund-request",
+  },
 ];
 
 export const md_nav = [
@@ -349,8 +374,8 @@ export const md_nav = [
     to: "/md/dashboard",
   },
   { title: "Users", icon: usersImage, icon2: "📊", to: "/md/users" },
- 
-   {
+
+  {
     title: "Fund Request",
     icon: bankImage,
     icon2: "🛠️",
@@ -362,13 +387,13 @@ export const md_nav = [
     icon2: "📊",
     to: "/md/transcations",
   },
-    {
+  {
     title: "Wallet Transfer",
     icon: walletTransferImage,
     icon2: "🛠️",
     to: "/md/wallet-transfer",
   },
-    {
+  {
     title: "Wallet Ledger",
     icon: walletLedgerImg,
     icon2: "🛠️",

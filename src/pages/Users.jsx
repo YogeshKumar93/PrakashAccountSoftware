@@ -194,17 +194,17 @@ const Users = ({ query }) => {
         ),
       },
       ...(userRole.role !== "md"
-      ? [
-        {
-        name: "Wallet 2",
-        selector: (row) => (
-          <div style={{ textAlign: "left", cursor: "pointer" }}>
-            ₹ {(row.w2 / 100).toFixed(2)}
-          </div>
-        ),
-      },
-    ]
-    :[]),
+        ? [
+            {
+              name: "Wallet 2",
+              selector: (row) => (
+                <div style={{ textAlign: "left", cursor: "pointer" }}>
+                  ₹ {(row.w2 / 100).toFixed(2)}
+                </div>
+              ),
+            },
+          ]
+        : []),
       ...(userRole.role !== "di" && userRole.role !== "md"
         ? [
             {
@@ -234,7 +234,11 @@ const Users = ({ query }) => {
     ];
 
     // Conditionally add Actions column for admins and distributors
-    if (userRole.role === "adm" || userRole.role === "di" || userRole.role === "md") {
+    if (
+      userRole.role === "adm" ||
+      userRole.role === "di" ||
+      userRole.role === "md"
+    ) {
       baseColumns.push({
         name: "Actions",
         selector: (row) => (
@@ -276,7 +280,7 @@ const Users = ({ query }) => {
                   </Tooltip>
                 </>
               )}
-            {userRole.role === "di" ||
+              {userRole.role === "di" ||
                 (userRole.role === "md" && <AdWalletTransfer row={row} />)}
             </Box>
           </Box>
@@ -333,7 +337,11 @@ const Users = ({ query }) => {
               </Box>
             </Box>
           );
-        } else if (userRole.role === "di" || userRole.role === "md") {
+        } else if (
+          userRole.role === "di" ||
+          userRole.role === "md" ||
+          userRole.role === "asm"
+        ) {
           return (
             <CommonStatus value={row.is_active} />
             // <Box
