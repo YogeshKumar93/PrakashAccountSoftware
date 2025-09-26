@@ -27,7 +27,7 @@ import DescriptionIcon from "@mui/icons-material/Description";
 import { useNavigate } from "react-router-dom";
 import W2wTransfer from "./w2wTransfer";
 import { android2, linux2, macintosh2, windows2 } from "../iconsImports";
-import { okhttp } from "../utils/iconsImports";
+
 const Wallet2WalletTransfer = ({}) => {
   const authCtx = useContext(AuthContext);
   const user = authCtx?.user;
@@ -384,9 +384,8 @@ const Wallet2WalletTransfer = ({}) => {
             onFetchRef={handleFetchRef}
             columns={columns}
             endpoint={tableEndpoint}
-            queryParam="service=W2W transfer"
             filters={filters}
-       
+            queryParam="service=W2W transfer"
             refresh={true}
             includeClientRef={false}
           />

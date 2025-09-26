@@ -32,7 +32,7 @@ import { useToast } from "../utils/ToastContext";
 import CommonMpinModal from "../components/common/CommonMpinModal";
 import { apiCall } from "../api/apiClient";
 import ApiEndpoints from "../api/ApiEndpoints";
-import W3W1Transfer from "../components/WalletTrafsfer/W3W1Transfer";
+import W3W1Transfer from "../components/WalletTransfer/W3W1Transfer";
 const Wallet3ToWallet1 = ({}) => {
   const authCtx = useContext(AuthContext);
   const user = authCtx?.user;
