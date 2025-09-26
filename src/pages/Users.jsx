@@ -123,7 +123,7 @@ const Users = ({ query }) => {
         selector: (row) => (
           <Tooltip title={row?.id}>
             <div style={{ textAlign: "left", fontWeight: "bold" }}>
-              TRANS{row?.id}
+              P2PAE_{row?.id}
             </div>
           </Tooltip>
         ),
@@ -177,7 +177,7 @@ const Users = ({ query }) => {
                 return (
                   <Tooltip title={parentName}>
                     <div style={{ textAlign: "left", cursor: "pointer" }}>
-                      {row.parent}
+                      {parentName}
                     </div>
                   </Tooltip>
                 );

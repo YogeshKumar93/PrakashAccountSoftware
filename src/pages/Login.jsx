@@ -221,7 +221,7 @@ const passwordInputProps = (showPassword, setShowPassword) => ({
         }}
       >
         <Box sx={{ width: "100%", maxWidth: 500 }}>
-          {/* <a href="https://impsguru.com"> */}
+          <a href="https://app.p2pae.com">
             <Box
               component="img"
               src={biggpayLogo}
@@ -237,7 +237,7 @@ const passwordInputProps = (showPassword, setShowPassword) => ({
               }}
               onClick={() => navigate("/login")} 
             />
-          {/* </a> */}
+          </a>
 
       
         {loginError && (

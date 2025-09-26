@@ -18,6 +18,7 @@ import {
   windows2,
 } from "../../utils/iconsImports";
 import LaptopIcon from "@mui/icons-material/Laptop";
+import ChangeStatusModal from "../common/ChangeStatusModal";
 
 const DmtTxn = ({ query }) => {
   const authCtx = useContext(AuthContext);
@@ -331,7 +332,7 @@ const DmtTxn = ({ query }) => {
               textAlign: "right",
             }}
           >
-            {row.action || "N/A"}
+            <ChangeStatusModal row={row} refresh={() => {}} />
           </div>
         ),
         center: true,
