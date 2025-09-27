@@ -102,7 +102,10 @@ const ApiEndpoints = {
   CREATE_PURPOSE: "payout/createPurpose",
   AEPS2_SCHEMA: "aeps/aeps2Schema",
   AEPS2_ONBOARDING: "aeps/onboardingAeps2",
-
+  GET_BY_TYPE: "business/getByType",
+  UPDATE_BY_TYPE: "business/updateByType",
+  GET_ALL_BY_USER: "business/getAllByUser",
+  APPROVE_REJECT_DOCS: "business/approveReject",
   GET_NEWS: "news/getNews",
   CREATE_NEWS: "news/createNews",
   DELETE_NEWS: "news/deleteNews",
@@ -249,6 +252,10 @@ const ApiEndpoints = {
   DMT1_OUTLET_INITIATE: "aeps/initiateSignupAeps",
   DMT1_OUTLET_INITIATE_SCHEMA: "aeps/getInitiateSchema",
   VALIDATE_DMT1_OUTLET: "aeps/validateSignupAeps",
+ ADD_LEIN: "lien/addLien",
+  REMOVE_LEIN: "lien/removeLien",
+  GET_LEIN: "lien/getLien",
+
   // WALLET_UPDATE: "wallet/update",
   // WALLET_DELETE: "wallet/delete",
 
