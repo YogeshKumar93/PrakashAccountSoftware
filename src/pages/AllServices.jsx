@@ -44,11 +44,11 @@ import {
   water_1,
   airtel2,
   aepsImage,
-  
   aepsaeps,
   sendmoney,
   thumbPrint,
   mobileRechargeNew,
+  wallet1,
 } from "../iconsImports";
 import SuperTransfer from "./SuperTransfer";
 
@@ -65,6 +65,10 @@ import Dth from "../components/UI/rechange and bill/Dth";
 import { AIR1, FINO } from "../utils/iconsImports";
 import { bg } from "date-fns/locale";
 import { color } from "framer-motion";
+import Wallet2WalletTransfer from "./Wallet2WalletTransfer";
+import Wallet2Wallet1 from "./Wallet2Wallet1";
+import Aeps2 from "./Aeps2";
+import AepsLayout2 from "./AepsLayout2";
 
 const MenuCard = ({ icon, label, onClick, isActive, user }) => {
   return (
@@ -318,8 +322,21 @@ export default function AllServices() {
       key: "aeps",
       label: "AEPS",
       icon: thumbPrint,
-      component: Aeps,
-      
+      // component: Aeps,
+      subMenu: [
+        {
+          key: "aeps1",
+          label: "Aeps 1",
+          icon: AccountBalanceWalletIcon,
+          component: AepsLayout2,
+        },
+        {
+          key: "aeps2",
+          label: "Aeps 2",
+          icon: AccountBalanceWalletIcon,
+          component: Aeps2,
+        },
+      ],
     },
     hasPermission("billpay") && {
       key: "billPayments",
@@ -459,6 +476,26 @@ export default function AllServices() {
           key: "bus",
           label: "Bus Tickets",
           icon: bus_1,
+        },
+      ],
+    },
+    {
+      key: "w2w",
+      label: "W 2 W",
+      icon: wallet1,
+      subMenu: [
+        {
+          key: "w1w1",
+          label: "W1 TO W1",
+          icon: wallet1,
+          type: "dth",
+          component: Wallet2WalletTransfer,
+        },
+        {
+          key: "w2w1",
+          label: "W2 TO W1",
+          icon: wallet1,
+          component: Wallet2Wallet1,
         },
       ],
     },

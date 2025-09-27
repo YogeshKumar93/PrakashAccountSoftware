@@ -1,14 +1,23 @@
 // components/ReceiptButton.js
 import React, { useState } from "react";
-import { IconButton, Tooltip, Modal, Box } from "@mui/material";
-import ReceiptIcon from "@mui/icons-material/Receipt"; // MUI icon
+import { IconButton, Tooltip, Box } from "@mui/material";
+import ReceiptIcon from "@mui/icons-material/Receipt";
+import ZoomInIcon from "@mui/icons-material/ZoomIn";
+import ZoomOutIcon from "@mui/icons-material/ZoomOut";
 import CommonModal from "./common/CommonModal";
 
 const ReceiptButton = ({ row }) => {
   const [open, setOpen] = useState(false);
+  const [zoom, setZoom] = useState(1); // scale factor for zoom
 
-  const handleOpen = () => setOpen(true);
+  const handleOpen = () => {
+    setZoom(1); // reset zoom on open
+    setOpen(true);
+  };
   const handleClose = () => setOpen(false);
+
+  const handleZoomIn = () => setZoom((prev) => Math.min(prev + 0.2, 3)); // max 3x zoom
+  const handleZoomOut = () => setZoom((prev) => Math.max(prev - 0.2, 0.5)); // min 0.5x zoom
 
   return (
     <>
@@ -27,8 +36,9 @@ const ReceiptButton = ({ row }) => {
         <Box
           sx={{
             display: "flex",
-            justifyContent: "center",
+            flexDirection: "column",
             alignItems: "center",
+            gap: 1,
           }}
         >
           {/* Receipt Image */}
@@ -36,12 +46,28 @@ const ReceiptButton = ({ row }) => {
             src={row?.receipt}
             alt="Receipt"
             style={{
-              maxWidth: "10%", // modal width ke hisaab se fit
-              maxHeight: "10%", // modal height ke hisaab se fit
-              objectFit: "contain", // image scale maintain kare
+              transform: `scale(${zoom})`,
+              transition: "transform 0.3s ease",
+              maxWidth: "40%",
+              maxHeight: "50vh",
+              objectFit: "contain",
               borderRadius: 8,
             }}
           />
+
+          {/* Zoom Controls */}
+          <Box sx={{ display: "flex", gap: 2 }}>
+            <Tooltip title="Zoom Out">
+              <IconButton onClick={handleZoomOut} color="primary">
+                <ZoomOutIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Zoom In">
+              <IconButton onClick={handleZoomIn} color="primary">
+                <ZoomInIcon />
+              </IconButton>
+            </Tooltip>
+          </Box>
         </Box>
       </CommonModal>
     </>

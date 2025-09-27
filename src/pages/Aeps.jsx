@@ -29,10 +29,10 @@ const Aeps = () => {
           sx={{
             width: "100%",
             maxWidth: 700,
-            height:400,
+            height: 400,
             borderRadius: 2,
             mb: 2,
-            pt:8
+            pt: 8,
           }}
         />
         <Box
@@ -57,121 +57,119 @@ const Aeps = () => {
     );
   }
 
-  
   // Step 2 → AEPS Selection
-if (step === 2) {
-  return (
-    <Box
-      sx={{
-        p: 5, // padding around the whole section
-        bgcolor: "#f5f5f5", // light background color
-        borderRadius: 4, // rounded corners
-        boxShadow: 3, // slight shadow
-        border: "1px solid #3d3df0ff",
-        maxWidth: 700,
-        height: 400,
-        mx: "auto", // center horizontally
-       mt:8
-      }}
-    >
-      <Box sx={{ textAlign: "center", mt: 5 }}>
-        <Typography
-          variant="h5"
-          sx={{ mb: 3, fontWeight: "bold", color: "#9d72f0" }}
-        >
-          Select AEPS Type
-        </Typography>
+  if (step === 2) {
+    return (
+      <Box
+        sx={{
+          p: 5, // padding around the whole section
+          bgcolor: "#f5f5f5", // light background color
+          borderRadius: 4, // rounded corners
+          boxShadow: 3, // slight shadow
+          border: "1px solid #3d3df0ff",
+          maxWidth: 700,
+          height: 400,
+          mx: "auto", // center horizontally
+          mt: 8,
+        }}
+      >
+        <Box sx={{ textAlign: "center", mt: 5 }}>
+          <Typography
+            variant="h5"
+            sx={{ mb: 3, fontWeight: "bold", color: "#9d72f0" }}
+          >
+            Select AEPS Type
+          </Typography>
 
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            gap: 14,
-            flexWrap: "wrap",
-            mt: 7,
-          }}
-        >
-          {/* AEPS1 */}
-          <Button
-            onClick={() => setStep(3)}
+          <Box
             sx={{
-              width: 140,
-              height: 160,
-              bgcolor: "#9d72f0",
-              color: "#fff",
-              borderRadius: 3,
-              boxShadow: 3,
               display: "flex",
-              flexDirection: "column",
               justifyContent: "center",
-              alignItems: "center",
-              gap: 1,
-              "&:hover": {
-                bgcolor: "#8756e5",
-                boxShadow: 6,
-              },
+              gap: 14,
+              flexWrap: "wrap",
+              mt: 7,
             }}
           >
-            <Box
-              component="img"
-              src={atmIcon}
-              alt="ATM"
+            {/* AEPS1 */}
+            <Button
+              onClick={() => setStep(3)}
               sx={{
-                height: 60,
-                width: 60,
-                bgcolor: "#fff",
-                borderRadius: "50%",
-                p: 1,
+                width: 140,
+                height: 160,
+                bgcolor: "#9d72f0",
+                color: "#fff",
+                borderRadius: 3,
+                boxShadow: 3,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 1,
+                "&:hover": {
+                  bgcolor: "#8756e5",
+                  boxShadow: 6,
+                },
               }}
-            />
-            <Typography sx={{ fontWeight: "bold", fontSize: 16 }}>
-              AEPS1
-            </Typography>
-          </Button>
+            >
+              <Box
+                component="img"
+                src={atmIcon}
+                alt="ATM"
+                sx={{
+                  height: 60,
+                  width: 60,
+                  bgcolor: "#fff",
+                  borderRadius: "50%",
+                  p: 1,
+                }}
+              />
+              <Typography sx={{ fontWeight: "bold", fontSize: 16 }}>
+                AEPS1
+              </Typography>
+            </Button>
 
-          {/* AEPS2 */}
-          <Button
-            onClick={() => setStep(4)}
-            sx={{
-              width: 140,
-              height: 160,
-              border: "2px solid #9d72f0",
-              borderRadius: 3,
-              boxShadow: 3,
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              gap: 1,
-              "&:hover": {
-                borderColor: "#8756e5",
-                color: "#8756e5",
-                boxShadow: 6,
-              },
-            }}
-          >
-            <Box
-              component="img"
-              src={atmIcon}
-              alt="ATM"
+            {/* AEPS2 */}
+            <Button
+              onClick={() => setStep(4)}
               sx={{
-                height: 60,
-                width: 60,
-                bgcolor: "#fff",
-                borderRadius: "50%",
-                p: 1,
+                width: 140,
+                height: 160,
+                border: "2px solid #9d72f0",
+                borderRadius: 3,
+                boxShadow: 3,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 1,
+                "&:hover": {
+                  borderColor: "#8756e5",
+                  color: "#8756e5",
+                  boxShadow: 6,
+                },
               }}
-            />
-            <Typography sx={{ fontWeight: "bold", fontSize: 16 }}>
-              AEPS2
-            </Typography>
-          </Button>
+            >
+              <Box
+                component="img"
+                src={atmIcon}
+                alt="ATM"
+                sx={{
+                  height: 60,
+                  width: 60,
+                  bgcolor: "#fff",
+                  borderRadius: "50%",
+                  p: 1,
+                }}
+              />
+              <Typography sx={{ fontWeight: "bold", fontSize: 16 }}>
+                AEPS2
+              </Typography>
+            </Button>
+          </Box>
         </Box>
       </Box>
-    </Box>
-  );
-}
-
+    );
+  }
 
   // Step 3 → AEPS1 Component
   if (step === 3) {
