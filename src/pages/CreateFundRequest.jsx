@@ -19,6 +19,11 @@ const CreateFundRequest = ({ open, handleClose, handleSave, onFetchRef }) => {
 
   const [submitting, setSubmitting] = useState(false);
   const { showToast } = useToast();
+  const handleModalClose = () => {
+    setFormData({});
+
+    handleClose();
+  };
 
   // ✅ Set default date when modal opens
   useEffect(() => {
@@ -64,19 +69,16 @@ const CreateFundRequest = ({ open, handleClose, handleSave, onFetchRef }) => {
       );
 
       if (response) {
-        handleSave(response.data);
+        // handleSave(response.data);
         showToast(
           response?.message || "Fund request created successfully",
           "success"
         );
-        onFetchRef();
-        handleClose();
+        handleSave();
+        handleModalClose();
       } else {
         showToast(error?.message || "Failed to create fund request", "error");
       }
-    } catch (err) {
-      console.error("Error creating fund request:", err);
-      showToast("Something went wrong while creating fund request", "error");
     } finally {
       setSubmitting(false);
     }
@@ -136,7 +138,9 @@ const CreateFundRequest = ({ open, handleClose, handleSave, onFetchRef }) => {
           text: submitting ? "Saving..." : "Save",
           variant: "contained",
           color: "primary",
-          onClick: handleSubmit,
+          onClick: () => {
+            handleSubmit();
+          },
           disabled: submitting,
         },
       ]}

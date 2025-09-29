@@ -1,5 +1,15 @@
 import { useMemo, useContext, useState, useRef, useEffect } from "react";
-import { Box, Tooltip, IconButton, Button, Typography } from "@mui/material";
+import {
+  Box,
+  Tooltip,
+  IconButton,
+  Button,
+  Typography,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
+} from "@mui/material";
 import AuthContext from "../contexts/AuthContext";
 import { dateToTime, ddmmyy } from "../utils/DateUtils";
 import CommonTable from "../components/common/CommonTable";
@@ -15,6 +25,19 @@ import EditIcon from "@mui/icons-material/Edit";
 import { apiCall } from "../api/apiClient";
 import AdWalletTransfer from "./AdWalletTransfer";
 import CommonStatus from "../components/common/CommonStatus";
+import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+ 
+import EditUser from "./EditUser";
+import ViewDocuments from "./ViewDocuments";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { Assignment, CurrencyRupee } from "@mui/icons-material";
+ 
+ 
+import AddLein from "./AddLein";
+import { AssignPlans } from "./AssignPlans";
+import AdminCreateUser from "./AdminCreateUser";
+
 const roleLabels = {
   ret: "Retailer",
   adm: "Admin",
@@ -24,86 +47,228 @@ const roleLabels = {
   zsm: "Zsm",
   api: "Api",
 };
+
 const Users = ({ query }) => {
   const authCtx = useContext(AuthContext);
   const fetchUsersRef = useRef(null);
   const userRole = authCtx?.user;
+
   const [selectedUser, setSelectedUser] = useState(null);
+  const [openEditUser, setOpenEditUser] = useState(false);
   const [openPermissions, setOpenPermissions] = useState(false);
   const [userMap, setUserMap] = useState({}); // id → name map
-
-  // 🔐 Lock/Unlock Modal
+  const [searchTerm, setSearchTerm] = useState("");
+  const [openViewDocuments, setOpenViewDocuments] = useState(false);
   const [lockModalOpen, setLockModalOpen] = useState(false);
   const [userToToggle, setUserToToggle] = useState(null);
   const [openCreateUser, setOpenCreateUser] = useState(false);
+  const [createadmuser, setCreateAdmUser] = useState(false);
+  const [openLeinModal, setOpenLeinModal] = useState(false);
+  const [openWalletTranser, setOpenWalletTranser] = useState(false);
+  const [openAssignPlans, setOpenAssignPlans] = useState(false);
+
+  const handleOpenAssignPlans = (user) => {
+    setSelectedUser(user);
+    setOpenAssignPlans(true);
+  };
+  const handleCloseAssignPlans = () => {
+    setSelectedUser(null);
+    setOpenAssignPlans(false);
+  };
+
+  const handleOpenLein = (row) => {
+    setOpenLeinModal(true);
+    setSelectedUser(row);
+  };
+  const handleOpenWalletTransfer = (row) => {
+    setOpenWalletTranser(true);
+    setSelectedUser(row);
+  };
+  const handleCloseWalletTransfer = (row) => {
+    setOpenWalletTranser(false);
+  };
+  const handleCloseLein = () => setOpenLeinModal(false);
+
+  const handleOpenEditUser = (user) => {
+    setSelectedUser(user);
+    setOpenEditUser(true);
+  };
+  const handleCloseEditUser = () => {
+    setOpenEditUser(false);
+    setSelectedUser(null);
+  };
 
   const handleOpenPermissions = (user) => {
     setSelectedUser(user);
     setOpenPermissions(true);
   };
-
   const handleClosePermissions = () => {
-    setSelectedUser(null);
     setOpenPermissions(false);
+    setSelectedUser(null);
   };
 
   const handleFetchRef = (fetchFn) => {
     fetchUsersRef.current = fetchFn;
   };
-
   const refreshUsers = () => {
-    if (fetchUsersRef.current) {
-      fetchUsersRef.current();
-    }
+    if (fetchUsersRef.current) fetchUsersRef.current();
   };
 
   const handleOpenLockModal = (user) => {
     setUserToToggle(user);
     setLockModalOpen(true);
   };
-
   const handleCloseLockModal = () => {
     setUserToToggle(null);
     setLockModalOpen(false);
   };
 
-  const handleEdit = (user) => {
-    // Implement edit functionality here
-    console.log("Edit user:", user);
+  const filterRows = (rows) => {
+    if (!searchTerm) return rows;
+    const lowerSearch = searchTerm.toLowerCase();
+    return rows.filter((row) =>
+      Object.values(row).some((val) =>
+        String(val).toLowerCase().includes(lowerSearch)
+      )
+    );
   };
 
+  const handleOpenViewDocuments = (user) => {
+    setSelectedUser(user);
+    setOpenViewDocuments(true);
+  };
+  const handleCloseViewDocuments = () => {
+    setSelectedUser(null);
+    setOpenViewDocuments(false);
+  };
+
+  // Fetch user map
   useEffect(() => {
     const fetchUserMap = async () => {
       try {
         const res = await apiCall("post", ApiEndpoints.GET_USERS);
-        console.log("Full API response:", res);
-
         const usersArray = res?.response?.data?.data;
         if (Array.isArray(usersArray)) {
           const map = {};
-          usersArray.forEach((user) => {
-            console.log("Mapping user:", user.id, user.name); // Debug each user
-            map[user.id] = user.name;
-          });
-
-          console.log("Final ID → Name map:", map); // Check final mapping
+          usersArray.forEach((user) => (map[user.id] = user.name));
           setUserMap(map);
-        } else {
-          console.warn("Users array is missing or not an array", usersArray);
         }
       } catch (err) {
         console.error("Error fetching users:", err);
       }
     };
-
     fetchUserMap();
   }, []);
+
+  // Action Menu Component
+  function ActionMenu({ row }) {
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
+
+    const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
+    const handleMenuClose = () => setAnchorEl(null);
+
+    return (
+      <Box>
+        <IconButton size="small" onClick={handleMenuOpen}>
+          <MoreVertIcon />
+        </IconButton>
+        <Menu
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleMenuClose}
+          anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+          transformOrigin={{ vertical: "top", horizontal: "left" }}
+        >
+          {userRole.role === "adm" && [
+            <MenuItem
+              key="edit"
+              onClick={() => {
+                handleOpenEditUser(row);
+                handleMenuClose();
+              }}
+            >
+              {/* <ListItemIcon>
+                <EditIcon fontSize="small" />
+              </ListItemIcon> */}
+              <ListItemText>Edit User</ListItemText>
+            </MenuItem>,
+
+            <MenuItem
+              key="permissions"
+              onClick={() => {
+                handleOpenPermissions(row);
+                handleMenuClose();
+              }}
+            >
+              {/* <ListItemIcon>
+                <SettingsIcon fontSize="small" />
+              </ListItemIcon> */}
+              <ListItemText>Edit Permissions</ListItemText>
+            </MenuItem>,
+
+            <MenuItem
+              key="documents"
+              onClick={() => {
+                handleOpenViewDocuments(row);
+                handleMenuClose();
+              }}
+            >
+              {/* <ListItemIcon>
+                <VisibilityIcon fontSize="small" />
+              </ListItemIcon> */}
+              <ListItemText>View Documents</ListItemText>
+            </MenuItem>,
+
+            <MenuItem
+              key="wallet"
+              onClick={() => {
+                handleOpenWalletTransfer(row);
+                handleMenuClose();
+              }}
+            >
+              {/* <ListItemIcon>
+                <CurrencyRupee fontSize="small" />
+              </ListItemIcon> */}
+              <ListItemText>Wallet Transfer</ListItemText>
+            </MenuItem>,
+
+            <MenuItem
+              key="assign_plan"
+              onClick={() => {
+                handleOpenAssignPlans(row);
+                handleMenuClose();
+              }}
+            >
+              {/* <ListItemIcon>
+                <Assignment fontSize="small" />
+              </ListItemIcon> */}
+              <ListItemText>Assign Plan</ListItemText>
+            </MenuItem>,
+          ]}
+
+          <MenuItem
+            key="lein"
+            onClick={() => {
+              handleOpenLein(row);
+              handleMenuClose();
+            }}
+          >
+            {/* <ListItemIcon>
+              <MonetizationOnIcon fontSize="small" color="success" />
+            </ListItemIcon> */}
+            <ListItemText>Lein Amount</ListItemText>
+          </MenuItem>
+        </Menu>
+      </Box>
+    );
+  }
 
   const filters = useMemo(
     () => [
       { id: "mobile", label: "Mobile Number", type: "textfield" },
       { id: "id", label: "User Id", type: "textfield" },
-      { id: "Parent", label: "Parent", type: "textfield" },
+      { id: "Parent", label: "Parent", type: "textfield", roles: ["adm"] },
     ],
     []
   );
@@ -186,7 +351,7 @@ const Users = ({ query }) => {
           ]
         : []),
       {
-        name: "Wallet 1",
+        name: "W1",
         selector: (row) => (
           <div style={{ textAlign: "left", cursor: "pointer" }}>
             ₹ {(row.w1 / 100).toFixed(2)}
@@ -196,7 +361,7 @@ const Users = ({ query }) => {
       ...(userRole.role !== "md"
         ? [
             {
-              name: "Wallet 2",
+              name: "W2",
               selector: (row) => (
                 <div style={{ textAlign: "left", cursor: "pointer" }}>
                   ₹ {(row.w2 / 100).toFixed(2)}
@@ -208,17 +373,13 @@ const Users = ({ query }) => {
       ...(userRole.role !== "di" && userRole.role !== "md"
         ? [
             {
-              name: "Wallet 3",
+              name: "W3",
               selector: (row) => (
                 <div style={{ textAlign: "left", cursor: "pointer" }}>
                   ₹ {row.w3}
                 </div>
               ),
             },
-          ]
-        : []),
-      ...(userRole.role !== "di" && userRole.role !== "md"
-        ? [
             {
               name: "Lien",
               selector: (row) => (
@@ -233,132 +394,53 @@ const Users = ({ query }) => {
         : []),
     ];
 
-    // Conditionally add Actions column for admins and distributors
-    if (
-      userRole.role === "adm" ||
-      userRole.role === "di" ||
-      userRole.role === "md"
-    ) {
-      baseColumns.push({
-        name: "Actions",
-        selector: (row) => (
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "left",
-              justifyContent: "left",
-            }}
-          >
-            <Box
-              sx={{
-                display: "flex",
-                gap: 1,
-                opacity: 1,
-                pointerEvents: "auto",
-                transition: "opacity 0.2s ease-in-out",
-              }}
-            >
-              {userRole.role === "adm" && (
-                <>
-                  <Tooltip title="Edit User">
-                    <IconButton
-                      size="small"
-                      color="secondary"
-                      onClick={() => handleEdit(row)}
-                    >
-                      <EditIcon fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title="Edit Permissions">
-                    <IconButton
-                      size="small"
-                      color="primary"
-                      onClick={() => handleOpenPermissions(row)}
-                    >
-                      <SettingsIcon fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                </>
-              )}
-              {userRole.role === "di" ||
-                (userRole.role === "md" && <AdWalletTransfer row={row} />)}
-            </Box>
-          </Box>
-        ),
-      });
-    }
-
-    // Move Status column to last
+    // Status column
     baseColumns.push({
       name: "Status",
       selector: (row) => {
-        if (userRole.role === "adm" || userRole.role === "sadm") {
+        if (["adm", "sadm"].includes(userRole.role)) {
           return (
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: 1,
-                minWidth: "120px",
-              }}
-            >
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 0.5,
-                  opacity: 1,
-                  pointerEvents: "auto",
-                  transition: "opacity 0.2s ease-in-out",
-                  minWidth: "40px",
-                }}
-              >
-                {row.is_active === 1 ? (
-                  <Tooltip title="Click to Block">
-                    <IconButton
-                      size="small"
-                      onClick={() => handleOpenLockModal(row)}
-                      sx={{ color: "success.main" }}
-                    >
-                      <LockOpenIcon fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                ) : (
-                  <Tooltip title="Click to Unblock">
-                    <IconButton
-                      size="small"
-                      onClick={() => handleOpenLockModal(row)}
-                      sx={{ color: "error.main" }}
-                    >
-                      <LockOutlinedIcon fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                )}
-              </Box>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              {row.is_active === 1 ? (
+                <Tooltip title="Click to Block">
+                  <IconButton
+                    size="small"
+                    onClick={() => handleOpenLockModal(row)}
+                    sx={{ color: "success.main" }}
+                  >
+                    <LockOpenIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              ) : (
+                <Tooltip title="Click to Unblock">
+                  <IconButton
+                    size="small"
+                    onClick={() => handleOpenLockModal(row)}
+                    sx={{ color: "error.main" }}
+                  >
+                    <LockOutlinedIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              )}
             </Box>
           );
-        } else if (
-          userRole.role === "di" ||
-          userRole.role === "md" ||
-          userRole.role === "asm"
-        ) {
-          return (
-            <CommonStatus value={row.is_active} />
-            // <Box
-            //   sx={{
-            //     textAlign: "left",
-            //     minWidth: "120px",
-            //     color: row.is_active === 1 ? "success.main" : "error.main",
-            //     fontWeight: 500,
-            //   }}
-            // >
-            //   {row.is_active === 1 ? "Active" : "Inactive"}
-            // </Box>
-          );
+        } else {
+          return <CommonStatus value={row.is_active} />;
         }
-        return null;
       },
     });
+
+    // Actions column
+    if (["adm", "di", "md"].includes(userRole?.role)) {
+      baseColumns.push({
+        name: "Actions",
+        selector: (row) => (
+          <div style={{ display: "flex", gap: "8px" }}>
+            <ActionMenu row={row} />
+          </div>
+        ),
+      });
+    }
 
     return baseColumns;
   }, [userMap, userRole]);
@@ -370,10 +452,39 @@ const Users = ({ query }) => {
         endpoint={ApiEndpoints.GET_USERS}
         filters={filters}
         queryParam={query}
+        transformData={filterRows}
         onFetchRef={handleFetchRef}
         enableActionsHover={true}
         customHeader={
-          <ReButton label="Add User" onClick={() => setOpenCreateUser(true)} />
+          <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+            {userRole.role !== "asm" &&
+              userRole.role !== "zsm" &&
+              userRole.role !== "adm" && (
+                <ReButton
+                  label="Add User"
+                  onClick={() => setOpenCreateUser(true)}
+                />
+              )}
+            {userRole.role === "adm" && (
+              <ReButton
+                label="Create User"
+                onClick={() => setCreateAdmUser(true)}
+              />
+            )}
+            <input
+              type="text"
+              placeholder="Search..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={{
+                padding: "6px 10px",
+                borderRadius: "6px",
+                border: "1px solid #ccc",
+                fontSize: "14px",
+                flex: 1,
+              }}
+            />
+          </Box>
         }
       />
 
@@ -385,8 +496,24 @@ const Users = ({ query }) => {
         />
       )}
 
-      {/* Permissions Modal */}
-      {selectedUser && (
+      {createadmuser && (
+        <AdminCreateUser
+          open={createadmuser}
+          onClose={() => setCreateAdmUser(false)}
+          onFetchRef={refreshUsers}
+        />
+      )}
+
+      {openEditUser && selectedUser && (
+        <EditUser
+          open={openEditUser}
+          onClose={handleCloseEditUser}
+          user={selectedUser}
+          onFetchRef={refreshUsers}
+        />
+      )}
+
+      {openPermissions && selectedUser && (
         <PermissionsModal
           open={openPermissions}
           handleClose={handleClosePermissions}
@@ -395,13 +522,44 @@ const Users = ({ query }) => {
         />
       )}
 
-      {/* Lock/Unlock Modal */}
       {userToToggle && (
         <BlockUnblockUser
           open={lockModalOpen}
           handleClose={handleCloseLockModal}
           user={userToToggle}
           onSuccess={refreshUsers}
+        />
+      )}
+      {openWalletTranser && (
+        <AdWalletTransfer
+          open={openWalletTranser}
+          row={selectedUser}
+          onClose={handleCloseWalletTransfer}
+        />
+      )}
+      {openLeinModal && (
+        <AddLein
+          open={openLeinModal}
+          handleClose={handleCloseLein}
+          onFetchRef={() => {}}
+          selectedRow={selectedUser}
+          type="users"
+        />
+      )}
+
+      {openViewDocuments && selectedUser && (
+        <ViewDocuments
+          open={openViewDocuments}
+          onClose={handleCloseViewDocuments}
+          user={selectedUser}
+        />
+      )}
+      {openAssignPlans && selectedUser && (
+        <AssignPlans
+          open={openAssignPlans}
+          onClose={handleCloseAssignPlans}
+          row={selectedUser}
+          onSuccess={refreshUsers} // refresh table after assigning
         />
       )}
     </Box>
