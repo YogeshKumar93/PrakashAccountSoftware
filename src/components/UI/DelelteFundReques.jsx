@@ -5,10 +5,13 @@ import {
   Button,
   CircularProgress,
   Card,
-  CardMedia,
+  CardContent,
+  Divider,
+  Stack,
   Chip,
+  Alert,
 } from "@mui/material";
-import { Image as ImageIcon } from "@mui/icons-material";
+import { Delete as DeleteIcon, Warning as WarningIcon } from "@mui/icons-material";
 import { apiCall } from "../../api/apiClient";
 import ApiEndpoints from "../../api/ApiEndpoints";
 import { useToast } from "../../utils/ToastContext";
@@ -48,6 +51,15 @@ const DeleteFundRequest = ({ open, handleClose, row, onFetchRef }) => {
     setMpinModalOpen(true);
   };
 
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "Pending": return "warning";
+      case "Approved": return "success";
+      case "Rejected": return "error";
+      default: return "default";
+    }
+  };
+
   return (
     <>
       <CommonModal
@@ -55,37 +67,88 @@ const DeleteFundRequest = ({ open, handleClose, row, onFetchRef }) => {
         onClose={handleClose}
         title="Delete Fund Request"
         iconType="delete"
-        size="medium"
+        size="small"
         dividers
         layout="one-column"
         customContent={
-          <Box mt={2}>
-            <Typography variant="h6" gutterBottom color="error">
-              Are you sure you want to delete this fund request?
+          <Box>
+            {/* Warning Alert */}
+            <Alert 
+              severity="warning" 
+              icon={<WarningIcon />}
+              sx={{ 
+                mb: 3,
+                borderRadius: 2,
+                alignItems: "center"
+              }}
+            >
+              <Typography variant="subtitle2" fontWeight={600}>
+                This action cannot be undone
+              </Typography>
+            </Alert>
+
+            {/* Fund Request Details */}
+            <Card
+              variant="outlined"
+              sx={{ 
+                mb: 3,
+                borderRadius: 2,
+                borderColor: "warning.light",
+                backgroundColor: "warning.lightest"
+              }}
+            >
+              <CardContent sx={{ p: 3 }}>
+                <Stack spacing={2}>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <Typography variant="h6" color="text.primary" fontWeight={600}>
+                      ₹{row?.amount}
+                    </Typography>
+                    <Chip 
+                      label={row?.status} 
+                      color={getStatusColor(row?.status)}
+                      size="small"
+                      variant="outlined"
+                    />
+                  </Box>
+                  
+                  <Divider />
+                  
+                  <Stack spacing={1.5}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <Typography variant="body2" color="text.secondary">Bank:</Typography>
+                      <Typography variant="body2" fontWeight={500}>{row?.bank_name}</Typography>
+                    </Box>
+                    
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <Typography variant="body2" color="text.secondary">Mode:</Typography>
+                      <Typography variant="body2" fontWeight={500}>{row?.mode}</Typography>
+                    </Box>
+                    
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <Typography variant="body2" color="text.secondary">Reference ID:</Typography>
+                      <Typography variant="body2" fontWeight={500} fontFamily="monospace">
+                        {row?.bank_ref_id}
+                      </Typography>
+                    </Box>
+                    
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <Typography variant="body2" color="text.secondary">Date:</Typography>
+                      <Typography variant="body2" fontWeight={500}>{row?.date}</Typography>
+                    </Box>
+                  </Stack>
+                </Stack>
+              </CardContent>
+            </Card>
+
+            {/* Confirmation Text */}
+            <Typography 
+              variant="body2" 
+              color="text.secondary" 
+              align="center"
+              sx={{ mb: 1 }}
+            >
+              Please confirm you want to permanently delete this fund request.
             </Typography>
-
-            {/* Show details */}
-            <Box display="flex" flexDirection="column" gap={1}>
-              <Typography variant="body1">
-                <strong>Bank:</strong> {row?.bank_name}
-              </Typography>
-              <Typography variant="body1">
-                <strong>Mode:</strong> {row?.mode}
-              </Typography>
-              <Typography variant="body1">
-                <strong>Reference ID:</strong> {row?.bank_ref_id}
-              </Typography>
-              <Typography variant="body1">
-                <strong>Amount:</strong> ₹{row?.amount}
-              </Typography>
-              <Typography variant="body1">
-                <strong>Date:</strong> {row?.date}
-              </Typography>
-              <Typography variant="body1">
-                <strong>Status:</strong> {row?.status}
-              </Typography>
-            </Box>
-
           </Box>
         }
         footerButtons={[
@@ -94,13 +157,29 @@ const DeleteFundRequest = ({ open, handleClose, row, onFetchRef }) => {
             variant: "outlined",
             onClick: handleClose,
             disabled: submitting,
+            sx: { minWidth: 100 }
           },
           {
-            text: submitting ? "Deleting..." : "Delete",
+            text: submitting ? (
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <CircularProgress size={16} />
+                Deleting...
+              </Box>
+            ) : (
+              "Delete"
+            ),
             variant: "contained",
             color: "error",
             onClick: handleSendClick,
+            startIcon: !submitting && <DeleteIcon />,
             disabled: submitting,
+            sx: { 
+              minWidth: 120,
+              backgroundColor: "error.main",
+              "&:hover": {
+                backgroundColor: "error.dark",
+              }
+            }
           },
         ]}
       />
@@ -109,7 +188,8 @@ const DeleteFundRequest = ({ open, handleClose, row, onFetchRef }) => {
       <CommonMpinModal
         open={mpinModalOpen}
         setOpen={setMpinModalOpen}
-        title="Enter MPIN to Confirm Delete"
+        title="Confirm Deletion"
+        subtitle="Enter your MPIN to permanently delete this fund request"
         mPinCallBack={handleDelete}
       />
     </>

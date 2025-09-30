@@ -70,7 +70,7 @@ const FundRequestModal = ({ open, handleClose, row, status, onFetchRef }) => {
   const [formData, setFormData] = useState({
     amount: "",
     amountInWords: "",
-    remarks: "",
+    remark: "",
     admin_remark: "",
     status: "",
     id: "",
@@ -82,21 +82,25 @@ const FundRequestModal = ({ open, handleClose, row, status, onFetchRef }) => {
 
   const [resetMpinModalOpen, setResetMpinModalOpen] = useState(false);
 
-  useEffect(() => {
-    if (formData.amount) {
-      setFormData((prev) => ({
-        ...prev,
-        amountInWords: numWords(formData.amount),
-      }));
-    }
-  }, [formData.amount]);
+ useEffect(() => {
+  setFormData((prev) => ({
+    ...prev,
+    // Update amountInWords if amount exists
+    amountInWords: prev.amount ? numWords(prev.amount) : prev.amountInWords,
+    // Set remarks from row if not already set
+    remark: prev.remark || row?.remark || "",
+  }));
+}, [formData.amount, row?.remark]);
+
+
+  
 
   useEffect(() => {
     if (open) {
       setFormData({
         amount: row?.amount || "1000",
         amountInWords: row?.amount ? numWords(row.amount) : "",
-        remarks: row?.remarks || "",
+        remark: row?.remark || "N/A",
         admin_remark: row.admin_remark || "",
         mpin: "",
       });
@@ -114,7 +118,7 @@ const FundRequestModal = ({ open, handleClose, row, status, onFetchRef }) => {
       id: row?.id,
       status,
       amount: formData.amount,
-      remarks: formData.remarks,
+      remark: formData.remark,
       admin_remark: formData.admin_remark,
       mpin: formData.mpin,
     };
@@ -149,7 +153,7 @@ const FundRequestModal = ({ open, handleClose, row, status, onFetchRef }) => {
   ];
 
   const fieldConfig = [
-    { name: "amount", label: "Amount", type: "number" },
+    { name: "amount", label: "Amount", type: "number",disabled: true  },
     {
       name: "amountInWords",
       label: "Amount in Words",
@@ -157,7 +161,7 @@ const FundRequestModal = ({ open, handleClose, row, status, onFetchRef }) => {
       disabled: true,
     },
     {
-      name: "remarks",
+      name: "remark",
       label: "Remarks",
       type: "text",
       multiline: true,
