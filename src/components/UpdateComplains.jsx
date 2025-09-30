@@ -8,8 +8,6 @@ import {
   Button,
 } from "@mui/material";
 
-
-
 import CommonModal from "./common/CommonModal";
 import AuthContext from "../contexts/AuthContext";
 import { apiCall } from "../api/apiClient";
@@ -22,7 +20,7 @@ const UpdateComplaint = ({ open, onClose, complaintId, onSuccess }) => {
   const [remarks, setRemarks] = useState("");
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(false);
-    const [submitting, setSubmitting] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const validateForm = () => {
     if (!remarks.trim()) {
       showToast("Please enter remarks", "error");
@@ -36,10 +34,10 @@ const UpdateComplaint = ({ open, onClose, complaintId, onSuccess }) => {
     setSubmitting(true);
     try {
       const payload = {
-        id: complaintId,   // ✅ complaint row id
-        remark: remarks,   // ✅ remarks from form
-        handler: user?.id , // ✅ logged-in user id
-        status:status
+        id: complaintId, // ✅ complaint row id
+        remark: remarks, // ✅ remarks from form
+        handler: user?.id, // ✅ logged-in user id
+        status: status,
       };
 
       const { error, response } = await apiCall(
@@ -49,9 +47,12 @@ const UpdateComplaint = ({ open, onClose, complaintId, onSuccess }) => {
       );
 
       if (response) {
-        showToast(response?.message || "Complaint updated successfully", "success");
+        showToast(
+          response?.message || "Complaint updated successfully",
+          "success"
+        );
         onSuccess?.(); // refresh list
-        onClose();     // close modal
+        onClose(); // close modal
       } else {
         showToast(error?.message || "Failed to update complaint", "error");
       }
@@ -63,9 +64,31 @@ const UpdateComplaint = ({ open, onClose, complaintId, onSuccess }) => {
     }
   };
 
-
   return (
-    <CommonModal open={open} onClose={onClose} maxWidth="sm" fullWidth>
+    <CommonModal
+      open={open}
+      onClose={onClose}
+      maxWidth="sm"
+      fullWidth
+      title="Update Complaint"
+      footerButtons={[
+        {
+          text: "Cancel",
+          variant: "outlined",
+          onClick: onClose,
+          disabled: submitting,
+        },
+        {
+          text: submitting ? "Saving..." : "Save",
+          variant: "contained",
+          color: "primary",
+          onClick: async () => {
+            await handleSubmit();
+          },
+          disabled: submitting,
+        },
+      ]}
+    >
       <TextField
         label="Remarks"
         fullWidth
@@ -86,17 +109,6 @@ const UpdateComplaint = ({ open, onClose, complaintId, onSuccess }) => {
         disabled={loading}
         margin="dense"
       />
-      <Button onClick={onClose} disabled={loading}>
-        Cancel
-      </Button>
-      <Button
-        onClick={handleSubmit}
-        variant="contained"
-        color="primary"
-        disabled={loading}
-      >
-        {loading ? "Updating..." : "Update"}
-      </Button>
     </CommonModal>
   );
 };

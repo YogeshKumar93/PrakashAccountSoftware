@@ -5,6 +5,7 @@ import {
   bankImage,
   bbps_1,
   bbps_2,
+  cms1,
   cmsImage,
   complainImage,
   complainImageNew,
@@ -93,7 +94,7 @@ export const Admin_nav = [
 
   {
     title: "Complaint",
-    icon: complainImageNew,
+    icon: complainImage,
     icon2: "👥",
     to: "/admin/complaint",
   },
@@ -109,41 +110,48 @@ export const Admin_nav = [
 
 // Customer Navigation
 export const customer_nav = [
-  {
-    title: "Dashboard",
-    icon: dashboardImage,
-    icon2: "📊",
-    to: "/customer/dashboard",
-  },
+  // {
+  //   title: "Dashboard",
+  //   icon: dashboardImage,
+  //   icon2: "📊",
+  //   to: "/customer/dashboard",
+  // },
   {
     title: "Recharge",
     icon: rechargeNew,
     icon2: "🛠️",
     to: "/customer/recharge-bill",
   },
+
   {
     title: "Money transfer",
-    icon: fundReqImage,
+    icon: bankImage,
     icon2: "🛠️",
     to: "/customer/money-transfer",
   },
+
   {
     title: "Fund Transfer",
-    icon: sendmoney2,
+    icon: fundReqImage,
     icon2: "🛠️",
     to: "/customer/transfer",
   },
-  { title: "AEPS", icon: aeps1, icon2: "👥", to: "/customer/aeps" },
+  { title: "AEPS", icon: aepsImage, icon2: "👥", to: "/customer/aeps" },
 
-  { title: "Bbps(Online)", icon: bbps_1, icon2: "📒", to: "/customer/bbps" },
   {
-    title: "Bbps(Offline)",
-    icon: bbps_2,
+    title: "BBPS Online",
+    icon: bbps_1,
     icon2: "📒",
-    to: "/customer/bbpsoffline",
+    to: "/customer/bbps",
+  },
+  {
+    title: "BBPS Offline",
+    icon: serviceImage,
+    icon2: "🛠️",
+    to: "/customer/bbps-offline",
   },
 
-  { title: "Cms", icon: cmsImage, icon2: "📒", to: "/customer/cms" },
+  { title: "Cms", icon: cms1, icon2: "📒", to: "/customer/cms" },
 
   //  {
   //   title: "Fund Transfer",
@@ -165,16 +173,16 @@ export const customer_nav = [
     icon2: "🛠️",
     to: "/customer/wallet-transfer",
   },
+
   {
     title: "Fund Request",
-    icon: bankImage,
+    icon: fundReqImage,
     icon2: "🛠️",
     to: "/customer/fund-request",
   },
-
   {
     title: "Transactions",
-    icon: transImage,
+    icon: serviceImage,
     icon2: "💳",
     to: "/customer/transactions",
   },
@@ -192,19 +200,25 @@ export const customer_nav = [
     icon2: "📒",
     to: "/customer/wallet-ledger",
   },
-
-  // {
-  //   title: "My Purchase",
-  //   icon: transImage,
-  //   icon2: "🛠️",
-  //   to: "/customer/purchase",
-  // },
   {
     title: "Complaints",
     icon: complainImageNew,
     icon2: "📒",
     to: "/customer/complaint",
   },
+  { title: "Risk", icon: riskImage, icon2: "👥", to: "/customer/risk" },
+  // {
+  //   title: "My Purchase",
+  //   icon: transImage,
+  //   icon2: "🛠️",
+  //   to: "/customer/purchase",
+  // },
+  // {
+  //   title: "Complaints",
+  //   icon: fundReqImage,
+  //   icon2: "📒",
+  //   to: "/customer/complaint",
+  // },
 
   // {
   //   title: "Activity Logs",
