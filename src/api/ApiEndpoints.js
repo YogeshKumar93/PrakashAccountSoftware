@@ -152,6 +152,9 @@ const ApiEndpoints = {
 
   WALLET_LEDGER_TXNDATA: "walletledger/getTxnData",
 
+
+
+
   // ****************************** NEW API'S ABOVE ******************************
   GET_COMMISSION_RULE: "commission/getCommissions",
   GET_NOTIFICATION: "notification/getNotification",
