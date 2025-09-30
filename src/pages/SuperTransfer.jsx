@@ -15,6 +15,7 @@ import SenderRegisterModal from "./SenderRegisterModal";
 import VerifySenderModal from "./VerifySenderModal";
 import BeneficiaryDetails from "./BeneficiaryDetails";
 import CommonLoader from "../components/common/CommonLoader";
+import { useToast } from "../utils/ToastContext";
 
 const SuperTransfer = () => {
   const theme = useTheme();
