@@ -46,7 +46,7 @@ const ProfilePage = () => {
   const theme = useTheme();
   const authCtx = useContext(AuthContext);
   const user = authCtx?.user;
-  const username = `GURU1${user?.id}`;
+  const username = `P2PAE${user?.id}`;
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const isSmallMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -80,7 +80,7 @@ const ProfilePage = () => {
   };
 
   const handleChangePassword = () => {
-    setChagnePasswordModal(true);
+    setChangePasswordModal(true);
   };
 
   const handleChangeMpin = () => setChangeMpinModal(true);
@@ -108,8 +108,9 @@ const ProfilePage = () => {
   const handleInputChange = (field, value) => {
     setEditedUser((prev) => ({ ...prev, [field]: value }));
   };
+  const allowedRolesForLayout = ["dd", "ret"];
+  const userRole = authCtx.user.role; // assuming you have access to user role
 
-  // Action buttons data for cleaner rendering
   const actionButtons = [
     {
       id: 1,
@@ -129,14 +130,6 @@ const ProfilePage = () => {
     },
     {
       id: 3,
-      label: "Change Number",
-      icon: <Phone sx={{ fontSize: { xs: 18, sm: 20 } }} />,
-      onClick: handleNewNumber,
-      gradient: "#fff",
-      hoverGradient: "linear-gradient(135deg, #43e97b, #38f9d7)",
-    },
-    {
-      id: 4,
       label: "Change MPIN",
       icon: <VerifiedUser sx={{ fontSize: { xs: 18, sm: 20 } }} />,
       onClick: handleChangeMpin,
@@ -144,7 +137,7 @@ const ProfilePage = () => {
       hoverGradient: "linear-gradient(135deg, #ff758c, #ff7eb3)",
     },
     {
-      id: 5,
+      id: 4,
       label: "Change Layout",
       icon: <Dashboard sx={{ fontSize: { xs: 18, sm: 20 } }} />,
       onClick: handleChangeLayout,
@@ -152,14 +145,17 @@ const ProfilePage = () => {
       hoverGradient: "linear-gradient(135deg, #c9ffbf, #7bed9f)",
     },
     {
-      id: 6,
+      id: 5,
       label: "Business Information",
       icon: <Dashboard sx={{ fontSize: { xs: 18, sm: 20 } }} />,
       onClick: handleBusinessInfo,
       gradient: "#fff",
       hoverGradient: "linear-gradient(135deg, #c9ffbf, #7bed9f)",
     },
-  ];
+  ].filter(
+    (btn) =>
+      btn.label !== "Change Layout" || allowedRolesForLayout.includes(userRole)
+  );
 
   return (
     <Box
@@ -501,7 +497,7 @@ const ProfilePage = () => {
               Account Actions
             </Typography>
 
-            <Grid container spacing={2}>
+            <Grid container spacing={2} justifyContent={"center"}>
               {actionButtons.map((button) => (
                 <Grid item xs={12} sm={6} md={4} key={button.id}>
                   <Button
@@ -520,11 +516,10 @@ const ProfilePage = () => {
                       pl: 2,
                       color: "#000",
                       background: button.gradient,
-                      boxShadow: "0 4px 10px rgba(157, 114, 240, 0.2)",
+
                       "&:hover": {
                         // background: button.hoverGradient,
                         transform: "translateY(-3px)",
-                        boxShadow: "0 8px 15px rgba(157, 114, 240, 0.3)",
                       },
                       transition: "all 0.25s ease",
                       fontFamily: '"DM Sans", sans-serif',
@@ -574,7 +569,7 @@ const ProfilePage = () => {
           username={username}
         />
       )}
-      {chagnePasswordModal && (
+      {changePasswordModal && (
         <ChangePassword
           open={changePasswordModal}
           onClose={() => setChangePasswordModal(false)}

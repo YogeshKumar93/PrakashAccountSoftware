@@ -526,3 +526,16 @@ export const Categories = [
     updated_at: "2022-05-24T05:16:46.000000Z",
   },
 ];
+
+export const formatInLakh = (num) => {
+  const value = Number(num);
+
+  // invalid / null / undefined / NaN
+  if (!num || isNaN(value)) return "₹ 0.00 Lakh";
+
+  // अगर value negative है
+  if (value < 0) return `-₹ ${(Math.abs(value) / 100000).toFixed(2)} Lakh`;
+
+  // Normal case
+  return `₹ ${(value / 100000).toFixed(2)} Lakh`;
+};

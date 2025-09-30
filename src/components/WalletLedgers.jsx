@@ -21,7 +21,7 @@ export const WalletLedgers = () => {
           Wallet Ledger 1
         </div>
       ),
-      content: <AccountLadger />,
+      component: <AccountLadger />,
     },
     {
       label: (
@@ -30,7 +30,7 @@ export const WalletLedgers = () => {
           Wallet Ledger 2
         </div>
       ),
-      content: <WalletLedger2 />,
+      component: <WalletLedger2 />,
     },
   ];
 
