@@ -1,86 +1,136 @@
-import React, { useState } from "react";
-import { Box, Tabs, Tab, useMediaQuery, useTheme } from "@mui/material";
+import React from "react";
+import PropTypes from "prop-types";
+import {
+  AppBar,
+  Tabs,
+  Tab,
+  Box,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 
-// Reusable TabPanel
-const TabPanel = ({ children, value, index }) => {
-  return (
-    <div role="tabpanel" hidden={value !== index}>
-      {value === index && <Box sx={{ p: { xs: 1, sm: 2 } }}>{children}</Box>}
-    </div>
-  );
-};
-
-const CommonTabs = ({ tabs = [], defaultTab = 0 }) => {
-  const [tab, setTab] = useState(defaultTab);
+function CommonTabs({ tabs, value, onChange, heading }) {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm")); // small screens
-
-  const handleChange = (event, newValue) => {
-    setTab(newValue);
-  };
-
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   return (
-    <Box sx={{ width: "100%" }}>
-      {/* Custom Styled Tabs */}
-    <Box
-  sx={{
-    bgcolor: "#d4e8e8ff",
-    borderRadius: { xs: "0 0 8px 8px", sm: "0 0 8px 8px" },
-    display: "flex",
-    justifyContent: "center", // <-- Center the tabs
-    p: { xs: 0.5, sm: 1 },
-    boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
-    width: "100%",
-    overflowX: "auto",
-    mx: "auto",
-    mt: { xs: -2, sm: -2.5 },
-  }}
->
-  <Tabs
-    value={tab}
-    onChange={handleChange}
-    variant="scrollable"
-    scrollButtons="auto"
-    TabIndicatorProps={{ style: { display: "none" } }}
-    sx={{
-       minHeight: "24px", // <-- reduce Tabs height
-    "& .MuiTab-root": {
-      minWidth: { xs: 80, sm: 100, md: 130 },
-      minHeight: "24px", // <-- reduce Tab height
-      borderRadius: "10px",
-      textTransform: "uppercase",
-      fontSize: { xs: "0.7rem", sm: "0.8rem", md: "0.9rem" },
-      color: "#49299eff",
-      display: "flex",
-      flexDirection: "row",
-      gap: "8px",
-      padding: { xs: "2px 4px", sm: "2px 6px" }, // <-- reduce padding
-    },
-    "& .MuiTab-root .MuiTab-wrapper": {
-      fontFamily: `"DM Sans", sans-serif !important`,
-    },
-    "& .Mui-selected": {
-      backgroundColor: "#f2f2ebff",
-      color: "#2ecb46ff",
-      fontWeight: 500,
-    },
-    }}
-  >
-    {tabs.map((tabItem, index) => (
-      <Tab key={index} icon={tabItem.icon} label={isMobile ? null : tabItem.label} />
-    ))}
-  </Tabs>
-</Box>
-
-
-      {/* Tab Panels */}
-      {tabs.map((tabItem, index) => (
-        <TabPanel key={index} value={tab} index={index}>
-          {tabItem.component}
+    <Box sx={{ bgcolor: "background.paper" }}>
+      <AppBar position="static">
+        <Tabs
+          value={value}
+          onChange={onChange}
+          variant={isSmallScreen ? "scrollable" : "fullWidth"}
+          scrollButtons={isSmallScreen ? "auto" : false}
+          aria-label="full width tabs example"
+          sx={{
+            "& .MuiTabs-indicator": {
+              backgroundColor: "#8B8000",
+            },
+            "& .MuiTab-root": {
+              color: "#000",
+              fontSize: isSmallScreen ? "0.6rem" : "0.7rem",
+              minHeight: isSmallScreen ? "24px" : "30px",
+              padding: isSmallScreen ? "4px 8px" : "6px 12px",
+              flexDirection: isSmallScreen ? "column" : "row",
+              gap: "4px",
+              "& .MuiSvgIcon-root": {
+                color: "#E8960C",
+                fontSize: isSmallScreen ? "18px" : "24px",
+              },
+            },
+            "& .MuiTab-root.Mui-selected": {
+              color: "#9B870C",
+              "& .MuiSvgIcon-root": {
+                color: "#9B870C",
+              },
+            },
+            minHeight: isSmallScreen ? "26px" : "30px",
+          }}
+        >
+          {tabs.map((tab, index) => (
+            <Tab
+              key={index}
+              label={tab.label}
+              icon={tab.icon}
+              {...a11yProps(index)}
+              sx={{
+                bgcolor: "white",
+                color: "black",
+                minHeight: "30px",
+                fontSize: "0.800rem",
+                padding: "6px 12px",
+                flexDirection: "row",
+                gap: "8px",
+              }}
+            />
+          ))}
+        </Tabs>
+      </AppBar>
+      {heading && (
+        <Box sx={{ p: 1, pb: 0.5 }}>
+          {" "}
+          {/* Further reduced padding, especially bottom padding */}
+          <Typography variant="h5" component="h1" gutterBottom>
+            {heading}
+          </Typography>
+        </Box>
+      )}
+      {tabs.map((tab, index) => (
+        <TabPanel key={index} value={value} index={index}>
+          {tab.content}
         </TabPanel>
       ))}
     </Box>
   );
+}
+
+// Tab panel component
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`full-width-tabpanel-${index}`}
+      aria-labelledby={`full-width-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 1, overflow: "auto" }}>
+          {" "}
+          {/* Further reduced padding */}
+          {children}
+        </Box>
+      )}
+    </div>
+  );
+}
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
+};
+
+// Accessibility props
+function a11yProps(index) {
+  return {
+    id: `full-width-tab-${index}`,
+    "aria-controls": `full-width-tabpanel-${index}`,
+  };
+}
+
+CommonTabs.propTypes = {
+  tabs: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      content: PropTypes.node.isRequired,
+    })
+  ).isRequired,
+  value: PropTypes.number.isRequired,
+  onChange: PropTypes.func.isRequired,
+  heading: PropTypes.string,
 };
 
 export default CommonTabs;

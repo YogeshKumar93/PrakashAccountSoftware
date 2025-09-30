@@ -34,7 +34,7 @@ export const Risk = () => {
         </div>
       ),
       content: <WhiteListedAccount />,
-      roles: ["adm", "sadm"], // only these roles can see
+      roles: ["adm", "sadm"], 
     },
     {
       label: (
@@ -53,7 +53,7 @@ export const Risk = () => {
           Lien Amount
         </div>
       ),
-      content: <LeanAmount />,
+      content: <LeanAmount/>,
       roles: ["adm", "sadm", "ret", "dd", "api"], // everyone
     },
   ];
