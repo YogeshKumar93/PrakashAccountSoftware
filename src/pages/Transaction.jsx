@@ -155,7 +155,7 @@ export const Transaction = () => {
           justifyContent: "flex-start",
         }}
       >
-        <Wallet fontSize="small" />
+      <AccountBalanceWalletIcon fontSize="small" />
         <span>W2W</span>
       </div>
     ),

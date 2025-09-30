@@ -260,6 +260,8 @@ const ApiEndpoints = {
   // WALLET_UPDATE: "wallet/update",
   // WALLET_DELETE: "wallet/delete",
 
+  GET_DASHBOARD1: "dashboard/getRoleWiseCounts",
+  GET_DASHBOARD2: "dashboard/getServiceWiseSummary",
   // ****************************** NEW API'S ABOVE ******************************
 
   GET_ACC_BANKS: "",
