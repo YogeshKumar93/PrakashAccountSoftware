@@ -107,7 +107,7 @@ const BeneficiaryDetails = ({
         payload
       );
       if (response) {
-        okSuccessToast(response?.message || "Payout successful!", "success");
+        showToast(response?.message || "Payout successful!", "success");
         setAmount("");
         setOtp("");
         setMpin("");
