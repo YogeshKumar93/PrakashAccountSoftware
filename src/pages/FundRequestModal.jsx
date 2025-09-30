@@ -71,6 +71,7 @@ const FundRequestModal = ({ open, handleClose, row, status, onFetchRef }) => {
     amount: "",
     amountInWords: "",
     remarks: "",
+    admin_remark: "",
     status: "",
     id: "",
     mpin: "",
@@ -96,6 +97,7 @@ const FundRequestModal = ({ open, handleClose, row, status, onFetchRef }) => {
         amount: row?.amount || "1000",
         amountInWords: row?.amount ? numWords(row.amount) : "",
         remarks: row?.remarks || "",
+        admin_remark: row.admin_remark || "",
         mpin: "",
       });
     }
@@ -113,6 +115,7 @@ const FundRequestModal = ({ open, handleClose, row, status, onFetchRef }) => {
       status,
       amount: formData.amount,
       remarks: formData.remarks,
+      admin_remark: formData.admin_remark,
       mpin: formData.mpin,
     };
 
@@ -156,6 +159,13 @@ const FundRequestModal = ({ open, handleClose, row, status, onFetchRef }) => {
     {
       name: "remarks",
       label: "Remarks",
+      type: "text",
+      multiline: true,
+      rows: 3,
+    },
+    {
+      name: "admin_remark",
+      label: "Admin Remarks",
       type: "text",
       multiline: true,
       rows: 3,

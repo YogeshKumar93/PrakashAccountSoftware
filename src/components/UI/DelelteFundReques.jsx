@@ -85,6 +85,7 @@ const DeleteFundRequest = ({ open, handleClose, row, onFetchRef }) => {
                 <strong>Status:</strong> {row?.status}
               </Typography>
             </Box>
+
           </Box>
         }
         footerButtons={[

@@ -4,9 +4,8 @@
 // export const BASE_URL = "http://192.168.1.14/impsguru-php/";
 // export const BASE_URL = "https://newapi.impsguru.com/";
 
-import { Dashboard } from "@mui/icons-material";
-
-export const BASE_URL = "https://api.transup.in/";
+export const BASE_URL = "https://api.p2pae.com/";
+// export const BASE_URL = "https://api.transup.in/";
 
 const ApiEndpoints = {
   COOKIE: "sanctum/csrf-cookie",

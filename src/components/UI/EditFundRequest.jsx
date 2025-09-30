@@ -20,7 +20,7 @@ import { useToast } from "../../utils/ToastContext";
 import CommonModal from "../common/CommonModal";
 import { useSchemaForm } from "../../hooks/useSchemaForm";
 import CommonMpinModal from "../common/CommonMpinModal";
-const EditFundRequest = ({ open, handleClose, row, onFetchRef }) => {
+const ViewEditFundRequestModal = ({ open, handleClose, row, onFetchRef }) => {
   const { showToast } = useToast();
 
   // Use schema form hook like in create modal
@@ -280,6 +280,7 @@ const EditFundRequest = ({ open, handleClose, row, onFetchRef }) => {
             text: submitting ? "Saving..." : "Save Changes",
             variant: "contained",
             color: "primary",
+            
             onClick: handleSendClick,
             disabled: submitting,
           },
@@ -296,4 +297,4 @@ const EditFundRequest = ({ open, handleClose, row, onFetchRef }) => {
   );
 };
 
-export default EditFundRequest;
+export default ViewEditFundRequestModal;
