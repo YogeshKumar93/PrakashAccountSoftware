@@ -13,10 +13,11 @@ import {
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { apiCall } from "../api/apiClient";
 import ApiEndpoints from "../api/ApiEndpoints";
-import { apiErrorToast } from "../utils/ToastUtil";
+import { apiErrorToast, okSuccessToast } from "../utils/ToastUtil";
 import AuthContext from "../contexts/AuthContext";
 import Loader from "../components/common/Loader";
 import CommonMpinModal from "../components/common/CommonMpinModal";
+import { useToast } from "../utils/ToastContext";
 
 const BbpsBillerDetails = ({
   billerId,
@@ -32,16 +33,18 @@ const BbpsBillerDetails = ({
   const [billData, setBillData] = useState(null);
   const [payingBill, setPayingBill] = useState(false);
   const [mpinModalOpen, setMpinModalOpen] = useState(false);
+  const { showToast } = useToast();
+  const { location, ip } = useContext(AuthContext);
+  const authCtx = useContext(AuthContext);
+  const loadUserProfile = authCtx.loadUserProfile;
+
+  console.log("locations", location);
+
   const handleSendClick = () => {
     setMpinModalOpen(true);
   };
 
-  const { location } = useContext(AuthContext);
-
-  const authCtx = useContext(AuthContext);
-  const ip = authCtx?.ip;
-
-  // Fetch biller details
+  // ✅ Fetch biller details
   const fetchBillerDetails = async () => {
     setDetailsLoading(true);
     try {
@@ -52,9 +55,7 @@ const BbpsBillerDetails = ({
       );
 
       if (response) {
-        const details =
-          // response?.data?.response?.data?.parameters[0] ||
-          response?.data?.response?.data;
+        const details = response?.data?.data;
         setBillerDetails(details);
 
         const params = details?.parameters || [];
@@ -64,10 +65,10 @@ const BbpsBillerDetails = ({
         });
         setInputValues(initialValues);
       } else if (error) {
-        apiErrorToast(error?.message || "Failed to fetch biller details");
+        showToast(error?.message || "Failed to fetch biller details", "error");
       }
     } catch (err) {
-      apiErrorToast(err.message || "Failed to fetch biller details");
+      showToast(err.message || "Failed to fetch biller details", "error");
     } finally {
       setDetailsLoading(false);
     }
@@ -79,9 +80,12 @@ const BbpsBillerDetails = ({
 
   const handleChange = (name, value) => {
     setInputValues((prev) => ({ ...prev, [name]: value }));
+    if (billData) {
+      setBillData(null);
+    }
   };
 
-  // Fetch Bill
+  // ✅ Fetch Bill
   const handleFetchBill = async () => {
     setFetchingBill(true);
     try {
@@ -89,8 +93,8 @@ const BbpsBillerDetails = ({
         biller_id: billerId,
         ...inputValues,
         ip: ip || "0.0.0.0",
-        latitude: location?.lat || "",
-        longitude: location?.long || "",
+        latitude: location?.lat,
+        longitude: location?.long,
       };
 
       const { error, response } = await apiCall(
@@ -103,34 +107,37 @@ const BbpsBillerDetails = ({
         const billInfo = response?.data || response;
         setBillData(billInfo);
       } else if (error) {
-        apiErrorToast(error?.message || "Failed to fetch bill");
+        showToast(error?.message || "Failed to fetch bill", "error");
       }
     } catch (err) {
-      apiErrorToast(err.message || "Failed to fetch bill");
+      showToast(err.message || "Failed to fetch bill", "error");
     } finally {
       setFetchingBill(false);
     }
   };
 
+  // ✅ Pay Bill
   const handlePayBill = async (mpin) => {
-      const payload = {
+    const payload = {
       billerId: billerId,
       biller_name: billerDetails?.billerInfo?.name,
       cat: billerDetails?.category?.key,
       pf: "web",
+      ip: ip || "0.0.0.0",
       latitude: location?.lat,
       longitude: location?.long,
       enquiryReferenceId: billData?.enquiryReferenceId || "",
       amount: billData?.BillAmount || inputValues?.amount,
       mpin,
     };
-    // dynamic params (param1, param2, etc.)
+
+    // dynamic params
     if (billerDetails?.parameters?.length > 0) {
       billerDetails.parameters.forEach((param) => {
         payload[param.name] = inputValues[param.name];
       });
     }
-  
+
     setPayingBill(true);
     try {
       const { response, error } = await apiCall(
@@ -140,8 +147,7 @@ const BbpsBillerDetails = ({
       );
       if (response) {
         okSuccessToast(response.data.message);
-        getRecentData();
-        refreshUser();
+        loadUserProfile();
       } else {
         apiErrorToast(error?.message || "Payment failed");
       }
@@ -151,6 +157,25 @@ const BbpsBillerDetails = ({
       setPayingBill(false);
       setMpinModalOpen(false);
     }
+  };
+
+  // ✅ Validation helpers
+  const areAllInputsFilled = () => {
+    if (!billerDetails?.parameters) return false;
+    return billerDetails.parameters.every((param) => {
+      if (param.mandatory === 1) {
+        return inputValues[param.name]?.trim() !== "";
+      }
+      return true;
+    });
+  };
+
+  const canPayBill = () => {
+    return (
+      billData &&
+      (billData?.BillAmount || inputValues?.amount) &&
+      areAllInputsFilled()
+    );
   };
 
   if (detailsLoading)
@@ -171,6 +196,7 @@ const BbpsBillerDetails = ({
     );
 
   const { parameters } = billerDetails;
+  const acceptsAdhoc = billerDetails?.acceptsAdhoc === "T";
 
   return (
     <>
@@ -181,7 +207,7 @@ const BbpsBillerDetails = ({
         px={{ xs: 1.5, sm: 3, md: 1.5 }}
         py={{ xs: 2, sm: 4, md: 0 }}
       >
-        {/* Back Button + Header */}
+        {/* Back Button */}
         <Box display="flex" alignItems="center" mb={1} gap={2}>
           <IconButton
             onClick={onBack}
@@ -192,40 +218,13 @@ const BbpsBillerDetails = ({
           >
             <ArrowBackIcon />
           </IconButton>
-          {/* 
-        {selectedBillerIdImage && (
-          <Box
-            component="img"
-            src={selectedBillerIdImage}
-            alt={billerDetails?.billerInfo?.name || "Biller"}
-            sx={{
-              width: 55,
-              height: 55,
-              objectFit: "contain",
-              borderRadius: "8px",
-            }}
-          />
-        )} */}
-
-          {/* <Typography
-          variant="h6"
-          fontWeight="bold"
-          sx={{
-            fontSize: { xs: "1rem", sm: "1.25rem" },
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
-        >
-          {billerDetails?.billerInfo?.name || "Biller"}
-        </Typography> */}
         </Box>
 
         {/* Cards Layout */}
         <Box
           sx={{
             display: "flex",
-            flexDirection: { xs: "column", md: "row" }, // stack on mobile, row on md+
+            flexDirection: { xs: "column", md: "row" },
             gap: { xs: 2, md: 3 },
             justifyContent: "flex-start",
             alignItems: "flex-start",
@@ -250,7 +249,7 @@ const BbpsBillerDetails = ({
                 sx={{
                   p: 2,
                   borderRadius: "8px",
-                  background: "#f2efff", // light blue background
+                  background: "#f2efff",
                 }}
               >
                 {selectedBillerIdImage && (
@@ -266,7 +265,6 @@ const BbpsBillerDetails = ({
                     }}
                   />
                 )}
-
                 <Typography
                   variant="h5"
                   fontWeight="bold"
@@ -308,7 +306,7 @@ const BbpsBillerDetails = ({
                   py: { xs: 1, sm: 1.4 },
                   fontWeight: "bold",
                   fontSize: { xs: "0.9rem", sm: "1rem" },
-                  background: " #fff",
+                  background: "#fff",
                   color: "#2275b7",
                   boxShadow: "0 4px 12px rgba(79,70,229,0.25)",
                   "&:hover": {
@@ -317,7 +315,7 @@ const BbpsBillerDetails = ({
                   },
                 }}
                 onClick={handleFetchBill}
-                disabled={fetchingBill}
+                disabled={fetchingBill || !areAllInputsFilled()}
               >
                 {fetchingBill ? "Fetching Bill..." : "Fetch Bill"}
               </Button>
@@ -327,7 +325,7 @@ const BbpsBillerDetails = ({
           {/* BILL DETAILS CARD */}
           <Card
             sx={{
-              flex: { xs: "1 1 auto", md: "0 0 60%" }, // fill remaining space
+              flex: { xs: "1 1 auto", md: "0 0 60%" },
               minWidth: { xs: "100%", sm: 300 },
               borderRadius: 3,
               boxShadow: "0 4px 16px rgba(170,169,169,0.08)",
@@ -337,21 +335,6 @@ const BbpsBillerDetails = ({
           >
             <CardContent sx={{ p: { xs: 2, sm: 3 }, height: "100%" }}>
               <Box display="flex" alignItems="center" gap={1.5} mb={1}>
-                {/* {selectedBillerIdImage && (
-                  <Box
-                    component="img"
-                    src={selectedBillerIdImage}
-                    alt={billerDetails?.billerInfo?.name || "Biller"}
-                    sx={{
-                      width: 50,
-                      height: 50,
-                      objectFit: "contain",
-                      borderRadius: "8px",
-                      bgcolor: "#f9fafb",
-                      p: 0.5,
-                    }}
-                  />
-                )} */}
                 <Typography
                   variant="h6"
                   fontWeight="bold"
@@ -362,7 +345,6 @@ const BbpsBillerDetails = ({
                     textOverflow: "ellipsis",
                   }}
                 >
-                  {/* {billerDetails?.billerInfo?.name || "Biller"} */}
                   Bill Details
                 </Typography>
               </Box>
@@ -423,11 +405,14 @@ const BbpsBillerDetails = ({
                     variant="outlined"
                     value={billData?.BillAmount || ""}
                     onChange={(e) =>
-                      setBillData((prev) => ({
-                        ...prev,
-                        BillAmount: e.target.value,
-                      }))
+                      acceptsAdhoc
+                        ? setBillData((prev) => ({
+                            ...prev,
+                            BillAmount: e.target.value,
+                          }))
+                        : null
                     }
+                    disabled={!acceptsAdhoc}
                     InputProps={{
                       startAdornment: (
                         <Typography sx={{ mr: 0.5 }}>₹</Typography>
@@ -442,6 +427,12 @@ const BbpsBillerDetails = ({
                     }}
                   />
                 </Box>
+
+                {!acceptsAdhoc && (
+                  <Typography variant="caption" color="red" sx={{ mt: 0.5 }}>
+                    Amount cannot be edited for this biller.
+                  </Typography>
+                )}
               </Box>
 
               <Button
@@ -462,7 +453,7 @@ const BbpsBillerDetails = ({
                   },
                 }}
                 onClick={handleSendClick}
-                disabled={payingBill}
+                disabled={!canPayBill() || payingBill}
               >
                 {payingBill ? "Processing Payment..." : "Pay Bill"}
               </Button>
@@ -470,10 +461,11 @@ const BbpsBillerDetails = ({
           </Card>
         </Box>
       </Box>
+
       <CommonMpinModal
         open={mpinModalOpen}
         setOpen={setMpinModalOpen}
-        title="Enter MPIN to Confirm Delete"
+        title="Enter MPIN to Confirm Payment"
         mPinCallBack={handlePayBill}
       />
     </>

@@ -19,6 +19,7 @@ import BbpsBillers from "./BbpsBillers";
 import AuthContext from "../contexts/AuthContext";
 import { useToast } from "../utils/ToastContext";
 import OutletDmt1 from "./OutletDnt1";
+import CommonLoader from "../components/common/CommonLoader";
 
 const Bbps = () => {
   const [categories, setCategories] = useState([]);
@@ -47,7 +48,7 @@ const Bbps = () => {
       setCategories(data);
       setFiltered(data);
     } else if (error) {
-      apiErrorToast(error?.message || "Failed to fetch categories");
+      showToast(error?.message || "Failed to fetch categories");
     }
     setLoading(false);
   };
@@ -70,6 +71,7 @@ const Bbps = () => {
 
   return (
     <Box>
+          <CommonLoader loading={loading} />
       {!instId ? (
         <Box
           textAlign="center"

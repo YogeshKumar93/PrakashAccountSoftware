@@ -13,6 +13,7 @@ import { useToast } from "../utils/ToastContext";
 import AepsMainComponent from "../components/AepsMain";
 import OutletDmt1 from "./OutletDnt1";
 import AuthContext from "../contexts/AuthContext";
+import CommonLoader from "../components/common/CommonLoader";
 const style = {
   position: "absolute",
   top: "50%",
@@ -29,7 +30,7 @@ const Aeps1 = () => {
   const [openAEPS2FA, setOpenAEPS2FA] = useState(false);
   const [openAepsMain, setOpenAepsMain] = useState(false);
   const [twoFAStatus, setTwoFAStatus] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [aadhaar, setAadhaar] = useState("");
   const [fingerScanData, setFingerScanData] = useState("");
   const [openDmt1Modal, setOpenDmt1Modal] = useState(false);
@@ -39,6 +40,7 @@ const Aeps1 = () => {
   const instId = user?.instId; // Check if instId exists
 
   const checkAepsLoginStatus = async () => {
+     setLoading(true);
     try {
       const { error, response } = await apiCall(
         "post",
@@ -66,6 +68,7 @@ const Aeps1 = () => {
   };
 
   const AepsLogin = async (scanData = fingerScanData) => {
+      setLoading(true);
     try {
       if (!aadhaar || !scanData) {
         showToast("Please provide Aadhaar and Fingerprint data", "error");
@@ -129,10 +132,10 @@ const Aeps1 = () => {
     checkAepsLoginStatus();
   }, []);
 
-  if (loading) return <p>Checking AEPS login status...</p>;
-  console.log("The indtid is ", instId);
+
   return (
     <>
+    <CommonLoader loading={loading} />
       {!instId ? (
         <Box
           textAlign="center"
