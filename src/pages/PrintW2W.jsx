@@ -9,15 +9,15 @@ import {
 } from "@mui/material";
 import { useLocation } from "react-router-dom";
 import AuthContext from "../contexts/AuthContext";
+import { ddmmyyWithTime } from "../utils/DateUtils";
 import biggpayLogo from "../assets/Images/PPALogo.jpeg";
 
-const PrintDmt2 = () => {
+const PrintW2W = () => {
   const [receiptType, setReceiptType] = useState("large");
   const [orientation, setOrientation] = useState("portrait");
   const location = useLocation();
   const authCtx = useContext(AuthContext);
   const user = authCtx.user;
-
   const [data, setData] = useState(null);
 
   useEffect(() => {
@@ -25,11 +25,13 @@ const PrintDmt2 = () => {
     if (!txnData) {
       const storedData = sessionStorage.getItem("txnData");
       if (storedData) txnData = JSON.parse(storedData);
+    } else {
+      sessionStorage.setItem("txnData", JSON.stringify(txnData));
     }
     if (txnData) setData(txnData);
   }, [location.state]);
 
-  if (!data) {
+  if (!data)
     return (
       <Box
         display="flex"
@@ -42,48 +44,35 @@ const PrintDmt2 = () => {
         </Typography>
       </Box>
     );
-  }
 
-  // Parse amounts
+  // Parse numeric values safely
   const amount = parseFloat(data.amount || 0);
-  const ccf = parseFloat(data.ccf || 0);
+  const charge = parseFloat(data.charge || 0);
   const gst = parseFloat(data.gst || 0);
-  const totalAmount = amount + ccf;
 
-  // Headers (always same, role conditions removed)
+  // ✅ Only Wallet2Wallet fields
   const headers = [
-    "Date",
-    
-  
-    "Service",
+    "Date/Time",
     "Txn ID",
-    "Sender Mobile",
-    "Beneficiary Name",
-    "Account No",
-    "IFSC Code",
-    "Amount",
-    "CCF",
+    "Sender",
+    "Receiver",
+    "Amount (₹)",
+    "Charge (₹)",
+    "GST (₹)",
+    "Remarks",
     "Status",
-    "Total Amount",
   ];
 
-  // Values in same order
   const values = [
-    `${data.created_at ? new Date(data.created_at).toLocaleDateString() : ""} ${
-      data.created_at ? new Date(data.created_at).toLocaleTimeString() : ""
-    }`,
-  
-  
-    data.operator || "",
+    data.created_at ? ddmmyyWithTime(data.created_at) : "",
     data.txn_id || "",
-    data.sender_mobile || "",
-    data.beneficiary_name || "",
-    data.account_number || "",
-    data.ifsc_code || "",
+    data.sender_name || data.user_id || "N/A",
+    data.receiver_name || data.receiver_id || "N/A",
     `₹ ${amount.toFixed(2)}`,
-    `₹ ${ccf.toFixed(2)}`,
+    `₹ ${charge.toFixed(2)}`,
+    `₹ ${gst.toFixed(2)}`,
+    data.remark || "N/A",
     data.status || "",
-    `₹ ${totalAmount.toFixed(2)}`,
   ];
 
   return (
@@ -113,23 +102,15 @@ const PrintDmt2 = () => {
           pt: 4,
         }}
       >
-        {/* Receipt Settings (hide when printing) */}
+        {/* Receipt Type + Orientation Options */}
         <Box display="flex" justifyContent="center" mb={2} className="no-print">
           <RadioGroup
             row
             value={receiptType}
             onChange={(e) => setReceiptType(e.target.value)}
           >
-            <FormControlLabel
-              value="large"
-              control={<Radio />}
-              label="Large Receipt"
-            />
-            <FormControlLabel
-              value="small"
-              control={<Radio />}
-              label="Small Receipt"
-            />
+            <FormControlLabel value="large" control={<Radio />} label="Large Receipt" />
+            <FormControlLabel value="small" control={<Radio />} label="Small Receipt" />
           </RadioGroup>
           <RadioGroup
             row
@@ -137,16 +118,11 @@ const PrintDmt2 = () => {
             onChange={(e) => setOrientation(e.target.value)}
             sx={{ ml: 3 }}
           >
-            <FormControlLabel
-              value="portrait"
-              control={<Radio />}
-              label="Portrait"
-            />
-          
+            <FormControlLabel value="portrait" control={<Radio />} label="Portrait" />
           </RadioGroup>
         </Box>
 
-        {/* Receipt */}
+        {/* Receipt Container */}
         <Box
           className="receipt-container"
           sx={{
@@ -156,8 +132,8 @@ const PrintDmt2 = () => {
             borderRadius: 2,
             background: "#fff",
             boxShadow: "0 8px 20px rgba(0,0,0,0.12)",
-            px: { xs: 2, md: 3 },
-            py: { xs: 2, md: 3 },
+            px: 3,
+            py: 3,
             fontFamily: "Roboto, sans-serif",
           }}
         >
@@ -184,10 +160,7 @@ const PrintDmt2 = () => {
               />
             </Box>
             <Box textAlign="right">
-              <Typography
-                variant="subtitle2"
-                sx={{ fontWeight: 600, textTransform: "capitalize" }}
-              >
+              <Typography variant="subtitle2" sx={{ fontWeight: 600, textTransform: "capitalize" }}>
                 {user ? user.establishment : "Null"}
               </Typography>
               <Typography variant="body2" color="text.secondary">
@@ -206,17 +179,14 @@ const PrintDmt2 = () => {
                 color: "#000",
                 textTransform: "none",
                 px: 3,
-                "&:hover": {
-                  borderColor: "#ff9a3c",
-                  color: "#ff9a3c",
-                },
+                "&:hover": { borderColor: "#ff9a3c", color: "#ff9a3c" },
               }}
             >
-              Transaction Summary
+              Wallet-to-Wallet Transaction Summary
             </Button>
           </Box>
 
-          {/* Large Receipt */}
+          {/* Receipt Table */}
           {receiptType === "large" ? (
             <Box className="table-container" mt={2}>
               <Box className="table-row">
@@ -231,11 +201,7 @@ const PrintDmt2 = () => {
                   <Box
                     key={i}
                     className={`table-cell ${
-                      i === headers.length - 1
-                        ? "amount-red"
-                        : i >= headers.length - 3
-                        ? "amount-gray"
-                        : ""
+                      i >= 4 && i <= 6 ? "amount-gray" : ""
                     }`}
                   >
                     {v}
@@ -247,13 +213,9 @@ const PrintDmt2 = () => {
             // Small Receipt
             <Box
               mt={2}
-              sx={{
-                border: "1px solid #e0e0e0",
-                borderRadius: 2,
-                overflow: "hidden",
-              }}
+              sx={{ border: "1px solid #e0e0e0", borderRadius: 2, overflow: "hidden" }}
             >
-              {headers.map((label, i) => (
+              {headers.map((h, i) => (
                 <Box
                   key={i}
                   display="flex"
@@ -261,31 +223,19 @@ const PrintDmt2 = () => {
                   sx={{
                     px: 1,
                     py: 1.3,
-                    borderBottom:
-                      i !== headers.length - 1 ? "1px solid #f0f0f0" : "none",
+                    borderBottom: i !== headers.length - 1 ? "1px solid #f0f0f0" : "none",
                     bgcolor: i % 2 === 0 ? "#fafafa" : "transparent",
                   }}
                 >
-                  <Typography
-                    variant="body2"
-                    sx={{ fontWeight: 600, fontSize: "0.85rem" }}
-                  >
-                    {label}:
+                  <Typography variant="body2" sx={{ fontWeight: 600, fontSize: "0.85rem" }}>
+                    {h}:
                   </Typography>
                   <Typography
                     variant="body2"
                     sx={{
-                      fontWeight:
-                        i >= headers.length - 3 || i === headers.length - 1
-                          ? "bold"
-                          : "normal",
+                      fontWeight: i >= 4 && i <= 6 ? "bold" : "normal",
                       fontSize: "0.85rem",
-                      color:
-                        i === headers.length - 1
-                          ? "#d32f2f"
-                          : i >= headers.length - 3
-                          ? "#555"
-                          : "inherit",
+                      color: i >= 4 && i <= 6 ? "#555" : "inherit",
                     }}
                   >
                     {values[i]}
@@ -296,9 +246,12 @@ const PrintDmt2 = () => {
           )}
 
           {/* Print Button */}
-          <Box display="flex" justifyContent="flex-end" mt={{ xs: 1, sm: 1 }}>
+          <Box display="flex" justifyContent="flex-end" mt={1}>
             <Button
-              onClick={() => window.print()}
+              onClick={() => {
+                window.print();
+                sessionStorage.removeItem("txnData");
+              }}
               className="no-print"
               variant="contained"
               sx={{
@@ -314,19 +267,11 @@ const PrintDmt2 = () => {
           </Box>
 
           {/* Footer */}
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-            mt={3}
-          >
+          <Box display="flex" justifyContent="space-between" alignItems="center" mt={3}>
             <Typography variant="caption" fontWeight={500}>
               © 2025 All Rights Reserved
             </Typography>
-            <Typography
-              variant="caption"
-              sx={{ display: "block", textAlign: "right" }}
-            >
+            <Typography variant="caption" sx={{ display: "block", textAlign: "right" }}>
               This is a system-generated receipt. No signature required.
             </Typography>
           </Box>
@@ -336,4 +281,4 @@ const PrintDmt2 = () => {
   );
 };
 
-export default PrintDmt2;
+export default PrintW2W;

@@ -24,14 +24,13 @@ import News from "./News";
 import Purposes from "./Purposes";
 import WebHooks from "./WebHooks";
 
-
 export const Settings = () => {
   const tabItems = [
     { label: "Template", icon: <DescriptionIcon />, component: <Templates /> },
     { label: "Comm Rules", icon: <RuleIcon />, component: <CommissionRule /> },
     // { label: "WebHooks", icon: <HttpIcon />, component: <WebHooks /> },
     { label: "Logs", icon: <ListAltIcon />, component: <Logs /> },
-    { label: "Plans", icon: <EventNoteIcon/>, component: <Plans /> },
+    { label: "Plans", icon: <EventNoteIcon />, component: <Plans /> },
     { label: "News", icon: <EmojiObjectsIcon />, component: <News /> },
     { label: "Purposes", icon: <StarBorderIcon />, component: <Purposes /> },
     {

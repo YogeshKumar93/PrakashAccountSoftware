@@ -56,14 +56,11 @@ const Complaint = ({ filters = [] }) => {
         selector: (row) => (
           <div style={{ display: "flex", flexDirection: "column" }}>
             <Tooltip title={`Created: ${ddmmyyWithTime(row.created_at)}`} arrow>
-              <span>
-                {ddmmyy(row.created_at)} 
-              </span>
-            </Tooltip><br/>
+              <span>{ddmmyy(row.created_at)}</span>
+            </Tooltip>
+            <br />
             <Tooltip title={`Updated: ${ddmmyyWithTime(row.updated_at)}`} arrow>
-              <span>
-                {ddmmyy(row.updated_at)}  
-              </span>
+              <span>{ddmmyy(row.updated_at)}</span>
             </Tooltip>
           </div>
         ),
@@ -120,16 +117,18 @@ const Complaint = ({ filters = [] }) => {
               }}
             >
               {isHovered ? (
-                <Button
-                  variant="outlined"
-                  size="small"
-                  onClick={() => {
-                    setSelectedRow(row);
-                    setOpenUpdate(true);
-                  }}
-                >
-                  Update
-                </Button>
+                row.status === "open" && (
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={() => {
+                      setSelectedRow(row);
+                      setOpenUpdate(true);
+                    }}
+                  >
+                    Update
+                  </Button>
+                )
               ) : (
                 <Typography
                   variant="body2"
@@ -160,12 +159,6 @@ const Complaint = ({ filters = [] }) => {
             endpoint={ApiEndpoints.GET_COMPLAINS}
             filters={finalFilters} // ✅ role-based filters
             queryParam=""
-            customHeader={
-              <ReButton
-                label="New Complaint"
-                onClick={() => setOpenCreate(true)}
-              />
-            }
           />
 
           {/* ✅ Update Modal */}

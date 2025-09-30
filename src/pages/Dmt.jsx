@@ -18,6 +18,7 @@ import RemitterRegister from "./RemitterRegister";
 import OutletDmt1 from "./OutletDnt1";
 import AuthContext from "../contexts/AuthContext";
 import Loader from "../components/common/Loader";
+import CommonLoader from "../components/common/CommonLoader";
 
 const Dmt = () => {
   const [mobile, setMobile] = useState("");
@@ -110,7 +111,7 @@ const Dmt = () => {
   />;
   console.log("THe insti fin dmt1", instId);
   return (
-    <Loader loading={loading}>
+    <CommonLoader loading={loading}>
       <Box>
         {!instId ? (
           <Box
@@ -239,7 +240,7 @@ const Dmt = () => {
           </>
         )}
       </Box>
-    </Loader>
+    </CommonLoader>
   );
 };
 
