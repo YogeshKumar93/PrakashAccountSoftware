@@ -135,13 +135,13 @@ const SuperTransfer = () => {
         <Box width="100%">
           <SenderDetails sender={sender} />
 
-          {/* {selectedBeneficiary && (
+           {selectedBeneficiary && (
       <BeneficiaryDetails
         beneficiary={selectedBeneficiary}
         senderMobile={mobile}
         sender={sender}
       />
-    )} */}
+    )} 
         </Box>
 
         {/* Beneficiary List */}
