@@ -224,29 +224,37 @@ const DmtTxn = ({ query }) => {
         selector: (row) => (
           <div style={{ textAlign: "left", fontWeight: "600" }}>
             {row.operator} <br />
-            <span
-              style={{ fontWeight: "normal", fontSize: "8px", color: "blue" }}
-            >
-              STATUS
-            </span>
-            <span
-              style={{
-                fontWeight: "normal",
-                fontSize: "8px",
-                color: "blue",
-                cursor: "pointer",
-                textDecoration: "underline",
-                marginLeft: "6px", // gap between status and response
-              }}
-              onClick={() => {
-                setSelectedApiResponse(
-                  row.api_response || "No response available"
-                );
-                setResponseModalOpen(true);
-              }}
-            >
-              RESPONSE
-            </span>
+            {["adm", "sadm"].includes(user?.role) && (
+              <>
+                <span
+                  style={{
+                    fontWeight: "normal",
+                    fontSize: "8px",
+                    color: "blue",
+                  }}
+                >
+                  STATUS
+                </span>
+                <span
+                  style={{
+                    fontWeight: "normal",
+                    fontSize: "8px",
+                    color: "blue",
+                    cursor: "pointer",
+                    textDecoration: "underline",
+                    marginLeft: "6px",
+                  }}
+                  onClick={() => {
+                    setSelectedApiResponse(
+                      row.api_response || "No response available"
+                    );
+                    setResponseModalOpen(true);
+                  }}
+                >
+                  RESPONSE
+                </span>
+              </>
+            )}
           </div>
         ),
         wrap: true,
