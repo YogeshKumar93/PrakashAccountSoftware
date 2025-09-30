@@ -185,7 +185,7 @@ const passwordInputProps = (showPassword, setShowPassword) => ({
     alignItems: "center",
     backgroundColor: "#5224a3ff",
     width: "55%",
-    border: "3px solid #4adc51ff",
+    
   }}
 >
   <Box
@@ -194,14 +194,15 @@ const passwordInputProps = (showPassword, setShowPassword) => ({
     alt="Background"
     sx={{
       height: "100%",
-      padding:10,
+      p: 2, // better to use shorthand padding instead of 10
       objectFit: "contain",
-      boxShadow: "0px 4px 20px rgba(0,0,0,0.5)", // 👈 shadow only on image
-      borderRadius: 2, // optional if you want rounded corners
-  
+      boxShadow: "0px 4px 20px rgba(0,0,0,0.5)", // shadow only on image
+      borderRadius: 2, // rounded corners
+      maxWidth: "100%", // ensures image doesn't overflow container
     }}
   />
 </Grid>
+
 
 
       {/* Right Side - Login Form */}
