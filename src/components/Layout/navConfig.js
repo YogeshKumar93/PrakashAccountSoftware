@@ -222,7 +222,7 @@ export const customer_nav = [
 
   {
     title: "Login History",
-    icon: riskImage,
+    icon: loginHistoryImage,
     icon2: "📒",
     to: "/customer/login_history",
   },
@@ -255,7 +255,7 @@ export const di_nav = [
   },
   {
     title: "Login History",
-    icon: riskImage,
+    icon: loginHistoryImage,
     icon2: "📒",
     to: "/di/login_history",
   },
@@ -304,6 +304,12 @@ export const service_nav = [
     icon2: "📒",
     to: "/customer/login_history",
   },
+   {
+    title: "Login History",
+    icon: loginHistoryImage,
+    icon2: "👥",
+    to: "/customer/login_history",
+  },
 ];
 
 export const asm_nav = [
@@ -334,7 +340,7 @@ export const asm_nav = [
   },
   {
     title: "Login History",
-    icon: riskImage,
+    icon: loginHistoryImage,
     icon2: "📒",
     to: "/asm/login_history",
   },
@@ -363,7 +369,7 @@ export const zsm_nav = [
   },
   {
     title: "Login History",
-    icon: riskImage,
+    icon: loginHistoryImage,
     icon2: "📒",
     to: "/zsm/login_history",
   },
@@ -398,7 +404,7 @@ export const api_nav = [
   },
   {
     title: "Login History",
-    icon: riskImage,
+    icon: loginHistoryImage,
     icon2: "📒",
     to: "/api/login_history",
   },
@@ -439,7 +445,7 @@ export const md_nav = [
   },
   {
     title: "Login History",
-    icon: riskImage,
+    icon: loginHistoryImage,
     icon2: "📒",
     to: "/md/login_history",
   },
