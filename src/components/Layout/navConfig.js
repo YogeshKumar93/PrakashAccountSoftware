@@ -110,12 +110,12 @@ export const Admin_nav = [
 
 // Customer Navigation
 export const customer_nav = [
-  {
-    title: "Dashboard",
-    icon: dashboardImage,
-    icon2: "📊",
-    to: "/customer/dashboard",
-  },
+  // {
+  //   title: "Dashboard",
+  //   icon: dashboardImage,
+  //   icon2: "📊",
+  //   to: "/customer/dashboard",
+  // },
   {
     title: "Recharge",
     icon: rechargeNew,
@@ -228,12 +228,12 @@ export const customer_nav = [
   },
 ];
 export const di_nav = [
-  {
-    title: "Dashboard",
-    icon: dashboardImage,
-    icon2: "📊",
-    to: "/di/dashboard",
-  },
+  // {
+  //   title: "Dashboard",
+  //   icon: dashboardImage,
+  //   icon2: "📊",
+  //   to: "/di/dashboard",
+  // },
   { title: "Users", icon: usersImage, icon2: "👥", to: "/di/users" },
   {
     title: "Transaction",
@@ -341,12 +341,12 @@ export const asm_nav = [
 ];
 
 export const zsm_nav = [
-  {
-    title: "Dashboard",
-    icon: dashboardImage,
-    icon2: "📊",
-    to: "/zsm/dashboard",
-  },
+  // {
+  //   title: "Dashboard",
+  //   icon: dashboardImage,
+  //   icon2: "📊",
+  //   to: "/zsm/dashboard",
+  // },
   { title: "Users", icon: usersImage, icon2: "📊", to: "/zsm/users" },
   {
     title: "Transcations",
