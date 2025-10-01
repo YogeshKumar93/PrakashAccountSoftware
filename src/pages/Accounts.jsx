@@ -37,7 +37,7 @@ const Accounts = ({ filters = [] }) => {
     if (fetchUsersRef.current) {
       fetchUsersRef.current();
     }
-  };
+  };       
 
   const handleAccountStatement = (row) => {
     navigate(`/admin/accountstatements/${row.id}`, {

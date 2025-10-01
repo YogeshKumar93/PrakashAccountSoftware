@@ -469,6 +469,7 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
         }}
         className="header"
       >
+        
         <Toolbar sx={{ minHeight: "64px !important" }}>
           <Typography
             variant="h5"
@@ -663,6 +664,7 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
                 </ListItemIcon>
                 Logs Activity
               </MenuItem>
+              
 
               {/* <MenuItem>
     <ListItemIcon>
