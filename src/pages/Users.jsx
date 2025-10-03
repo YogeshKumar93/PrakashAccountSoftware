@@ -35,8 +35,6 @@ import { AssignPlans } from "./AssignPlans";
 import AdminCreateUser from "./AdminCreateUser";
 import AddLein from "./AddLein";
 
-
-
 const roleLabels = {
   ret: "Retailer",
   adm: "Admin",
@@ -246,7 +244,12 @@ const Users = ({ query }) => {
 
   const filters = useMemo(
     () => [
-      { id: "mobile", label: "Mobile Number", type: "textfield", textType:"number" },
+      {
+        id: "mobile",
+        label: "Mobile Number",
+        type: "textfield",
+        textType: "number",
+      },
       { id: "id", label: "User Id", type: "textfield" },
       { id: "Parent", label: "Parent", type: "textfield", roles: ["adm"] },
     ],
@@ -268,7 +271,7 @@ const Users = ({ query }) => {
         selector: (row) => (
           <Tooltip title={row?.id}>
             <div style={{ textAlign: "left", fontWeight: "bold" }}>
-              TRANS{row?.id}
+              P2PAE{row?.id}
             </div>
           </Tooltip>
         ),

@@ -12,6 +12,7 @@ const WalletCard = ({
   return (
     <Box
       sx={{
+        py: 0.7,
         borderRadius: 2,
         background: "linear-gradient(135deg, #13c3c1, #6c4bc7)",
         backgroundSize: "200% 200%",
@@ -48,8 +49,26 @@ const WalletCard = ({
       </Box>
       {/* Content */}
       <Box sx={{ flexGrow: 1 }}>
-        <Typography sx={{ opacity: 0.8, fontWeight: 700 }}>{label}</Typography>
-        <Typography sx={{ fontSize: "1rem", fontWeight: 600 }}>
+        <Typography
+          variant="caption" // smaller default variant
+          sx={{
+            opacity: 0.8,
+            fontWeight: 700,
+            fontSize: "0.80rem", // ensure smaller font
+            lineHeight: 1,
+            whiteSpace: "nowrap",
+          }}
+        >
+          {label}
+        </Typography>
+        <Typography
+          variant="subtitle2"
+          sx={{
+            fontSize: "0.8rem", // smaller amount
+            fontWeight: 600,
+            lineHeight: 1,
+          }}
+        >
           {amount}
         </Typography>
       </Box>

@@ -55,7 +55,6 @@ const ProfilePage = () => {
   const [resetMpinModalOpen, setResetMpinModalOpen] = useState(false);
   const [changePasswordModal, setChangePasswordModal] = useState(false);
   const [changeMpinModal, setChangeMpinModal] = useState(false);
-  const [viewInfoModalOpen, setViewInfoModalOpen] = useState(false);
 
   const [newNumberModal, setNewNumberModal] = useState(false);
   const [changeLayout, setChangeLayout] = useState(false);
@@ -152,14 +151,6 @@ const ProfilePage = () => {
       label: "Business Information",
       icon: <Dashboard sx={{ fontSize: { xs: 18, sm: 20 } }} />,
       onClick: handleBusinessInfo,
-      gradient: "#fff",
-      hoverGradient: "linear-gradient(135deg, #c9ffbf, #7bed9f)",
-    },
-    {
-      id: 6,
-      label: "View Information",
-      icon: <Dashboard sx={{ fontSize: { xs: 18, sm: 20 } }} />,
-      onClick: () => setViewInfoModalOpen(true),
       gradient: "#fff",
       hoverGradient: "linear-gradient(135deg, #c9ffbf, #7bed9f)",
     },
@@ -568,6 +559,7 @@ const ProfilePage = () => {
               </Box>
             </Fade>
           )}
+          {user?.status === 1 && <ProfileTabs />}
         </Paper>
       </Slide>
       {/* Modals */}
@@ -619,12 +611,6 @@ const ProfilePage = () => {
         <BusinessInformation
           open={businessModal}
           onClose={() => setBusinessModal(false)}
-        />
-      )}
-      {viewInfoModalOpen && (
-        <ProfileTabs
-          open={viewInfoModalOpen}
-          onClose={() => setViewInfoModalOpen(false)}
         />
       )}
     </Box>
