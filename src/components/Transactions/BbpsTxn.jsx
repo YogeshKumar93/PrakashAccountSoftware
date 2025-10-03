@@ -28,6 +28,7 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import DoneIcon from "@mui/icons-material/Done";
 
 import { useNavigate } from "react-router-dom";
+import ReplayIcon from "@mui/icons-material/Replay";
 
 import {
   android2,
@@ -39,10 +40,15 @@ import {
 } from "../../utils/iconsImports";
 
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import AddLein from "../LienAmount/AddLein";
 import { useToast } from "../../utils/ToastContext";
 import CommonModal from "../common/CommonModal";
 import { Logo } from "../../iconsImports";
+import Scheduler from "../common/Scheduler";
+import { apiCall } from "../../api/apiClient";
+import AddLein from "../../pages/AddLein";
+import { json2Excel } from "../../utils/exportToExcel";
+import { apiErrorToast } from "../../utils/ToastUtil";
+import FileDownloadIcon from "@mui/icons-material/FileDownload"; // Excel export icon
 
 const BbpxTxn = ({ query }) => {
   const authCtx = useContext(AuthContext);
@@ -58,6 +64,7 @@ const BbpxTxn = ({ query }) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [responseModalOpen, setResponseModalOpen] = useState(false);
   const [selectedApiResponse, setSelectedApiResponse] = useState("");
+  const [selectedRows, setSelectedRows] = useState([]);
 
   const navigate = useNavigate();
   const { showToast } = useToast();
@@ -82,6 +89,26 @@ const BbpxTxn = ({ query }) => {
   const refreshPlans = () => {
     if (fetchUsersRef.current) {
       fetchUsersRef.current();
+    }
+  };
+  const handleExportExcel = async () => {
+    try {
+      // Fetch all users (without pagination/filters) from API
+      const { error, response } = await apiCall(
+        "post",
+        ApiEndpoints.GET_BBPS_TXN,
+        { export: 1 }
+      );
+      const usersData = response?.data?.data || [];
+
+      if (usersData.length > 0) {
+        json2Excel("BbpsTxns", usersData); // generates and downloads Users.xlsx
+      } else {
+        apiErrorToast("no data found");
+      }
+    } catch (error) {
+      console.error("Excel export failed:", error);
+      alert("Failed to export Excel");
     }
   };
   const handleConfirmRefund = async () => {
@@ -136,75 +163,75 @@ const BbpxTxn = ({ query }) => {
     ],
     []
   );
-  const ActionColumn = ({ row, handleRefundClick, handleOpenLein }) => {
-    const [anchorEl, setAnchorEl] = useState(null);
-    const open = Boolean(anchorEl);
+  // const ActionColumn = ({ row, handleRefundClick, handleOpenLein }) => {
+  //   const [anchorEl, setAnchorEl] = useState(null);
+  //   const open = Boolean(anchorEl);
 
-    const handleClick = (event) => setAnchorEl(event.currentTarget);
-    const handleClose = () => setAnchorEl(null);
+  //   const handleClick = (event) => setAnchorEl(event.currentTarget);
+  //   const handleClose = () => setAnchorEl(null);
 
-    return (
-      <div style={{ textAlign: "center" }}>
-        <IconButton size="small" onClick={handleClick}>
-          <MoreVertIcon />
-        </IconButton>
+  //   return (
+  //     <div style={{ textAlign: "center" }}>
+  //       <IconButton size="small" onClick={handleClick}>
+  //         <MoreVertIcon />
+  //       </IconButton>
 
-        <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-          {row?.status === "SUCCESS" && (
-            <MenuItem
-              onClick={() => {
-                handleRefundClick(row);
-                handleClose();
-              }}
-            >
-              Refund
-            </MenuItem>
-          )}
+  //       <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+  //         {row?.status === "SUCCESS" && (
+  //           <MenuItem
+  //             onClick={() => {
+  //               handleRefundClick(row);
+  //               handleClose();
+  //             }}
+  //           >
+  //             Refund
+  //           </MenuItem>
+  //         )}
 
-          {row?.status === "PENDING" && (
-            <>
-              <MenuItem
-                onClick={() => {
-                  // mark as success handler if needed
-                  handleClose();
-                }}
-              >
-                Mark as Success
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  handleRefundClick(row);
-                  handleClose();
-                }}
-              >
-                Refund
-              </MenuItem>
-            </>
-          )}
+  //         {row?.status === "PENDING" && (
+  //           <>
+  //             <MenuItem
+  //               onClick={() => {
+  //                 // mark as success handler if needed
+  //                 handleClose();
+  //               }}
+  //             >
+  //               Mark as Success
+  //             </MenuItem>
+  //             <MenuItem
+  //               onClick={() => {
+  //                 handleRefundClick(row);
+  //                 handleClose();
+  //               }}
+  //             >
+  //               Refund
+  //             </MenuItem>
+  //           </>
+  //         )}
 
-          {(row?.status === "FAILED" || row?.status === "REFUND") && (
-            <MenuItem
-              onClick={() => {
-                // rollback handler if needed
-                handleClose();
-              }}
-            >
-              Rollback
-            </MenuItem>
-          )}
+  //         {(row?.status === "FAILED" || row?.status === "REFUND") && (
+  //           <MenuItem
+  //             onClick={() => {
+  //               // rollback handler if needed
+  //               handleClose();
+  //             }}
+  //           >
+  //             Rollback
+  //           </MenuItem>
+  //         )}
 
-          <MenuItem
-            onClick={() => {
-              handleOpenLein(row);
-              handleClose();
-            }}
-          >
-            Mark Lein
-          </MenuItem>
-        </Menu>
-      </div>
-    );
-  };
+  //         <MenuItem
+  //           onClick={() => {
+  //             handleOpenLein(row);
+  //             handleClose();
+  //           }}
+  //         >
+  //           Mark Lein
+  //         </MenuItem>
+  //       </Menu>
+  //     </div>
+  //   );
+  // };
 
   const columns = useMemo(
     () => [
@@ -516,11 +543,68 @@ const BbpxTxn = ({ query }) => {
             {
               name: "Action",
               selector: (row) => (
-                <ActionColumn
-                  row={row}
-                  handleRefundClick={handleRefundClick}
-                  handleOpenLein={handleOpenLein}
-                />
+                // <ActionColumn
+                //   row={row}
+                //   handleRefundClick={handleRefundClick}
+                //   handleOpenLein={handleOpenLein}
+                // />
+                <div
+                  style={{
+                    fontSize: "10px",
+                    fontWeight: "600",
+                    display: "flex",
+                    gap: "4px",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  {/* SUCCESS: only Replay */}
+                  {row?.status === "SUCCESS" && (
+                    <Tooltip title="Click To Refund">
+                      <ReplayIcon
+                        sx={{ color: "red", fontSize: 25, cursor: "pointer" }}
+                        onClick={() => handleRefundClick(row)}
+                      />
+                    </Tooltip>
+                  )}
+
+                  {/* PENDING: CheckCircle + Replay */}
+                  {row?.status === "PENDING" && (
+                    <>
+                      <Tooltip title="Click To Success">
+                        <DoneIcon sx={{ color: "green", fontSize: 25 }} />
+                      </Tooltip>
+                      <Tooltip title="Click To Refund">
+                        <ReplayIcon
+                          sx={{ color: "red", fontSize: 25, cursor: "pointer" }}
+                          onClick={() => handleRefundClick(row)}
+                        />
+                      </Tooltip>
+                    </>
+                  )}
+
+                  {/* FAILED or REFUND: Refresh */}
+                  {(row?.status === "FAILED" || row?.status === "REFUND") && (
+                    <Tooltip title="Click To Rollback">
+                      <RefreshIcon
+                        sx={{
+                          color: "orange",
+                          fontSize: 25,
+                          cursor: "pointer",
+                        }}
+                      />
+                    </Tooltip>
+                  )}
+
+                  <MenuItem
+                    onClick={() => {
+                      handleOpenLein(row);
+                      handleClose();
+                    }}
+                  >
+                    Mark Lein
+                  </MenuItem>
+                </div>
               ),
               center: true,
               width: "100px",
@@ -580,17 +664,105 @@ const BbpxTxn = ({ query }) => {
     []
   );
 
+  const columnsWithSelection = useMemo(() => {
+    // Only show checkbox if user is NOT adm or sadm
+    if (user?.role === "adm" || user?.role === "sadm") {
+      return columns; // no selection column
+    }
+    return [
+      {
+        name: "",
+        selector: (row) => (
+          <input
+            type="checkbox"
+            checked={selectedRows.some((r) => r.id === row.id)}
+            disabled={row.status?.toLowerCase() === "failed"}
+            onChange={() => {
+              const isSelected = selectedRows.some((r) => r.id === row.id);
+              const newSelectedRows = isSelected
+                ? selectedRows.filter((r) => r.id !== row.id)
+                : [...selectedRows, row];
+              setSelectedRows(newSelectedRows);
+            }}
+          />
+        ),
+        width: "40px",
+      },
+      ...columns,
+    ];
+  }, [selectedRows, columns]);
+
   const queryParam = "";
 
   return (
     <>
       <CommonTable
-        columns={columns}
+        columns={columnsWithSelection}
         onFetchRef={handleFetchRef}
         endpoint={ApiEndpoints.GET_BBPS_TXN}
         filters={filters}
         queryParam={queryParam}
         enableActionsHover={true}
+        enableSelection={false}
+        selectedRows={selectedRows}
+        onSelectionChange={setSelectedRows}
+        customHeader={
+          <>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                padding: "8px",
+              }}
+            >
+              {selectedRows.length > 0 && (
+                <Tooltip title="View Selected Details">
+                  <Button
+                    variant="contained"
+                    size="small"
+                    color="primary"
+                    onClick={() => {
+                      // Save selected rows to sessionStorage
+                      sessionStorage.setItem(
+                        "txnData",
+                        JSON.stringify(selectedRows)
+                      );
+
+                      // Open new tab/window
+                      window.open("/print-dmt2", "_blank");
+                    }}
+                  >
+                    <PrintIcon
+                      sx={{ fontSize: 20, color: "#e3e6e9ff", mr: 1 }}
+                    />
+                    DMT
+                  </Button>
+                </Tooltip>
+              )}
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                padding: "8px",
+                flexWrap: "wrap",
+              }}
+            >
+              {user?.role === "adm" && (
+                <IconButton
+                  color="primary"
+                  onClick={handleExportExcel}
+                  title="Export to Excel"
+                >
+                  <FileDownloadIcon />
+                </IconButton>
+              )}
+              <Scheduler onRefresh={refreshPlans} />
+            </Box>
+          </>
+        }
       />
       <CommonModal
         open={responseModalOpen}

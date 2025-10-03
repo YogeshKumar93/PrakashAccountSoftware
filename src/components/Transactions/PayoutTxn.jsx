@@ -6,6 +6,7 @@ import {
   Button,
   Drawer,
   IconButton,
+  MenuItem,
 } from "@mui/material";
 import CommonTable from "../common/CommonTable";
 import ApiEndpoints from "../../api/ApiEndpoints";
@@ -41,6 +42,11 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import DoneIcon from "@mui/icons-material/Done";
 import { apiCall } from "../../api/apiClient";
 import { useToast } from "../../utils/ToastContext";
+import AddLein from "../../pages/AddLein";
+import { json2Excel } from "../../utils/exportToExcel";
+import { apiErrorToast } from "../../utils/ToastUtil";
+import FileDownloadIcon from "@mui/icons-material/FileDownload"; // Excel export icon
+
 const PayoutTxn = ({ query }) => {
   const authCtx = useContext(AuthContext);
   const user = authCtx?.user;
@@ -55,6 +61,9 @@ const PayoutTxn = ({ query }) => {
   const [responseModalOpen, setResponseModalOpen] = useState(false);
   const [selectedApiResponse, setSelectedApiResponse] = useState("");
   const { showToast } = useToast();
+  const [selectedTransaction, setSelectedTrancation] = useState("");
+  const [openLeinModal, setOpenLeinModal] = useState(false);
+
   const handleRefundClick = (row) => {
     setSelectedForRefund(row);
     setConfirmModalOpen(true);
@@ -95,6 +104,31 @@ const PayoutTxn = ({ query }) => {
 
     setRefundLoading(false);
   };
+  const handleExportExcel = async () => {
+    try {
+      // Fetch all users (without pagination/filters) from API
+      const { error, response } = await apiCall(
+        "post",
+        ApiEndpoints.GET_PAYOUT_TXN,
+        { export: 1 }
+      );
+      const usersData = response?.data?.data || [];
+
+      if (usersData.length > 0) {
+        json2Excel("PayoutTxns", usersData); // generates and downloads Users.xlsx
+      } else {
+        apiErrorToast("no data found");
+      }
+    } catch (error) {
+      console.error("Excel export failed:", error);
+      alert("Failed to export Excel");
+    }
+  };
+  const handleOpenLein = (row) => {
+    setOpenLeinModal(true);
+    setSelectedTrancation(row);
+  };
+  const handleCloseLein = () => setOpenLeinModal(false);
   const filters = useMemo(
     () => [
       {
@@ -505,6 +539,13 @@ const PayoutTxn = ({ query }) => {
                       />
                     </Tooltip>
                   )}
+                  <MenuItem
+                    onClick={() => {
+                      handleOpenLein(row);
+                    }}
+                  >
+                    Mark Lein
+                  </MenuItem>
                 </div>
               ),
               center: true,
@@ -575,6 +616,19 @@ const PayoutTxn = ({ query }) => {
         filters={filters}
         queryParam={queryParam}
         enableActionsHover={true}
+        customHeader={
+          <>
+            {user?.role === "adm" && (
+              <IconButton
+                color="primary"
+                onClick={handleExportExcel}
+                title="Export to Excel"
+              >
+                <FileDownloadIcon />
+              </IconButton>
+            )}
+          </>
+        }
       />
 
       {/* Payout Details Drawer */}
@@ -672,6 +726,15 @@ const PayoutTxn = ({ query }) => {
           {selectedForRefund?.txn_id}?
         </Typography>
       </CommonModal>
+      {openLeinModal && (
+        <AddLein
+          open={openLeinModal}
+          handleClose={handleCloseLein}
+          onFetchRef={() => {}}
+          selectedRow={selectedTransaction}
+          type="transaction"
+        />
+      )}
     </>
   );
 };

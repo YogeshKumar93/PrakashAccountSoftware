@@ -727,7 +727,7 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
           >
             © 2025{" "}
             <Box component="span" sx={{ fontWeight: 700 }}>
-              JITO FINTECH LLP.
+              PSPKA Services Pvt. Ltd.
             </Box>{" "}
             All Rights Reserved.
           </Typography>
@@ -754,4 +754,3 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
 };
 
 export default SideNavAndHeader;
-
