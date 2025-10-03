@@ -670,7 +670,7 @@ const PayoutTxn = ({ query }) => {
                     sessionStorage.setItem("txnData", JSON.stringify(selectedRows));
                 
                     // Open new tab/window
-                    window.open("/print-dmt2", "_blank");
+                    window.open("/print-payout", "_blank");
                   }}
                 >
                 <PrintIcon sx={{ fontSize: 20, color: '#e3e6e9ff', mr:1 }} />
