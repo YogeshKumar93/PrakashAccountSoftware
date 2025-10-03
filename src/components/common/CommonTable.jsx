@@ -506,26 +506,22 @@ const CommonTable = ({
               </Box>
             </Box>
           ) : (
-           <TextField
-  fullWidth
-  size="small"
-  label={filter.label}
-  value={filterValues[filter.id] || ""}
-  onChange={(e) => {
-    let value = e.target.value;
-    if (filter.id === "mobile") {
-      // Keep only digits
-      value = value.replace(/\D/g, "");
-      // Limit to max 10 digits
-      if (value.length > 10) value = value.slice(0, 10);
-    }
-    handleFilterChange(filter.id, value);
-  }}
-  inputProps={{
-    maxLength: filter.id === "mobile" ? 10 : undefined,
-    inputMode: filter.id === "mobile" ? "numeric" : undefined,
-  }}
-/>
+          <TextField
+              fullWidth
+              size="small"
+              label={filter.label}
+              type={filter.textType || "text"}
+              value={filterValues[filter.id] || ""}
+              onChange={(e) => {
+                let value = e.target.value;
+
+                handleFilterChange(filter.id, value);
+              }}
+              inputProps={{
+                maxLength: filter.id === "mobile" ? 10 : undefined,
+                inputMode: filter.id === "mobile" ? "numeric" : undefined,
+              }}
+            />
 
           )}
         </Box>
@@ -672,26 +668,22 @@ const CommonTable = ({
               />
             </Box>
           ) : (
-           <TextField
-  fullWidth
-  size="small"
-  label={filter.label}
-  value={filterValues[filter.id] || ""}
-  onChange={(e) => {
-    let value = e.target.value;
-    if (filter.id === "mobile"|| "sender_mobile") {
-      // Keep only digits
-      value = value.replace(/\D/g, "");
-      // Limit to max 10 digits
-      if (value.length > 10) value = value.slice(0, 10);
-    }
-    handleFilterChange(filter.id, value);
-  }}
-  inputProps={{
-    maxLength: filter.id === "mobile" ? 10 : undefined,
-    inputMode: filter.id === "mobile" ? "numeric" : undefined,
-  }}
-/>
+            <TextField
+              fullWidth
+              size="small"
+              label={filter.label}
+              type={filter.textType || "text"}
+              value={filterValues[filter.id] || ""}
+              onChange={(e) => {
+                let value = e.target.value;
+
+                handleFilterChange(filter.id, value);
+              }}
+              inputProps={{
+                maxLength: filter.id === "mobile" ? 10 : undefined,
+                inputMode: filter.id === "mobile" ? "numeric" : undefined,
+              }}
+            />
 
           )}
         </Box>
