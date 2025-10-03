@@ -31,9 +31,9 @@ import EditUser from "./EditUser";
 import ViewDocuments from "./ViewDocuments";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Assignment, CurrencyRupee } from "@mui/icons-material";
-import AddLein from "../components/LienAmount/AddLein";
 import { AssignPlans } from "./AssignPlans";
 import AdminCreateUser from "./AdminCreateUser";
+import AddLein from "./AddLein";
 
 const roleLabels = {
   ret: "Retailer",
@@ -263,7 +263,7 @@ const Users = ({ query }) => {
 
   const filters = useMemo(
     () => [
-      { id: "mobile", label: "Mobile Number", type: "textfield" },
+      { id: "mobile", label: "Mobile Number", type: "textfield", textType:"number" },
       { id: "id", label: "User Id", type: "textfield" },
       { id: "Parent", label: "Parent", type: "textfield", roles: ["adm"] },
     ],

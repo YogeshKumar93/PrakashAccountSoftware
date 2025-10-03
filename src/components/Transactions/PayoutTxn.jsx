@@ -6,6 +6,7 @@ import {
   Button,
   Drawer,
   IconButton,
+  MenuItem,
 } from "@mui/material";
 import CommonTable from "../common/CommonTable";
 import ApiEndpoints from "../../api/ApiEndpoints";
@@ -41,6 +42,12 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import DoneIcon from "@mui/icons-material/Done";
 import { apiCall } from "../../api/apiClient";
 import { useToast } from "../../utils/ToastContext";
+import AddLein from "../../pages/AddLein";
+import { json2Excel } from "../../utils/exportToExcel";
+import { apiErrorToast } from "../../utils/ToastUtil";
+import FileDownloadIcon from "@mui/icons-material/FileDownload"; // Excel export icon
+import Scheduler from "../common/Scheduler";
+
 const PayoutTxn = ({ query }) => {
   const authCtx = useContext(AuthContext);
   const user = authCtx?.user;
@@ -55,6 +62,10 @@ const PayoutTxn = ({ query }) => {
   const [responseModalOpen, setResponseModalOpen] = useState(false);
   const [selectedApiResponse, setSelectedApiResponse] = useState("");
   const { showToast } = useToast();
+  const [selectedTransaction, setSelectedTrancation] = useState("");
+  const [openLeinModal, setOpenLeinModal] = useState(false);
+   const [selectedRows, setSelectedRows] = useState([]);
+
   const handleRefundClick = (row) => {
     setSelectedForRefund(row);
     setConfirmModalOpen(true);
@@ -95,6 +106,31 @@ const PayoutTxn = ({ query }) => {
 
     setRefundLoading(false);
   };
+  const handleExportExcel = async () => {
+    try {
+      // Fetch all users (without pagination/filters) from API
+      const { error, response } = await apiCall(
+        "post",
+        ApiEndpoints.GET_PAYOUT_TXN,
+        { export: 1 }
+      );
+      const usersData = response?.data?.data || [];
+
+      if (usersData.length > 0) {
+        json2Excel("PayoutTxns", usersData); // generates and downloads Users.xlsx
+      } else {
+        apiErrorToast("no data found");
+      }
+    } catch (error) {
+      console.error("Excel export failed:", error);
+      alert("Failed to export Excel");
+    }
+  };
+  const handleOpenLein = (row) => {
+    setOpenLeinModal(true);
+    setSelectedTrancation(row);
+  };
+  const handleCloseLein = () => setOpenLeinModal(false);
   const filters = useMemo(
     () => [
       {
@@ -505,6 +541,13 @@ const PayoutTxn = ({ query }) => {
                       />
                     </Tooltip>
                   )}
+                  <MenuItem
+                    onClick={() => {
+                      handleOpenLein(row);
+                    }}
+                  >
+                    Mark Lein
+                  </MenuItem>
                 </div>
               ),
               center: true,
@@ -564,17 +607,100 @@ const PayoutTxn = ({ query }) => {
     []
   );
 
+    const columnsWithSelection = useMemo(() => {
+      // Only show checkbox if user is NOT adm or sadm
+      if (user?.role === "adm" || user?.role === "sadm") {
+        return columns; // no selection column
+      }
+      return [
+        {
+          name: "",
+          selector: (row) => (
+            <input
+              type="checkbox"
+              checked={selectedRows.some((r) => r.id === row.id)}
+              disabled={row.status?.toLowerCase() === "failed"}
+              onChange={() => {
+                const isSelected = selectedRows.some((r) => r.id === row.id);
+                const newSelectedRows = isSelected
+                  ? selectedRows.filter((r) => r.id !== row.id)
+                  : [...selectedRows, row];
+                setSelectedRows(newSelectedRows);
+              }}
+            />
+          ),
+          width: "40px",
+        },
+        ...columns,
+      ];
+    }, [selectedRows, columns]);
+
   const queryParam = "";
 
   return (
     <>
       <CommonTable
         onFetchRef={handleFetchRef}
-        columns={columns}
+        columns={columnsWithSelection}
         endpoint={ApiEndpoints.GET_PAYOUT_TXN}
         filters={filters}
         queryParam={queryParam}
         enableActionsHover={true}
+         enableSelection={false}
+        selectedRows={selectedRows}
+        onSelectionChange={setSelectedRows}
+       customHeader={
+          <>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                padding: "8px",
+              }}
+            >
+              {selectedRows.length > 0 && (
+                <Tooltip title="View Selected Details">
+                 <Button
+                  variant="contained"
+                  size="small"
+                  color="primary"
+                  onClick={() => {
+                    // Save selected rows to sessionStorage
+                    sessionStorage.setItem("txnData", JSON.stringify(selectedRows));
+                
+                    // Open new tab/window
+                    window.open("/print-dmt2", "_blank");
+                  }}
+                >
+                <PrintIcon sx={{ fontSize: 20, color: '#e3e6e9ff', mr:1 }} />
+             Payout
+                </Button>
+                </Tooltip>
+              )}
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                padding: "8px",
+                flexWrap: "wrap",
+              }}
+            >
+              {user?.role === "adm" && (
+                <IconButton
+                  color="primary"
+                  onClick={handleExportExcel}
+                  title="Export to Excel"
+                >
+                  <FileDownloadIcon />
+                </IconButton>
+              )}
+              <Scheduler onRefresh={refreshPlans} />
+            </Box>
+          </>
+        }
       />
 
       {/* Payout Details Drawer */}
@@ -672,6 +798,15 @@ const PayoutTxn = ({ query }) => {
           {selectedForRefund?.txn_id}?
         </Typography>
       </CommonModal>
+      {openLeinModal && (
+        <AddLein
+          open={openLeinModal}
+          handleClose={handleCloseLein}
+          onFetchRef={() => {}}
+          selectedRow={selectedTransaction}
+          type="transaction"
+        />
+      )}
     </>
   );
 };
