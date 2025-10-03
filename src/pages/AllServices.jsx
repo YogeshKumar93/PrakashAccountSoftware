@@ -62,13 +62,22 @@ import Aeps from "./Aeps";
 import Cms from "./Cms";
 import Prepaid from "../components/UI/rechange and bill/Prepaid";
 import Dth from "../components/UI/rechange and bill/Dth";
-import { AIR1, FINO } from "../utils/iconsImports";
+import {
+  AIR1,
+  FINO,
+  PG1,
+  QRCODE1,
+  TATAPOWER1,
+  UBER1,
+} from "../utils/iconsImports";
 import { bg } from "date-fns/locale";
 import { color } from "framer-motion";
 import Wallet2WalletTransfer from "./Wallet2WalletTransfer";
 import Wallet2Wallet1 from "./Wallet2Wallet1";
 import Aeps2 from "./Aeps2";
 import AepsLayout2 from "./AepsLayout2";
+import ComingSoon from "./ComingSoon";
+import CreditCardBillPayment from "../components/CrediCardPayment/CreditCardBill";
 
 const MenuCard = ({ icon, label, onClick, isActive, user }) => {
   return (
@@ -344,47 +353,75 @@ export default function AllServices() {
       icon: BBPS,
       subMenu: [
         {
-          key: "electricity",
-          label: "Electricity",
+          key: "Bbps1",
+          label: "Bbps 1",
           icon: electricity1,
-          component: BBPS,
+          component: ComingSoon,
           type: "C04",
         },
         {
-          key: "broadband",
-          label: "Broadband",
-          icon: broadband_1,
-          component: BBPS,
-          type: "C05",
+          key: "Bbps2",
+          label: "Bbps 2",
+          icon: electricity1,
+          component: ComingSoon,
+          type: "C04",
         },
         {
-          key: "gas",
-          label: "Gas Bill",
-          icon: gas_1,
-          component: BBPS,
-          type: "C07",
+          key: "Bbps3",
+          label: "Bbps 3",
+          icon: electricity1,
+          component: ComingSoon,
+          type: "C04",
         },
         {
-          key: "water",
-          label: "Water Bill",
-          icon: water_1,
-          component: BBPS,
-          type: "C08",
+          key: "Bbps4",
+          label: "Bbps 4",
+          icon: electricity1,
+          component: ComingSoon,
+          type: "C04",
         },
-        {
-          key: "insurance",
-          label: "Insurance",
-          icon: insurance_1,
-          component: BBPS,
-          type: "C11",
-        },
-        {
-          key: "landline",
-          label: "Landline Bill",
-          icon: landline_1,
-          component: BBPS,
-          type: "C02",
-        },
+        // {
+        //   key: "electricity",
+        //   label: "Electricity",
+        //   icon: electricity1,
+        //   component: BBPS,
+        //   type: "C04",
+        // },
+        // {
+        //   key: "broadband",
+        //   label: "Broadband",
+        //   icon: broadband_1,
+        //   component: BBPS,
+        //   type: "C05",
+        // },
+        // {
+        //   key: "gas",
+        //   label: "Gas Bill",
+        //   icon: gas_1,
+        //   component: BBPS,
+        //   type: "C07",
+        // },
+        // {
+        //   key: "water",
+        //   label: "Water Bill",
+        //   icon: water_1,
+        //   component: BBPS,
+        //   type: "C08",
+        // },
+        // {
+        //   key: "insurance",
+        //   label: "Insurance",
+        //   icon: insurance_1,
+        //   component: BBPS,
+        //   type: "C11",
+        // },
+        // {
+        //   key: "landline",
+        //   label: "Landline Bill",
+        //   icon: landline_1,
+        //   component: BBPS,
+        //   type: "C02",
+        // },
       ],
     },
     hasPermission("bbps") && {
@@ -432,11 +469,14 @@ export default function AllServices() {
         {
           key: "pipe1",
           label: "Credit Card Bill Payment",
+          component: CreditCardBillPayment,
+
           icon: CreditCardIcon,
         },
         {
           key: "pipe2",
           label: "Credit Card Bill(BBPS)",
+          component: CreditCardBillPayment,
           icon: CreditCardIcon,
           type: "C15",
         },
@@ -448,10 +488,24 @@ export default function AllServices() {
       icon: cms1,
       subMenu: [
         {
+          key: "Airtel cms",
+          label: " Airtel Cms",
+          icon: AIR1,
+          component: ComingSoon,
+          type: "C04",
+        },
+        {
+          key: "Uber cms",
+          label: " Uber Cms",
+          icon: UBER1,
+          component: Cms,
+          type: "C04",
+        },
+        {
           key: "cms",
           label: "Cms",
           icon: DashboardIcon,
-          component: Cms,
+          component: ComingSoon,
           type: "C04",
         },
       ],
@@ -498,6 +552,53 @@ export default function AllServices() {
           component: Wallet2Wallet1,
         },
       ],
+    },
+    {
+      key: "pg",
+      label: "Paymnent Gateway",
+      icon: PG1,
+      component: ComingSoon,
+
+      // subMenu: [
+      //   {
+      //     key: "upiPay",
+      //     label: "UPI Pay",
+      //     icon: PG1,
+      //     component: ComingSoon,
+      //     type: "upi",
+      //   },
+      // ],
+    },
+    {
+      key: "qrcoll",
+      label: "Qr Collection",
+      icon: QRCODE1,
+      component: ComingSoon,
+      // subMenu: [
+      //   {
+      //     key: "upiPay",
+      //     label: "UPI Pay",
+      //     icon: QrCodeIcon,
+      //     component: UpiTransfer,
+      //     type: "upi",
+      //   },
+      // ],
+    },
+    {
+      key: "partpaynent",
+      label: "Part Payment",
+      icon: TATAPOWER1,
+      component: ComingSoon,
+
+      // subMenu: [
+      //   {
+      //     key: "upiPay",
+      //     label: "UPI Pay",
+      //     icon: QrCodeIcon,
+      //     component: UpiTransfer,
+      //     type: "upi",
+      //   },
+      // ],
     },
   ].filter(Boolean);
 
