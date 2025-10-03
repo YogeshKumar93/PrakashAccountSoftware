@@ -19,6 +19,8 @@ import {
   windows2,
 } from "../../utils/iconsImports";
 import LaptopIcon from "@mui/icons-material/Laptop";
+import PrintIcon from "@mui/icons-material/Print";
+
 import DrawerDetails from "../common/DrawerDetails";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import biggpayLogo from "../../assets/Images/PPALogor.png";
@@ -27,7 +29,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import companylogo from "../../assets/Images/logo(1).png";
 import TransactionDetailsCard from "../common/TransactionDetailsCard";
 import ComplaintForm from "../ComplaintForm";
-import PrintIcon from "@mui/icons-material/Print";
+// import PrintIcon from "@mui/icons-material/Print";
 import { useNavigate } from "react-router-dom";
 import { Logo } from "../../iconsImports";
 import CommonModal from "../common/CommonModal";
@@ -37,6 +39,7 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import DoneIcon from "@mui/icons-material/Done";
 import { useToast } from "../../utils/ToastContext";
 import { apiCall } from "../../api/apiClient";
+import Scheduler from "../common/Scheduler";
 const RechargeTxn = ({ query }) => {
   const authCtx = useContext(AuthContext);
   const user = authCtx?.user;
@@ -522,31 +525,35 @@ const RechargeTxn = ({ query }) => {
     ],
     []
   );
-   const columnsWithSelection = useMemo(() => {
-      return [
-        {
-          name: "",
-          selector: (row) => (
-            <input
-              type="checkbox"
-              checked={selectedRows.some((r) => r.id === row.id)}
-              onChange={() => {
-                const isSelected = selectedRows.some((r) => r.id === row.id);
-                const newSelectedRows = isSelected
-                  ? selectedRows.filter((r) => r.id !== row.id)
-                  : [...selectedRows, row];
-                setSelectedRows(newSelectedRows);
-  
-                // optional: log to check
-                console.log("Selected Rows:", newSelectedRows);
-              }}
-            />
-          ),
-          width: "40px",
-        },
-        ...columns, // append your normal columns
-      ];
-    }, [selectedRows, columns]);
+const columnsWithSelection = useMemo(() => {
+     // Only show checkbox if user is NOT adm or sadm
+    if (user?.role === "adm" || user?.role === "sadm") {
+      return columns; // no selection column
+    }
+  return [
+    {
+      name: "",
+      selector: (row) => (
+        <input
+          type="checkbox"
+          checked={selectedRows.some((r) => r.id === row.id)}
+          disabled={row.status?.toLowerCase() === "failed"}
+          onChange={() => {
+            const isSelected = selectedRows.some((r) => r.id === row.id);
+            const newSelectedRows = isSelected
+              ? selectedRows.filter((r) => r.id !== row.id)
+              : [...selectedRows, row];
+            setSelectedRows(newSelectedRows);
+          }}
+        />
+      ),
+      width: "40px",
+    },
+    ...columns,
+  ];
+}, [selectedRows, columns]);
+
+
 
   const queryParam = "";
 
@@ -571,7 +578,7 @@ const RechargeTxn = ({ query }) => {
       alignItems: "center",
       gap: 1,
       padding: "8px",
-      flexWrap: "wrap",
+       
     }}
   >
     {selectedRows.length > 0 && (
@@ -588,7 +595,8 @@ const RechargeTxn = ({ query }) => {
           window.open("/print-recharge", "_blank");
         }}
       >
-        View Selected Details
+      <PrintIcon sx={{ fontSize: 20, color: '#e3e6e9ff', mr:1 }} />
+   Recharge
       </Button>
       </Tooltip>
     )}
@@ -611,6 +619,7 @@ const RechargeTxn = ({ query }) => {
                 <FileDownloadIcon />
               </IconButton>
             )}
+            <Scheduler onRefresh={refreshPlans} />
           </Box>
           </>
 }

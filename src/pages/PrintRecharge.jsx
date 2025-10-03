@@ -1,24 +1,25 @@
 import React, { useContext, useState, useEffect } from "react";
-import {
-  Box,
-  Typography,
-  Button,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
-} from "@mui/material";
+import { Box, Typography, Button, RadioGroup, FormControlLabel, Radio } from "@mui/material";
 import { useLocation } from "react-router-dom";
 import AuthContext from "../contexts/AuthContext";
 import biggpayLogo from "../assets/Images/PPALogor.png";
+import { ddmmyyWithTime } from "../utils/DateUtils";
+ 
 
 const PrintRecharge = () => {
   const [receiptType, setReceiptType] = useState("large");
-  const [orientation] = useState("portrait"); // AEPS always portrait
+  const [orientation] = useState("portrait");
   const location = useLocation();
   const authCtx = useContext(AuthContext);
   const user = authCtx?.user;
 
   const [data, setData] = useState([]);
+
+  // Calculate total only for successful transactions
+const totalAmountValue = data
+  .filter(txn => txn.status?.toLowerCase() === "success")
+  .reduce((acc, txn) => acc + parseFloat(txn.amount || 0), 0);
+
 
   // Load transaction data
   useEffect(() => {
@@ -33,12 +34,7 @@ const PrintRecharge = () => {
       setData(Array.isArray(txnData) ? txnData : [txnData]);
     }
   }, [location.state]);
-  
-    const totalAmountValue = data.reduce(
-    (acc, txn) =>
-      acc + (parseFloat(txn.amount || 0) + parseFloat(txn.ccf || 0)),
-    0
-  );
+ 
 
   if (!data || data.length === 0) {
     return (
@@ -50,7 +46,7 @@ const PrintRecharge = () => {
     );
   }
 
-  const headers = ["Date", "Txn ID", "Aadhaar No", "Txn Type", "RRN", "Status", "Amount"];
+  const headers = ["Date", "Txn ID", "Mobile", "Operator", "Client Ref", "Status", "Amount"];
 
   return (
     <>
@@ -72,11 +68,7 @@ const PrintRecharge = () => {
       <Box display="flex" flexDirection="column" alignItems="center" minHeight="100vh" pt={4}>
         {/* Controls */}
         <Box display="flex" justifyContent="center" mb={2} className="no-print">
-          <RadioGroup
-            row
-            value={receiptType}
-            onChange={(e) => setReceiptType(e.target.value)}
-          >
+          <RadioGroup row value={receiptType} onChange={(e) => setReceiptType(e.target.value)}>
             <FormControlLabel value="large" control={<Radio />} label="Large Receipt" />
             <FormControlLabel value="small" control={<Radio />} label="Small Receipt" />
           </RadioGroup>
@@ -103,10 +95,10 @@ const PrintRecharge = () => {
             </Box>
             <Box textAlign="right">
               <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                {user ? user.establishment : "Null"}
+                {user?.establishment || "Null"}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {user ? user.mobile : "Null"}
+                {user?.mobile || "Null"}
               </Typography>
             </Box>
           </Box>
@@ -124,11 +116,11 @@ const PrintRecharge = () => {
                 "&:hover": { borderColor: "#ff9a3c", color: "#ff9a3c" },
               }}
             >
-              AEPS Transaction Receipt
+              Recharge Transaction Receipt
             </Button>
           </Box>
 
-          {/* Large Table */}
+          {/* Table */}
           {receiptType === "large" ? (
             <Box className="table-container" mt={2}>
               <Box className="table-row">
@@ -137,15 +129,14 @@ const PrintRecharge = () => {
                 ))}
               </Box>
               {data.map((txn, idx) => {
-                const amount = parseFloat(txn.amount || 0);
                 const values = [
-                  txn.created_at ? new Date(txn.created_at).toLocaleString() : "",
+                  txn.created_at ? ddmmyyWithTime(txn.created_at) : "",
                   txn.txn_id || "",
-                  txn.aadhaar_number ? `**** **** ${txn.aadhaar_number.slice(-4)}` : "",
-                  txn.txn_type || "",
-                  txn.rrn || "",
+                  txn.mobile_number || "",
+                  txn.operator || "",
+                  txn.client_ref || "",
                   txn.status || "",
-                  `₹ ${amount.toFixed(2)}`,
+                  `₹ ${parseFloat(txn.amount || 0).toFixed(2)}`,
                 ];
 
                 return (
@@ -163,18 +154,16 @@ const PrintRecharge = () => {
               })}
             </Box>
           ) : (
-            // Small stacked view
             <Box mt={2} sx={{ border: "1px solid #e0e0e0", borderRadius: 2 }}>
               {data.map((txn, idx) => {
-                const amount = parseFloat(txn.amount || 0);
                 const values = [
-                  txn.created_at ? new Date(txn.created_at).toLocaleString() : "",
+                  txn.created_at ? ddmmyyWithTime(txn.created_at) : "",
                   txn.txn_id || "",
-                  txn.aadhaar_number ? `**** **** ${txn.aadhaar_number.slice(-4)}` : "",
-                  txn.txn_type || "",
-                  txn.rrn || "",
+                  txn.mobile_number || "",
+                  txn.operator || "",
+                  txn.client_ref || "",
                   txn.status || "",
-                  `₹ ${amount.toFixed(2)}`,
+                  `₹ ${parseFloat(txn.amount || 0).toFixed(2)}`,
                 ];
 
                 return (
@@ -200,26 +189,20 @@ const PrintRecharge = () => {
               })}
             </Box>
           )}
-             <Box display="flex" justifyContent="flex-end" mt={1} sx={{ pr: 2 }}>
-                      <Box sx={{ textAlign: "right" }}>
-                        <Typography variant="body1" sx={{ fontWeight: 700 }}>
-                          Total Amount: ₹ {totalAmountValue.toFixed(2)}
-                        </Typography>
-                      </Box>
-                    </Box>
+
+         <Box display="flex" justifyContent="flex-end" mt={1} sx={{ pr: 2 }}>
+  <Typography variant="body1" sx={{ fontWeight: 700 }}>
+    Total Amount: ₹ {totalAmountValue.toFixed(2)}
+  </Typography>
+</Box>
+
 
           {/* Print Button */}
           <Box display="flex" justifyContent="flex-end" mt={2} className="no-print">
             <Button
               onClick={() => window.print()}
               variant="contained"
-              sx={{
-                borderRadius: 2,
-                background: "#2b9bd7",
-                textTransform: "none",
-                px: 4,
-                "&:hover": { background: "#ff9a3c" },
-              }}
+              sx={{ borderRadius: 2, background: "#2b9bd7", textTransform: "none", px: 4, "&:hover": { background: "#ff9a3c" } }}
             >
               Print
             </Button>
