@@ -6,6 +6,7 @@ import {
   Drawer,
   Typography,
   Modal,
+  MenuItem,
 } from "@mui/material";
 import CommonTable from "../common/CommonTable";
 import ApiEndpoints from "../../api/ApiEndpoints";
@@ -39,6 +40,7 @@ import DoneIcon from "@mui/icons-material/Done";
 import { apiCall } from "../../api/apiClient";
 import { useToast } from "../../utils/ToastContext";
 import TransactionDrawer from "../TransactionDrawer";
+import AddLein from "../../pages/AddLein";
 const DmtTxn = ({ query }) => {
   const authCtx = useContext(AuthContext);
   const user = authCtx?.user;
@@ -53,6 +55,10 @@ const DmtTxn = ({ query }) => {
   const { showToast } = useToast();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
+  const [selectedTransaction, setSelectedTrancation] = useState("");
+
+  const [openLeinModal, setOpenLeinModal] = useState(false);
+
   const navigate = useNavigate();
   const handleRefundClick = (row) => {
     setSelectedForRefund(row);
@@ -63,6 +69,12 @@ const DmtTxn = ({ query }) => {
   const handleFetchRef = (fetchFn) => {
     fetchUsersRef.current = fetchFn;
   };
+  const handleOpenLein = (row) => {
+    setOpenLeinModal(true);
+    setSelectedTrancation(row);
+  };
+  const handleCloseLein = () => setOpenLeinModal(false);
+
   const refreshPlans = () => {
     if (fetchUsersRef.current) {
       fetchUsersRef.current();
@@ -532,6 +544,15 @@ const DmtTxn = ({ query }) => {
                       />
                     </Tooltip>
                   )}
+
+                  <MenuItem
+                    onClick={() => {
+                      handleOpenLein(row);
+                      handleClose();
+                    }}
+                  >
+                    Mark Lein
+                  </MenuItem>
                 </div>
               ),
               center: true,
@@ -692,6 +713,15 @@ const DmtTxn = ({ query }) => {
           {selectedForRefund?.txn_id}?
         </Typography>
       </CommonModal>
+      {openLeinModal && (
+        <AddLein
+          open={openLeinModal}
+          handleClose={handleCloseLein}
+          onFetchRef={() => {}}
+          selectedRow={selectedTransaction}
+          type="transaction"
+        />
+      )}
     </>
   );
 };
