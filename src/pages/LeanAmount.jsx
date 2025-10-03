@@ -1,5 +1,5 @@
 import { useMemo, useContext, useState, useEffect, useRef } from "react";
-import { Tooltip, IconButton, Box, Typography } from "@mui/material";
+import { Tooltip, IconButton, Box, Typography, Button } from "@mui/material";
 import { Edit, RemoveCircleOutline } from "@mui/icons-material";
 import CommonTable from "../components/common/CommonTable";
 import ApiEndpoints from "../api/ApiEndpoints";
@@ -116,20 +116,19 @@ const LeanAmount = ({ filters = [] }) => {
     ];
 
     // Actions column: only for adm or sadm
-    if (["adm", "sadm"].includes(user?.role)) {
+    if (["ret"].includes(user?.role)) {
       baseColumns.push({
         name: "Actions",
         selector: (row) => (
           <Box sx={{ display: "flex", gap: 1, justifyContent: "center" }}>
-            <Tooltip title="Remove">
-              <IconButton
-                size="small"
-                color="error"
-                onClick={() => handleDelete(row)}
-              >
-                <CancelIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
+            <Button
+              size="small"
+              color="error"
+              onClick={() => handleDelete(row)}
+              startIcon={<CancelIcon fontSize="small" />}
+            >
+              Remove Lien
+            </Button>
           </Box>
         ),
         center: true,

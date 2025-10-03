@@ -35,6 +35,8 @@ import AddLein from "../components/LienAmount/AddLein";
 import { AssignPlans } from "./AssignPlans";
 import AdminCreateUser from "./AdminCreateUser";
 
+
+
 const roleLabels = {
   ret: "Retailer",
   adm: "Admin",
@@ -218,28 +220,12 @@ const Users = ({ query }) => {
             </MenuItem>,
 
             <MenuItem
-              key="wallet"
-              onClick={() => {
-                handleOpenWalletTransfer(row);
-                handleMenuClose();
-              }}
-            >
-              {/* <ListItemIcon>
-                <CurrencyRupee fontSize="small" />
-              </ListItemIcon> */}
-              <ListItemText>Wallet Transfer</ListItemText>
-            </MenuItem>,
-
-            <MenuItem
               key="assign_plan"
               onClick={() => {
                 handleOpenAssignPlans(row);
                 handleMenuClose();
               }}
             >
-              {/* <ListItemIcon>
-                <Assignment fontSize="small" />
-              </ListItemIcon> */}
               <ListItemText>Assign Plan</ListItemText>
             </MenuItem>,
           ]}
@@ -251,9 +237,6 @@ const Users = ({ query }) => {
               handleMenuClose();
             }}
           >
-            {/* <ListItemIcon>
-              <MonetizationOnIcon fontSize="small" color="success" />
-            </ListItemIcon> */}
             <ListItemText>Lein Amount</ListItemText>
           </MenuItem>
         </Menu>
@@ -285,7 +268,7 @@ const Users = ({ query }) => {
         selector: (row) => (
           <Tooltip title={row?.id}>
             <div style={{ textAlign: "left", fontWeight: "bold" }}>
-              P2PAE{row?.id}
+              TRANS{row?.id}
             </div>
           </Tooltip>
         ),
@@ -339,7 +322,7 @@ const Users = ({ query }) => {
                 return (
                   <Tooltip title={parentName}>
                     <div style={{ textAlign: "left", cursor: "pointer" }}>
-                      {parentName}
+                      {row.parent}
                     </div>
                   </Tooltip>
                 );
@@ -432,8 +415,17 @@ const Users = ({ query }) => {
       baseColumns.push({
         name: "Actions",
         selector: (row) => (
-          <div style={{ display: "flex", gap: "8px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <ActionMenu row={row} />
+            <Box
+              sx={{ display: "flex", alignItems: "center", cursor: "pointer" }}
+              onClick={() => {
+                handleOpenWalletTransfer(row);
+                handleMenuClose();
+              }}
+            >
+              <CurrencyRupee fontSize="small" sx={{ color: "green" }} />
+            </Box>
           </div>
         ),
       });

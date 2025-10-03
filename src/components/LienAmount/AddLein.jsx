@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   Box,
   Button,
@@ -15,23 +15,40 @@ import { useToast } from "../../utils/ToastContext";
 import { apiCall } from "../../api/apiClient";
 import ApiEndpoints from "../../api/ApiEndpoints";
 import CommonModal from "../common/CommonModal";
-const AddLein = ({ open, handleClose, onFetchRef, user }) => {
+import AuthContext from "../../contexts/AuthContext";
+const AddLein = ({ open, handleClose, onFetchRef, selectedRow, type }) => {
+  console.log("THe selected row is", type);
   const [formData, setFormData] = useState({
-    txn_id: "",
-    user_id: user?.id || "",
+    given_txn_id: selectedRow?.txn_id || "",
+    user_id:
+      type === "transaction"
+        ? selectedRow?.user_id || ""
+        : selectedRow?.id || "",
     amount: "",
+    remark: "",
   });
 
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [mpinModalOpen, setMpinModalOpen] = useState(false);
+  const authCtx = useContext(AuthContext);
 
+  const user = authCtx?.user;
   const { showToast } = useToast();
 
-  // Update user_id if user changes
   useEffect(() => {
-    setFormData((prev) => ({ ...prev, user_id: user?.id || "" }));
-  }, [user]);
+    if (!selectedRow) return;
+
+    setFormData((prev) => ({
+      ...prev,
+      user_id:
+        type === "transaction"
+          ? selectedRow?.user_id || "" // ✅ transaction me user_id aayega
+          : selectedRow?.id || "", // ✅ normal me id aayega
+      given_txn_id:
+        type === "transaction" ? selectedRow?.txn_id || "" : prev.given_txn_id,
+    }));
+  }, [selectedRow, type]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -42,21 +59,45 @@ const AddLein = ({ open, handleClose, onFetchRef, user }) => {
   // ✅ Validate required fields
   const validate = () => {
     const newErrors = {};
-    if (!formData.txn_id) newErrors.txn_id = "Txn ID is required";
-    if (!formData.user_id) newErrors.user_id = "User ID is required";
-    if (!formData.amount) newErrors.amount = "Amount is required";
+
+    if (type === "transaction" && !formData.given_txn_id) {
+      newErrors.given_txn_id = "Txn ID is required";
+    }
+
+    if (type !== "transaction" && !formData.user_id) {
+      newErrors.user_id = "User ID is required";
+    }
+
+    if (!formData.amount) {
+      newErrors.amount = "Amount is required";
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  // ✅ Handle submit after MPIN
   const handleSubmit = async (mpin) => {
     if (!validate()) return;
 
     setSubmitting(true);
 
-    const dataToSend = { ...formData, mpin };
+    // Conditional payload
+    const dataToSend =
+      type === "transaction"
+        ? {
+            given_txn_id: formData.given_txn_id,
+            user_id: formData.user_id, // ✅ ab yeh sahi aayega
+            amount: formData.amount,
+            mpin,
+            remark: formData.remark,
+          }
+        : {
+            user_id: formData.user_id,
+            amount: formData.amount,
+            mpin,
+            remark: formData.remark,
+          };
+
     const { error, response } = await apiCall(
       "POST",
       ApiEndpoints.ADD_LEIN,
@@ -88,47 +129,69 @@ const AddLein = ({ open, handleClose, onFetchRef, user }) => {
         title="Add Lein Amount"
       >
         <Box display="flex" flexDirection="column" gap={2} mt={1}>
-          <TextField
-            label="Txn ID"
-            name="txn_id"
-            value={formData.txn_id}
-            onChange={handleChange}
-            error={!!errors.txn_id}
-            helperText={errors.txn_id}
-            fullWidth
-          />
-          <TextField
-            label="User ID"
-            name="user_id"
-            value={formData.user_id}
-            onChange={handleChange}
-            error={!!errors.user_id}
-            helperText={errors.user_id}
-            fullWidth
-          />
+          {type == "transaction" && (
+            <TextField
+              label="Txn ID"
+              name="txn_id"
+              value={formData.given_txn_id}
+              onChange={handleChange}
+              error={!!errors.given_txn_id}
+              helperText={errors.given_txn_id}
+              fullWidth
+            />
+          )}
+          {type !== "transaction" && (
+            <TextField
+              label="User ID"
+              name="user_id"
+              value={formData.user_id}
+              onChange={handleChange}
+              error={!!errors.user_id}
+              helperText={errors.user_id}
+              fullWidth
+            />
+          )}
           <TextField
             label="Amount"
             name="amount"
-            value={formData.amount}
+            value={formData.amount ||user.lien}
             onChange={handleChange}
             error={!!errors.amount}
             helperText={errors.amount}
             fullWidth
           />
+          <TextField
+            label="Remark"
+            name="remark"
+            value={formData.remark}
+            onChange={handleChange}
+            error={!!errors.amount}
+            helperText={errors.remark}
+            fullWidth
+          />
         </Box>
-
-        <Button onClick={handleClose} disabled={submitting} variant="outlined">
-          Cancel
-        </Button>
-        <Button
-          onClick={() => setMpinModalOpen(true)}
-          disabled={submitting}
-          variant="contained"
-          color="primary"
-          startIcon={submitting && <CircularProgress size={16} />}
+        <Box
+          sx={{
+            mt: 1,
+          }}
         >
-          {submitting ? "Saving..." : "Save"}
-        </Button>
+          <Button
+            onClick={handleClose}
+            disabled={submitting}
+            variant="outlined"
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={() => setMpinModalOpen(true)}
+            disabled={submitting}
+            variant="contained"
+            color="primary"
+            startIcon={submitting && <CircularProgress size={16} />}
+          >
+            {submitting ? "Saving..." : "Save"}
+          </Button>
+        </Box>
       </CommonModal>
 
       {/* MPIN modal */}
@@ -141,5 +204,6 @@ const AddLein = ({ open, handleClose, onFetchRef, user }) => {
     </>
   );
 };
+
 
 export default AddLein;
