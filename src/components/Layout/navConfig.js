@@ -311,93 +311,123 @@ export const navConfig = [
 ];
 // Role-wise hierarchy
 const roleHierarchy = {
-  adm: [
-    "Dashboard",
-    "Manage Users",
-    "Fund Request",
-    "Transactions",
-    "Bankings",
-    "Services",
-    "Wallet Ledger",
-    "Settings",
-    "Complaint",
-    "Risk",
-    "Login History",
-  ],
-  md: [
-    "Dashboard",
-    "Users",
-    "Fund Request",
-    "Transactions",
-    "Wallet Transfer",
-    "Wallet Ledger",
-    "Login History",
-  ],
-  di: [
-    "Dashboard",
-    "Users",
-    "Transactions",
-    "Wallet Transfer",
-    "Wallet Ledger",
-    "Risk",
-    "Login History",
-  ],
-  ret: [
-    "Dashboard",
-    "Recharge",
-    "Money Transfer",
-    "Fund Transfer",
-    "AEPS",
-    "BBPS Online",
-    "BBPS Offline",
-    "CMS",
-    "Wallet Transfer",
-    "Fund Request",
-    "Transactions",
-    "Wallet Ledger",
-    "Complaint",
-    "Risk",
-    "Login History",
-  ],
-  dd: [
-    "Dashboard",
-    "Recharge",
-    "Money Transfer",
-    "Fund Transfer",
-    "AEPS",
-    "BBPS Online",
-    "BBPS Offline",
-    "CMS",
-    "Wallet Transfer",
-    "Fund Request",
-    "Transactions",
-    "Wallet Ledger",
-    "Complaint",
-    "Risk",
-    "Login History",
-  ],
-  asm: [
-    "Manage Users",
-    "Transactions",
-    "Wallet Ledger",
-    "Transactions",
-    "Login History",
-  ],
-  zsm: [
-    "Dashboard",
-    "Manage Users",
-    "Wallet Ledger",
-    "Transactions",
-    "Login History",
-  ],
-  api: ["Dashboard", "Fund Request", "Transactions", "Complaint"],
+  adm: {
+    default: [
+      "Dashboard",
+      "Manage Users",
+      "Fund Request",
+      "Transactions",
+      "Bankings",
+      "Services",
+      "Wallet Ledger",
+      "Settings",
+      "Complaint",
+      "Risk",
+      "Login History",
+    ],
+    // 1: ["Services", "Transactions", "Wallet Ledger", "Risk"], // Layout 1
+  },
+  md: {
+    default: [
+      "Dashboard",
+      "Users",
+      "Fund Request",
+      "Transactions",
+      "Wallet Transfer",
+      "Wallet Ledger",
+      "Login History",
+    ],
+    // 1: ["Services", "Transactions", "Wallet Ledger", "Risk"],
+  },
+  di: {
+    default: [
+      "Dashboard",
+      "Users",
+      "Transactions",
+      "Wallet Transfer",
+      "Wallet Ledger",
+      "Risk",
+      "Login History",
+    ],
+    // 1: ["Services", "Transactions", "Wallet Ledger", "Risk"],
+  },
+  ret: {
+    default: [
+      "Dashboard",
+      "Recharge",
+      "Money Transfer",
+      "Fund Transfer",
+      "AEPS",
+      "BBPS Online",
+      "BBPS Offline",
+      "CMS",
+      "Wallet Transfer",
+      "Fund Request",
+      "Transactions",
+      "Wallet Ledger",
+      "Complaint",
+      "Risk",
+      "Login History",
+    ],
+    2: ["Services", "Transactions", "Wallet Ledger", "Risk"],
+  },
+  dd: {
+    default: [
+      "Dashboard",
+      "Recharge",
+      "Money Transfer",
+      "Fund Transfer",
+      "AEPS",
+      "BBPS Online",
+      "BBPS Offline",
+      "CMS",
+      "Wallet Transfer",
+      "Fund Request",
+      "Transactions",
+      "Wallet Ledger",
+      "Complaint",
+      "Risk",
+      "Login History",
+    ],
+    2: ["Services", "Transactions", "Wallet Ledger", "Risk"],
+  },
+  asm: {
+    default: [
+      "Manage Users",
+      "Transactions",
+      "Wallet Ledger",
+      "Transactions",
+      "Login History",
+    ],
+    // 1: ["Services", "Transactions", "Wallet Ledger", "Risk"],
+  },
+  zsm: {
+    default: [
+      "Dashboard",
+      "Manage Users",
+      "Wallet Ledger",
+      "Transactions",
+      "Login History",
+    ],
+    // 1: ["Services", "Transactions", "Wallet Ledger", "Risk"],
+  },
+  api: {
+    default: ["Dashboard", "Fund Request", "Transactions", "Complaint"],
+    // 1: ["Services", "Transactions", "Wallet Ledger", "Risk"],
+  },
 };
 
-// Function to build nav for current role with permission check
-export const buildNavForRole = (role, permissions = {}) => {
-  const allowedItems = navConfig.filter((item) => item.roles.includes(role));
-  const hierarchy = roleHierarchy[role] || [];
+export const buildNavForRole = (role, permissions = {}, layout = "default") => {
+  if (!role) return [];
 
+  // Get allowed nav items for this role
+  let allowedItems = navConfig.filter((item) => item.roles.includes(role));
+
+  // Pick hierarchy for this role and layout
+  const hierarchyObj = roleHierarchy[role] || {};
+  const hierarchy = hierarchyObj[layout] || hierarchyObj.default || [];
+
+  // Filter nav items according to hierarchy and permissions
   return hierarchy
     .map((title) =>
       allowedItems.find((item) => {
@@ -406,5 +436,5 @@ export const buildNavForRole = (role, permissions = {}) => {
         return item.title === title && hasPermission;
       })
     )
-    .filter(Boolean); // remove undefined if any
+    .filter(Boolean); // remove undefined
 };

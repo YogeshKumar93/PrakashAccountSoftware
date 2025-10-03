@@ -142,8 +142,11 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
       console.log("Selected file:", file);
     }
   };
-
-  const navigationItems = buildNavForRole(user?.role, user?.permissions || {});
+  const navigationItems = buildNavForRole(
+    user?.role,
+    user?.permissions || {},
+    userLayout || 0
+  );
 
   const handleDrawerToggle = () => {
     if (isMobile) {
