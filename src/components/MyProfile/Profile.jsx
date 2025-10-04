@@ -62,6 +62,7 @@ const ProfilePage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedUser, setEditedUser] = useState({ ...user });
   const [businessModal, setBusinessModal] = useState(false);
+  const [viewInfoModalOpen, setViewInfoModalOpen] = useState(false);
 
   // Sync editedUser with user context when user changes
   useEffect(() => {
@@ -148,9 +149,9 @@ const ProfilePage = () => {
     },
     {
       id: 5,
-      label: "Business Information",
+      label: "View Information",
       icon: <Dashboard sx={{ fontSize: { xs: 18, sm: 20 } }} />,
-      onClick: handleBusinessInfo,
+      onClick: () => setViewInfoModalOpen(true),
       gradient: "#fff",
       hoverGradient: "linear-gradient(135deg, #c9ffbf, #7bed9f)",
     },
@@ -611,6 +612,12 @@ const ProfilePage = () => {
         <BusinessInformation
           open={businessModal}
           onClose={() => setBusinessModal(false)}
+        />
+      )}
+      {viewInfoModalOpen && (
+        <ProfileTabs
+          open={viewInfoModalOpen}
+          onClose={() => setViewInfoModalOpen(false)}
         />
       )}
     </Box>

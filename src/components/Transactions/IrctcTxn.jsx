@@ -20,6 +20,10 @@ import TransactionDetailsCard from "../common/TransactionDetailsCard";
 import PrintIcon from "@mui/icons-material/Print";
 import { useNavigate } from "react-router-dom";
 import Scheduler from "../common/Scheduler";
+import { apiCall } from "../../api/apiClient";
+import { json2Excel } from "../../utils/exportToExcel";
+import { apiErrorToast } from "../../utils/ToastUtil";
+import FileDownloadIcon from "@mui/icons-material/FileDownload"; // Excel export icon
 
 const IrctcTxn = ({ query }) => {
   const authCtx = useContext(AuthContext);
@@ -29,7 +33,7 @@ const IrctcTxn = ({ query }) => {
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
-    const [selectedRows, setSelectedRows] = useState([]);
+  const [selectedRows, setSelectedRows] = useState([]);
 
   const filters = useMemo(
     () => [
@@ -50,7 +54,27 @@ const IrctcTxn = ({ query }) => {
     ],
     []
   );
-   const refreshPlans = () => {
+  const handleExportExcel = async () => {
+    try {
+      // Fetch all users (without pagination/filters) from API
+      const { error, response } = await apiCall(
+        "post",
+        ApiEndpoints.GET_IRCTC_TXN,
+        { export: 1 }
+      );
+      const usersData = response?.data || [];
+
+      if (usersData.length > 0) {
+        json2Excel("IrctcTxns", usersData); // generates and downloads Users.xlsx
+      } else {
+        apiErrorToast("no data found");
+      }
+    } catch (error) {
+      console.error("Excel export failed:", error);
+      alert("Failed to export Excel");
+    }
+  };
+  const refreshPlans = () => {
     if (fetchUsersRef.current) {
       fetchUsersRef.current();
     }
@@ -180,33 +204,33 @@ const IrctcTxn = ({ query }) => {
     []
   );
 
-   const columnsWithSelection = useMemo(() => {
-      // Only show checkbox if user is NOT adm or sadm
-      if (user?.role === "adm" || user?.role === "sadm") {
-        return columns; // no selection column
-      }
-      return [
-        {
-          name: "",
-          selector: (row) => (
-            <input
-              type="checkbox"
-              checked={selectedRows.some((r) => r.id === row.id)}
-              disabled={row.status?.toLowerCase() === "failed"}
-              onChange={() => {
-                const isSelected = selectedRows.some((r) => r.id === row.id);
-                const newSelectedRows = isSelected
-                  ? selectedRows.filter((r) => r.id !== row.id)
-                  : [...selectedRows, row];
-                setSelectedRows(newSelectedRows);
-              }}
-            />
-          ),
-          width: "40px",
-        },
-        ...columns,
-      ];
-    }, [selectedRows, columns]);
+  const columnsWithSelection = useMemo(() => {
+    // Only show checkbox if user is NOT adm or sadm
+    if (user?.role === "adm" || user?.role === "sadm") {
+      return columns; // no selection column
+    }
+    return [
+      {
+        name: "",
+        selector: (row) => (
+          <input
+            type="checkbox"
+            checked={selectedRows.some((r) => r.id === row.id)}
+            disabled={row.status?.toLowerCase() === "failed"}
+            onChange={() => {
+              const isSelected = selectedRows.some((r) => r.id === row.id);
+              const newSelectedRows = isSelected
+                ? selectedRows.filter((r) => r.id !== row.id)
+                : [...selectedRows, row];
+              setSelectedRows(newSelectedRows);
+            }}
+          />
+        ),
+        width: "40px",
+      },
+      ...columns,
+    ];
+  }, [selectedRows, columns]);
 
   const queryParam = "";
 
@@ -218,66 +242,66 @@ const IrctcTxn = ({ query }) => {
         filters={filters}
         queryParam={queryParam}
         enableActionsHover={true}
-         enableSelection={false}
-          selectedRows={selectedRows}
-          onSelectionChange={setSelectedRows}
-          customHeader={
-                      <>
-                        <Box
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 1,
-                            padding: "8px",
-                          }}
-                        >
-                          {selectedRows.length > 0 && (
-                            <Tooltip title="View Selected Details">
-                              <Button
-                                variant="contained"
-                                size="small"
-                                color="primary"
-                                onClick={() => {
-                                  // Save selected rows to sessionStorage
-                                  sessionStorage.setItem(
-                                    "txnData",
-                                    JSON.stringify(selectedRows)
-                                  );
-          
-                                  // Open new tab/window
-                                  window.open("/print-dmt2", "_blank");
-                                }}
-                              >
-                                <PrintIcon
-                                  sx={{ fontSize: 20, color: "#e3e6e9ff", mr: 1 }}
-                                />
-                                DMT
-                              </Button>
-                            </Tooltip>
-                          )}
-                        </Box>
-                        <Box
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 1,
-                            padding: "8px",
-                            flexWrap: "wrap",
-                          }}
-                        >
-                          {user?.role === "adm" && (
-                            <IconButton
-                              color="primary"
-                              onClick={handleExportExcel}
-                              title="Export to Excel"
-                            >
-                              <FileDownloadIcon />
-                            </IconButton>
-                          )}
-                          <Scheduler onRefresh={refreshPlans} />
-                        </Box>
-                      </>
-                    }
+        enableSelection={false}
+        selectedRows={selectedRows}
+        onSelectionChange={setSelectedRows}
+        customHeader={
+          <>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                padding: "8px",
+              }}
+            >
+              {selectedRows.length > 0 && (
+                <Tooltip title="View Selected Details">
+                  <Button
+                    variant="contained"
+                    size="small"
+                    color="primary"
+                    onClick={() => {
+                      // Save selected rows to sessionStorage
+                      sessionStorage.setItem(
+                        "txnData",
+                        JSON.stringify(selectedRows)
+                      );
+
+                      // Open new tab/window
+                      window.open("/print-dmt2", "_blank");
+                    }}
+                  >
+                    <PrintIcon
+                      sx={{ fontSize: 20, color: "#e3e6e9ff", mr: 1 }}
+                    />
+                    DMT
+                  </Button>
+                </Tooltip>
+              )}
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                padding: "8px",
+                flexWrap: "wrap",
+              }}
+            >
+              {user?.role === "adm" && (
+                <IconButton
+                  color="primary"
+                  onClick={handleExportExcel}
+                  title="Export to Excel"
+                >
+                  <FileDownloadIcon />
+                </IconButton>
+              )}
+              <Scheduler onRefresh={refreshPlans} />
+            </Box>
+          </>
+        }
       />
       {/* Transaction Details Drawer */}
       <Drawer

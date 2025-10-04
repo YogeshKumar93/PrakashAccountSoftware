@@ -64,7 +64,7 @@ const W2W1Transfer = ({ filters = [] }) => {
       setReceiver(null);
       setMobile("");
     } else {
-      setError(error.message || "Transfer failed");
+      showToast(error.message || "Transfer failed", "error");
       setCreating(false);
     }
   };

@@ -40,9 +40,11 @@ const roleLabels = {
   adm: "Admin",
   sadm: "Super Admin",
   di: "Distributor",
-  asm: "Asm",
-  zsm: "Zsm",
-  api: "Api",
+  asm: "Area Sales Manager",
+  zsm: "Zonal Sales Manager",
+  api: "Api User",
+  dd: "Direct Dealer",
+  md: "Master Distributor",
 };
 
 const Users = ({ query }) => {

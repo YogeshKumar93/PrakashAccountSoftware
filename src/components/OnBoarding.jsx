@@ -209,6 +209,19 @@ const OnBoarding = () => {
           <Typography>{successMessage}</Typography>
         </Box>
       )}
+      <Box sx={{ mb: 2 }}>
+        <Typography
+          variant="subtitle1"
+          sx={{
+            fontWeight: 600,
+            color: "#6B21A8",
+            textAlign: "center",
+            mb: 1,
+          }}
+        >
+          📂 Please upload the required documents to move further.
+        </Typography>
+      </Box>
 
       {/* Business Information Form - Full Height */}
       <Box
