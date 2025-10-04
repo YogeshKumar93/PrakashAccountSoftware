@@ -365,7 +365,7 @@ const BbpxTxn = ({ query }) => {
       {
         name: "Service",
         selector: (row) => (
-          <div style={{ textAlign: "left" }}>
+          <div style={{ textAlign: "left", fontSize: "12px" }}>
             <strong>{row.biller_name}</strong> <br />
             {["adm", "sadm"].includes(user?.role) && (
               <>
@@ -405,7 +405,7 @@ const BbpxTxn = ({ query }) => {
       {
         name: "Consumer",
         selector: (row) => (
-          <div style={{ textAlign: "left" }}>
+          <div style={{ textAlign: "left", fontSize: "13px" }}>
             Number: {row.consumer_number} <br />
             Mobile: {row.customer_mobile}
           </div>

@@ -47,6 +47,7 @@ import { json2Excel } from "../../utils/exportToExcel";
 import { apiErrorToast } from "../../utils/ToastUtil";
 import FileDownloadIcon from "@mui/icons-material/FileDownload"; // Excel export icon
 import Scheduler from "../common/Scheduler";
+import TransactionDrawer from "../TransactionDrawer";
 
 const PayoutTxn = ({ query }) => {
   const authCtx = useContext(AuthContext);
@@ -289,7 +290,9 @@ const PayoutTxn = ({ query }) => {
       {
         name: "Service",
         selector: (row) => (
-          <div style={{ textAlign: "left", fontWeight: "600" }}>
+          <div
+            style={{ textAlign: "left", fontWeight: "500", fontSize: "13px" }}
+          >
             {row.operator} <br />
             <span
               style={{ fontWeight: "normal", fontSize: "8px", color: "blue" }}
@@ -368,8 +371,8 @@ const PayoutTxn = ({ query }) => {
         selector: (row) => (
           <div style={{ textAlign: "left", fontSize: "12px" }}>
             {row.beneficiary_name?.toUpperCase()} <br />
-            {row.account_number} <br />
-            {row.ifsc_code}
+            {/* {row.account_number} <br />
+            {row.ifsc_code} */}
           </div>
         ),
         wrap: true,
@@ -714,47 +717,17 @@ const PayoutTxn = ({ query }) => {
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
       >
-        <Box
-          sx={{
-            width: 400,
-            display: "flex",
-            flexDirection: "column",
-            height: "100%",
-          }}
-        >
-          {selectedRow && (
-            <TransactionDetailsCard
-              amount={selectedRow.amount}
-              status={selectedRow.status}
-              onClose={() => setDrawerOpen(false)} // ✅ Close drawer
-              companyLogoUrl={biggpayLogo}
-              dateTime={ddmmyyWithTime(selectedRow.created_at)}
-              message={selectedRow.message || "No message"}
-              details={[
-                { label: "Txn ID", value: selectedRow.txn_id },
-                { label: "Client Ref", value: selectedRow.client_ref },
-                { label: "Sender Mobile", value: selectedRow.sender_mobile },
-                {
-                  label: "Beneficiary Name",
-                  value: selectedRow.beneficiary_name,
-                },
-                { label: "Account Number", value: selectedRow.account_number },
-                { label: "IFSC Code", value: selectedRow.ifsc_code },
-                { label: "Bank Name", value: selectedRow.bank_name },
-                { label: "Route", value: selectedRow.route },
-                { label: "Charge", value: selectedRow.charges },
-                { label: "GST", value: selectedRow.gst },
-                { label: "Commission", value: selectedRow.comm },
-                { label: "TDS", value: selectedRow.tds },
-                { label: "purpose", value: selectedRow.purpose },
-              ]}
-              onRaiseIssue={() => {
-                setSelectedTxn(selectedRow.txn_id);
-                setOpenCreate(true);
-              }}
-            />
-          )}
-        </Box>
+        {selectedRow && (
+          <TransactionDrawer
+            row={selectedRow} // pass whole row
+            onRaiseIssue={() => {
+              setSelectedTxn(selectedRow.txn_id);
+              setOpenCreate(true);
+            }}
+            onClose={() => setDrawerOpen(false)}
+            companyLogoUrl={Logo}
+          />
+        )}
       </Drawer>
       <CommonModal
         open={responseModalOpen}
