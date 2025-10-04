@@ -28,7 +28,7 @@ import AuthContext from "../contexts/AuthContext";
 import ApiEndpoints from "../api/ApiEndpoints";
 import { apiCall } from "../api/apiClient";
 import { ReTextField } from "../components/common/ReTextField";
-import backImg from "../assets/Images/LoginNew.svg";
+import backImg from "../assets/Images/Login1.png";
 import VerifyMpinLogin from "../components/UI/VerifyMpinLogin";
 import { getGeoLocation } from "../utils/GeoLocationUtil";
 import { okErrorToast } from "../utils/ToastUtil";
@@ -174,32 +174,33 @@ const Login = () => {
       }}
     >
       {/* Left Side - Background Image */}
-      <Grid
-        item
-        xs={false}
-        md={7}
-        sx={{
-          display: { xs: "none", md: "flex" },
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "#5224a3ff",
-          width: "55%",
-        }}
-      >
-        <Box
-          component="img"
-          src={backImg}
-          alt="Background"
-          sx={{
-            height: "100%",
-            p: 2, // better to use shorthand padding instead of 10
-            objectFit: "contain",
-            boxShadow: "0px 4px 20px rgba(0,0,0,0.5)", // shadow only on image
-            borderRadius: 2, // rounded corners
-            maxWidth: "100%", // ensures image doesn't overflow container
-          }}
-        />
-      </Grid>
+         <Grid
+  item
+  xs={false}
+  md={7}
+  sx={{
+    position: "relative",
+    display: { xs: "none", md: "block" },
+    width: "58%",
+    height: "100vh",
+ 
+    overflow: "hidden",
+  }}
+>
+  <Box
+    component="img"
+    src={backImg}
+    alt="Background"
+    sx={{
+      width: "100%",
+      height: "100%",
+     
+      position: "absolute",
+      top: 0,
+      left: 0,
+    }}
+  />
+</Grid>
 
       {/* Right Side - Login Form */}
       <Grid
@@ -215,7 +216,7 @@ const Login = () => {
 
           height: "100vh",
           boxSizing: "border-box",
-          width: { xs: "100%", md: "45%" },
+          width: { xs: "100%", md: "42%" },
         }}
       >
         <Box sx={{ width: "100%", maxWidth: 500 }}>
@@ -363,7 +364,11 @@ const Login = () => {
                 py: 1.5,
                 borderRadius: 2,
                 fontWeight: 600,
-                background: "linear-gradient(90deg,#5210c1,#5210c1)",
+                background: "linear-gradient(90deg,#731cdd)",
+                "&:hover": {
+  background: "#5210c1",
+}
+
               }}
               disabled={loading}
             >
