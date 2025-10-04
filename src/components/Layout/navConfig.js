@@ -175,8 +175,9 @@ export const navConfig = [
       dd: "/customer/fund-request",
       md: "/md/fund-request",
       api: "/api/fund-request",
+      di:"/di/fund-request",
     },
-    roles: ["adm", "ret", "md", "api", "dd"],
+    roles: ["adm", "ret", "md", "api", "dd","di"],
     permissionKey: "fund_req",
   },
 
