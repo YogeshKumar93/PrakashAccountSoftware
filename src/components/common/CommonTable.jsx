@@ -5,6 +5,7 @@ import React, {
   useRef,
   useMemo,
   memo,
+  useContext,
 } from "react";
 import {
   Box,
@@ -41,6 +42,7 @@ import Loader from "./Loader";
 import { DateRangePicker } from "rsuite";
 import { predefinedRanges, yyyymmdd } from "../../utils/DateUtils";
 import "rsuite/dist/rsuite.min.css";
+import AuthContext from "../../contexts/AuthContext";
 
 // Memoized TablePaginationActions component
 const TablePaginationActions = memo(function TablePaginationActions(props) {
@@ -155,7 +157,8 @@ const CommonTable = ({
   const [totalCount, setTotalCount] = useState(0);
   const [filterModalOpen, setFilterModalOpen] = useState(false);
   const [dateRange, setDateRange] = useState([null, null]);
-
+  const authCtx = useContext(AuthContext);
+  const user = authCtx?.user;
   // Use refs to track values without causing re-renders
   const appliedFiltersRef = useRef({});
   const pageRef = useRef(0);
@@ -182,7 +185,12 @@ const CommonTable = ({
     });
     return values;
   }, [availableFilters]);
-
+  const visibleFilters = useMemo(() => {
+    return availableFilters.filter((filter) => {
+      if (!filter.roles) return true; // filters with no role restriction
+      return filter.roles.includes(user?.role); // only include if allowed
+    });
+  }, [availableFilters, user?.role]);
   // Initialize filter values
   useEffect(() => {
     setFilterValues(initialFilterValues);
@@ -506,7 +514,7 @@ const CommonTable = ({
               </Box>
             </Box>
           ) : (
-          <TextField
+            <TextField
               fullWidth
               size="small"
               label={filter.label}
@@ -579,7 +587,7 @@ const CommonTable = ({
 
   const renderDesktopFilters = useCallback(
     () =>
-      availableFilters.map((filter) => (
+      visibleFilters.map((filter) => (
         <Box key={filter.id} sx={{ minWidth: 120 }}>
           {filter.type === "dropdown" ? (
             <FormControl

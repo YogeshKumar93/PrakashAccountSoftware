@@ -1,5 +1,12 @@
 import { useMemo, useCallback, useContext, useState } from "react";
-import { Box, Tooltip, Typography, Button, Drawer } from "@mui/material";
+import {
+  Box,
+  Tooltip,
+  Typography,
+  Button,
+  Drawer,
+  IconButton,
+} from "@mui/material";
 import CommonTable from "../common/CommonTable";
 import ApiEndpoints from "../../api/ApiEndpoints";
 import AuthContext from "../../contexts/AuthContext";
@@ -11,6 +18,10 @@ import CloseIcon from "@mui/icons-material/Close";
 import companylogo from "../../assets/Images/logo(1).png";
 import TransactionDetailsCard from "../common/TransactionDetailsCard";
 import Scheduler from "../common/Scheduler";
+import { json2Excel } from "../../utils/exportToExcel";
+import { apiErrorToast } from "../../utils/ToastUtil";
+import { apiCall } from "../../api/apiClient";
+import FileDownloadIcon from "@mui/icons-material/FileDownload"; // Excel export icon
 
 const MatmTxn = ({ query }) => {
   const authCtx = useContext(AuthContext);
@@ -36,17 +47,37 @@ const MatmTxn = ({ query }) => {
       },
       // { id: "customer_mobile", label: "Customer Mobile", type: "textfield" },
       { id: "txn_id", label: "Txn ID", type: "textfield" },
-      { id: "route", label: "Route", type: "textfield",roles: ["adm"],},
+      { id: "route", label: "Route", type: "textfield", roles: ["adm"] },
       {
         id: "client_ref",
         label: "Client Ref",
         type: "textfield",
-      roles: ["adm"],
+        roles: ["adm"],
       },
     ],
     []
   );
-    const refreshPlans = () => {
+  const handleExportExcel = async () => {
+    try {
+      // Fetch all users (without pagination/filters) from API
+      const { error, response } = await apiCall(
+        "post",
+        ApiEndpoints.GET_MATM_TXN,
+        { export: 1 }
+      );
+      const usersData = response?.data?.data || [];
+
+      if (usersData.length > 0) {
+        json2Excel("MatmTxns", usersData); // generates and downloads Users.xlsx
+      } else {
+        apiErrorToast("no data found");
+      }
+    } catch (error) {
+      console.error("Excel export failed:", error);
+      alert("Failed to export Excel");
+    }
+  };
+  const refreshPlans = () => {
     if (fetchUsersRef.current) {
       fetchUsersRef.current();
     }
@@ -277,10 +308,10 @@ const MatmTxn = ({ query }) => {
   );
 
   const columnsWithSelection = useMemo(() => {
-       // Only show checkbox if user is NOT adm or sadm
-      if (user?.role === "adm" || user?.role === "sadm") {
-        return columns; // no selection column
-      }
+    // Only show checkbox if user is NOT adm or sadm
+    if (user?.role === "adm" || user?.role === "sadm") {
+      return columns; // no selection column
+    }
     return [
       {
         name: "",
@@ -314,62 +345,66 @@ const MatmTxn = ({ query }) => {
         filters={filters}
         queryParam={queryParam}
         enableActionsHover={true}
-         enableSelection={false}
-          selectedRows={selectedRows}
-          onSelectionChange={setSelectedRows}
-           customHeader={
-            <>
+        enableSelection={false}
+        selectedRows={selectedRows}
+        onSelectionChange={setSelectedRows}
+        customHeader={
+          <>
             <Box
               sx={{
                 display: "flex",
                 alignItems: "center",
                 gap: 1,
                 padding: "8px",
-                 
               }}
             >
               {selectedRows.length > 0 && (
                 <Tooltip title="View Selected Details">
-                 <Button
-                  variant="contained"
-                  size="small"
-                  color="primary"
-                  onClick={() => {
-                    // Save selected rows to sessionStorage
-                    sessionStorage.setItem("txnData", JSON.stringify(selectedRows));
-                
-                    // Open new tab/window
-                    window.open("/print-dmt2", "_blank");
-                  }}
-                >
-                <PrintIcon sx={{ fontSize: 20, color: '#e3e6e9ff', mr:1 }} />
-             MATM
-                </Button>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    color="primary"
+                    onClick={() => {
+                      // Save selected rows to sessionStorage
+                      sessionStorage.setItem(
+                        "txnData",
+                        JSON.stringify(selectedRows)
+                      );
+
+                      // Open new tab/window
+                      window.open("/print-dmt2", "_blank");
+                    }}
+                  >
+                    <PrintIcon
+                      sx={{ fontSize: 20, color: "#e3e6e9ff", mr: 1 }}
+                    />
+                    MATM
+                  </Button>
                 </Tooltip>
               )}
             </Box>
-                <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 1,
-                        padding: "8px",
-                        flexWrap: "wrap",
-                      }}
-                    >
-                      {user?.role === "adm" && (
-                        <IconButton
-                          color="primary"
-                          onClick={handleExportExcel}
-                          title="Export to Excel"
-                        >
-                          <FileDownloadIcon />
-                        </IconButton>
-                      )}
-                      <Scheduler onRefresh={refreshPlans} />
-                    </Box>
-                    </>
-          }
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                padding: "8px",
+                flexWrap: "wrap",
+              }}
+            >
+              {user?.role === "adm" && (
+                <IconButton
+                  color="primary"
+                  onClick={handleExportExcel}
+                  title="Export to Excel"
+                >
+                  <FileDownloadIcon />
+                </IconButton>
+              )}
+              <Scheduler onRefresh={refreshPlans} />
+            </Box>
+          </>
+        }
       />
 
       {/* MATM Details Drawer */}

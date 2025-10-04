@@ -55,7 +55,6 @@ const ProfilePage = () => {
   const [resetMpinModalOpen, setResetMpinModalOpen] = useState(false);
   const [changePasswordModal, setChangePasswordModal] = useState(false);
   const [changeMpinModal, setChangeMpinModal] = useState(false);
-  const [viewInfoModalOpen, setViewInfoModalOpen] = useState(false);
 
   const [newNumberModal, setNewNumberModal] = useState(false);
   const [changeLayout, setChangeLayout] = useState(false);
@@ -63,6 +62,7 @@ const ProfilePage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedUser, setEditedUser] = useState({ ...user });
   const [businessModal, setBusinessModal] = useState(false);
+  const [viewInfoModalOpen, setViewInfoModalOpen] = useState(false);
 
   // Sync editedUser with user context when user changes
   useEffect(() => {
@@ -149,14 +149,6 @@ const ProfilePage = () => {
     },
     {
       id: 5,
-      label: "Business Information",
-      icon: <Dashboard sx={{ fontSize: { xs: 18, sm: 20 } }} />,
-      onClick: handleBusinessInfo,
-      gradient: "#fff",
-      hoverGradient: "linear-gradient(135deg, #c9ffbf, #7bed9f)",
-    },
-    {
-      id: 6,
       label: "View Information",
       icon: <Dashboard sx={{ fontSize: { xs: 18, sm: 20 } }} />,
       onClick: () => setViewInfoModalOpen(true),
@@ -284,7 +276,7 @@ const ProfilePage = () => {
                       },
                       transition: "all 0.2s ease",
                     }}
-                    onClick={handleEditToggle}
+                    // onClick={handleEditToggle}
                   >
                     <Edit sx={{ fontSize: 16, color: "#1E3A8A" }} />
                   </IconButton>
@@ -568,6 +560,7 @@ const ProfilePage = () => {
               </Box>
             </Fade>
           )}
+          {user?.status === 1 && <ProfileTabs />}
         </Paper>
       </Slide>
       {/* Modals */}

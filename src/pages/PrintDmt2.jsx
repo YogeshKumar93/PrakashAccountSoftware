@@ -13,7 +13,7 @@ import biggpayLogo from "../assets/Images/PPALogor.png";
 
 const PrintDmt2 = () => {
   const [receiptType, setReceiptType] = useState("large");
-  const [orientation, setOrientation] = useState("portrait");
+  const [orientation, setOrientation] = useState("large");
   const location = useLocation();
   const authCtx = useContext(AuthContext);
   const user = authCtx.user;
@@ -32,10 +32,10 @@ const PrintDmt2 = () => {
       setData(Array.isArray(txnData) ? txnData : [txnData]);
     }
   }, [location.state]);
-  
- const totalAmountValue = data
-  .filter(txn => txn.status?.toLowerCase() === "success")
-  .reduce((acc, txn) => acc + parseFloat(txn.amount || 0), 0);
+
+  const totalAmountValue = data
+    .filter((txn) => txn.status?.toLowerCase() === "success")
+    .reduce((acc, txn) => acc + parseFloat(txn.amount || 0), 0);
 
   if (!data || data.length === 0) {
     return (
@@ -51,7 +51,6 @@ const PrintDmt2 = () => {
       </Box>
     );
   }
-
 
   // Updated headers: Combine Beneficiary details
   const headers = [
@@ -115,11 +114,11 @@ const PrintDmt2 = () => {
             onChange={(e) => setOrientation(e.target.value)}
             sx={{ ml: 3 }}
           >
-            <FormControlLabel
+            {/* <FormControlLabel
               value="portrait"
               control={<Radio />}
               label="Portrait"
-            />
+            /> */}
           </RadioGroup>
         </Box>
 
@@ -187,7 +186,7 @@ const PrintDmt2 = () => {
                 "&:hover": { borderColor: "#ff9a3c", color: "#ff9a3c" },
               }}
             >
-             DMT Transaction Summary
+              DMT Transaction Summary
             </Button>
           </Box>
 
@@ -341,11 +340,11 @@ const PrintDmt2 = () => {
             </Box>
           )}
 
-           <Box display="flex" justifyContent="flex-end" mt={1} sx={{ pr: 2 }}>
-         <Typography variant="body1" sx={{ fontWeight: 700 }}>
+          <Box display="flex" justifyContent="flex-end" mt={1} sx={{ pr: 2 }}>
+            {/* <Typography variant="body1" sx={{ fontWeight: 700 }}>
            Total Amount: ₹ {totalAmountValue.toFixed(2)}
-         </Typography>
-       </Box>
+         </Typography> */}
+          </Box>
           {/* Print Button */}
           <Box
             display="flex"

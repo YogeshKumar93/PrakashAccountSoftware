@@ -27,16 +27,6 @@ import { Banking } from "../pages/Banking";
 import { Settings } from "../pages/Settings";
 import SuperTransfer from "../pages/SuperTransfer";
 import { Recharge } from "../pages/Recharge";
-import LandingPage from "../components/LandingPages/LandingPage";
-import NavBar from "../components/LandingPages/Navbar";
-import LandingPageIntro from "../components/LandingPages/LandingPageIntro";
-import LandingPageIntro1 from "../components/LandingPages/LandingPageIntro1";
-import LandingPageIntro2 from "../components/LandingPages/LandingPageIntro2";
-import LandingPageIntro3 from "../components/LandingPages/LandingPageIntro3";
-import Footer from "../components/LandingPages/Footer";
-import LandingServices from "../components/LandingPages/LandingServices";
-import LandingAboutUs from "../components/LandingPages/LandingAboutUs";
-import LandingContactUs from "../components/LandingPages/LandingContactUs";
 import Navs from "../pages/Navs";
 
 import Statements from "../pages/Statements";
@@ -87,6 +77,7 @@ import { DiMdLedgers } from "../pages/DIMdLedgers";
 import WebHooks from "../pages/WebHooks";
 import { BbpsOffline } from "../pages/BbpsOffline";
 import PrintAeps from "../pages/PrintAeps";
+import OnBoarding from "../components/OnBoarding";
 import PrintCreditCard from "../pages/PrintCreditCard";
 
 const PrivateRoute = ({ children }) => {
@@ -103,7 +94,7 @@ const PrivateRoute = ({ children }) => {
       return <KycPending />;
     } else if (user.status === 3) {
       // ✅ Some other case → go to profile
-      return <ProfilePage user={user} />;
+      return <OnBoarding user={user} />;
     }
   }
 
@@ -294,7 +285,7 @@ export default function AppRoutes() {
               <Route path="di/wallet-ledger" element={<DiMdLedgers />} />
               <Route path="di/transactions" element={<Transaction />} />
               <Route path="di/fund-request" element={<FundRequest />} />
-               <Route path="di/risk" element={<Risk />} />
+              <Route path="di/risk" element={<Risk />} />
 
               {/* <Route
                 path="di/wallet-transfer"
