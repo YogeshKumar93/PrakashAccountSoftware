@@ -38,7 +38,7 @@ const Dmt = () => {
 
   // Fetch sender details - same as before
   const handleFetchSender = async (number = mobile) => {
-    if (!number ) return;
+    if (!number) return;
 
     setLoading(true);
     const { error, response } = await apiCall("post", ApiEndpoints.DMT1, {
@@ -82,12 +82,17 @@ const Dmt = () => {
     const value = e.target.value.replace(/\D/g, "");
     if (value.length <= 10) {
       setMobile(value);
-      if (value.length === 10) handleFetchSender(value);
-      else {
+
+      if (value.length === 10) {
+        // Only fetch sender when 10 digits
+        handleFetchSender(value);
+      } else {
+        // Clear all state if less than 10 digits
         setSender(null);
         setBeneficiaries([]);
-        setShowRegister(false);
         setSelectedBeneficiary(null);
+        setOpenRegisterModal(false); // <-- important
+        setRefrenceKey("");
       }
     }
   };

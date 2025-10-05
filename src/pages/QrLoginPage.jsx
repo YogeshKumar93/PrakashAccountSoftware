@@ -75,6 +75,44 @@ const QrLoginPage = () => {
       setLoading(false);
     }
   };
+  const handleLoginSuccess = async (authToken) => {
+    authCtx.login(authToken).then(async (userData) => {
+      // Fetch location after login
+      getGeoLocation(
+        (lat, long) => {
+          console.log("✅ Got location:", lat, long);
+          authCtx.setLocation(lat, long); // now it will save properly
+        },
+        (err) => console.error("Location error:", err)
+      );
+
+      // Navigate according to role
+      switch (userData.role) {
+        case "adm":
+        case "sadm":
+          navigate("/admin/dashboard");
+          break;
+        case "asm":
+          navigate("/asm/dashboard");
+          break;
+        case "zsm":
+          navigate("/zsm/dashboard");
+          break;
+        case "di":
+          navigate("/di/dashboard");
+          break;
+        case "ret":
+        case "dd":
+          navigate("/customer/dashboard");
+          break;
+        case "md":
+          navigate("/md/dashboard");
+          break;
+        default:
+          navigate("/other/dashboard");
+      }
+    });
+  };
 
   const checkQrStatus = async (token) => {
     try {
@@ -131,6 +169,7 @@ const QrLoginPage = () => {
 
         setQrExpired(true);
         setLoginError("QR expired, please refresh.");
+        handleLoginSuccess(authToken); // ✅ call the wrapper
       }
     } catch (err) {
       console.error("QR status check error:", err);

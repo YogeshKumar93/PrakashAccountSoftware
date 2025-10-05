@@ -1,13 +1,19 @@
 import React, { useState, useEffect, useContext } from "react";
-import CommonModal from "../components/common/CommonModal";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Button,
+  Box,
+} from "@mui/material";
 import { apiCall } from "../api/apiClient";
 import ApiEndpoints from "../api/ApiEndpoints";
 import { useToast } from "../utils/ToastContext";
 import OtpInput from "./OtpInput";
 import AEPS2FAModal from "../components/AEPS/AEPS2FAModal";
 import AuthContext from "../contexts/AuthContext";
-
-import { Box } from "@mui/material";
 
 const RemitterRegister = ({
   open,
@@ -18,15 +24,12 @@ const RemitterRegister = ({
 }) => {
   const { showToast } = useToast();
   const authCtx = useContext(AuthContext);
-  const user = authCtx?.user;
   const loc = authCtx?.location;
 
-  // Hardcoded fields instead of schema
   const [formData, setFormData] = useState({
     mobile_number: mobile || "",
     aadhaar_number: "",
   });
-
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [otpReferenceKey, setOtpReferenceKey] = useState(null);
@@ -38,10 +41,19 @@ const RemitterRegister = ({
   const [fingerprintData, setFingerprintData] = useState("");
 
   useEffect(() => {
-    if (mobile) setFormData((prev) => ({ ...prev, mobile_number: mobile }));
+    if (mobile) {
+      setFormData((prev) => ({ ...prev, mobile_number: mobile }));
+      // Reset all OTP/AEPS states when mobile changes
+      setOtp("");
+      setOtpReferenceKey(null);
+      setKycReferenceKey(null);
+      setOtpModalOpen(false);
+      setAeps2faOpen(false);
+    }
   }, [mobile]);
 
-  const handleChange = (name, value) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -146,25 +158,6 @@ const RemitterRegister = ({
     }
   };
 
-  // Hardcoded fields for CommonModal
-  const fieldConfig = [
-    {
-      name: "mobile_number",
-      label: "Mobile Number",
-      type: "text",
-      placeholder: "Enter 10-digit mobile number",
-      required: true,
-      disabled: true,
-    },
-    {
-      name: "aadhaar_number",
-      label: "Aadhaar Number",
-      type: "text",
-      placeholder: "Enter 12-digit Aadhaar number",
-      required: true,
-    },
-  ];
-
   return aeps2faOpen ? (
     <AEPS2FAModal
       open={aeps2faOpen}
@@ -180,34 +173,44 @@ const RemitterRegister = ({
     />
   ) : (
     <>
-      <CommonModal
-        open={open}
-        onClose={onClose}
-        title="Register Remitter"
-        iconType="info"
-        size="small"
-        dividers
-        fieldConfig={fieldConfig}
-        formData={formData}
-        handleChange={handleChange}
-        errors={errors}
-        loading={submitting}
-        footerButtons={[
-          {
-            text: "Cancel",
-            variant: "outlined",
-            onClick: onClose,
-            disabled: submitting,
-          },
-          {
-            text: submitting ? "Sending OTP..." : "Send OTP",
-            variant: "contained",
-            color: "primary",
-            onClick: handleRegisterSendOtp,
-            disabled: submitting,
-          },
-        ]}
-      />
+      <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
+        <DialogTitle>Register Remitter</DialogTitle>
+        <DialogContent>
+          <Box display="flex" flexDirection="column" gap={2} mt={1}>
+            <TextField
+              label="Mobile Number"
+              name="mobile_number"
+              value={formData.mobile_number}
+              onChange={handleChange}
+              fullWidth
+              disabled
+            />
+            <TextField
+              label="Aadhaar Number"
+              name="aadhaar_number"
+              value={formData.aadhaar_number}
+              onChange={handleChange}
+              fullWidth
+              error={!!errors.aadhaar_number}
+              helperText={errors.aadhaar_number}
+            />
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onClose} disabled={submitting} variant="outlined">
+            Cancel
+          </Button>
+          <Button
+            onClick={handleRegisterSendOtp}
+            disabled={submitting}
+            variant="contained"
+            color="primary"
+          >
+            {submitting ? "Sending OTP..." : "Send OTP"}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       {otpModalOpen && (
         <OtpInput
           open={otpModalOpen}
