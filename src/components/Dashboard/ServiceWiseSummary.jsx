@@ -475,12 +475,12 @@ const ServiceWiseSummary = () => {
                       gap: 0.5,
                     }}
                   >
-                    {item.percentChange !== 0 &&
+                    {/* {item.percentChange !== 0 &&
                       (item.percentChange > 0 ? (
                         <TrendingUp sx={{ fontSize: 16, color: "#10b981" }} />
                       ) : (
                         <TrendingDown sx={{ fontSize: 16, color: "#ef4444" }} />
-                      ))}
+                      ))} */}
                     <Typography
                       variant="body2"
                       fontWeight="700"

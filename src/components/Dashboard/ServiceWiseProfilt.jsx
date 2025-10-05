@@ -153,7 +153,7 @@ const ServiceWiseProfit = () => {
     >
       <Box
         sx={{
-          p: { xs: 1, sm: 1 },
+          p: 1.9,
           background: "linear-gradient(135deg, #2275B7, #1a67a8)",
           color: "white",
           display: "flex",
@@ -665,7 +665,7 @@ const ServiceWiseProfit = () => {
               )}
 
               {/* Profit Column - Only show for Admin and Retailer */}
-              {(isAdmin || isRet) && (
+              {isRet && (
                 <TableCell
                   align="right"
                   sx={{
@@ -946,7 +946,7 @@ const ServiceWiseProfit = () => {
                     )}
 
                     {/* Profit Column - Only show for Admin and Retailer */}
-                    {(isAdmin || isRet) && (
+                    {isRet && (
                       <TableCell
                         align="right"
                         sx={{
@@ -1184,7 +1184,7 @@ const ServiceWiseProfit = () => {
                   )}
 
                   {/* Profit Column - Only show for Admin and Retailer */}
-                  {(isAdmin || isRet) && (
+                  {isRet && (
                     <TableCell
                       align="right"
                       sx={{
