@@ -439,6 +439,12 @@ const CommonTable = ({
   useEffect(() => {
     if (onFetchRef) onFetchRef(fetchData);
   }, [fetchData, onFetchRef]);
+  useEffect(() => {
+    fetchData();
+  }, [queryParam, fetchData]);
+  // useEffect(() => {
+  //   fetchData();
+  // }, [queryParam]);
 
   const renderFilterInputs = useCallback(
     () =>
@@ -622,7 +628,20 @@ const CommonTable = ({
               InputLabelProps={{
                 shrink: true,
               }}
-              sx={{ minWidth: 140, fontFamily: "DM Sans, sans-serif" }}
+              sx={{
+                minWidth: 140,
+                fontFamily: "DM Sans, sans-serif",
+                "& .MuiInputBase-root": {
+                  height: 32, // reduce overall height
+                },
+                "& input": {
+                  padding: "6px 8px", // tighter padding
+                  fontSize: "0.85rem",
+                },
+                "& .MuiInputLabel-root": {
+                  fontSize: "0.8rem",
+                },
+              }}
             />
           ) : filter.type === "daterange" ? (
             <Box
@@ -644,7 +663,7 @@ const CommonTable = ({
                 {filter.label}
               </Typography>
               <DateRangePicker
-                size="md"
+                size="sm" // ✅ smaller built-in size
                 editable
                 ranges={predefinedRanges}
                 cleanable
@@ -683,12 +702,23 @@ const CommonTable = ({
               value={filterValues[filter.id] || ""}
               onChange={(e) => {
                 let value = e.target.value;
-
                 handleFilterChange(filter.id, value);
               }}
               inputProps={{
                 maxLength: filter.id === "mobile" ? 10 : undefined,
                 inputMode: filter.id === "mobile" ? "numeric" : undefined,
+                style: {
+                  padding: "6px 8px", // ✅ reduces inner padding (default is ~10px 14px)
+                  fontSize: "0.85rem", // optional: smaller text for compact look
+                },
+              }}
+              sx={{
+                "& .MuiInputBase-root": {
+                  height: 32, // ✅ total input height
+                },
+                "& .MuiInputLabel-root": {
+                  fontSize: "0.8rem", // optional: smaller label
+                },
               }}
             />
           )}

@@ -180,7 +180,7 @@ const ApiEndpoints = {
   // DELETE_ACCOUNT_STATEMENT: "accountStatement/deleteAccountStatement",
   GET_ACCOUNT_STATEMENT_SCHEMA: "accountStatement/getAccountStatementSchema",
   DELETE_ACCOUNT_STATEMENT: "account/deleteLastTransaction",
-  CREATE_BANK: "bank/createBank",
+  CREATE_BANK_ADMIN: "bank/createBank",
   UPDATE_BANK: "bank/updateBank",
   DELETE_BANK: "bank/deleteBank",
 
@@ -204,7 +204,8 @@ const ApiEndpoints = {
   UPDATE_COMMISSION_RULE: "commission/updateCommissionRule",
   GET_SENDER: "payout/getSender",
   LEVIN_SENDER: "payout/remitterStatus2",
-  LEVIN_REGISTER: "payout/registerLevin",
+  LEVIN_REGISTER: "payout/registerRemitter",
+  LEVIN_VERIFY: "payout/verifyRemitter",
   REGISTER_SENDER: "payout/registerSender",
   REGISTER_SENDER_SCHEMA: "payout/registerSenderSchema",
   VERIFY_SENDER_SCHEMA: "payout/verifySenderSchema",

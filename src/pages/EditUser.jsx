@@ -136,24 +136,86 @@ const EditUser = ({ open, onClose, user, onFetchRef }) => {
             <CommonLoader />
           </Box>
         )}
-
-        {/* Always keep the form mounted */}
         <Box opacity={loading ? 0.5 : 1}>
-          {fields.map((field) => (
-            <div key={field.name} style={{ marginBottom: "10px" }}>
-              <label>{field.label}</label>
-              <input
-                type={field.type}
-                name={field.name}
-                value={formData[field.name] || ""}
-                onChange={handleChange}
-                style={{ width: "100%", padding: "8px", marginTop: "5px" }}
-              />
-              {errors[field.name] && (
-                <p style={{ color: "red", margin: 0 }}>{errors[field.name]}</p>
-              )}
-            </div>
-          ))}
+          {fields.map((field) => {
+            const value = formData[field.name] || "";
+            const isImage =
+              selectedTab === "kyc" &&
+              typeof value === "string" &&
+              (value.startsWith("http://") ||
+                value.startsWith("https://") ||
+                value.startsWith("data:image"));
+
+            return (
+              <div
+                key={field.name}
+                style={{
+                  marginBottom: "15px",
+                  display: isImage ? "flex" : "block",
+                  alignItems: "center",
+                  gap: "20px",
+                }}
+              >
+                <label style={{ fontWeight: 500, minWidth: "120px" }}>
+                  {field.label}
+                </label>
+
+                {isImage ? (
+                  <>
+                    {/* Image preview */}
+                    <Box>
+                      <img
+                        src={value}
+                        alt={field.label}
+                        style={{
+                          maxWidth: "150px",
+                          maxHeight: "150px",
+                          border: "1px solid #ccc",
+                          borderRadius: "4px",
+                          objectFit: "cover",
+                        }}
+                      />
+                    </Box>
+
+                    {/* Upload new image */}
+                    <Box>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => {
+                          const file = e.target.files[0];
+                          if (file) {
+                            const reader = new FileReader();
+                            reader.onload = () => {
+                              setFormData((prev) => ({
+                                ...prev,
+                                [field.name]: reader.result, // reader.result is "data:image/png;base64,...."
+                              }));
+                            };
+                            reader.readAsDataURL(file); // converts the file to Base64
+                          }
+                        }}
+                      />
+                    </Box>
+                  </>
+                ) : (
+                  <input
+                    type={field.type}
+                    name={field.name}
+                    value={value}
+                    onChange={handleChange}
+                    style={{ width: "100%", padding: "8px", marginTop: "5px" }}
+                  />
+                )}
+
+                {errors[field.name] && (
+                  <p style={{ color: "red", margin: 0 }}>
+                    {errors[field.name]}
+                  </p>
+                )}
+              </div>
+            );
+          })}
         </Box>
       </Box>
     </CommonModal>

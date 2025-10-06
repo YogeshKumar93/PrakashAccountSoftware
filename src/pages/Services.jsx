@@ -8,12 +8,6 @@ import {
   useEffect,
 } from "react";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Paper,
   Box,
   Typography,
@@ -24,29 +18,21 @@ import {
   Button,
   CircularProgress,
   TablePagination,
-  useTheme,
-  alpha,
 } from "@mui/material";
 import {
   Search as SearchIcon,
   Clear as ClearIcon,
   Cached as CachedIcon,
-  Edit as EditIcon,
-  Lock as LockIcon,
-  LockOpen,
 } from "@mui/icons-material";
 import { Edit } from "@mui/icons-material";
 import AuthContext from "../contexts/AuthContext";
-import { dateToTime, ddmmyy } from "../utils/DateUtils";
-import CommonTable from "../components/common/CommonTable";
 import ApiEndpoints from "../api/ApiEndpoints";
 import CreateServiceModal from "../components/CreateServiceModal";
-import EditServiceModal from "../components/EditServiceModaL";
-import ReButton from "../components/common/ReButton";
-import CommonStatus from "../components/common/CommonStatus";
-
 import BlockUnblockService from "./BlockUnblockService";
 import { apiCall } from "../api/apiClient";
+import UpdateServiceModal from "../components/UpdateServiceModal";
+import { Lock, LockOpen } from "@mui/icons-material"; // duplicate
+
 const Services = ({ query }) => {
   const authCtx = useContext(AuthContext);
   const user = authCtx?.user;
@@ -636,7 +622,7 @@ const Services = ({ query }) => {
         onFetchRef={fetchData}
       />
 
-      <EditServiceModal
+      <UpdateServiceModal
         open={openEdit}
         onClose={() => setOpenEdit(false)}
         service={selectedService}

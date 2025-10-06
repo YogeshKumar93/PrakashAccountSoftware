@@ -359,9 +359,9 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
     </Box>
   );
   const walletConfig = [
-    { match: ["di", "md"], wallets: ["Main Wallet", "Commission Wallet"] },
-    { match: ["ret", "dd"], wallets: ["Main Wallet", "Aeps Wallet"] },
-    { match: ["api"], wallets: ["Main Wallet"] },
+    { match: ["di", "md"], wallets: ["w1", "w3"] },
+    { match: ["ret", "dd"], wallets: ["w1", "w2"] },
+    { match: ["api"], wallets: ["w1"] },
     { match: ["lein"], wallets: ["lien"] },
   ];
 
@@ -371,6 +371,13 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
     );
     return found?.wallets || [];
   };
+  const walletLabelMap = {
+    w1: "Main Balance",
+    w2: "AEPS Balance",
+    w3: "Comm Balance",
+    lien: "Lien",
+  };
+
   return (
     <Box
       sx={{ display: "flex", backgroundColor: "#f5f5f5" }}
@@ -401,6 +408,19 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
         className="header"
       >
         <Toolbar sx={{ minHeight: "64px !important" }}>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={handleDrawerToggle}
+            sx={{
+              mr: 2,
+              display: { xs: "flex", sm: "flex", md: "none" }, // only show on xs/sm
+              color: "#6c4bc7",
+            }}
+          >
+            <MenuIcon />
+          </IconButton>
           <Typography
             variant="h5"
             noWrap
@@ -413,10 +433,11 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
             {getWallets(user?.role).map((wallet) => (
               <WalletCard
                 key={wallet}
-                label={wallet.toUpperCase()}
+                label={walletLabelMap[wallet] || wallet.toUpperCase()}
                 amount={`₹${((user?.[wallet] || 0) / 100).toFixed(2)}`}
               />
             ))}
+
             {user?.lien > 0 &&
               ["md", "di", "ret", "dd"].includes(user?.role) && (
                 <WalletCard

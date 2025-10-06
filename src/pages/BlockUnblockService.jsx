@@ -115,7 +115,7 @@ const BlockUnblockService = ({
             border: "2px solid #1976d2",
           }}
         />
-        <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+        {/* <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
           <Button
             variant="contained"
             size="small"
@@ -131,7 +131,7 @@ const BlockUnblockService = ({
             onClose={() => setResetMpinModalOpen(false)}
             username={username}
           />
-        )}
+        )} */}
 
         {err && (
           <Typography variant="body2" color="error" mt={2}>

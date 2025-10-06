@@ -514,7 +514,7 @@ const Users = ({ query }) => {
                 onClick={() => setCreateAdmUser(true)}
               />
             )}
-            <input
+            {/* <input
               type="text"
               placeholder="Search..."
               value={searchTerm}
@@ -526,7 +526,7 @@ const Users = ({ query }) => {
                 fontSize: "14px",
                 flex: 1,
               }}
-            />
+            /> */}
           </Box>
         }
       />
