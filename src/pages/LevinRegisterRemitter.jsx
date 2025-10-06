@@ -63,14 +63,15 @@ const LevinRegisterRemitter = ({ open, onClose, mobile, onRegistered }) => {
       );
 
       if (response) {
-        const otp_ref = response?.response?.data?.otp_ref;
+        const state = response?.data?.state; // Get the state from the response
         const sender_id = response?.response?.data?.sender?.id;
 
         showToast(response?.response?.data?.message, "success");
 
+        // Pass the state and sender_id to the parent component
         onRegistered?.({
           number: formData.number,
-          otp_ref,
+          state, // Add the state to the onRegistered payload
           sender_id,
         });
 

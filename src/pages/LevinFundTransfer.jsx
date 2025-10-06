@@ -17,6 +17,9 @@ import BeneficiaryDetails from "./BeneficiaryDetails";
 import CommonLoader from "../components/common/CommonLoader";
 import { useToast } from "../utils/ToastContext";
 import LevinRegisterRemitter from "./LevinRegisterRemitter";
+import LevinVerifySender from "./LevinVerifySender";
+import LevinBeneficiaryList from "./LevinBeneficiaryList";
+import LevinBeneficiaryDetails from "./LevinBeneficiaryDetails";
 
 const LevinFundTransfer = () => {
   const theme = useTheme();
@@ -102,9 +105,13 @@ const LevinFundTransfer = () => {
     }
   };
 
-  const handleSenderRegistered = ({ mobile_number, otp_ref, sender_id }) => {
-    setOtpData({ mobile_number, otp_ref, sender_id });
-    setOpenVerifyModal(true);
+  const handleSenderRegistered = ({ number, state, sender_id }) => {
+    setOtpData({
+      mobile_number: number,
+      state, // Add the state to otpData
+      sender_id,
+    });
+    setOpenVerifyModal(true); // Open the verify modal
   };
 
   return (
@@ -140,7 +147,7 @@ const LevinFundTransfer = () => {
           <SenderDetails sender={sender} />
 
           {selectedBeneficiary && (
-            <BeneficiaryDetails
+            <LevinBeneficiaryDetails
               beneficiary={selectedBeneficiary}
               senderMobile={mobile}
               sender={sender}
@@ -150,7 +157,7 @@ const LevinFundTransfer = () => {
 
         {/* Beneficiary List */}
         <Box width="100%">
-          <BeneficiaryList
+          <LevinBeneficiaryList
             sender={sender}
             onSuccess={() => handleFetchSender()}
             onSelect={(b) => setSelectedBeneficiary(b)}
@@ -170,7 +177,7 @@ const LevinFundTransfer = () => {
 
       {/* Verify Modal */}
       {openVerifyModal && otpData && (
-        <VerifySenderModal
+        <LevinVerifySender
           open={openVerifyModal}
           onClose={() => setOpenVerifyModal(false)}
           mobile={otpData.mobile_number}

@@ -7,14 +7,8 @@ import { PATTERNS, isValid } from "../../utils/validators";
 import { useToast } from "../../utils/ToastContext";
 
 const CreateBankModal = ({ open, onClose, onFetchRef }) => {
-  const {
-    schema,
-    formData,
-    handleChange,
-    errors,
-    setErrors,
-    loading,
-  } = useSchemaForm(ApiEndpoints.GET_BANK_SCHEMA, open);
+  const { schema, formData, handleChange, errors, setErrors, loading } =
+    useSchemaForm(ApiEndpoints.GET_BANK_SCHEMA, open);
 
   const [submitting, setSubmitting] = useState(false);
   const { showToast } = useToast();
@@ -61,7 +55,7 @@ const CreateBankModal = ({ open, onClose, onFetchRef }) => {
     try {
       const { error, response } = await apiCall(
         "POST",
-        ApiEndpoints.CREATE_BANK,
+        ApiEndpoints.CREATE_BANK_ADMIN,
         formData
       );
 
@@ -86,37 +80,36 @@ const CreateBankModal = ({ open, onClose, onFetchRef }) => {
     ["bank_name", "ifsc", "acc_number", "balance"].includes(field.name)
   );
 
- return (
-  <CommonModal
-    open={open}
-    onClose={onClose}
-    title="Create New Bank"
-    iconType="info"
-    size="small"
-    dividers
+  return (
+    <CommonModal
+      open={open}
+      onClose={onClose}
+      title="Create New Bank"
+      iconType="info"
+      size="small"
+      dividers
       fieldConfig={visibleFields}
-    formData={formData}
-    handleChange={handleChange}
-    errors={errors}
+      formData={formData}
+      handleChange={handleChange}
+      errors={errors}
       loading={loading}
-    footerButtons={[
-      {
-        text: "Cancel",
-        variant: "outlined",
-        onClick: onClose,
-        disabled: submitting,
-      },
-      {
-        text: submitting ? "Saving..." : "Save",
-        variant: "contained",
-        color: "primary",
-        onClick: handleSubmit,
-        disabled: submitting || loading || !schema.length, // disable until schema ready
-      },
-    ]}
-  />
-);
-
+      footerButtons={[
+        {
+          text: "Cancel",
+          variant: "outlined",
+          onClick: onClose,
+          disabled: submitting,
+        },
+        {
+          text: submitting ? "Saving..." : "Save",
+          variant: "contained",
+          color: "primary",
+          onClick: handleSubmit,
+          disabled: submitting || loading || !schema.length, // disable until schema ready
+        },
+      ]}
+    />
+  );
 };
 
 export default CreateBankModal;
