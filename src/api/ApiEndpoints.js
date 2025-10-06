@@ -206,6 +206,7 @@ const ApiEndpoints = {
   LEVIN_SENDER: "payout/remitterStatus2",
   LEVIN_REGISTER: "payout/registerRemitter",
   LEVIN_VERIFY: "payout/verifyRemitter",
+  LEVIN_TXN: "payments/v2/payOut2",
   REGISTER_SENDER: "payout/registerSender",
   REGISTER_SENDER_SCHEMA: "payout/registerSenderSchema",
   VERIFY_SENDER_SCHEMA: "payout/verifySenderSchema",

@@ -89,7 +89,7 @@ const LevinBeneficiaryDetails = ({
         ifsc_code: beneficiary.ifsc_code,
         bank_name: beneficiary.bank_name,
         mobile_number: sender.mobile_number,
-        operator: 11,
+        operator: 81,
         latitude: location?.lat || "",
         longitude: location?.long || "",
         amount,
@@ -102,7 +102,7 @@ const LevinBeneficiaryDetails = ({
 
       const { error, response } = await apiCall(
         "post",
-        ApiEndpoints.PAYOUT,
+        ApiEndpoints.LEVIN_TXN,
         payload
       );
       if (response) {

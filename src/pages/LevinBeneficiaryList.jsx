@@ -55,6 +55,7 @@ import {
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import BeneficiaryDetails from "./BeneficiaryDetails";
 import { useToast } from "../utils/ToastContext";
+import LevinBeneficiaryDetails from "./LevinBeneficiaryDetails";
 
 const LevinBeneficiaryList = ({ sender, onSuccess, onSelect }) => {
   const theme = useTheme();
@@ -467,7 +468,7 @@ const LevinBeneficiaryList = ({ sender, onSuccess, onSelect }) => {
         />
       )}
       {openPayModal && (
-        <BeneficiaryDetails
+        <LevinBeneficiaryDetails
           open={openPayModal}
           onClose={() => setOpenPayModal(false)}
           beneficiary={selectedBeneficiary}
