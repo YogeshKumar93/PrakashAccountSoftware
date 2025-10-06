@@ -61,6 +61,7 @@ import EmailIcon from "@mui/icons-material/Email";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import WalletCard from "../WalletCard";
 import { buildNavForRole } from "./navConfig";
+import AdminLayoutWrapper from "../../pages/AdminLayoutWrapper";
 
 // ✅ Default male avatar image (replace with your own asset if available)
 
@@ -705,8 +706,12 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
         </Drawer>
       </Box>
 
+
+ <AdminLayoutWrapper desktopOpen={true}>
+        <Outlet />
+      </AdminLayoutWrapper>
       {/* Main Content */}
-      <MainContent
+      {/* <MainContent
         sx={{
           width: {
             xs: "100%",
@@ -772,7 +777,7 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
             </a>
           </Typography>
         </Box>
-      </MainContent>
+      </MainContent> */}
     </Box>
   );
 };
