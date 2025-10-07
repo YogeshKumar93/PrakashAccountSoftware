@@ -199,10 +199,12 @@ const LevinFundTransfer = () => {
       {/* Register Modal */}
       {openRegisterModal && (
         <LevinRegisterRemitter
+          sender={sender}
           open={openRegisterModal}
           onClose={() => setOpenRegisterModal(false)}
           mobile={mobile}
           onRegistered={handleSenderRegistered}
+          onSuccess={handleFetchSender}
         />
       )}
 
