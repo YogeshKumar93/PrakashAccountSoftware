@@ -231,15 +231,17 @@ const CommissionRule = ({ query }) => {
                     <Edit fontSize="small" />
                   </IconButton>
                 </Tooltip>
-                <Tooltip title="Delete">
-                  <IconButton
-                    color="error"
-                    size="small"
-                    // onClick={() => handleDeleteClick(row)}
-                  >
-                    <DeleteIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
+                {user?.role === "sadm" && (
+                  <Tooltip title="Delete">
+                    <IconButton
+                      color="error"
+                      size="small"
+                      // onClick={() => handleDeleteClick(row)}
+                    >
+                      <DeleteIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                )}
               </Box>
               {/* ) : (
                 <Typography
