@@ -175,9 +175,9 @@ export const navConfig = [
       dd: "/customer/fund-request",
       md: "/md/fund-request",
       api: "/api/fund-request",
-      di:"/di/fund-request",
+      di: "/di/fund-request",
     },
-    roles: ["adm", "ret", "md", "api", "dd","di"],
+    roles: ["adm", "ret", "md", "api", "dd", "di"],
     permissionKey: "fund_req",
   },
 
@@ -277,7 +277,7 @@ export const navConfig = [
       dd: "/customer/risk",
       di: "/di/risk",
     },
-    roles: ["adm", "ret", "di", "dd"],
+    roles: ["adm", "di"],
   },
 
   // Login History
