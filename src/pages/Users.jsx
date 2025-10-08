@@ -34,6 +34,7 @@ import { Assignment, CurrencyRupee } from "@mui/icons-material";
 import { AssignPlans } from "./AssignPlans";
 import AdminCreateUser from "./AdminCreateUser";
 import AddLein from "./AddLein";
+import debounce from "lodash.debounce";
 
 const roleLabels = {
   ret: "Retailer",
@@ -46,6 +47,9 @@ const roleLabels = {
   dd: "Direct Dealer",
   md: "Master Distributor",
 };
+
+
+
 
 const Users = ({ query }) => {
   const authCtx = useContext(AuthContext);
@@ -66,6 +70,9 @@ const Users = ({ query }) => {
   const [openLeinModal, setOpenLeinModal] = useState(false);
   const [openWalletTranser, setOpenWalletTranser] = useState(false);
   const [openAssignPlans, setOpenAssignPlans] = useState(false);
+  const [userSearch, setUserSearch] = useState("");
+  const [userOptions, setUserOptions] = useState([]);
+  
 
   const handleOpenAssignPlans = (user) => {
     setSelectedUser(user);
@@ -141,6 +148,34 @@ const Users = ({ query }) => {
     setSelectedUser(null);
     setOpenViewDocuments(false);
   };
+
+
+    useEffect(() => {
+    // if (!userSearch) return; // no API call if empty
+
+    const fetchUsersById = async (searchTerm) => {
+      try {
+        const { error, response } = await apiCall("post", ApiEndpoints.GET_USER_DEBOUNCE, {
+          user: searchTerm, // API expects partial search
+        });
+        if (!error && response?.data) {
+          setUserOptions(
+            response.data.map((u) => ({
+              label: u.establishment,
+              value: u.id,
+            }))
+          );
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    const debouncedFetch = debounce(fetchUsersById, 500); // 500ms delay
+    debouncedFetch(userSearch);
+
+    return () => debouncedFetch.cancel(); // cleanup
+  }, [userSearch]);
 
   // Fetch user map
   useEffect(() => {
@@ -284,7 +319,15 @@ const Users = ({ query }) => {
         type: "textfield",
         textType: "number",
       },
-      { id: "id", label: "User Id", type: "textfield" },
+ {
+        id: "user",
+        label: "User",
+        type: "dropdown",
+        options: userOptions,
+        onSearch: (val) => setUserSearch(val),
+        getOptionLabel: (option) => option.label,
+        valueKey: "value",
+      },
       {
         id: "parent_id",
         label: "Parent Id",
@@ -305,7 +348,7 @@ const Users = ({ query }) => {
         options: roleOptions,
       },
     ];
-  }, [user?.role]);
+  }, [user?.role,userOptions]);
 
   const columns = useMemo(() => {
     const baseColumns = [

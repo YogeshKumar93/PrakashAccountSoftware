@@ -127,6 +127,8 @@ const ApiEndpoints = {
 
   LOGIN_HISTORY: "userDevice/getUserDevice",
   GET_WEBHOOKS: "webhook/getWebhook",
+GET_USER_DEBOUNCE:"user/getUserDebounce",
+
 
   // ****************************** NEW API'S ABOVE ******************************
   GET_TXN_SUMMARY: "dashboard/getRetTxnSummary",
