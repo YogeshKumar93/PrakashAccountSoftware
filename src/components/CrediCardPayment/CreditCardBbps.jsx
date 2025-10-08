@@ -89,14 +89,14 @@ const CreditCardBbps = ({ category, onBack }) => {
       <Box display="flex" alignItems="center" gap={2} mb={2}>
         <IconButton onClick={onBack}>{/* <ArrowBackIcon /> */}</IconButton>
 
-        <Typography
+        {/* <Typography
           variant="h5"
           fontWeight="bold"
           noWrap
           sx={{ flexShrink: 0 }}
         >
           {category?.category_name || "Credit Card Billers"}
-        </Typography>
+        </Typography> */}
 
         <TextField
           placeholder="Search billers..."
@@ -150,8 +150,8 @@ const CreditCardBbps = ({ category, onBack }) => {
                   sx={{
                     borderRadius: is_layout === 2 ? 2 : 3,
                     boxShadow: 3,
-                    width: is_layout === 2 ? 180 : 305,
-                    height: is_layout === 2 ? 110 : 160,
+                    width: is_layout === 2 ? 210 : 305,
+                    height: is_layout === 2 ? 120 : 160,
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "center",
@@ -209,20 +209,21 @@ const CreditCardBbps = ({ category, onBack }) => {
                     >
                       {biller.billerStatus}
                     </Typography> */}
+                    <Tooltip title={biller.billerName} arrow>
+                      <Typography
+                        fontWeight="600"
+                        sx={{
+                          width: is_layout === 2 ? 180 : 285, // slightly smaller than Card width
+                          textOverflow: "ellipsis",
+                          overflow: "hidden",
 
-                    <Typography
-                      fontWeight="600"
-                      sx={{
-                        width: is_layout === 2 ? 160 : 285, // slightly smaller than Card width
-                        textOverflow: "ellipsis",
-                        overflow: "hidden",
-
-                        whiteSpace: "nowrap",
-                        textAlign: "center",
-                      }}
-                    >
-                      {biller.billerName}
-                    </Typography>
+                          whiteSpace: "nowrap",
+                          textAlign: "center",
+                        }}
+                      >
+                        {biller.billerName}
+                      </Typography>
+                    </Tooltip>
                   </CardContent>
                 </Card>
               </Grid>
