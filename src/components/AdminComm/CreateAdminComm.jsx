@@ -17,7 +17,7 @@ const CreateAdminComm = ({ open, handleClose, handleSave, onFetchRef }) => {
     "service_name",
     "rule_type",
     "value_type",
-
+  "route",
     "a_comm",
 
     "min_amount",

@@ -32,6 +32,7 @@ const EditAdminCommission = ({
   const requiredFields = [
     "service_name",
     "rule_type",
+    "route",
     "value_type",
     "a_comm",
     "min_amount",
@@ -52,6 +53,7 @@ const EditAdminCommission = ({
         id: commissionRule?.id || "",
         service_name: commissionRule?.service_name || "",
         rule_type: commissionRule?.rule_type || "",
+          route: commissionRule?.route || "",
         value_type: commissionRule?.value_type || "",
         a_comm: commissionRule?.a_comm || "",
         min_amount: commissionRule?.min_amount || "",
