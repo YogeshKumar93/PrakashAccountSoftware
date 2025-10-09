@@ -128,6 +128,7 @@ const ApiEndpoints = {
 
   LOGIN_HISTORY: "userDevice/getUserDevice",
   GET_WEBHOOKS: "webhook/getWebhook",
+  GET_USER_DEBOUNCE: "user/getUserDebounce",
 
   // ****************************** NEW API'S ABOVE ******************************
   GET_TXN_SUMMARY: "dashboard/getRetTxnSummary",
@@ -285,6 +286,7 @@ const ApiEndpoints = {
   WALLET_GET_RECEIVER: "wallet/getReceiver",
   WALLET_GET_W2W_TRANSACTION: "wallet/getW2WTransaction",
   WALLET_CREATE: "wallet/createW2W",
+  WALLET2WALLET_DEBIT: "wallet/createDebit",
   WALLET2_WALLET1: "/wallet/createW2W1",
   WALLET3_WALLET1: "/wallet/createW3W1",
   CREATE_ORDER_CMS_NEW: "cms/createOrderCms",

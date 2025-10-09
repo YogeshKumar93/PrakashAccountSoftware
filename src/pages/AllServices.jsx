@@ -263,8 +263,8 @@ export default function AllServices() {
   const [currentView, setCurrentView] = useState("");
 
   const hasPermission = (permissionKey) => {
-    if (!user) return false;
-    return user[permissionKey] !== 1; // Show menu if permission is NOT 1
+    if (!user || !user.permissions) return false;
+    return user.permissions[permissionKey] === 1; // Show menu only if permission is 1
   };
 
   const hasNonZeroPermission = (permissionKey) => {
@@ -279,20 +279,20 @@ export default function AllServices() {
     //   icon: mt,
     //   component: Dmt,
     // },
-    hasPermission("monettransfer") && {
-      key: "monettransfer",
+    {
+      key: "money",
       label: "Money Transfer",
       icon: sendmoney,
       subMenu: [
-        {
+        hasPermission("dmt1") && {
           key: "dmt1",
-          label: " Airtel Dmt",
+          label: "Airtel Dmt",
           icon: AIR1,
           component: Dmt,
           type: "mobile",
           title: "Dmt1",
         },
-        {
+        hasPermission("dmt2") && {
           key: "dmt2",
           label: "Fino Dmt",
           icon: FINO,
@@ -300,28 +300,30 @@ export default function AllServices() {
           type: "mobile",
           title: "Dmt2",
         },
-      ],
+      ].filter(Boolean),
     },
-    hasNonZeroPermission("dmt4") && {
+    {
       key: "ppiWallet",
       label: "Fund Transfer",
       icon: vapy_1,
       subMenu: [
-        {
+        // Fund Transfer1 → requires vendor permission
+        hasPermission("vendor") && {
           key: "walletSuper",
           label: "Fund Transfer1",
           icon: AccountBalanceWalletIcon,
           component: SuperTransfer,
           type: "super",
         },
-        {
+        // Fund Transfer2 → requires levin permission
+        hasPermission("levin") && {
           key: "fundtransfer2",
           label: "Fund Transfer2",
           icon: AccountBalanceWalletIcon,
           component: LevinFundTransfer,
           type: "super",
         },
-      ],
+      ].filter(Boolean), // remove null items
     },
     hasPermission("upi") && {
       key: "qrUpi",
@@ -337,19 +339,19 @@ export default function AllServices() {
         },
       ],
     },
-    hasPermission("aeps") && {
+    {
       key: "aeps",
       label: "AEPS",
       icon: thumbPrint,
       // component: Aeps,
       subMenu: [
-        {
+        hasPermission("aeps1") && {
           key: "aeps1",
           label: "Aeps 1",
           icon: AccountBalanceWalletIcon,
           component: AepsLayout2,
         },
-        {
+        hasPermission("aeps2") && {
           key: "aeps2",
           label: "Aeps 2",
           icon: AccountBalanceWalletIcon,
@@ -357,7 +359,7 @@ export default function AllServices() {
         },
       ],
     },
-    hasPermission("billpay") && {
+    hasPermission("bbps_offline") && {
       key: "billPayments",
       label: "BBPS(OFFLINE)",
       icon: BBPS,
@@ -441,7 +443,7 @@ export default function AllServices() {
       component: Bbps,
     },
 
-    hasPermission("mt") && {
+    hasPermission("recharge") && {
       key: "recharge",
       label: "Recharge",
       icon: mobileRechargeNew,
@@ -454,14 +456,14 @@ export default function AllServices() {
           type: "mobile",
           title: "Prepaid",
         },
-        {
-          key: "postpaid",
-          label: "Postpaid",
-          icon: postpaid_1,
-          component: Prepaid,
-          type: "mobile",
-          title: "Postpaid",
-        },
+        // {
+        //   key: "postpaid",
+        //   label: "Postpaid",
+        //   icon: postpaid_1,
+        //   component: Prepaid,
+        //   type: "mobile",
+        //   title: "Postpaid",
+        // },
         {
           key: "dth",
           label: "DTH",
@@ -471,7 +473,7 @@ export default function AllServices() {
         },
       ],
     },
-    {
+    hasPermission("credit_card") && {
       key: "credit",
       label: "Credit Card Bill",
       icon: credit_card1,
@@ -520,7 +522,7 @@ export default function AllServices() {
         },
       ],
     },
-    {
+    hasPermission("travel") && {
       key: "travel",
       label: "Travel",
       icon: plane_1,
@@ -546,21 +548,21 @@ export default function AllServices() {
         },
       ],
     },
-    {
+    hasPermission("w_txn") && {
       key: "w2w",
       label: "W 2 W",
       icon: wallet1,
       subMenu: [
         {
           key: "w1w1",
-          label: "W1 TO W1",
+          label: "Wallet to Wallet",
           icon: wallet1,
           type: "dth",
           component: Wallet2WalletTransfer,
         },
         {
           key: "w2w1",
-          label: "W2 TO W1",
+          label: "Aeps Wallet to Main Wallet",
           icon: wallet1,
           component: Wallet2Wallet1,
         },

@@ -16,6 +16,7 @@ const CreateCommissionRule = ({ open, handleClose, handleSave, onFetchRef }) => 
   const requiredFields = [
     "plan_id",
     "service_name",
+   
     "rule_type",
     "value_type",
     "comm_dd",

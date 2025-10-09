@@ -34,6 +34,7 @@ import { Assignment, CurrencyRupee } from "@mui/icons-material";
 import { AssignPlans } from "./AssignPlans";
 import AdminCreateUser from "./AdminCreateUser";
 import AddLein from "./AddLein";
+import debounce from "lodash.debounce";
 
 const roleLabels = {
   ret: "Retailer",
@@ -66,6 +67,8 @@ const Users = ({ query }) => {
   const [openLeinModal, setOpenLeinModal] = useState(false);
   const [openWalletTranser, setOpenWalletTranser] = useState(false);
   const [openAssignPlans, setOpenAssignPlans] = useState(false);
+  const [userSearch, setUserSearch] = useState("");
+  const [userOptions, setUserOptions] = useState([]);
 
   const handleOpenAssignPlans = (user) => {
     setSelectedUser(user);
@@ -142,6 +145,37 @@ const Users = ({ query }) => {
     setOpenViewDocuments(false);
   };
 
+  useEffect(() => {
+    // if (!userSearch) return; // no API call if empty
+
+    const fetchUsersById = async (searchTerm) => {
+      try {
+        const { error, response } = await apiCall(
+          "post",
+          ApiEndpoints.GET_USER_DEBOUNCE,
+          {
+            user: searchTerm, // API expects partial search
+          }
+        );
+        if (!error && response?.data) {
+          setUserOptions(
+            response.data.map((u) => ({
+              label: u.establishment,
+              value: u.id,
+            }))
+          );
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    const debouncedFetch = debounce(fetchUsersById, 500); // 500ms delay
+    debouncedFetch(userSearch);
+
+    return () => debouncedFetch.cancel(); // cleanup
+  }, [userSearch]);
+
   // Fetch user map
   useEffect(() => {
     const fetchUserMap = async () => {
@@ -180,57 +214,47 @@ const Users = ({ query }) => {
           anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
           transformOrigin={{ vertical: "top", horizontal: "left" }}
         >
-          {userRole.role === "adm" ||
-            (userRole.role === "sadm" && [
-              <MenuItem
-                key="edit"
-                onClick={() => {
-                  handleOpenEditUser(row);
-                  handleMenuClose();
-                }}
-              >
-                {/* <ListItemIcon>
-                <EditIcon fontSize="small" />
-              </ListItemIcon> */}
-                <ListItemText>Edit User</ListItemText>
-              </MenuItem>,
+          {["adm", "sadm"].includes(userRole.role) && [
+            <MenuItem
+              key="edit"
+              onClick={() => {
+                handleOpenEditUser(row);
+                handleMenuClose();
+              }}
+            >
+              <ListItemText>Edit User</ListItemText>
+            </MenuItem>,
 
-              <MenuItem
-                key="permissions"
-                onClick={() => {
-                  handleOpenPermissions(row);
-                  handleMenuClose();
-                }}
-              >
-                {/* <ListItemIcon>
-                <SettingsIcon fontSize="small" />
-              </ListItemIcon> */}
-                <ListItemText>Edit Permissions</ListItemText>
-              </MenuItem>,
+            <MenuItem
+              key="permissions"
+              onClick={() => {
+                handleOpenPermissions(row);
+                handleMenuClose();
+              }}
+            >
+              <ListItemText>Edit Permissions</ListItemText>
+            </MenuItem>,
 
-              <MenuItem
-                key="documents"
-                onClick={() => {
-                  handleOpenViewDocuments(row);
-                  handleMenuClose();
-                }}
-              >
-                {/* <ListItemIcon>
-                <VisibilityIcon fontSize="small" />
-              </ListItemIcon> */}
-                <ListItemText>View Documents</ListItemText>
-              </MenuItem>,
+            <MenuItem
+              key="documents"
+              onClick={() => {
+                handleOpenViewDocuments(row);
+                handleMenuClose();
+              }}
+            >
+              <ListItemText>View Documents</ListItemText>
+            </MenuItem>,
 
-              <MenuItem
-                key="assign_plan"
-                onClick={() => {
-                  handleOpenAssignPlans(row);
-                  handleMenuClose();
-                }}
-              >
-                <ListItemText>Assign Plan</ListItemText>
-              </MenuItem>,
-            ])}
+            <MenuItem
+              key="assign_plan"
+              onClick={() => {
+                handleOpenAssignPlans(row);
+                handleMenuClose();
+              }}
+            >
+              <ListItemText>Assign Plan</ListItemText>
+            </MenuItem>,
+          ]}
 
           <MenuItem
             key="lein"
@@ -285,7 +309,15 @@ const Users = ({ query }) => {
         type: "textfield",
         textType: "number",
       },
-      { id: "id", label: "User Id", type: "textfield" },
+      {
+        id: "user",
+        label: "User",
+        type: "dropdown",
+        options: userOptions,
+        onSearch: (val) => setUserSearch(val),
+        getOptionLabel: (option) => option.label,
+        valueKey: "value",
+      },
       {
         id: "parent_id",
         label: "Parent Id",
@@ -306,7 +338,7 @@ const Users = ({ query }) => {
         options: roleOptions,
       },
     ];
-  }, [user?.role]);
+  }, [user?.role, userOptions]);
 
   const columns = useMemo(() => {
     const baseColumns = [
@@ -501,20 +533,19 @@ const Users = ({ query }) => {
         enableActionsHover={true}
         customHeader={
           <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-            {userRole.role !== "asm" &&
-              userRole.role !== "zsm" &&
-              userRole.role !== "adm" && (
-                <ReButton
-                  label="Add User"
-                  onClick={() => setOpenCreateUser(true)}
-                />
-              )}
-            {userRole.role === "adm" && (
+            {userRole.role === "di" && (
+              <ReButton
+                label="Add User"
+                onClick={() => setOpenCreateUser(true)}
+              />
+            )}
+            {["adm", "sadm"].includes(userRole.role) && (
               <ReButton
                 label="Create User"
                 onClick={() => setCreateAdmUser(true)}
               />
             )}
+
             {/* <input
               type="text"
               placeholder="Search..."

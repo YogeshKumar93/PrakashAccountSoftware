@@ -62,6 +62,7 @@ const Login = () => {
   const navigate = useNavigate();
   const authCtx = useContext(AuthContext);
   const user = authCtx?.user;
+  const [location, setLocation] = useState({ lat: null, long: null });
 
   const {
     register,
@@ -72,15 +73,33 @@ const Login = () => {
   });
 
   useEffect(() => {
-    getGeoLocation(
-      (lat, long) => authCtx.setLocation(lat, long),
-      (err) => okErrorToast("Location", err)
+    const fetchLocation = getGeoLocation(
+      (lat, long) => {
+        console.log("✅ User Location fetched:", { lat, long });
+        setLocation({ lat, long });
+        localStorage.setItem("location", JSON.stringify({ lat, long }));
+        // authCtx.setLocation(lat, long);
+      },
+      (err) => {
+        console.error("❌ Location Error:", err);
+        okErrorToast("Location access denied or unavailable");
+      }
     );
+
+    // ✅ Call the returned function
+    fetchLocation();
   }, []);
 
   const onSubmit = async (data) => {
     if (!agreedToTerms) {
       setLoginError("You must agree to the Terms and Conditions");
+      return;
+    }
+    if (!location.lat || !location.long) {
+      setLoginError(
+        "Unable to detect location. Please enable GPS and try again."
+      );
+      console.error("Login blocked: Missing location data", location);
       return;
     }
     // else if (!captchaChecked) {
@@ -96,6 +115,8 @@ const Login = () => {
       const { error, response } = await apiCall("POST", ApiEndpoints.SIGN_IN, {
         username: data.mobile,
         password: data.password,
+        latitude: location.lat,
+        longitude: location.long,
       });
 
       if (error) {
@@ -221,11 +242,12 @@ const Login = () => {
         }}
       >
         <Box sx={{ width: "100%", maxWidth: 500 }}>
-          {/* <a href="https://app.p2pae.com"> */}
+          {/* <a href="https://p2pae.com"> */}
           <Box
             component="img"
             src={biggpayLogo}
             alt="Logo"
+          
             sx={{
               width: "100%",
               maxWidth: 330,
@@ -235,6 +257,7 @@ const Login = () => {
               display: "block",
               mx: "auto",
             }}
+               onClick={() => window.open("https://p2pae.com", )}  
           />
           {/* </a> */}
 
