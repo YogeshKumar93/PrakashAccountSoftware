@@ -47,14 +47,18 @@ const SenderRegisterModal = ({ open, onClose, mobile, onRegistered }) => {
     setSubmitting(true);
     setErrors({});
     try {
-      const res = await apiCall("post", ApiEndpoints.REGISTER_SENDER, formData);
+      const { error, response } = await apiCall(
+        "post",
+        ApiEndpoints.REGISTER_SENDER,
+        formData
+      );
 
-      if (res) {
-        const otp_ref = res?.response?.data?.otp_ref;
-        const sender_id = res?.response?.data?.sender?.id;
+      if (response) {
+        const otp_ref = response?.response?.data?.otp_ref;
+        const sender_id = response?.response?.data?.sender?.id;
 
         showToast(
-          res?.response?.data?.message || "Sender registered",
+          response?.response?.data?.message || "Sender registered",
           "success"
         );
 
@@ -66,7 +70,7 @@ const SenderRegisterModal = ({ open, onClose, mobile, onRegistered }) => {
 
         onClose();
       } else {
-        apiErrorToast(res?.message || "Failed to register sender");
+        showToast(error?.message || "Failed to register sender", "error");
       }
     } catch (err) {
       apiErrorToast(err);
@@ -183,7 +187,7 @@ const SenderRegisterModal = ({ open, onClose, mobile, onRegistered }) => {
           />
 
           {/* Email */}
-          <TextField
+          {/* <TextField
             name="email"
             label="Email"
             placeholder="Enter email address"
@@ -193,7 +197,7 @@ const SenderRegisterModal = ({ open, onClose, mobile, onRegistered }) => {
             required
             error={!!errors.email}
             helperText={errors.email}
-          />
+          /> */}
         </Box>
       </DialogContent>
 
