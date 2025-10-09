@@ -229,7 +229,7 @@ const BeneficiaryDetails = ({
       />
       {amount && (
         <Typography variant="body2" sx={{ mt: 1, color: "#555" }}>
-          {amountInWords.charAt(0).toUpperCase() + amountInWords.slice(1) }
+          {amountInWords.charAt(0).toUpperCase() + amountInWords.slice(1) } Only
         </Typography>
       )}
   

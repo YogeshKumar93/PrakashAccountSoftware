@@ -17,6 +17,7 @@ import OTPInput from "react-otp-input";
 import { useToast } from "../utils/ToastContext";
 import CommonModal from "../components/common/CommonModal";
 import ResetMpin from "../components/common/ResetMpin";
+import { toWords } from "number-to-words";
 
 const LevinBeneficiaryDetails = ({
   open,
@@ -133,6 +134,19 @@ const LevinBeneficiaryDetails = ({
     }
   };
 
+    const handleChange = (e) => {
+    const value = e.target.value;
+    if (/^\d*$/.test(value)) {
+      if (parseFloat(value) > parseFloat(sender?.rem_limit || 0)) {
+        apiErrorToast("Exceeds Rem Limit");
+        return;
+      }
+      setAmount(value);
+    }
+  };
+
+  const amountInWords = amount ? `${toWords(parseInt(amount))} Rupees` : "";
+
   useEffect(() => {
     const fetchPurposes = async () => {
       setLoadingPurposes(true);
@@ -223,36 +237,18 @@ const LevinBeneficiaryDetails = ({
       {/* Amount with OTP button */}
       <TextField
         label="Amount"
-        type="number"
+        type="text"
+        variant="outlined"
         size="small"
         fullWidth
         value={amount}
-        onChange={(e) => {
-          const value = e.target.value;
-          if (parseFloat(value) > parseFloat(sender?.rem_limit || 0)) {
-            apiErrorToast("Exceeds Rem Limit");
-            return;
-          }
-          setAmount(value);
-        }}
-        InputProps={
-          {
-            // endAdornment: (
-            //   <InputAdornment position="end">
-            //     <Button
-            //       variant="contained"
-            //       size="small"
-            //       onClick={handleGetOtp}
-            //       disabled={loading}
-            //       sx={{ backgroundColor: "#5c3ac8" }}
-            //     >
-            //       {loading ? "Sending..." : "Get OTP"}
-            //     </Button>
-            //   </InputAdornment>
-            // ),
-          }
-        }
+        onChange={handleChange}
       />
+      {amount && (
+        <Typography variant="body2" sx={{ mt: 1, color: "#555" }}>
+          {amountInWords.charAt(0).toUpperCase() + amountInWords.slice(1) } Only
+        </Typography>
+      )}
 
       <Box>
         <Typography variant="body2" mb={0.5}>
