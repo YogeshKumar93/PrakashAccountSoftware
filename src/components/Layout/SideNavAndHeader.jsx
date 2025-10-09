@@ -294,10 +294,10 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
             component="img"
             src={logo}
             alt="App Logo"
-            onClick={handleLogoClick} // ✅ correct camelCase
+            onClick={handleLogoClick} 
             sx={{
               height: 35,
-              width: 120, // ✅ numeric value
+              width: 120, // 
               cursor: "pointer",
               display: "block",
             }}
