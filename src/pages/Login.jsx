@@ -241,11 +241,12 @@ const Login = () => {
         }}
       >
         <Box sx={{ width: "100%", maxWidth: 500 }}>
-          {/* <a href="https://app.p2pae.com"> */}
+          {/* <a href="https://p2pae.com"> */}
           <Box
             component="img"
             src={biggpayLogo}
             alt="Logo"
+          
             sx={{
               width: "100%",
               maxWidth: 330,
@@ -255,6 +256,7 @@ const Login = () => {
               display: "block",
               mx: "auto",
             }}
+               onClick={() => window.open("https://p2pae.com", )}  
           />
           {/* </a> */}
 
