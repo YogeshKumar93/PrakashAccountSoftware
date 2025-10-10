@@ -24,59 +24,7 @@ import CreditCardTxn from "../components/Transactions/CreditCardTxn";
 
 export const Transaction = () => {
   const tabItems = [
-    {
-      label: (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "12px",
-            minWidth: "80px",
-            justifyContent: "flex-start",
-          }}
-        >
-          <CurrencyRupeeIcon fontSize="small" />
-          <span>DMT</span>
-        </div>
-      ),
-      component: <DmtTxn />,
-    },
-    {
-      label: (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "12px",
-            minWidth: "80px",
-            justifyContent: "flex-start",
-          }}
-        >
-          <ReceiptIcon fontSize="small" />
-          <span>BBPS</span>
-        </div>
-      ),
-      component: <BbpxTxn />,
-    },
-    {
-      label: (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "12px",
-            minWidth: "80px",
-            justifyContent: "flex-start",
-          }}
-        >
-          <FingerprintIcon fontSize="small" />
-          <span>Aeps</span>
-        </div>
-      ),
-      component: <AepsTxn />,
-    },
-
-    {
+     {
       label: (
         <div
           style={{
@@ -104,11 +52,74 @@ export const Transaction = () => {
             justifyContent: "flex-start",
           }}
         >
+          <CurrencyRupeeIcon fontSize="small" />
+          <span>DMT</span>
+        </div>
+      ),
+      component: <DmtTxn />,
+    },
+        {
+      label: (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            minWidth: "80px",
+            justifyContent: "flex-start",
+          }}
+        >
+          <FingerprintIcon fontSize="small" />
+          <span>Aeps</span>
+        </div>
+      ),
+      component: <AepsTxn />,
+    },
+    {
+      label: (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            minWidth: "80px",
+            justifyContent: "flex-start",
+          }}
+        >
+          <ReceiptIcon fontSize="small" />
+          <span>BBPS</span>
+        </div>
+      ),
+      component: <BbpxTxn />,
+    },
+
+
+   
+    {
+      label: (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            minWidth: "80px",
+            justifyContent: "flex-start",
+          }}
+        >
           <PhoneIphoneIcon fontSize="small" />
           <span>Recharge</span>
         </div>
       ),
       component: <RechargeTxn />,
+    },
+     {
+      label: (
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <Wallet fontSize="small" />
+          Credit Card
+        </div>
+      ),
+      component: <CreditCardTxn />,
     },
 
     {
@@ -128,15 +139,7 @@ export const Transaction = () => {
       ),
       component: <Wallet2WalletTransfer />,
     },
-    {
-      label: (
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <Wallet fontSize="small" />
-          Credit Card
-        </div>
-      ),
-      component: <CreditCardTxn />,
-    },
+   
   ];
 
   return <CommonTabs tabs={tabItems} defaultTab={0} />;
