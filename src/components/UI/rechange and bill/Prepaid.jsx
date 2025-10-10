@@ -34,6 +34,8 @@ import CommonLoader from "../../common/CommonLoader";
 import { useToast } from "../../../utils/ToastContext";
 import ResetMpin from "../../common/ResetMpin";
 import { Logo } from "../../../iconsImports";
+import { convertNumberToWordsIndian } from "../../../utils/NumberUtil";
+
 // import { useToast } from "../utils/ToastContext";
 
 const Prepaid = () => {
@@ -54,6 +56,12 @@ const Prepaid = () => {
   const username = `TRANS${authCtx?.user?.id}`;
   const loadUserProfile = authCtx.loadUserProfile;
   const [rechargeResponse, setRechargeResponse] = useState(null);
+
+
+  const amountInWords = manualAmount
+    ? `${convertNumberToWordsIndian(manualAmount)
+        .replace(/\b\w/g, (char) => char.toUpperCase())} Only`
+    : "";
 
   // Fetch services and auto-select first operator
   useEffect(() => {
@@ -238,51 +246,62 @@ const Prepaid = () => {
                     <Typography variant="h6" gutterBottom>
                       Enter Custom Amount
                     </Typography>
-                    <Box
-                      sx={{ display: "flex", justifyContent: "center", gap: 2 }}
-                    >
-                      <TextField
-                        label="Amount"
-                        type="text"
-                        value={manualAmount}
-                        onChange={(e) => {
-                          const val = e.target.value;
-                          if (/^\d*$/.test(val)) {
-                            // allow only numbers
-                            setManualAmount(val);
-                          }
-                        }}
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start">₹</InputAdornment>
-                          ),
-                        }}
-                        sx={{ width: 160 }}
-                      />
-                      <Button
-                        variant="contained"
-                        sx={{
-                          borderRadius: 2,
-                          fontWeight: "bold",
-                          fontSize: { xs: "0.9rem", sm: "1rem" },
-                          background: "#fff",
-                          color: "#6C4BC7",
-                        }}
-                        onClick={() => {
-                          if (!manualAmount)
-                            return apiErrorToast("Please enter amount");
-                          setSelectedPlan({
-                            id: "custom",
-                            name: "Custom Amount",
-                            price: manualAmount,
-                          });
-                          setStep(3);
-                        }}
-                        disabled={!manualAmount}
-                      >
-                        Continue
-                      </Button>
-                    </Box>
+                   <Box sx={{ display: "flex", justifyContent: "center", gap: 2, alignItems: "flex-start" }}>
+  {/* Amount input + words */}
+  <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
+    <TextField
+      label="Amount"
+      type="text"
+      value={manualAmount}
+      onChange={(e) => {
+        const val = e.target.value;
+        if (/^\d*$/.test(val)) {
+          setManualAmount(val);
+        }
+      }}
+      InputProps={{
+        startAdornment: <InputAdornment position="start">₹</InputAdornment>,
+      }}
+      sx={{ width: 160 }}
+    />
+    {manualAmount && (
+      <Typography
+        variant="body2"
+        sx={{
+          color: "#555",
+          fontWeight: 500,
+        }}
+      >
+        {amountInWords}
+      </Typography>
+    )}
+  </Box>
+
+  {/* Continue button */}
+  <Button
+    variant="contained"
+    sx={{
+      borderRadius: 2,
+      fontWeight: "bold",
+      fontSize: { xs: "0.9rem", sm: "1rem" },
+      background: "#fff",
+      color: "#6C4BC7",
+    }}
+    onClick={() => {
+      if (!manualAmount) return apiErrorToast("Please enter amount");
+      setSelectedPlan({
+        id: "custom",
+        name: "Custom Amount",
+        price: manualAmount,
+      });
+      setStep(3);
+    }}
+    disabled={!manualAmount}
+  >
+    Continue
+  </Button>
+</Box>
+
                   </Paper>
 
                   {/* Plans grid */}

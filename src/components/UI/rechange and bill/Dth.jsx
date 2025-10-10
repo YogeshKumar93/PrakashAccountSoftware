@@ -21,6 +21,7 @@ import operatorImages from "../../../assets/operators";
 import ResetMpin from "../../common/ResetMpin";
 import { useToast } from "../../../utils/ToastContext";
 import CommonLoader from "../../common/CommonLoader";
+import { convertNumberToWordsIndian } from "../../../utils/NumberUtil";
 
 const Dth = () => {
   const [services, setServices] = useState([]);
@@ -58,6 +59,11 @@ const Dth = () => {
       setSelectedService(fetchedServices[0]);
     }
   };
+
+   const amountInWords = manualAmount
+      ? `${convertNumberToWordsIndian(manualAmount)
+          .replace(/\b\w/g, (char) => char.toUpperCase())} Only`
+      : "";
 
   useEffect(() => {
     fetchServices();
@@ -263,9 +269,20 @@ const Dth = () => {
                     ),
                     inputProps: { min: 1 },
                   }}
-                  sx={{ mb: 3 }}
+                  sx={{ mb: 0.8}}
                 />
-                <Box sx={{ textAlign: "center", mb: 2 }}>
+                  {manualAmount && (
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: "#555",
+                          fontWeight: 500,
+                        }}
+                      >
+                        {amountInWords}
+                      </Typography>
+                    )}
+                <Box sx={{ textAlign: "center", mt: 2 }}>
                   {/* Instruction text */}
                   <Typography
                     variant="body2"
