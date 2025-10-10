@@ -17,7 +17,7 @@ import OTPInput from "react-otp-input";
 import { useToast } from "../utils/ToastContext";
 import CommonModal from "../components/common/CommonModal";
 import ResetMpin from "../components/common/ResetMpin";
-import { toWords } from "number-to-words";
+import { convertNumberToWordsIndian } from "../utils/NumberUtil";
 
 const LevinBeneficiaryDetails = ({
   open,
@@ -74,6 +74,11 @@ const LevinBeneficiaryDetails = ({
   //     setLoading(false);
   //   }
   // };
+
+  const amountInWords = amount
+  ? `${convertNumberToWordsIndian(amount)
+      .replace(/\b\w/g, (char) => char.toUpperCase())} Only`
+  : "";
 
   const handleProceed = async () => {
     // if (!otp || otp.length !== 6)
@@ -145,7 +150,7 @@ const LevinBeneficiaryDetails = ({
     }
   };
 
-  const amountInWords = amount ? `${toWords(parseInt(amount))} Rupees` : "";
+ 
 
   useEffect(() => {
     const fetchPurposes = async () => {
@@ -244,11 +249,19 @@ const LevinBeneficiaryDetails = ({
         value={amount}
         onChange={handleChange}
       />
-      {amount && (
-        <Typography variant="body2" sx={{ mt: 1, color: "#555" }}>
-          {amountInWords.charAt(0).toUpperCase() + amountInWords.slice(1) } Only
-        </Typography>
-      )}
+        {amount && (
+  <Typography
+    variant="body2"
+    sx={{
+    
+      color: "#555",
+      fontWeight: 500,
+      
+    }}
+  >
+    {amountInWords}
+  </Typography>
+)}
 
       <Box>
         <Typography variant="body2" mb={0.5}>
