@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect ,useContext } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -17,6 +17,9 @@ import InfoIcon from "@mui/icons-material/Info";
 import { apiCall } from "../api/apiClient";
 import ApiEndpoints from "../api/ApiEndpoints";
 import { useToast } from "../utils/ToastContext";
+import AuthContext from "../contexts/AuthContext";
+
+ 
 
 const LevinRegisterRemitter = ({ open, onClose, mobile, onRegistered }) => {
   const theme = useTheme();
@@ -27,15 +30,15 @@ const LevinRegisterRemitter = ({ open, onClose, mobile, onRegistered }) => {
     first_name: "",
     last_name: "",
     number: mobile || "",
-    address1: "",
-    address2: "",
-    city: "",
-    state: "",
-    pin: "",
+   
   });
 
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
+
+
+  
+
 
   // keep mobile in sync
   useEffect(() => {
@@ -200,61 +203,10 @@ const LevinRegisterRemitter = ({ open, onClose, mobile, onRegistered }) => {
             error={!!errors.number}
             helperText={errors.number}
           />
-          <TextField
-            name="address1"
-            label="Address Line 1"
-            placeholder="Enter Address Line 1"
-            value={formData.address1}
-            onChange={handleChange}
-            fullWidth
-            required
-            error={!!errors.address1}
-            helperText={errors.address1}
-          />
-          <TextField
-            name="address2"
-            label="Address Line 2"
-            placeholder="Enter Address Line 2"
-            value={formData.address2}
-            onChange={handleChange}
-            fullWidth
-            required
-            error={!!errors.address2}
-            helperText={errors.address2}
-          />
-          <TextField
-            name="city"
-            label="City"
-            placeholder="Enter City"
-            value={formData.city}
-            onChange={handleChange}
-            fullWidth
-            required
-            error={!!errors.city}
-            helperText={errors.city}
-          />
-          <TextField
-            name="state"
-            label="State"
-            placeholder="Enter State"
-            value={formData.state}
-            onChange={handleChange}
-            fullWidth
-            required
-            error={!!errors.state}
-            helperText={errors.state}
-          />
-          <TextField
-            name="pin"
-            label="PIN Code"
-            placeholder="Enter PIN Code"
-            value={formData.pin}
-            onChange={handleChange}
-            fullWidth
-            required
-            error={!!errors.pin}
-            helperText={errors.pin}
-          />
+         
+        
+        
+        
         </Box>
       </DialogContent>
 
