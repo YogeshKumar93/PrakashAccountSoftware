@@ -58,6 +58,7 @@ import DeleteBeneficiaryModal from "./DeleteBeneficiaryModal";
 import AuthContext from "../contexts/AuthContext";
 import SelectedBeneficiary from "./SelectedBeneficiary";
 import { useToast } from "../utils/ToastContext";
+import { convertNumberToWordsIndian } from "../utils/NumberUtil";
 
 const Beneficiaries = ({ beneficiaries, onSelect, sender, onSuccess }) => {
   const theme = useTheme();
@@ -74,20 +75,38 @@ const Beneficiaries = ({ beneficiaries, onSelect, sender, onSuccess }) => {
   const { showToast } = useToast();
   const [amountInputs, setAmountInputs] = useState({});
   const { location } = useContext(AuthContext);
+  const [amountInWords, setAmountInWords] = useState({});
+
   const { schema, formData, handleChange, errors, setErrors, loading } =
     useSchemaForm(ApiEndpoints.ADD_DMT1_SCHEMA, openModal, {
       sender_id: sender?.id,
     });
 
-  const handleAmountChange = (beneficiaryId, value) => {
-    // Allow only numbers and decimal
-    const numericValue = value.replace(/[^\d.]/g, "");
+const handleAmountChange = (beneficiaryId, value) => {
+  // Allow only numbers and decimal
+  const numericValue = value.replace(/[^\d.]/g, "");
 
-    setAmountInputs((prev) => ({
+  setAmountInputs((prev) => ({
+    ...prev,
+    [beneficiaryId]: numericValue,
+  }));
+
+  // ✅ Convert to words
+  if (numericValue && !isNaN(numericValue)) {
+    const words = convertNumberToWordsIndian(numericValue);
+    setAmountInWords((prev) => ({
       ...prev,
-      [beneficiaryId]: numericValue,
+      [beneficiaryId]:
+        words.charAt(0).toUpperCase() + words.slice(1) + " Only",
     }));
-  };
+  } else {
+    setAmountInWords((prev) => ({
+      ...prev,
+      [beneficiaryId]: "",
+    }));
+  }
+};
+
 
   // ✅ Handle Send Money with amount
   const handleSendMoney = (beneficiary) => {
@@ -431,6 +450,7 @@ const Beneficiaries = ({ beneficiaries, onSelect, sender, onSuccess }) => {
                           Verify
                         </Button>
                       )}
+                   <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
 
                       <TextField
                         size="small"
@@ -441,7 +461,7 @@ const Beneficiaries = ({ beneficiaries, onSelect, sender, onSuccess }) => {
                         }
                         inputProps={{
                           style: {
-                            width: "80px",
+                            width: "130px",
                             textAlign: "center",
                             fontSize: "0.75rem",
                           },
@@ -452,6 +472,22 @@ const Beneficiaries = ({ beneficiaries, onSelect, sender, onSuccess }) => {
                           },
                         }}
                       />
+                      {amountInputs[b.id] && amountInWords[b.id] && (
+   <Typography
+      variant="caption"
+      sx={{
+        color: "#555",
+     fontSize: "0.60rem",
+        textAlign: "left",
+        maxWidth: "170px",
+        
+      }}
+    >
+      {amountInWords[b.id].charAt(0).toUpperCase() +
+        amountInWords[b.id].slice(1)}
+    </Typography>
+)}
+</Box>
 
                       {/* ✅ Send Money Button */}
                       <Button
