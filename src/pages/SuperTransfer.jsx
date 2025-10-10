@@ -8,17 +8,18 @@ import {
   Typography,
   useMediaQuery,
   useTheme,
+  Paper,
+  Grid,
 } from "@mui/material";
 import { apiCall } from "../api/apiClient";
 import ApiEndpoints from "../api/ApiEndpoints";
-import { okSuccessToast, apiErrorToast } from "../utils/ToastUtil";
-import BeneficiaryList from "./BeneficiaryList";
+import { useToast } from "../utils/ToastContext";
+import CommonLoader from "../components/common/CommonLoader";
 import SenderDetails from "./SenderDetails";
+import BeneficiaryList from "./BeneficiaryList";
 import SenderRegisterModal from "./SenderRegisterModal";
 import VerifySenderModal from "./VerifySenderModal";
-import BeneficiaryDetails from "./BeneficiaryDetails";
-import CommonLoader from "../components/common/CommonLoader";
-import { useToast } from "../utils/ToastContext";
+import SuperTransferReceipt from "./SuperTransferReceipt";
 
 const SuperTransfer = () => {
   const theme = useTheme();
@@ -32,9 +33,8 @@ const SuperTransfer = () => {
   const [otpData, setOtpData] = useState(null);
   const [selectedBeneficiary, setSelectedBeneficiary] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState(""); // ✅ New state
+  const [payoutResponse, setPayoutResponse] = useState(null);
   const { showToast } = useToast();
-  const [payoutResponse, setPayoutResponse] = useState(null); // store API response
 
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("mobileNumbers") || "[]");
@@ -51,8 +51,8 @@ const SuperTransfer = () => {
 
   const handleFetchSender = async (number = mobile) => {
     if (!number || number.length !== 10) return;
-
     setLoading(true);
+
     const { error, response } = await apiCall("post", ApiEndpoints.GET_SENDER, {
       mobile_number: number,
     });
@@ -60,8 +60,7 @@ const SuperTransfer = () => {
 
     if (response) {
       const data = response?.data || response?.response?.data;
-
-      if (data && data?.is_active === 1) {
+      if (data?.is_active === 1) {
         setSender(data);
         setOpenRegisterModal(false);
       } else {
@@ -72,7 +71,6 @@ const SuperTransfer = () => {
       if (error?.message === "The number is inactive") {
         setSender(null);
         setOpenRegisterModal(false);
-
         setOtpData({
           mobile_number: error?.errors?.mobile_number || number,
           otp_ref: error?.errors?.otp_ref,
@@ -88,7 +86,6 @@ const SuperTransfer = () => {
     const value = (newValue || "").replace(/\D/g, "");
     if (value.length <= 10) {
       setMobile(value);
-
       if (value.length === 10) {
         saveMobileToHistory(value);
         handleFetchSender(value);
@@ -105,20 +102,14 @@ const SuperTransfer = () => {
   };
 
   const handlePayoutSuccess = (data) => {
-    console.log("Received in parent:", data);
     setPayoutResponse(data);
   };
-  useEffect(() => {
-    if (payoutResponse) {
-      console.log("Updated payoutResponse:", payoutResponse);
-    }
-  }, [payoutResponse]);
 
   return (
     <Box>
       {!payoutResponse ? (
         <>
-          {/* Mobile Input + Account Number */}
+          {/* Mobile and Account Inputs */}
           <Box
             display="flex"
             flexDirection={{ xs: "column", sm: "row" }}
@@ -142,22 +133,6 @@ const SuperTransfer = () => {
                 />
               )}
             />
-
-            <Box
-              sx={{
-                display: { xs: "flex", sm: "none" },
-                justifyContent: "center",
-                width: "100%",
-                my: 0.5,
-              }}
-            >
-              <Divider sx={{ width: "30%", textAlign: "center" }}>
-                <Typography variant="body2" color="text.secondary">
-                  OR
-                </Typography>
-              </Divider>
-            </Box>
-
             <TextField
               label="Account Number"
               variant="outlined"
@@ -179,135 +154,215 @@ const SuperTransfer = () => {
             )}
           </Box>
 
-          <Box display="flex" flexDirection="column" gap={1}>
-            <SenderDetails sender={sender} />
-            {/* {selectedBeneficiary && (
-              <BeneficiaryDetails
-                open={!!selectedBeneficiary}
-                beneficiary={selectedBeneficiary}
-                senderMobile={mobile}
-                sender={sender}
-                senderId={sender?.id}
-                onPayoutSuccess={handlePayoutSuccess} // pass callback
-              />
-            )} */}
-            <BeneficiaryList
-              sender={sender}
-              onSuccess={() => handleFetchSender()}
-              onSelect={(b) => setSelectedBeneficiary(b)}
-              onPayoutSuccess={handlePayoutSuccess} // ✅ callback passed
-            />
-          </Box>
+          <SenderDetails sender={sender} />
+          <BeneficiaryList
+            sender={sender}
+            onSuccess={() => handleFetchSender()}
+            onSelect={(b) => setSelectedBeneficiary(b)}
+            onPayoutSuccess={handlePayoutSuccess}
+          />
         </>
       ) : (
-        <Box p={3} bgcolor="#e0ffe0" borderRadius={2} maxWidth={500} mx="auto">
-          <Typography
-            variant="h5"
-            color="success.main"
-            mb={2}
-            textAlign="center"
-            fontWeight="bold"
-          >
-            Payment Receipt
-          </Typography>
+        // <Box
+        //   p={3}
+        //   bgcolor="#f9faff"
+        //   borderRadius={3}
+        //   boxShadow={3}
+        //   maxWidth={900}
+        //   mx="auto"
+        //   mt={3}
+        //   id="receiptContent"
+        // >
+        //   {/* Header Section */}
+        //   <Box textAlign="center" mb={3}>
+        //     <Typography variant="h5" fontWeight="bold" color="primary.main">
+        //       Payment Receipt
+        //     </Typography>
+        //     <Typography variant="body2" color="text.secondary">
+        //       Date: {new Date().toLocaleDateString()} &nbsp;
+        //       {/* | &nbsp; Time:{" "} */}
+        //       {/* {new Date().toLocaleTimeString()} */}
+        //     </Typography>
 
-          {/* Date */}
-          <Typography variant="body2" mb={1}>
-            <strong>Date:</strong> {new Date().toLocaleDateString()}
-          </Typography>
+        //     <Typography
+        //       variant="subtitle1"
+        //       sx={{
+        //         mt: 1,
+        //         color:
+        //           payoutResponse?.response?.status === "FAILED"
+        //             ? "red"
+        //             : "green",
+        //         fontWeight: "bold",
+        //       }}
+        //     >
+        //       {payoutResponse?.response?.message || "Transaction Successful"}
+        //     </Typography>
+        //   </Box>
 
-          {/* Message */}
-          <Typography variant="body2" color="success.main" mb={2}>
-            {payoutResponse?.response?.message || "Transaction Successful"}
-          </Typography>
+        //   {/* Tabular Section */}
+        //   <Paper
+        //     variant="outlined"
+        //     sx={{
+        //       borderRadius: 2,
+        //       overflowX: "auto",
+        //       background: "#fff",
+        //     }}
+        //   >
+        //     <table
+        //       style={{
+        //         width: "100%",
+        //         borderCollapse: "collapse",
+        //         textAlign: "left",
+        //         fontFamily: "Arial, sans-serif",
+        //       }}
+        //     >
+        //       <thead
+        //         style={{
+        //           background: "#f0f4ff",
+        //           borderBottom: "2px solid #ccc",
+        //         }}
+        //       >
+        //         <tr>
+        //           <th style={{ padding: "12px 16px", width: "30%" }}>Field</th>
+        //           <th style={{ padding: "12px 16px", width: "70%" }}>Value</th>
+        //         </tr>
+        //       </thead>
+        //       <tbody>
+        //         {[
+        //           [
+        //             "Sender Mobile",
+        //             payoutResponse?.response?.data?.mobileNumber,
+        //           ],
+        //           ["Sender Name", payoutResponse?.sender_name],
+        //           [
+        //             "Beneficiary Name",
+        //             payoutResponse?.response?.data?.beneficiaryName,
+        //           ],
+        //           [
+        //             "Account Number",
+        //             payoutResponse?.response?.data?.beneficiaryAccount,
+        //           ],
+        //           [
+        //             "Amount",
+        //             `₹${payoutResponse?.response?.data?.transferAmount}`,
+        //           ],
+        //           [
+        //             "Transfer Mode",
+        //             payoutResponse?.response?.data?.transferMode,
+        //           ],
+        //           ["Purpose", payoutResponse?.purpose || "N/A"],
+        //           ["UTR", payoutResponse?.operator_id],
+        //         ].map(([label, value], index) => (
+        //           <tr
+        //             key={index}
+        //             style={{
+        //               backgroundColor: index % 2 === 0 ? "#fafafa" : "#fff",
+        //               borderBottom: "1px solid #e0e0e0",
+        //             }}
+        //           >
+        //             <td
+        //               style={{
+        //                 padding: "12px 16px",
+        //                 fontWeight: "bold",
+        //                 color: "#555",
+        //                 borderRight: "1px solid #ddd",
+        //               }}
+        //             >
+        //               {label}
+        //             </td>
+        //             <td
+        //               style={{
+        //                 padding: "12px 16px",
+        //                 color: "#222",
+        //                 wordBreak: "break-word",
+        //               }}
+        //             >
+        //               {value || "---"}
+        //             </td>
+        //           </tr>
+        //         ))}
+        //       </tbody>
+        //     </table>
+        //   </Paper>
 
-          {/* Details */}
-          <Box
-            sx={{ bgcolor: "#f7fff7", p: 2, borderRadius: 2 }}
-            id="receiptContent"
-          >
-            <Typography variant="body2" mb={0.5}>
-              <strong>Sender Mobile:</strong>{" "}
-              {payoutResponse?.response?.data?.mobileNumber || "---"}
-            </Typography>
-            <Typography variant="body2" mb={0.5}>
-              <strong>Beneficiary Name:</strong>{" "}
-              {payoutResponse?.response?.data?.beneficiaryName || "---"}
-            </Typography>
-            <Typography variant="body2" mb={0.5}>
-              <strong>Account Number:</strong>{" "}
-              {payoutResponse?.response?.data?.beneficiaryAccount || "---"}
-            </Typography>
+        //   {/* Buttons */}
+        //   <Box mt={3} display="flex" justifyContent="center" gap={2}>
+        //     <Button
+        //       variant="contained"
+        //       color="primary"
+        //       onClick={() => setPayoutResponse(null)}
+        //     >
+        //       Repeat Txn
+        //     </Button>
 
-            <Typography variant="body2" mb={0.5}>
-              <strong>Amount:</strong>{" "}
-              {payoutResponse?.response?.data?.transferAmount || "---"}
-            </Typography>
-            <Typography variant="body2" mb={0.5}>
-              <strong>Transfer Mode:</strong>{" "}
-              {payoutResponse?.response?.data?.transferMode || "---"}
-            </Typography>
-            <Typography variant="body2" mb={0.5}>
-              <strong>Purpose:</strong>
-              {payoutResponse?.purpose || "N/A"}{" "}
-            </Typography>
-            <Typography variant="body2" mb={0.5}>
-              <strong>UTR:</strong> {payoutResponse?.operator_id || "---"}
-            </Typography>
-          </Box>
-
-          {/* Buttons */}
-          <Box mt={3} display="flex" justifyContent="center" gap={2}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => setPayoutResponse(null)}
-            >
-              Repeat Txn
-            </Button>
-
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={() => {
-                const printContent = document.getElementById("receiptContent");
-                if (!printContent) return;
-
-                const newWin = window.open("", "_blank");
-                const styles = Array.from(
-                  document.querySelectorAll("style, link[rel='stylesheet']")
-                )
-                  .map((node) => node.outerHTML)
-                  .join("\n");
-
-                newWin.document.write(`
-      <html>
-        <head>
-          <title>Receipt</title>
-          ${styles} 
-          <style>
-            body { font-family: Roboto, sans-serif; padding: 20px; background-color: #fff; }
-            #receiptContent { background-color: #f7fff7; padding: 16px; border-radius: 8px; }
-            h5 { color: #388e3c; text-align: center; }
-            p, strong { font-size: 14px; margin: 4px 0; }
-          </style>
-        </head>
-        <body>
-          <h5>Payment Receipt</h5>
-          ${printContent.innerHTML}
-        </body>
-      </html>
-    `);
-                newWin.document.close();
-                newWin.focus();
-                newWin.print();
-                newWin.close();
-              }}
-            >
-              Print Receipt
-            </Button>
-          </Box>
-        </Box>
+        //     <Button
+        //       variant="outlined"
+        //       color="secondary"
+        //       onClick={() => {
+        //         const printWin = window.open("", "_blank");
+        //         const html = `
+        //   <html>
+        //     <head>
+        //       <title>Payment Receipt</title>
+        //       <style>
+        //         body { font-family: Arial; padding: 20px; background: #f9faff; }
+        //         h2 { color: #1976d2; text-align: center; }
+        //         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        //         th, td { border: 1px solid #ccc; padding: 10px 14px; text-align: left; }
+        //         th { background: #f1f5ff; }
+        //         tr:nth-child(even) { background: #fafafa; }
+        //       </style>
+        //     </head>
+        //     <body>
+        //       <h2>Payment Receipt</h2>
+        //       <p><strong>Date:</strong> ${new Date().toLocaleDateString()} &nbsp; | &nbsp; <strong>Time:</strong> ${new Date().toLocaleTimeString()}</p>
+        //       <table>
+        //         ${[
+        //           [
+        //             "Sender Mobile",
+        //             payoutResponse?.response?.data?.mobileNumber,
+        //           ],
+        //           [
+        //             "Beneficiary Name",
+        //             payoutResponse?.response?.data?.beneficiaryName,
+        //           ],
+        //           [
+        //             "Account Number",
+        //             payoutResponse?.response?.data?.beneficiaryAccount,
+        //           ],
+        //           [
+        //             "Amount",
+        //             `₹${payoutResponse?.response?.data?.transferAmount}`,
+        //           ],
+        //           [
+        //             "Transfer Mode",
+        //             payoutResponse?.response?.data?.transferMode,
+        //           ],
+        //           ["Purpose", payoutResponse?.purpose || "N/A"],
+        //           ["UTR", payoutResponse?.operator_id],
+        //         ]
+        //           .map(
+        //             ([label, value]) =>
+        //               `<tr><th>${label}</th><td>${value || "---"}</td></tr>`
+        //           )
+        //           .join("")}
+        //       </table>
+        //     </body>
+        //   </html>
+        // `;
+        //         printWin.document.write(html);
+        //         printWin.document.close();
+        //         printWin.print();
+        //       }}
+        //     >
+        //       Print Receipt
+        //     </Button>
+        //   </Box>
+        // </Box>
+        <SuperTransferReceipt
+          payoutResponse={payoutResponse}
+          onRepeat={() => setPayoutResponse(null)}
+        />
       )}
 
       {openRegisterModal && (

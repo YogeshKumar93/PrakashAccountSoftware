@@ -114,7 +114,8 @@ const BeneficiaryDetails = ({
 
         const payoutData = {
           ...(response?.data || {}),
-          purpose: selectedPurposeType, // ✅ send type to parent
+          purpose: selectedPurposeType,
+          sender_name: sender?.sender_name, // ✅ send sender_name
         };
 
         console.log("Purpose being sent to parent:", purposeType); // ✅ log purpose
@@ -136,8 +137,7 @@ const BeneficiaryDetails = ({
     }
   };
 
-
-    const handleChange = (e) => {
+  const handleChange = (e) => {
     const value = e.target.value;
     if (/^\d*$/.test(value)) {
       if (parseFloat(value) > parseFloat(sender?.rem_limit || 0)) {
@@ -149,7 +149,6 @@ const BeneficiaryDetails = ({
   };
 
   const amountInWords = amount ? `${toWords(parseInt(amount))} Rupees` : "";
-
 
   // --- Custom Content ---
   const customContent = (
@@ -217,7 +216,7 @@ const BeneficiaryDetails = ({
       </Box>
 
       {/* Amount with OTP button */}
-     
+
       <TextField
         label="Amount"
         type="text"
@@ -229,10 +228,9 @@ const BeneficiaryDetails = ({
       />
       {amount && (
         <Typography variant="body2" sx={{ mt: 1, color: "#555" }}>
-          {amountInWords.charAt(0).toUpperCase() + amountInWords.slice(1) }
+          {amountInWords.charAt(0).toUpperCase() + amountInWords.slice(1)}
         </Typography>
       )}
-  
 
       <Box>
         <Typography variant="body2" mb={0.5}>

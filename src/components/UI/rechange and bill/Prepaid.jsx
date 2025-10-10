@@ -133,7 +133,7 @@ const Prepaid = () => {
         [error?.message, error?.errors?.response?.data],
         "error"
       );
-    setRechargeResponse(response?.data); // ← store the response
+    setRechargeResponse(response); // ← store the response
     loadUserProfile();
     okSuccessToast(response?.message);
     setStep(4); // Success step
@@ -628,36 +628,172 @@ const Prepaid = () => {
         </Fade>
       )}
 
-      {/* Step 4: Success */}
       {step === 4 && (
         <Fade in>
-          <Box textAlign="center" maxWidth={500} mx="auto" py={4}>
-            <CheckCircle sx={{ fontSize: 80, color: "success.main", mb: 2 }} />
-            <Typography variant="h4" color="success.main" gutterBottom>
-              {/* Recharge Successful! */}
-              {rechargeResponse?.message || "Recharge Successful!"}
-            </Typography>
-            <Typography variant="h6">
-              ₹{selectedPlan?.price} recharge for {mobileNumber}
-            </Typography>
-            <Typography color="text.secondary" mb={3}>
-              Your mobile number has been recharged successfully. Amount will be
-              credited shortly.
-            </Typography>
-            <Button
-              variant="contained"
-              onClick={() => {
-                setSelectedService(null);
-                setPlans([]);
-                setSelectedPlan(null);
-                setMobileNumber("");
-                setManualAmount("");
-                setMpinCallBackVal("");
-                setStep(2); // back to plans
-              }}
+          <Box textAlign="center" maxWidth={600} mx="auto" py={4}>
+            {/* <CheckCircle sx={{ fontSize: 80, color: "success.main", mb: 2 }} /> */}
+
+            {/* Heading for Receipt */}
+            <Typography
+              variant="h6"
+              fontWeight="bold"
+              textAlign="center"
+              sx={{ mt: 0, mb: 1 }}
             >
-              New Recharge
-            </Button>
+              Recharge Receipt
+            </Typography>
+
+            {/* Table-style receipt */}
+            <Paper sx={{ p: 2, mt: 1, textAlign: "left" }}>
+              <table
+                id="receiptTable"
+                style={{
+                  width: "100%",
+                  borderCollapse: "collapse",
+                  fontFamily: "Arial, sans-serif",
+                }}
+              >
+                <tbody>
+                  <tr>
+                    <th
+                      style={{
+                        borderBottom: "1px solid #ccc",
+                        padding: "8px",
+                        textAlign: "left",
+                        width: "40%",
+                      }}
+                    >
+                      Mobile Number
+                    </th>
+                    <td
+                      style={{ borderBottom: "1px solid #ccc", padding: "8px" }}
+                    >
+                      {mobileNumber}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th
+                      style={{
+                        borderBottom: "1px solid #ccc",
+                        padding: "8px",
+                        textAlign: "left",
+                      }}
+                    >
+                      Operator
+                    </th>
+                    <td
+                      style={{ borderBottom: "1px solid #ccc", padding: "8px" }}
+                    >
+                      {selectedService?.name || "---"}
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <th
+                      style={{
+                        borderBottom: "1px solid #ccc",
+                        padding: "8px",
+                        textAlign: "left",
+                      }}
+                    >
+                      Amount
+                    </th>
+                    <td
+                      style={{ borderBottom: "1px solid #ccc", padding: "8px" }}
+                    >
+                      ₹{rechargeResponse?.data?.transferAmount || "0"}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th
+                      style={{
+                        borderBottom: "1px solid #ccc",
+                        padding: "8px",
+                        textAlign: "left",
+                      }}
+                    >
+                      Operator Code
+                    </th>
+                    <td
+                      style={{ borderBottom: "1px solid #ccc", padding: "8px" }}
+                    >
+                      {rechargeResponse?.data?.operatorCode || "---"}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th
+                      style={{
+                        borderBottom: "1px solid #ccc",
+                        padding: "8px",
+                        textAlign: "left",
+                      }}
+                    >
+                      Status
+                    </th>
+                    <td
+                      style={{
+                        borderBottom: "1px solid #ccc",
+                        padding: "8px",
+                        color: "green",
+                      }}
+                    >
+                      {rechargeResponse?.message || "Success"}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </Paper>
+
+            {/* Buttons */}
+            <Box mt={3} display="flex" justifyContent="center" gap={2}>
+              <Button
+                variant="contained"
+                onClick={() => {
+                  setSelectedService(null);
+                  setPlans([]);
+                  setSelectedPlan(null);
+                  setMobileNumber("");
+                  setManualAmount("");
+                  setMpinCallBackVal("");
+                  setStep(2); // back to plans
+                }}
+              >
+                New Recharge
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={() => {
+                  const tableEl = document.getElementById("receiptTable");
+                  if (!tableEl) return alert("Receipt not found!");
+
+                  const printWin = window.open("", "_blank");
+                  printWin.document.write(`
+      <html>
+        <head>
+          <title>Recharge Receipt</title>
+          <style>
+            @page { size: landscape; margin: 20mm; }
+            body { font-family: Arial, sans-serif; padding: 20px; }
+            table { width: 100%; border-collapse: collapse; }
+            th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+            th { background-color: #f0f0f0; }
+            h2 { text-align: center; margin-bottom: 20px; }
+          </style>
+        </head>
+        <body>
+          <h2>Recharge Receipt</h2>
+          ${tableEl.outerHTML}
+        </body>
+      </html>
+    `);
+                  printWin.document.close();
+                  printWin.focus();
+                  printWin.print();
+                }}
+              >
+                Print Receipt
+              </Button>
+            </Box>
           </Box>
         </Fade>
       )}
