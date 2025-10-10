@@ -450,7 +450,7 @@ const handleAmountChange = (beneficiaryId, value) => {
                           Verify
                         </Button>
                       )}
-                   <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                  
 
                       <TextField
                         size="small"
@@ -461,7 +461,7 @@ const handleAmountChange = (beneficiaryId, value) => {
                         }
                         inputProps={{
                           style: {
-                            width: "130px",
+                            width: "90px",
                             textAlign: "center",
                             fontSize: "0.75rem",
                           },
@@ -472,22 +472,7 @@ const handleAmountChange = (beneficiaryId, value) => {
                           },
                         }}
                       />
-                      {amountInputs[b.id] && amountInWords[b.id] && (
-   <Typography
-      variant="caption"
-      sx={{
-        color: "#555",
-     fontSize: "0.60rem",
-        textAlign: "left",
-        maxWidth: "170px",
-        
-      }}
-    >
-      {amountInWords[b.id].charAt(0).toUpperCase() +
-        amountInWords[b.id].slice(1)}
-    </Typography>
-)}
-</Box>
+
 
                       {/* ✅ Send Money Button */}
                       <Button
