@@ -164,6 +164,27 @@ const PayoutTxn = ({ query }) => {
       alert("Failed to export Excel");
     }
   };
+
+  const handleRefundTxn = async (row) => {
+    try {
+      const payload = { txn_id: row.txn_id }; // use actual transaction ID field
+      const { response } = await apiCall(
+        "post",
+        ApiEndpoints.REFUND_TXN,
+        payload
+      );
+
+      if (response?.status) {
+        showToast(response.message || "Transaction refunded successfully!");
+      } else {
+        showToast(response?.error || "Refund failed. Please try again.");
+      }
+    } catch (error) {
+      showToast("Error processing refund transaction.");
+      console.error(error);
+    }
+  };
+
   const handleOpenLein = (row) => {
     setOpenLeinModal(true);
     setSelectedTrancation(row);
@@ -656,6 +677,41 @@ const PayoutTxn = ({ query }) => {
         width: "100px",
         center: true,
       },
+      ...(user?.role === "ret" || user?.role === "dd"
+        ? [
+            {
+              name: "Actions",
+              selector: (row) => (
+                <div
+                  style={{
+                    fontSize: "10px",
+                    fontWeight: "600",
+                    display: "flex",
+                    gap: "4px",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  {/* FAILED or REFUND: Refresh */}
+                  {row?.status === "REFUNDPENDING"  && (
+                    <Tooltip title="REFUND TXN">
+                      <ReplayIcon
+                        sx={{
+                          color: "orange",
+                          fontSize: 25,
+                          cursor: "pointer",
+                        }}
+                        onClick={() => handleRefundTxn(row)}
+                      />
+                    </Tooltip>
+                  )}
+                </div>
+              ),
+              center: true,
+              width: "70px",
+            },
+          ]
+        : []),
     ],
     []
   );
