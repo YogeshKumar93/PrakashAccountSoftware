@@ -392,7 +392,7 @@ const RechargeTxn = ({ query }) => {
       {
         name: "Mobile",
         selector: (row) => (
-          <div style={{ textAlign: "left" }}>{row.mobile_number}</div>
+          <div style={{ textAlign: "left" }}>{row.number}</div>
         ),
         wrap: true,
       },
