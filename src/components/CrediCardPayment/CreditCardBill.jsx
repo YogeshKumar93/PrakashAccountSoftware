@@ -12,6 +12,7 @@ import CommonMpinModal from "../common/CommonMpinModal";
 import AuthContext from "../../contexts/AuthContext";
 import { apiErrorToast, okSuccessToast } from "../../utils/ToastUtil";
 import { apiCall } from "../../api/apiClient";
+import { convertNumberToWordsIndian } from "../../utils/NumberUtil";
 
 const CreditCardBillPayment = ({
   open,
@@ -37,11 +38,18 @@ const CreditCardBillPayment = ({
   });
 
   const [formErrors, setFormErrors] = useState({});
+ 
 
   const handleChange = (field, value) => {
     setFormValues((prev) => ({ ...prev, [field]: value }));
     setFormErrors((prev) => ({ ...prev, [field]: "" })); // clear error on change
   };
+
+   const amountInWords = formValues.amount
+  ? `${convertNumberToWordsIndian(formValues.amount)
+      .replace(/\b\w/g, (char) => char.toUpperCase())} Only`
+  : "";
+
 
   // Validation function
   const validate = () => {
@@ -137,6 +145,16 @@ const CreditCardBillPayment = ({
             error={!!formErrors.amount}
             helperText={formErrors.amount}
           />
+          
+{formValues.amount && (
+  <Typography
+    variant="body2"
+    sx={{ color: "#555", fontWeight: 500 }}
+  >
+    {amountInWords}
+  </Typography>
+)}
+
         </Box>
 
         <Box display="flex" justifyContent="flex-end" gap={2}>
