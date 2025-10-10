@@ -1,10 +1,16 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Box, Typography, Button, RadioGroup, FormControlLabel, Radio } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Button,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+} from "@mui/material";
 import { useLocation } from "react-router-dom";
 import AuthContext from "../contexts/AuthContext";
 import biggpayLogo from "../assets/Images/PPALogor.png";
 import { ddmmyyWithTime } from "../utils/DateUtils";
- 
 
 const PrintRecharge = () => {
   const [receiptType, setReceiptType] = useState("large");
@@ -16,10 +22,9 @@ const PrintRecharge = () => {
   const [data, setData] = useState([]);
 
   // Calculate total only for successful transactions
-const totalAmountValue = data
-  .filter(txn => txn.status?.toLowerCase() === "success")
-  .reduce((acc, txn) => acc + parseFloat(txn.amount || 0), 0);
-
+  const totalAmountValue = data
+    .filter((txn) => txn.status?.toLowerCase() === "success")
+    .reduce((acc, txn) => acc + parseFloat(txn.amount || 0), 0);
 
   // Load transaction data
   useEffect(() => {
@@ -34,11 +39,15 @@ const totalAmountValue = data
       setData(Array.isArray(txnData) ? txnData : [txnData]);
     }
   }, [location.state]);
- 
 
   if (!data || data.length === 0) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="100vh"
+      >
         <Typography color="error" variant="h6">
           No Transaction Data Available
         </Typography>
@@ -46,7 +55,15 @@ const totalAmountValue = data
     );
   }
 
-  const headers = ["Date", "Txn ID", "Mobile", "Operator", "Ref No", "Status", "Amount"];
+  const headers = [
+    "Date",
+    "Txn ID",
+    "Mobile",
+    "Operator",
+    "Ref No",
+    "Status",
+    "Amount",
+  ];
 
   return (
     <>
@@ -65,12 +82,30 @@ const totalAmountValue = data
         .amount-red { font-weight: 700; color: #d32f2f; }
       `}</style>
 
-      <Box display="flex" flexDirection="column" alignItems="center" minHeight="100vh" pt={4}>
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        minHeight="100vh"
+        pt={4}
+      >
         {/* Controls */}
         <Box display="flex" justifyContent="center" mb={2} className="no-print">
-          <RadioGroup row value={receiptType} onChange={(e) => setReceiptType(e.target.value)}>
-            <FormControlLabel value="large" control={<Radio />} label="Large Receipt" />
-            <FormControlLabel value="small" control={<Radio />} label="Small Receipt" />
+          <RadioGroup
+            row
+            value={receiptType}
+            onChange={(e) => setReceiptType(e.target.value)}
+          >
+            <FormControlLabel
+              value="large"
+              control={<Radio />}
+              label="Large Receipt"
+            />
+            <FormControlLabel
+              value="small"
+              control={<Radio />}
+              label="Small Receipt"
+            />
           </RadioGroup>
         </Box>
 
@@ -89,9 +124,27 @@ const totalAmountValue = data
           }}
         >
           {/* Header */}
-          <Box display="flex" justifyContent="space-between" alignItems="center" borderBottom="2px solid #e0e0e0" pb={1}>
-            <Box sx={{ width: 140, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <Box component="img" src={biggpayLogo} alt="Logo" sx={{ width: 130, height: 60, objectFit: "contain" }} />
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            borderBottom="2px solid #e0e0e0"
+            pb={1}
+          >
+            <Box
+              sx={{
+                width: 140,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Box
+                component="img"
+                src={biggpayLogo}
+                alt="Logo"
+                sx={{ width: 130, height: 60, objectFit: "contain" }}
+              />
             </Box>
             <Box textAlign="right">
               <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
@@ -125,14 +178,16 @@ const totalAmountValue = data
             <Box className="table-container" mt={2}>
               <Box className="table-row">
                 {headers.map((h, i) => (
-                  <Box key={i} className="table-cell header-cell">{h}</Box>
+                  <Box key={i} className="table-cell header-cell">
+                    {h}
+                  </Box>
                 ))}
               </Box>
               {data.map((txn, idx) => {
                 const values = [
                   txn.created_at ? ddmmyyWithTime(txn.created_at) : "",
                   txn.txn_id || "",
-                  txn.mobile_number || "",
+                  txn.number || "",
                   txn.operator || "",
                   txn.client_ref || "",
                   txn.status || "",
@@ -144,7 +199,9 @@ const totalAmountValue = data
                     {values.map((v, i) => (
                       <Box
                         key={i}
-                        className={`table-cell ${i === values.length - 1 ? "amount-red" : ""}`}
+                        className={`table-cell ${
+                          i === values.length - 1 ? "amount-red" : ""
+                        }`}
                       >
                         {v}
                       </Box>
@@ -159,7 +216,7 @@ const totalAmountValue = data
                 const values = [
                   txn.created_at ? ddmmyyWithTime(txn.created_at) : "",
                   txn.txn_id || "",
-                  txn.mobile_number || "",
+                  txn.number || "",
                   txn.operator || "",
                   txn.client_ref || "",
                   txn.status || "",
@@ -167,7 +224,14 @@ const totalAmountValue = data
                 ];
 
                 return (
-                  <Box key={idx} sx={{ mb: 2, borderBottom: idx !== data.length - 1 ? "1px solid #f0f0f0" : "none" }}>
+                  <Box
+                    key={idx}
+                    sx={{
+                      mb: 2,
+                      borderBottom:
+                        idx !== data.length - 1 ? "1px solid #f0f0f0" : "none",
+                    }}
+                  >
                     {headers.map((label, i) => (
                       <Box
                         key={i}
@@ -175,10 +239,16 @@ const totalAmountValue = data
                         justifyContent="space-between"
                         sx={{ px: 1, py: 1.3 }}
                       >
-                        <Typography variant="body2" sx={{ fontWeight: 600 }}>{label}:</Typography>
+                        <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                          {label}:
+                        </Typography>
                         <Typography
                           variant="body2"
-                          sx={i === headers.length - 1 ? { color: "#d32f2f", fontWeight: 600 } : {}}
+                          sx={
+                            i === headers.length - 1
+                              ? { color: "#d32f2f", fontWeight: 600 }
+                              : {}
+                          }
                         >
                           {values[i]}
                         </Typography>
@@ -190,28 +260,48 @@ const totalAmountValue = data
             </Box>
           )}
 
-         <Box display="flex" justifyContent="flex-end" mt={1} sx={{ pr: 2 }}>
-  <Typography variant="body1" sx={{ fontWeight: 700 }}>
-    Total Amount: ₹ {totalAmountValue.toFixed(2)}
-  </Typography>
-</Box>
-
+          <Box display="flex" justifyContent="flex-end" mt={1} sx={{ pr: 2 }}>
+            <Typography variant="body1" sx={{ fontWeight: 700 }}>
+              Total Amount: ₹ {totalAmountValue.toFixed(2)}
+            </Typography>
+          </Box>
 
           {/* Print Button */}
-          <Box display="flex" justifyContent="flex-end" mt={2} className="no-print">
+          <Box
+            display="flex"
+            justifyContent="flex-end"
+            mt={2}
+            className="no-print"
+          >
             <Button
               onClick={() => window.print()}
               variant="contained"
-              sx={{ borderRadius: 2, background: "#2b9bd7", textTransform: "none", px: 4, "&:hover": { background: "#ff9a3c" } }}
+              sx={{
+                borderRadius: 2,
+                background: "#2b9bd7",
+                textTransform: "none",
+                px: 4,
+                "&:hover": { background: "#ff9a3c" },
+              }}
             >
               Print
             </Button>
           </Box>
 
           {/* Footer */}
-          <Box display="flex" justifyContent="space-between" alignItems="center" mt={3}>
-            <Typography variant="caption" fontWeight={500}>© 2025 All Rights Reserved</Typography>
-            <Typography variant="caption" sx={{ display: "block", textAlign: "right" }}>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            mt={3}
+          >
+            <Typography variant="caption" fontWeight={500}>
+              © 2025 All Rights Reserved
+            </Typography>
+            <Typography
+              variant="caption"
+              sx={{ display: "block", textAlign: "right" }}
+            >
               System-generated receipt. No signature required.
             </Typography>
           </Box>

@@ -33,6 +33,7 @@ import operatorImages from "../../../assets/operators";
 import CommonLoader from "../../common/CommonLoader";
 import { useToast } from "../../../utils/ToastContext";
 import ResetMpin from "../../common/ResetMpin";
+import { Logo } from "../../../iconsImports";
 // import { useToast } from "../utils/ToastContext";
 
 const Prepaid = () => {
@@ -642,7 +643,15 @@ const Prepaid = () => {
             >
               Recharge Receipt
             </Typography>
-
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              textAlign="center"
+              sx={{ mb: 2 }}
+            >
+              Date:{new Date().toLocaleDateString("en-GB")}{" "}
+              {/* formats as DD/MM/YYYY */}
+            </Typography>
             {/* Table-style receipt */}
             <Paper sx={{ p: 2, mt: 1, textAlign: "left" }}>
               <table
@@ -763,9 +772,6 @@ const Prepaid = () => {
               <Button
                 variant="outlined"
                 onClick={() => {
-                  const tableEl = document.getElementById("receiptTable");
-                  if (!tableEl) return alert("Receipt not found!");
-
                   const printWin = window.open("", "_blank");
                   printWin.document.write(`
       <html>
@@ -773,16 +779,37 @@ const Prepaid = () => {
           <title>Recharge Receipt</title>
           <style>
             @page { size: landscape; margin: 20mm; }
-            body { font-family: Arial, sans-serif; padding: 20px; }
-            table { width: 100%; border-collapse: collapse; }
-            th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+            body { font-family: Arial, sans-serif; padding: 20px; text-align: center; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
             th { background-color: #f0f0f0; }
-            h2 { text-align: center; margin-bottom: 20px; }
+            h2 { margin: 10px 0; }
+            img.logo { max-width: 150px; margin-bottom: 10px; }
           </style>
         </head>
         <body>
           <h2>Recharge Receipt</h2>
-          ${tableEl.outerHTML}
+  <p>Date:${new Date().toLocaleDateString("en-GB")}</p> <!-- Current date -->
+
+          <!-- Horizontal table layout -->
+          <table>
+            <tr>
+              <th>Mobile Number</th>
+              <th>Operator</th>
+              <th>Amount</th>
+              <th>Operator Code</th>
+              <th>Status</th>
+            </tr>
+            <tr>
+              <td>${mobileNumber}</td>
+              <td>${selectedService?.name || "---"}</td>
+              <td>₹${rechargeResponse?.data?.transferAmount || "0"}</td>
+              <td>${rechargeResponse?.data?.operatorCode || "---"}</td>
+              <td style="color: green;">${
+                rechargeResponse?.message || "Success"
+              }</td>
+            </tr>
+          </table>
         </body>
       </html>
     `);
