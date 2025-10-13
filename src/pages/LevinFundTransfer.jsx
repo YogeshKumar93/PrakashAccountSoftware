@@ -23,6 +23,7 @@ import LevinVerifySender from "./LevinVerifySender";
 import LevinBeneficiaryList from "./LevinBeneficiaryList";
 import LevinBeneficiaryDetails from "./LevinBeneficiaryDetails";
 import LevinTransferReceipt from "./LevinTransferReceipt";
+import MobileNumberList from "./MobileNumberList";
 
 const LevinFundTransfer = () => {
   const theme = useTheme();
