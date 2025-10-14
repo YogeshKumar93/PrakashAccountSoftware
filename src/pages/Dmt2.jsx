@@ -1,5 +1,7 @@
 import { useContext, useEffect, useState } from "react";
-import { Box, TextField } from "@mui/material";
+import { Box, TextField ,  IconButton,
+    InputAdornment,Divider,
+  Typography,} from "@mui/material";
 import { apiCall } from "../api/apiClient";
 import ApiEndpoints from "../api/ApiEndpoints";
 import { okSuccessToast, apiErrorToast } from "../utils/ToastUtil";
@@ -13,6 +15,8 @@ import Dmt2SelectedBene from "./Dmt2SelectedBene";
 import Dmt2Beneficiaries from "./Dmt2Beneficiaries";
 import CommonLoader from "../components/common/CommonLoader";
 import Loader from "../components/common/Loader";
+import MobileNumberList from "./MobileNumberList";
+import SearchIcon from "@mui/icons-material/Search";
 
 const Dmt2 = () => {
   const [mobile, setMobile] = useState("");
@@ -25,6 +29,8 @@ const Dmt2 = () => {
   const { location } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [accountNumber, setAccountNumber] = useState("");
+   const [mobileListOpen, setMobileListOpen] = useState(false);
+      const [mobileList, setMobileList] = useState([]);
 
   const handleFetchSender = async (number = mobile) => {
     if (!number || number.length !== 10) return;
@@ -70,6 +76,36 @@ const Dmt2 = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  const handleFetchSenderByAccount = async (accNumber) => {
+        if (!accNumber || accNumber.length < 9) return;
+        setLoading(true);
+    
+        const { error, response } = await apiCall(
+          "post",
+          ApiEndpoints.GET_SENDER_BY_ACC,
+          {
+            account_number: accNumber,
+          }
+        );
+    
+        setLoading(false);
+    
+        if (response) {
+          const data = response?.data || response?.response?.data;
+          if (Array.isArray(data) && data.length > 0) {
+            setMobileList(data);
+            setMobileListOpen(true); // 👈 open modal
+          } else {
+            showToast("No mobile numbers found for this account", "warning");
+          }
+        } else if (error) {
+          showToast(
+            error?.message || "Failed to fetch sender by account number",
+            "error"
+          );
+        }
+      };
+
   const handleMobileChange = (e) => {
     const value = e.target.value.replace(/\D/g, "");
     if (value.length <= 10) {
@@ -94,27 +130,65 @@ const Dmt2 = () => {
   };
 
   return (
-    <Loader loading={loading}>
+    <CommonLoader loading={loading}>
       <Box>
-        <Box>
-          <Box display="flex" gap={1} mb={1}>
-            <TextField
-              label="Mobile Number"
-              variant="outlined"
-              value={mobile}
-              onChange={handleMobileChange}
-              inputProps={{ maxLength: 10 }}
-              fullWidth
-              autoComplete="tel"
-            />
-            <TextField
-              label="Account Number"
-              variant="outlined"
-              value={accountNumber}
-              onChange={handleAccountChange}
-              fullWidth
-            />
-          </Box>
+      
+         <Box
+  display="flex"
+  flexDirection={{ xs: "column", sm: "row" }}
+  gap={1}
+  mb={1}
+  alignItems="center"
+>
+  <TextField
+    label="Mobile Number"
+    variant="outlined"
+    value={mobile}
+    onChange={handleMobileChange}
+    inputProps={{ maxLength: 10 }}
+    fullWidth
+    autoComplete="tel"
+  />
+
+  <Divider
+    sx={{
+      display: { xs: "flex", sm: "none" },
+      width: "30%",
+      my: 1,
+      "&::before, &::after": { borderColor: "divider" },
+      textAlign: "center",
+    }}
+  >
+    OR
+  </Divider>
+   </Box>
+   <TextField
+                label="Account Number"
+                variant="outlined"
+                value={accountNumber}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/\D/g, ""); // allow only digits
+                  setAccountNumber(value);
+                }}
+                inputProps={{ maxLength: 18 }}
+                sx={{ flex: 1 }}
+                fullWidth
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        color="primary"
+                        onClick={() => handleFetchSenderByAccount(accountNumber)}
+                        disabled={!accountNumber || accountNumber.length < 9}
+                      >
+                        <SearchIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+</Box>
+
 
           {loading && (
             <CommonLoader
@@ -128,7 +202,9 @@ const Dmt2 = () => {
               }}
             />
           )}
-        </Box>
+     
+
+        
 
         {openRegisterModal && (
           <RemitterRegister
@@ -138,6 +214,17 @@ const Dmt2 = () => {
             onSuccess={setSender}
           />
         )}
+         {mobileListOpen && (
+                          <MobileNumberList
+                            open={mobileListOpen}
+                            onClose={() => setMobileListOpen(false)}
+                            numbers={mobileList}
+                            onSelect={(selectedMobile) => {
+                              setMobile(selectedMobile);
+                              handleFetchSender(selectedMobile);
+                            }}
+                          />
+                        )}
 
         {/* 🔹 Full-width stacked layout */}
         <Box display="flex" flexDirection="column" gap={1}>
@@ -169,9 +256,9 @@ const Dmt2 = () => {
               onDelete={handleDeleteBeneficiary}
             />
           </Box>
-        </Box>
+    
       </Box>
-    </Loader>
+    </CommonLoader>
   );
 };
 
