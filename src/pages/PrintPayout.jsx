@@ -17,7 +17,6 @@ const PrintPayout = () => {
   const [orientation, setOrientation] = useState("portrait");
   const location = useLocation();
   const { user } = useContext(AuthContext);
-
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -72,6 +71,7 @@ const PrintPayout = () => {
           }
           .no-print { display: none !important; }
         }
+
         .table-container { width: 100%; display: table; border-collapse: collapse; }
         .table-row { display: table-row; }
         .table-cell { 
@@ -88,13 +88,7 @@ const PrintPayout = () => {
           font-size: 0.85rem; 
         }
         .amount-gray { font-weight: 700; color: #555; }
-        .beneficiary-box { 
-          border: 1px solid #d6e4ed; 
-          padding: 6px 8px; 
-          border-radius: 6px; 
-       
-          background: #f9f9f9; 
-        }
+        .amount-red { font-weight: 700; color: #d32f2f; }
       `}</style>
 
       <Box
@@ -124,23 +118,6 @@ const PrintPayout = () => {
               label="Small Receipt"
             />
           </RadioGroup>
-          <RadioGroup
-            row
-            value={orientation}
-            onChange={(e) => setOrientation(e.target.value)}
-            sx={{ ml: 3 }}
-          >
-            {/* <FormControlLabel
-              value="portrait"
-              control={<Radio />}
-              label="Portrait"
-            />
-            <FormControlLabel
-              value="landscape"
-              control={<Radio />}
-              label="Landscape"
-            /> */}
-          </RadioGroup>
         </Box>
 
         {/* Receipt Container */}
@@ -165,7 +142,6 @@ const PrintPayout = () => {
             justifyContent="space-between"
             alignItems="center"
             borderBottom="2px solid #e0e0e0"
-            pb={1}
           >
             <Box
               sx={{
@@ -198,14 +174,13 @@ const PrintPayout = () => {
           {/* Title */}
           <Box display="flex" justifyContent="center" mt={2}>
             <Button
-              variant="outlined"
+              variant="h6"
               sx={{
                 borderRadius: 2,
                 border: "2px solid #2b9bd7",
-                color: "#000",
+                color: "#0e6593ff",
                 textTransform: "none",
                 px: 3,
-                fontWeight: 600,
                 "&:hover": { borderColor: "#ff9a3c", color: "#ff9a3c" },
               }}
             >
@@ -213,7 +188,7 @@ const PrintPayout = () => {
             </Button>
           </Box>
 
-          {/* Large Receipt Table */}
+          {/* Large Receipt */}
           {receiptType === "large" ? (
             <Box className="table-container" mt={2}>
               <Box className="table-row">
@@ -225,9 +200,8 @@ const PrintPayout = () => {
               </Box>
               {data.map((txn, idx) => {
                 const amount = parseFloat(txn.amount || 0);
-
                 const beneficiaryDetails = (
-                  <Box className="beneficiary-box">
+                  <Box>
                     <div>{txn.beneficiary_name || "N/A"}</div>
                     <div>A/C: {txn.account_number || "N/A"}</div>
                     <div>IFSC: {txn.ifsc_code || "N/A"}</div>
@@ -255,28 +229,31 @@ const PrintPayout = () => {
               })}
             </Box>
           ) : (
-            // Small receipt stacked view
+            // Small Receipt (styled like PrintDmt2)
             <Box
               mt={2}
               sx={{
                 border: "1px solid #e0e0e0",
                 borderRadius: 2,
                 overflow: "hidden",
-                display: "flex",
-                justifyContent: "space-between",
               }}
             >
               {data.map((txn, idx) => {
                 const amount = parseFloat(txn.amount || 0);
+                const beneficiaryDetails = (
+                  <Box>
+                    <div>{txn.beneficiary_name || "N/A"}</div>
+                    <div>A/C: {txn.account_number || "N/A"}</div>
+                    <div>IFSC: {txn.ifsc_code || "N/A"}</div>
+                  </Box>
+                );
 
                 const values = [
                   txn.created_at ? ddmmyyWithTime(txn.created_at) : "",
                   txn.purpose || "N/A",
                   txn.operator_id || "N/A",
                   txn.mobile_number || "N/A",
-                  `${txn.beneficiary_name || ""},
-                   A/C: ${txn.account_number || ""},
-                   IFSC: ${txn.ifsc_code || ""}`,
+                  beneficiaryDetails,
                   `₹ ${amount.toFixed(2)}`,
                 ];
 
@@ -287,8 +264,6 @@ const PrintPayout = () => {
                       mb: 2,
                       borderBottom:
                         idx !== data.length - 1 ? "1px solid #f0f0f0" : "none",
-                      px: 1,
-                      py: 1.5,
                     }}
                   >
                     {headers.map((label, i) => (
@@ -296,12 +271,27 @@ const PrintPayout = () => {
                         key={i}
                         display="flex"
                         justifyContent="space-between"
-                        sx={{ py: 0.7 }}
+                        sx={{ px: 1, py: 1.3 }}
                       >
-                        <Typography variant="body2" fontWeight={600}>
+                        <Typography
+                          variant="body2"
+                          sx={{ fontWeight: 600, fontSize: "0.85rem" }}
+                        >
                           {label}:
                         </Typography>
-                        <Typography variant="body2">{values[i]}</Typography>
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            fontWeight: i === headers.length - 1 ? "bold" : "normal",
+                            fontSize: "0.85rem",
+                            color:
+                              i === headers.length - 1
+                                ? "#d32f2f"
+                                : "#555",
+                          }}
+                        >
+                          {values[i]}
+                        </Typography>
                       </Box>
                     ))}
                   </Box>
@@ -318,12 +308,7 @@ const PrintPayout = () => {
           </Box>
 
           {/* Print Button */}
-          <Box
-            display="flex"
-            justifyContent="flex-end"
-            mt={1}
-            className="no-print"
-          >
+          <Box display="flex" justifyContent="flex-end" mt={1} className="no-print">
             <Button
               onClick={() => {
                 window.print();
@@ -352,7 +337,10 @@ const PrintPayout = () => {
             <Typography variant="caption" fontWeight={500}>
               © 2025 All Rights Reserved
             </Typography>
-            <Typography variant="caption">
+            <Typography
+              variant="caption"
+              sx={{ display: "block", textAlign: "right" }}
+            >
               This is a system-generated receipt. No signature required.
             </Typography>
           </Box>
