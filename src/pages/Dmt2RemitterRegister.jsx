@@ -105,11 +105,9 @@ const Dmt2RemitterRegister = ({
         );
         setRemitterRef(response?.data?.data); // save reference for OTP verify
         setAeps2faOpen(false);
-        setOtpOpen(true); // open OTP modal
-        console.log("respomnse ", response);
-
-        onClose();
-      } else {
+        setOtpOpen(true); // open OTP modala
+        console.log("respomnse ", response?.data?.data);
+            } else {
         showToast(
           error?.message || response?.data?.message || "KYC failed",
           "error"

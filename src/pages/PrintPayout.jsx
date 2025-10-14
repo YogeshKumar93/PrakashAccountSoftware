@@ -51,6 +51,7 @@ const PrintPayout = () => {
   const headers = [
     "Date/Time",
     "Purpose",
+    "UTR",
     "Mobile",
     "Beneficiary Details",
     "Amount",
@@ -236,6 +237,7 @@ const PrintPayout = () => {
                 const values = [
                   txn.created_at ? ddmmyyWithTime(txn.created_at) : "",
                   txn.purpose || "",
+                     txn.operator_id || "",
                   txn.mobile_number || "",
                   beneficiaryDetails,
                   `₹ ${amount.toFixed(2)}`,
@@ -271,6 +273,7 @@ const PrintPayout = () => {
                 const values = [
                   txn.created_at ? ddmmyyWithTime(txn.created_at) : "",
                   txn.purpose || "",
+                   txn.operator_id || "",
                   txn.mobile_number || "",
                   `${txn.beneficiary_name || ""},
                    A/C: ${

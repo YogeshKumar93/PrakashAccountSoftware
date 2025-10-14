@@ -76,9 +76,32 @@ const LevinBeneficiaryDetails = ({
   // };
 
   const amountInWords = amount
-  ? `${convertNumberToWordsIndian(amount)
-      .replace(/\b\w/g, (char) => char.toUpperCase())} Only`
-  : "";
+    ? `${convertNumberToWordsIndian(amount).replace(/\b\w/g, (char) =>
+        char.toUpperCase()
+      )} Only`
+    : "";
+
+  useEffect(() => {
+    const fetchPurposes = async () => {
+      setLoadingPurposes(true);
+      try {
+        const { error, response } = await apiCall(
+          "post",
+          ApiEndpoints.GET_PURPOSES
+        );
+        if (response) {
+          const purposesData = response?.data || [];
+          setPurposes(purposesData);
+          if (purposesData.length > 0) setSelectedPurpose(purposesData[0].id);
+        } else apiErrorToast(error);
+      } catch (err) {
+        apiErrorToast(err);
+      } finally {
+        setLoadingPurposes(false);
+      }
+    };
+    fetchPurposes();
+  }, []);
 
   const handleProceed = async () => {
     // if (!otp || otp.length !== 6)
@@ -89,6 +112,11 @@ const LevinBeneficiaryDetails = ({
 
     setLoading(true);
     try {
+         const selectedPurposeType =
+        purposes.find((p) => p.id === Number(selectedPurpose))?.type || "N/A";
+
+      console.log("Selected Purpose Type:", selectedPurposeType);
+
       const payload = {
         sender_id: senderId,
         beneficiary_id: beneficiary.id,
@@ -105,7 +133,7 @@ const LevinBeneficiaryDetails = ({
         // otp_ref: otpRef,
         mop: transferMode,
         mpin,
-        purpose_id: selectedPurpose,
+        purpose: selectedPurposeType,
       };
 
       const { error, response } = await apiCall(
@@ -139,7 +167,7 @@ const LevinBeneficiaryDetails = ({
     }
   };
 
-    const handleChange = (e) => {
+  const handleChange = (e) => {
     const value = e.target.value;
     if (/^\d*$/.test(value)) {
       if (parseFloat(value) > parseFloat(sender?.rem_limit || 0)) {
@@ -149,30 +177,6 @@ const LevinBeneficiaryDetails = ({
       setAmount(value);
     }
   };
-
- 
-
-  useEffect(() => {
-    const fetchPurposes = async () => {
-      setLoadingPurposes(true);
-      try {
-        const { error, response } = await apiCall(
-          "post",
-          ApiEndpoints.GET_PURPOSES
-        );
-        if (response) {
-          const purposesData = response?.data || [];
-          setPurposes(purposesData);
-          if (purposesData.length > 0) setSelectedPurpose(purposesData[0].id);
-        } else apiErrorToast(error);
-      } catch (err) {
-        apiErrorToast(err);
-      } finally {
-        setLoadingPurposes(false);
-      }
-    };
-    fetchPurposes();
-  }, []);
 
   // --- Custom Content ---
   const customContent = (
@@ -249,19 +253,17 @@ const LevinBeneficiaryDetails = ({
         value={amount}
         onChange={handleChange}
       />
-        {amount && (
-  <Typography
-    variant="body2"
-    sx={{
-    
-      color: "#555",
-      fontWeight: 500,
-      
-    }}
-  >
-    {amountInWords}
-  </Typography>
-)}
+      {amount && (
+        <Typography
+          variant="body2"
+          sx={{
+            color: "#555",
+            fontWeight: 500,
+          }}
+        >
+          {amountInWords}
+        </Typography>
+      )}
 
       <Box>
         <Typography variant="body2" mb={0.5}>
