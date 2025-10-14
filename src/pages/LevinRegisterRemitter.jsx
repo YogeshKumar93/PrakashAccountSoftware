@@ -1,4 +1,4 @@
-import React, { useState, useEffect ,useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -19,8 +19,6 @@ import ApiEndpoints from "../api/ApiEndpoints";
 import { useToast } from "../utils/ToastContext";
 import AuthContext from "../contexts/AuthContext";
 
- 
-
 const LevinRegisterRemitter = ({ open, onClose, mobile, onRegistered }) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -30,15 +28,10 @@ const LevinRegisterRemitter = ({ open, onClose, mobile, onRegistered }) => {
     first_name: "",
     last_name: "",
     number: mobile || "",
-   
   });
 
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
-
-
-  
-
 
   // keep mobile in sync
   useEffect(() => {
@@ -69,7 +62,7 @@ const LevinRegisterRemitter = ({ open, onClose, mobile, onRegistered }) => {
         const state = response?.data?.state; // Get the state from the response
         const sender_id = response?.response?.data?.sender?.id;
 
-        showToast(response?.response?.data?.message, "success");
+        showToast(response?.message, "success");
 
         // Pass the state and sender_id to the parent component
         onRegistered?.({
@@ -203,10 +196,6 @@ const LevinRegisterRemitter = ({ open, onClose, mobile, onRegistered }) => {
             error={!!errors.number}
             helperText={errors.number}
           />
-         
-        
-        
-        
         </Box>
       </DialogContent>
 
