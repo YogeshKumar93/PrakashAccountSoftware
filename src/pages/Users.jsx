@@ -166,7 +166,7 @@ const Users = ({ query }) => {
           setUserOptions(
             response.data.map((u) => ({
               label: u.establishment,
-              value: u.id,
+              value: u.id, // ✅ This is the id
             }))
           );
         }
@@ -278,7 +278,6 @@ const Users = ({ query }) => {
   const filters = useMemo(() => {
     const userRole = user?.role?.toLowerCase?.();
 
-    // ✅ Correct hierarchy order (Top → Bottom)
     const hierarchy = [
       "sadm",
       "adm",
@@ -291,17 +290,15 @@ const Users = ({ query }) => {
       "api",
     ];
 
-    // ✅ Determine which roles to hide (current + above)
     const hideRoles = (() => {
       const index = hierarchy.indexOf(userRole);
       if (index === -1) return [];
       return hierarchy.slice(0, index + 1);
     })();
 
-    // ✅ Filter dropdown options according to hierarchy
     const roleOptions = Object.entries(roleLabels)
       .filter(([key]) => !hideRoles.includes(key))
-      .sort((a, b) => hierarchy.indexOf(a[0]) - hierarchy.indexOf(b[0])) // ensure dropdown order
+      .sort((a, b) => hierarchy.indexOf(a[0]) - hierarchy.indexOf(b[0]))
       .map(([key, value]) => ({
         label: value,
         value: key,
@@ -315,16 +312,39 @@ const Users = ({ query }) => {
         textType: "number",
       },
       {
-        id: "user",
+        id: "id", // This will be sent as "id" in the API call
         label: "User",
         type: "autocomplete",
         options: userOptions,
         onSearch: (val) => setUserSearch(val),
-        onChange: (option) => setSelectedUserFilter(option), // store selected object
+        onChange: (option) => {
+          // Set only the value, not the whole object
+          setSelectedUserFilter(option?.value || null);
+
+          const newFilters = {
+            ...appliedFilters,
+            id: option?.value || undefined, // send just the value
+          };
+
+          // Remove undefined or empty keys
+          Object.keys(newFilters).forEach((key) => {
+            if (newFilters[key] === undefined || newFilters[key] === "") {
+              delete newFilters[key];
+            }
+          });
+
+          setAppliedFilters(newFilters);
+
+          // Trigger fetch with new filters
+          if (fetchUsersRef.current) {
+            fetchUsersRef.current(newFilters);
+          }
+        },
         getOptionLabel: (option) => option.label,
         valueKey: "value",
         freeSolo: true,
       },
+
       {
         id: "parent_id",
         label: "Parent Id",
@@ -345,18 +365,7 @@ const Users = ({ query }) => {
         options: roleOptions,
       },
     ];
-  }, [user?.role, userOptions]);
-  const handleApplyFilters = () => {
-    const payload = {
-      ...query,
-      id: selectedUserFilter?.value || undefined, // <-- only send id
-    };
-
-    if (fetchUsersRef.current) {
-      fetchUsersRef.current(payload); // fetch with applied filters
-    }
-  };
-
+  }, [user?.role, userOptions, appliedFilters]); // Add appliedFilters to dependencies
   const columns = useMemo(() => {
     const baseColumns = [
       {
