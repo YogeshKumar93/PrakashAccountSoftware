@@ -381,7 +381,7 @@ const BeneficiaryList = ({ sender, onSuccess, onPayoutSuccess }) => {
         sx={{
           py: 1,
           px: 2,
-          background: "#2275B7",
+          background: "#6C4BC7",
           borderBottom: openList ? "1px solid" : "none",
           borderColor: "divider",
         }}
@@ -655,7 +655,7 @@ const BeneficiaryList = ({ sender, onSuccess, onPayoutSuccess }) => {
           loading={loading || submitting}
           footerButtons={[
             {
-              text: submitting ? "Saving..." : " Verify and Add Beneficiary",
+              text: submitting ? "Saving..." : "Verify and Add Beneficiary",
               variant: "contained",
               color: "primary",
               onClick: handleAddAndVerifyBeneficiary,
