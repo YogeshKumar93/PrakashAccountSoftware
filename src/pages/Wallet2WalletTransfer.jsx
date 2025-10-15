@@ -541,18 +541,6 @@ const Wallet2WalletTransfer = ({}) => {
 
   return (
     <Box>
-      <Box
-        sx={{
-          flex: 1,
-          borderRadius: 3,
-          display: "flex",
-        }}
-      >
-        {user.role !== "adm" && (
-          <W2wTransfer type="w2w" handleFetchRef={refreshTransfer} />
-        )}
-      </Box>
-
       <Box sx={{}}>
         {loading ? (
           <CommonLoader loading={loading} text="Loading Wallet Transfers" />
