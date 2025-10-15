@@ -692,23 +692,22 @@ const PayoutTxn = ({ query }) => {
 
             {/* Print payout visible only to ret and dd */}
             {(user?.role === "ret" || user?.role === "dd") && (
-             <Tooltip title="Print Payout">
-  <IconButton
-    color="secondary"
-    size="small"
-    onClick={() => {
-      // Save individual transaction data
-      sessionStorage.setItem("txnData", JSON.stringify(row));
+              <Tooltip title="Print Payout">
+                <IconButton
+                  color="secondary"
+                  size="small"
+                  onClick={() => {
+                    // Save individual transaction data
+                    sessionStorage.setItem("txnData", JSON.stringify(row));
 
-      // Open receipt page in a new tab
-      window.open("/print-payout", "_blank");
-    }}
-    sx={{ backgroundColor: "transparent" }}
-  >
-    <PrintIcon />
-  </IconButton>
-</Tooltip>
-
+                    // Open receipt page in a new tab
+                    window.open("/print-payout", "_blank");
+                  }}
+                  sx={{ backgroundColor: "transparent" }}
+                >
+                  <PrintIcon />
+                </IconButton>
+              </Tooltip>
             )}
           </Box>
         ),
@@ -807,30 +806,34 @@ const PayoutTxn = ({ query }) => {
               }}
             >
               {selectedRows.length > 0 && (
-               <Tooltip title="Print ">
-  <Button
-    variant="contained"
-    size="small"
-    color="primary"
-    onClick={() => {
-      if (!selectedRows || selectedRows.length === 0) {
-        alert("Please select at least one transaction to print.");
-        return;
-      }
+                <Tooltip title="Print ">
+                  <Button
+                    variant="contained"
+                    size="small"
+                    color="primary"
+                    onClick={() => {
+                      if (!selectedRows || selectedRows.length === 0) {
+                        alert(
+                          "Please select at least one transaction to print."
+                        );
+                        return;
+                      }
 
-      // Save all selected rows
-      sessionStorage.setItem("txnData", JSON.stringify(selectedRows));
+                      // Save all selected rows
+                      sessionStorage.setItem(
+                        "txnData",
+                        JSON.stringify(selectedRows)
+                      );
 
-      // Open receipt page in a new tab
-      window.open("/print-payout", "_blank");
-    }}
-    sx={{ ml: 1 }}
-  >
-    <PrintIcon sx={{ fontSize: 22, color: "#fff", mr: 1 }} />
-    Print
-  </Button>
-</Tooltip>
-
+                      // Open receipt page in a new tab
+                      window.open("/print-payout", "_blank");
+                    }}
+                    sx={{ ml: 1 }}
+                  >
+                    <PrintIcon sx={{ fontSize: 22, color: "#fff", mr: 1 }} />
+                    Print
+                  </Button>
+                </Tooltip>
               )}
             </Box>
             <Box
