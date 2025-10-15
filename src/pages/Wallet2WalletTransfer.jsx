@@ -31,13 +31,20 @@ import { apiCall } from "../api/apiClient";
 import { useToast } from "../utils/ToastContext";
 import ReplayIcon from "@mui/icons-material/Replay";
 import { okhttp, postman } from "../utils/iconsImports";
+import { debounce } from "lodash";
 
 const Wallet2WalletTransfer = ({}) => {
   const authCtx = useContext(AuthContext);
   const user = authCtx?.user;
   const navigate = useNavigate();
   const { showToast } = useToast();
+  const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
+  const [userSearch, setUserSearch] = useState("");
+  const [userOptions, setUserOptions] = useState([]);
+  const [selectedUserFilter, setSelectedUserFilter] = useState(null); // selected option
+  const [appliedFilters, setAppliedFilters] = useState({});
+
   const fetchUsersRef = useRef(null);
   const handleFetchRef = (fetchFn) => {
     fetchUsersRef.current = fetchFn;
@@ -75,6 +82,54 @@ const Wallet2WalletTransfer = ({}) => {
     }
   };
 
+  useEffect(() => {
+    if (userSearch.trim().length < 4) {
+      setUserOptions([]); // Clear options if less than 4 characters
+      return;
+    }
+
+    const fetchUsersByEstablishment = async (searchTerm) => {
+      try {
+        const { error, response } = await apiCall(
+          "post",
+          ApiEndpoints.GET_USER_DEBOUNCE,
+          { establishment: searchTerm }
+        );
+
+        if (!error && Array.isArray(response?.data)) {
+          setUserOptions(
+            response.data.map((u) => ({
+              label: u.establishment,
+              value: u.id,
+              sender_id: u.id,
+              receiver_id: u.id,
+            }))
+          );
+        } else {
+          setUserOptions([]);
+        }
+      } catch (err) {
+        console.error("User search failed:", err);
+        setUserOptions([]);
+      }
+    };
+
+    const debouncedFetch = debounce(fetchUsersByEstablishment, 500);
+    debouncedFetch(userSearch);
+
+    return () => debouncedFetch.cancel(); // cleanup on unmount/change
+  }, [userSearch]);
+
+  const filterRows = (rows) => {
+    if (!searchTerm) return rows;
+    const lowerSearch = searchTerm.toLowerCase();
+    return rows.filter((row) =>
+      Object.values(row).some((val) =>
+        String(val).toLowerCase().includes(lowerSearch)
+      )
+    );
+  };
+
   const tableEndpoint =
     user?.role === "adm" || user?.role === "sadm"
       ? ApiEndpoints.WALLET_LIST
@@ -95,8 +150,32 @@ const Wallet2WalletTransfer = ({}) => {
         defaultValue: "pending",
         roles: ["adm", "sadm"],
       },
-      { id: "sender_est", label: "Sender Est", type: "textfield" },
-      { id: "receiver_est", label: "Receiver Est", type: "textfield" },
+      {
+        id: "id",
+        label: "Sender/Receiver",
+        type: "autocomplete",
+        options: userOptions,
+        onSearch: (val) => {
+          // ✅ Only trigger user search, not applied filters
+          setUserSearch(val);
+        },
+        getOptionLabel: (option) => option.label,
+        onChange: (selected) => {
+          // ✅ Update filters only when user actually selects an option
+          if (selected) {
+            setAppliedFilters((prev) => ({
+              ...prev,
+              sender_id: selected.sender_id,
+              receiver_id: selected.receiver_id,
+            }));
+          } else {
+            setAppliedFilters((prev) => {
+              const { sender_id, receiver_id, ...rest } = prev;
+              return rest;
+            });
+          }
+        },
+      },
       {
         id: "txn_id",
         label: "Txn ID",
@@ -104,7 +183,7 @@ const Wallet2WalletTransfer = ({}) => {
         roles: ["adm", "sadm"],
       },
     ],
-    []
+    [userOptions, appliedFilters]
   );
   const columns = useMemo(
     () => [
@@ -449,7 +528,8 @@ const Wallet2WalletTransfer = ({}) => {
             columns={columns}
             endpoint={tableEndpoint}
             filters={filters}
-            queryParam="service=W2W transfer"
+            transformData={filterRows}
+            queryParam={{ ...appliedFilters, service: "W2W transfer" }}
             refresh={true}
             includeClientRef={false}
           />
