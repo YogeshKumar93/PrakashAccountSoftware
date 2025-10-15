@@ -11,7 +11,7 @@ import CreatePlan from "./CreatePlan";
 import { Edit } from "@mui/icons-material";
 import EditPlan from "../components/EditPlan";
 
-const Plans = ({ filters = [], query }) => {
+const Plans = ({ query }) => {
   const authCtx = useContext(AuthContext);
   const user = authCtx?.user;
     const [openEdit, setOpenEdit] = useState(false);
@@ -49,6 +49,29 @@ const Plans = ({ filters = [], query }) => {
     setOpenEdit(false);
     
   };
+  const filters = useMemo(
+    () => [
+      {
+        id: "name",
+        label: "Name",
+        type: "textfield",
+      },
+      {
+        id: "id",
+        label: "ID",
+        type: "textfield",
+      },
+      {
+        id: "date_range",
+        type: "daterange",
+        
+      },
+    ],
+    []
+  );
+
+
+
   const columns = useMemo(
     () => [
       {
