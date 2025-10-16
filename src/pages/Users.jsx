@@ -528,7 +528,7 @@ baseColumns.push({
             >
               <ManageAccountsIcon fontSize="small" />
             </IconButton>
-          </Tooltip>
+          </Tooltip> 
         </Box>
       );
     } else {
