@@ -19,7 +19,7 @@ const titleMap = {
     "/admin/commissionrule": "Commission Rules",
     "/admin/logs": "Logs",
     "/admin/selectlayout": "Layout",
-    "/admin/my-profile": "My Profile",
+    "/admin/profile": "My Profile",
     "/admin/operators": "Operators",
     "/admin/account-ledger": "Account Ledger",
     "/admin/wallet-ledger": "Wallet Ledger",
@@ -35,6 +35,7 @@ const titleMap = {
     "/admin/pg-orders": "PG Orders",
     "/admin/virtual_accounts": "Virtual Accounts",
     "/admin/invoice": "Invoices",
+    
   },
 
   customer: {
