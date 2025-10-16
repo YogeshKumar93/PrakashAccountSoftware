@@ -9,6 +9,7 @@ const CreateAccountStatement = ({
   onFetchRef,
   accountId,
   balance,
+  establishment,
 }) => {
   const { showToast } = useToast();
   const [submitting, setSubmitting] = useState(false);
@@ -38,6 +39,7 @@ const CreateAccountStatement = ({
     }
     fetchTransactions();
   }, [accountId, balance]);
+  console.log("establishment", establishment);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

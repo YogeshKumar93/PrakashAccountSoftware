@@ -40,6 +40,8 @@ const AccountStatement = ({ filters = [] }) => {
   const { id } = useParams;
   const location = useLocation();
   const account_id = location.state?.account_id || id;
+  const establishment = location.state?.establishment || null;
+   const mobile = location.state?.mobile || null;
   const balance = location.state?.balance || 0;
   const user_id = location.state?.user_id || 0;
   const fetchUsersRef = useRef(null);
@@ -70,6 +72,7 @@ const AccountStatement = ({ filters = [] }) => {
     }
   }, [account_id, balance]);
   console.log("bal;amce", balance);
+  console.log("establishment", establishment);
   const handleConfirmDelete = async () => {
     try {
       setOpenDelete(false); // close modal immediately or after API

@@ -35,7 +35,6 @@ const titleMap = {
     "/admin/pg-orders": "PG Orders",
     "/admin/virtual_accounts": "Virtual Accounts",
     "/admin/invoice": "Invoices",
-    
   },
 
   customer: {
@@ -145,15 +144,17 @@ export const setTitleFunc = (path, states = {}) => {
 
   let title = roleMap[path] || "";
 
-  if (path === "/admin/accountStatement") {
-    return `Account Statement ${states.acc_name} (${states.mobile})`;
+  if (path === "/admin/accountstatements") {
+    return `Account Statements ${states.establishment} (${states.mobile})`;
   }
   if (path === "/customer/khata-statement") {
     return `Khata Statement ${states.name} (${states.id})`;
   }
-  if (path === "/admin/bankStatement") {
+  if (path === "/admin/bankStatements/id") {
     return `${states.bank_name} Bank Statement`;
   }
+
+ 
 
   return title;
 };

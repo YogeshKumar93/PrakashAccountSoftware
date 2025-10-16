@@ -41,7 +41,7 @@ const Accounts = ({ filters = [] }) => {
 
   const handleAccountStatement = (row) => {
     navigate(`/admin/accountstatements`, {
-      state: { account_id: row.id, balance: row.balance, user_id: row.user_id },
+      state: { account_id: row.id, balance: row.balance, user_id: row.user_id , establishment:row.establishment, mobile:row.mobile},
     });
   };
 
