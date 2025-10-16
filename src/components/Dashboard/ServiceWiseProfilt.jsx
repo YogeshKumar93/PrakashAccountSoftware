@@ -133,7 +133,7 @@ const ServiceWiseProfit = () => {
 
   const services = data?.services || {};
   const grandTotal = data?.grand_total || {};
-  const isAdmin = user?.role === "adm";
+  const isAdmin = user?.role === "adm" || user?.role === "sadm";
   const isMd = user?.role === "md";
   const isDi = user?.role === "di";
   const isRet = user?.role === "ret";
