@@ -21,10 +21,6 @@ import CancelIcon from "@mui/icons-material/Cancel";
 const LeanAmount = ({ filters = [] }) => {
   const authCtx = useContext(AuthContext);
   const user = authCtx?.user;
-  const navigate = useNavigate();
-
-  const [openEdit, setOpenEdit] = useState(false);
-  const [selectedRow, setSelectedRow] = useState(null);
   const [selectedBank, setSelectedBank] = useState(null); // for delete
   const [loading, setLoading] = useState(true);
 
@@ -116,7 +112,7 @@ const LeanAmount = ({ filters = [] }) => {
     ];
 
     // Actions column: only for adm or sadm
-    if (["adm"].includes(user?.role)) {
+    if (["adm", "sadm"].includes(user?.role)) {
       baseColumns.push({
         name: "Actions",
         selector: (row) => (
