@@ -42,6 +42,7 @@ import NumberVerificationComponent from "../common/NumberVerificationComponent";
 import ChangeLayoutModal from "../Layout/ChangeLayoutModal";
 import { BusinessInformation } from "./BusinessInformation";
 import ProfileTabs from "./ProfileTabs";
+import TwoFA from "./TwoFA";
 // import ProfileTabs from "./ProfileTabs";
 
 const ProfilePage = () => {
@@ -55,7 +56,7 @@ const ProfilePage = () => {
   const [resetMpinModalOpen, setResetMpinModalOpen] = useState(false);
   const [changePasswordModal, setChangePasswordModal] = useState(false);
   const [changeMpinModal, setChangeMpinModal] = useState(false);
-
+ const [twoFAModalOpen, setTwoFAModalOpen] = useState(false);
   const [newNumberModal, setNewNumberModal] = useState(false);
   const [changeLayout, setChangeLayout] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
@@ -84,6 +85,9 @@ const ProfilePage = () => {
 
   const handleChangePassword = () => {
     setChangePasswordModal(true);
+  };
+   const handleTwoFAModalOpen = () => {
+    setTwoFAModalOpen(true);
   };
 
   const handleChangeMpin = () => setChangeMpinModal(true);
@@ -154,6 +158,14 @@ const ProfilePage = () => {
       label: "View Information",
       icon: <Dashboard sx={{ fontSize: { xs: 18, sm: 20 } }} />,
       onClick: () => setViewInfoModalOpen(true),
+      gradient: "#fff",
+      hoverGradient: "linear-gradient(135deg, #c9ffbf, #7bed9f)",
+    },
+        {
+      id: 6,
+      label: "Two FA",
+      icon: <Dashboard sx={{ fontSize: { xs: 18, sm: 20 } }} />,
+      onClick: () => setTwoFAModalOpen(true),
       gradient: "#fff",
       hoverGradient: "linear-gradient(135deg, #c9ffbf, #7bed9f)",
     },
@@ -619,6 +631,12 @@ const ProfilePage = () => {
         <ProfileTabs
           open={viewInfoModalOpen}
           onClose={() => setViewInfoModalOpen(false)}
+        />
+      )}
+        {twoFAModalOpen && (
+        <TwoFA
+          open={twoFAModalOpen}
+          onClose={() => setTwoFAModalOpen(false)}
         />
       )}
     </Box>
