@@ -9,7 +9,6 @@ import {
 } from "@mui/material";
 import { apiCall } from "../api/apiClient";
 import ApiEndpoints from "../api/ApiEndpoints";
-
 import CommonModal from "../components/common/CommonModal";
 import CommonLoader from "../components/common/CommonLoader";
 
@@ -25,8 +24,13 @@ export const AssignPlans = ({ open, onClose, row, onSuccess }) => {
   useEffect(() => {
     if (open) {
       fetchPlans();
+      if (row?.plan_id) {
+        setSelectedPlan(row.plan_id.toString()); // ✅ pre-select current plan
+      } else {
+        setSelectedPlan(""); // no plan assigned yet
+      }
     }
-  }, [open]);
+  }, [open, row]);
 
   const fetchPlans = async () => {
     setLoading(true);
@@ -65,8 +69,7 @@ export const AssignPlans = ({ open, onClose, row, onSuccess }) => {
       );
       if (response) {
         setSuccess(response.message || "Plan assigned successfully");
-        if (onSuccess) onSuccess(); // callback to refresh parent
-        setSelectedPlan("");
+        if (onSuccess) onSuccess(); // refresh parent
         setTimeout(() => onClose(), 1000);
       } else {
         setError(error?.message || "Assignment failed");
@@ -102,7 +105,7 @@ export const AssignPlans = ({ open, onClose, row, onSuccess }) => {
             fullWidth
           >
             {plans.map((plan) => (
-              <MenuItem key={plan.id} value={plan.id}>
+              <MenuItem key={plan.id} value={plan.id.toString()}>
                 {plan.name}
               </MenuItem>
             ))}

@@ -98,7 +98,7 @@ const Wallet2WalletTransfer = ({}) => {
           "post",
           ApiEndpoints.GET_USER_DEBOUNCE,
           {
-            id: searchValue, // ✅ send ID instead of search text
+            establishment: searchValue, // ✅ still send ID when searching
           }
         );
 
@@ -106,7 +106,8 @@ const Wallet2WalletTransfer = ({}) => {
           setSenderOptions(
             response.data.map((u) => ({
               label: u.establishment || u.name || "N/A",
-              value: u.id, // this is the id
+              value: u.id, // ✅ store establishment for filter use
+              id: u.id, // keep ID separately for search clarity
             }))
           );
         } else {
@@ -131,7 +132,7 @@ const Wallet2WalletTransfer = ({}) => {
           "post",
           ApiEndpoints.GET_USER_DEBOUNCE,
           {
-            id: searchValue, // ✅ send ID instead of search text
+            establishment: searchValue,
           }
         );
 
@@ -139,7 +140,8 @@ const Wallet2WalletTransfer = ({}) => {
           setReceiverOptions(
             response.data.map((u) => ({
               label: u.establishment || u.name || "N/A",
-              value: u.id, // this is the id
+              value: u.id,
+              id: u.id,
             }))
           );
         } else {
@@ -154,14 +156,13 @@ const Wallet2WalletTransfer = ({}) => {
 
   useEffect(() => {
     debouncedSenderSearch(senderSearch);
-  }, [senderSearch, ]);
+  }, [senderSearch]);
 
   useEffect(() => {
     debouncedReceiverSearch(receiverSearch);
-  }, [receiverSearch,]);
+  }, [receiverSearch]);
 
   // Cleanup debounce on unmount
- 
 
   const filterRows = (rows) => {
     if (!searchTerm) return rows;
@@ -194,21 +195,22 @@ const Wallet2WalletTransfer = ({}) => {
         roles: ["adm", "sadm"],
       },
       {
-        id: "sender_id",
+        id: "user_id",
         label: "Sender",
         type: "autocomplete",
         options: senderOptions,
         onSearch: (val) => setSenderSearch(val),
         getOptionLabel: (option) => option.label || "N/A",
         onChange: (selected) => {
+          // ✅ For sender, send the user_id and value should be the id
           setAppliedFilters((prev) => ({
             ...prev,
-            sender_id: selected?.value || null, // ✅ send ID to table query
+            user_id: selected?.id || null, // send the actual user id
           }));
         },
       },
       {
-        id: "receiver_id",
+        id: "reciever_id",
         label: "Receiver",
         type: "autocomplete",
         options: receiverOptions,
@@ -217,7 +219,7 @@ const Wallet2WalletTransfer = ({}) => {
         onChange: (selected) => {
           setAppliedFilters((prev) => ({
             ...prev,
-            receiver_id: selected?.value || null, // ✅ send ID to table query
+            reciever_id: selected?.id || null,
           }));
         },
       },

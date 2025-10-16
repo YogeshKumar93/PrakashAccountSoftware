@@ -11,6 +11,7 @@ import WalletIcon from "@mui/icons-material/Wallet";
 import { CurrencyRupee } from "@mui/icons-material";
 
 import AuthContext from "../contexts/AuthContext";
+import W2wTransfer from "./w2wTransfer";
 
 export const WalletTransfer = () => {
   const authCtx = useContext(AuthContext);
@@ -94,7 +95,7 @@ export const WalletTransfer = () => {
           <WalletIcon fontSize="small" />,
           "W1 TO W1 Transfer"
         ),
-        component: <Wallet2WalletTransfer />,
+        component: <W2wTransfer />,
       },
       {
         label: createTabLabel(
