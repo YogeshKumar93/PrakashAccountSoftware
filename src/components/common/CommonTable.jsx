@@ -618,6 +618,7 @@ const CommonTable = ({
                 value={filterValues[filter.id] || "All"}
                 onChange={(e) => handleFilterChange(filter.id, e.target.value)}
                 size="small"
+                sx={{ minWidth: 120 }}
               >
                 <MenuItem value="All">All</MenuItem>
                 {filter.options &&
@@ -639,13 +640,13 @@ const CommonTable = ({
                 shrink: true,
               }}
               sx={{
-                minWidth: 140,
+                minWidth: 120,
                 fontFamily: "DM Sans, sans-serif",
                 "& .MuiInputBase-root": {
                   height: 32, // reduce overall height
                 },
                 "& input": {
-                  padding: "6px 8px", // tighter padding
+                  padding: "8px 8px", // tighter padding
                   fontSize: "0.85rem",
                 },
                 "& .MuiInputLabel-root": {
@@ -658,7 +659,7 @@ const CommonTable = ({
               sx={{
                 display: "flex",
                 flexDirection: "column",
-                minWidth: 280,
+                minWidth: 160,
                 mt: -1,
               }}
             >
@@ -810,7 +811,7 @@ const CommonTable = ({
                 fontSize: "15px",
                 lineHeight: "1",
                 fontFamily: "DM Sans, sans-serif",
-                fontWeight: 400,
+                fontWeight: 600,
 
                 color: "#646e84",
                 border: "none", // Remove default borders
@@ -887,6 +888,7 @@ const CommonTable = ({
                 alignItems: "center",
                 flexWrap: "wrap",
                 gap: 1,
+
                 // mb: 2
               }}
             >

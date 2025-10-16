@@ -85,6 +85,7 @@ const ApiEndpoints = {
   UPDATE_BLACK_LISTED_ACCOUNT: "risk/updateBlackListedAccount",
   DELETE_BLACK_LISTED_ACCOUNT: "risk/deleteBlackListedAccount",
   GET_BLACK_LISTED_ACCOUNT: "risk/getBlackListedAccount",
+  CHANGE_TWO_FA: "auth/changeTwoFa",
   // ****************************** NEW API'S ******************************
   SIGN_IN: "auth/signIn",
   LOGIN_OTP_VALIDATE: "auth/secureLogin",
