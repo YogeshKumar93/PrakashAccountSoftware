@@ -156,7 +156,7 @@ const MenuCard = ({ icon, label, onClick, isActive, user }) => {
         {/* Label */}
         <Typography
           sx={{
-            fontWeight: 900, // max bold
+            fontWeight: 800, // max bold
             textAlign: "center",
             lineHeight: 1,
             letterSpacing: "0.3px",
@@ -166,7 +166,7 @@ const MenuCard = ({ icon, label, onClick, isActive, user }) => {
             overflow: "hidden",
             textOverflow: "ellipsis",
             maxWidth: "130px",
-            textShadow: "1px 1px 0 rgba(0,0,0,0.2)", // makes it visually thicker
+           
           }}
         >
           {label}
