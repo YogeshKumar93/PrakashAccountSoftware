@@ -334,13 +334,13 @@ export default function AllServices() {
       label: "UPI Transfer",
       icon: upi_1,
       subMenu: [
-        {
-          key: "upiPay",
-          label: "UPI Pay",
-          icon: QrCodeIcon,
-          component: UpiTransfer,
-          type: "upi",
-        },
+        // {
+        //   key: "upiPay",
+        //   label: "UPI Pay",
+        //   icon: QrCodeIcon,
+        //   component: UpiTransfer,
+        //   type: "upi",
+        // },
         {
           key: "LEVIN UPI",
           label: "Levin UPI",
