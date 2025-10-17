@@ -100,20 +100,21 @@ const MenuCard = ({ icon, label, onClick, isActive, user }) => {
           width: 140,
           borderRadius: 3,
           background: isActive
-            ? "linear-gradient(135deg, #2563EB 0%, #1E40AF 100%)"
+            ? "linear-gradient(135deg, #5210c1 0%, #7b3fe3 100%)"
             : "#F9FAFB",
-          color: isActive ? "#FFF" : "#1E3C72",
+          color: isActive ? "#FFF" : "#2E1065",
           cursor: "pointer",
           transition: "all 0.3s ease",
           boxShadow: isActive
-            ? "0 6px 14px rgba(37, 99, 235, 0.4)"
+            ? "0 6px 14px rgba(82, 16, 193, 0.4)"
             : "0 2px 6px rgba(0,0,0,0.08)",
           "&:hover": {
             transform: "translateY(-4px) scale(1.04)",
-            boxShadow: "0 8px 16px rgba(37, 99, 235, 0.35)",
+            boxShadow: "0 8px 16px rgba(123, 63, 227, 0.35)",
             background: isActive
-              ? "linear-gradient(135deg, #2563EB 0%, #1E40AF 100%)"
-              : "linear-gradient(135deg, #EFF6FF 0%, #FFFFFF 100%)",
+        ? "linear-gradient(135deg, #5210c1 0%, #7b3fe3 100%)"
+        : "linear-gradient(135deg, #F3E8FF 0%, #FFFFFF 100%)",
+
           },
           p: 2,
           position: "relative",
@@ -186,8 +187,9 @@ const SubMenuCard = ({ icon, label, onClick, isActive, user }) => {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          height: { xs: 80, sm: 90 },
+          height: { xs: 80, sm: 120 },
           width: { xs: 80, sm: 150 },
+          
           borderRadius: 2.5,
           background: isActive
             ? "linear-gradient(135deg, #5210c1 0%, #7b3fe3 100%)"
@@ -245,7 +247,7 @@ const SubMenuCard = ({ icon, label, onClick, isActive, user }) => {
         <Typography
           variant="caption"
           sx={{
-            fontWeight: 900,
+            fontWeight: 800,
             fontSize: "1rem",
             textAlign: "center",
             lineHeight: 1.2,
