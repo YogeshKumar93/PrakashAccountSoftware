@@ -150,9 +150,13 @@ export const setTitleFunc = (path, states = {}) => {
   if (path === "/customer/khata-statement") {
     return `Khata Statement ${states.name} (${states.id})`;
   }
-  if (path === "/admin/bankStatements/id") {
-    return `${states.bank_name} Bank Statement`;
-  }
+if (path.startsWith("/admin/bankstatements/")) {
+  return `${states.bank_name} Statement (${states.acc_number})`;
+}
+
+
+
+
 
  
 

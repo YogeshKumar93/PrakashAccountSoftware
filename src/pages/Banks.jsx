@@ -26,6 +26,10 @@ const Banks = ({ filters = [] }) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [selectedBank, setSelectedBank] = useState(null);
   const [loading, setLoading] = useState(false);
+ const bank_name = location.state?.bank_name || "Bank";
+const acc_number = location.state?.acc_number || "Account Number";
+
+
 
   // ✅ keep a ref to CommonTable for refreshing
   const fetchBanksRef = useRef(null);
@@ -51,6 +55,7 @@ const Banks = ({ filters = [] }) => {
         bank_id: row.id,
         bank_name: row.bank_name,
         balance: row.balance,
+        acc_number: row.acc_number, 
       },
     });
   };
