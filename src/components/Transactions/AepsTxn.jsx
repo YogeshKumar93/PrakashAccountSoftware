@@ -1,11 +1,4 @@
-import {
-  useMemo,
-  useCallback,
-  useContext,
-  useState,
-  useEffect,
-  useRef,
-} from "react";
+import { useMemo, useContext, useState, useEffect, useRef } from "react";
 import {
   Box,
   Tooltip,
@@ -13,6 +6,8 @@ import {
   Button,
   Drawer,
   IconButton,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import CommonTable from "../common/CommonTable";
 import ApiEndpoints from "../../api/ApiEndpoints";
@@ -20,38 +15,38 @@ import AuthContext from "../../contexts/AuthContext";
 import { dateToTime1, ddmmyy, ddmmyyWithTime } from "../../utils/DateUtils";
 import CommonStatus from "../common/CommonStatus";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import CloseIcon from "@mui/icons-material/Close";
+import PrintIcon from "@mui/icons-material/Print";
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import LaptopIcon from "@mui/icons-material/Laptop";
+import { useNavigate } from "react-router-dom";
 
 import biggpayLogo from "../../assets/Images/PPALogor.png";
 import TransactionDetailsCard from "../common/TransactionDetailsCard";
 import { android2, linux2, macintosh2, windows2 } from "../../iconsImports";
-import { okhttp } from "../../utils/iconsImports";
-import LaptopIcon from "@mui/icons-material/Laptop";
-import PrintIcon from "@mui/icons-material/Print";
-import { Navigate, useNavigate } from "react-router-dom";
 import CommonModal from "../common/CommonModal";
-import { useToast } from "../../utils/ToastContext";
-import { apiCall } from "../../api/apiClient";
 import Scheduler from "../common/Scheduler";
 import AddLein from "../../pages/AddLein";
+import { apiCall } from "../../api/apiClient";
+import { useToast } from "../../utils/ToastContext";
 import { json2Excel } from "../../utils/exportToExcel";
 import { apiErrorToast } from "../../utils/ToastUtil";
-import FileDownloadIcon from "@mui/icons-material/FileDownload"; // Excel export icon
 
 const AepsTxn = ({ query }) => {
   const authCtx = useContext(AuthContext);
   const user = authCtx?.user;
+  const navigate = useNavigate();
+  const { showToast } = useToast();
+
   const [openCreate, setOpenCreate] = useState(false);
   const [selectedTxn, setSelectedTxn] = useState(null);
   const [responseModalOpen, setResponseModalOpen] = useState(false);
   const [selectedApiResponse, setSelectedApiResponse] = useState("");
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
-  const { showToast } = useToast();
   const [selectedForRefund, setSelectedForRefund] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
-  const navigate = useNavigate();
-  const [selectedTransaction, setSelectedTrancation] = useState("");
+  const [selectedTransaction, setSelectedTransaction] = useState(null);
   const [openLeinModal, setOpenLeinModal] = useState(false);
   const [refundLoading, setRefundLoading] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
@@ -64,6 +59,12 @@ const AepsTxn = ({ query }) => {
     setOpenLeinModal(true);
     setSelectedTrancation(row);
   };
+
+  const refreshPlans = () => {
+    fetchUsersRef.current?.();
+  };
+
+  // Fetch routes dynamically
   useEffect(() => {
     const fetchRoutes = async () => {
       try {
@@ -72,11 +73,9 @@ const AepsTxn = ({ query }) => {
           ApiEndpoints.GET_ROUTES
         );
         if (response) {
-          console.log("response", response);
-
           const routeOptions = response.data.map((r) => ({
-            label: r.name, // shown in dropdown
-            value: r.code, // sent in API calls
+            label: r.name,
+            value: r.code,
           }));
           setRoutes(routeOptions);
         } else {
@@ -89,11 +88,19 @@ const AepsTxn = ({ query }) => {
 
     fetchRoutes();
   }, []);
+
+  const handleOpenLein = (row) => {
+    setOpenLeinModal(true);
+    setSelectedTransaction(row);
+  };
+
   const handleCloseLein = () => setOpenLeinModal(false);
+
   const handleRefundClick = (row) => {
     setSelectedForRefund(row);
     setConfirmModalOpen(true);
   };
+
   const handleConfirmRefund = async () => {
     if (!selectedForRefund) return;
     setRefundLoading(true);
@@ -107,25 +114,17 @@ const AepsTxn = ({ query }) => {
         response?.message || "Refund processed successfully",
         "success"
       );
-
-      // Close modal and reset selected row
       setConfirmModalOpen(false);
       setSelectedForRefund(null);
+      refreshPlans();
     } else {
       showToast(error?.message || "Failed to process refund", "error");
     }
 
     setRefundLoading(false);
   };
-  const fetchUsersRef = useRef(null);
-  const handleFetchRef = (fetchFn) => {
-    fetchUsersRef.current = fetchFn;
-  };
-  const refreshPlans = () => {
-    if (fetchUsersRef.current) {
-      fetchUsersRef.current();
-    }
-  };
+
+  // Filters
   const filters = useMemo(
     () => [
       {
@@ -144,11 +143,9 @@ const AepsTxn = ({ query }) => {
         id: "route",
         label: "Route",
         type: "dropdown",
-        options: routes, // ✅ dynamic routes here
+        options: routes,
         roles: ["adm"],
       },
-
-      // { id: "customer_mobile", label: "Customer Mobile", type: "textfield" },
       { id: "txn_id", label: "Txn ID", type: "textfield" },
       {
         id: "user_id",
@@ -158,26 +155,25 @@ const AepsTxn = ({ query }) => {
       },
       { id: "date_range", type: "daterange" },
     ],
-    [routes] // ✅ depends on routes, so dropdown updates automatically
+    [routes]
   );
+
   const handleExportExcel = async () => {
     try {
-      // Fetch all users (without pagination/filters) from API
       const { error, response } = await apiCall(
         "post",
         ApiEndpoints.GET_AEPS_TXN,
         { export: 1 }
       );
       const usersData = response?.data?.data || [];
-
       if (usersData.length > 0) {
-        json2Excel("AepsTxns", usersData); // generates and downloads Users.xlsx
+        json2Excel("AepsTxns", usersData);
       } else {
-        apiErrorToast("no data found");
+        apiErrorToast("No data found");
       }
     } catch (error) {
       console.error("Excel export failed:", error);
-      alert("Failed to export Excel");
+      apiErrorToast("Failed to export Excel");
     }
   };
 
@@ -232,19 +228,18 @@ const AepsTxn = ({ query }) => {
       {
         name: "Date",
         selector: (row) => (
-          <div style={{ display: "flex", flexDirection: "column" }}>
+          <Box display="flex" flexDirection="column">
             <Tooltip title={`Created: ${ddmmyyWithTime(row.created_at)}`} arrow>
               <span>
                 {ddmmyy(row.created_at)} {dateToTime1(row.created_at)}
               </span>
             </Tooltip>
-
             <Tooltip title={`Updated: ${ddmmyyWithTime(row.updated_at)}`} arrow>
               <span>
                 {ddmmyy(row.updated_at)} {dateToTime1(row.updated_at)}
               </span>
             </Tooltip>
-          </div>
+          </Box>
         ),
         wrap: true,
         width: "190px",
@@ -261,187 +256,56 @@ const AepsTxn = ({ query }) => {
         name: "Pf",
         selector: (row) => {
           let icon;
-
-          if (row.pf.toLowerCase().includes("windows")) {
-            icon = (
-              <img
-                src={windows2}
-                style={{ width: "22px" }}
-                alt="description of image"
-              />
-            );
-          } else if (row.pf.toLowerCase().includes("android")) {
-            icon = (
-              <img
-                src={android2}
-                style={{ width: "22px" }}
-                alt="description of image"
-              />
-            );
-          } else if (row.pf.toLowerCase().includes("mac")) {
-            icon = (
-              <img
-                src={macintosh2}
-                style={{ width: "22px" }}
-                alt="description of image"
-              />
-            );
-          } else if (row.pf.toLowerCase().includes("linux")) {
-            icon = (
-              <img
-                src={linux2}
-                style={{ width: "22px" }}
-                alt="description of image"
-              />
-            );
-          } else if (row.pf.toLowerCase().includes("okhttp")) {
-            icon = (
-              <img
-                src={okhttp}
-                style={{ width: "22px" }}
-                alt="description of image"
-              />
-            );
-          } else {
-            icon = <LaptopIcon sx={{ color: "blue", width: "22px" }} />;
-          }
-
+          const pf = row.pf?.toLowerCase() || "";
+          if (pf.includes("windows"))
+            icon = <img src={windows2} style={{ width: 22 }} />;
+          else if (pf.includes("android"))
+            icon = <img src={android2} style={{ width: 22 }} />;
+          else if (pf.includes("mac"))
+            icon = <img src={macintosh2} style={{ width: 22 }} />;
+          else if (pf.includes("linux"))
+            icon = <img src={linux2} style={{ width: 22 }} />;
+          else if (pf.includes("okhttp"))
+            icon = <img src={okhttp} style={{ width: 22 }} />;
+          else icon = <LaptopIcon sx={{ color: "blue", width: 22 }} />;
           return (
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                fontSize: "13px",
-                textAlign: "justify",
-                gap: 2,
-              }}
-            >
+            <Box display="flex" alignItems="center" gap={2}>
               {icon}
             </Box>
           );
         },
         width: "20px",
-        wrap: true,
-        left: true,
       },
-      ...(user?.role === "ret" || user?.role === "dd"
-        ? []
-        : [
+      // Additional conditional columns based on roles
+      ...(user?.role !== "ret" && user?.role !== "dd"
+        ? [
             {
               name: "Est.",
               selector: (row) => (
-                <div style={{ fontSize: "10px", fontWeight: "600" }}>
+                <div style={{ fontSize: 10, fontWeight: 600 }}>
                   {row.establishment}
                 </div>
               ),
+              width: 70,
               center: true,
-              width: "70px",
             },
-          ]),
-      ...(user?.role === "ret" || user?.role === "dd"
-        ? [] // ❌ hide for ret and dd
-        : [
             {
               name: "Txn ID /Ref",
               selector: (row) => (
-                <div
-                  style={{
-                    textAlign: "left",
-                    fontSize: "10px",
-                    fontWeight: "600",
-                  }}
-                >
+                <div style={{ fontSize: 10, fontWeight: 600 }}>
                   {row.txn_id}
                   <br />
                   {row.client_ref}
                 </div>
               ),
-              wrap: true,
-              width: "100px",
+              width: 100,
             },
-          ]),
-
-      ...(user?.role === "adm"
-        ? []
-        : [
-            {
-              name: "TxnId",
-              selector: (row) => (
-                <div
-                  style={{
-                    textAlign: "left",
-                    fontSize: "10px",
-                    fontWeight: "600",
-                  }}
-                >
-                  {row.txn_id}
-                  <br />
-                  {/* {row.client_ref} */}
-                </div>
-              ),
-              wrap: true,
-              width: "100px",
-            },
-          ]),
+          ]
+        : []),
       {
         name: "Aadhaar No.",
-        selector: (row) => (
-          <div style={{ textAlign: "left" }}>
-            **** **** {row.aadhaar_number.slice(-4)}
-          </div>
-        ),
-        wrap: true,
+        selector: (row) => <div>**** **** {row.aadhaar_number?.slice(-4)}</div>,
       },
-      {
-        name: "Service",
-        selector: (row) => (
-          <div style={{ textAlign: "left", fontWeight: "600" }}>
-            {row.operator} <br />
-            {["adm", "sadm"].includes(user?.role) && (
-              <>
-                <span
-                  style={{
-                    fontWeight: "normal",
-                    fontSize: "8px",
-                    color: "blue",
-                  }}
-                >
-                  STATUS
-                </span>
-                <span
-                  style={{
-                    fontWeight: "normal",
-                    fontSize: "8px",
-                    color: "blue",
-                    cursor: "pointer",
-                    textDecoration: "underline",
-                    marginLeft: "6px",
-                  }}
-                  onClick={() => {
-                    setSelectedApiResponse(
-                      row.api_response || "No response available"
-                    );
-                    setResponseModalOpen(true);
-                  }}
-                >
-                  RESPONSE
-                </span>
-              </>
-            )}
-          </div>
-        ),
-        wrap: true,
-      },
-      // {
-      //   name: "Bank / IIN",
-      //   selector: (row) => (
-      //     <div style={{ textAlign: "left" }}>
-      //       {row.bank_name?.toUpperCase()} <br /> {row.iin}
-      //     </div>
-      //   ),
-      //   wrap: true,
-      // },
-
       {
         name: "Amount",
         selector: (row) => (
@@ -452,87 +316,8 @@ const AepsTxn = ({ query }) => {
         right: true,
       },
       {
-        name: "Ret Comm",
-        selector: (row) => (
-          <div
-            style={{ textAlign: "right", fontSize: "10px", fontWeight: 600 }}
-          >
-            <div style={{ color: "green" }}>
-              {parseFloat(row.ret_comm).toFixed(2)}
-            </div>
-            <div style={{ color: "blue" }}>
-              {parseFloat(row.ret_tds).toFixed(2)}
-            </div>
-          </div>
-        ),
-        right: true,
-        width: "60px",
-      },
-      ...(user?.role === "adm"
-        ? [
-            {
-              name: "Di Comm",
-              selector: (row) => (
-                <div
-                  style={{
-                    textAlign: "right",
-                    fontSize: "10px",
-                    fontWeight: 600,
-                  }}
-                >
-                  <div style={{ color: "green" }}>
-                    {parseFloat(row.di_comm).toFixed(2)}
-                  </div>
-                  <div style={{ color: "blue" }}>
-                    {parseFloat(row.di_tds).toFixed(2)}
-                  </div>
-                </div>
-              ),
-              right: true,
-              width: "60px",
-            },
-            {
-              name: "Md Comm",
-              selector: (row) => (
-                <div
-                  style={{
-                    textAlign: "right",
-                    fontSize: "10px",
-                    fontWeight: 600,
-                  }}
-                >
-                  <div style={{ color: "green" }}>
-                    {parseFloat(row.md_comm).toFixed(2)}
-                  </div>
-                  <div style={{ color: "blue" }}>
-                    {parseFloat(row.md_tds).toFixed(2)}
-                  </div>
-                </div>
-              ),
-              right: true,
-              width: "60px",
-            },
-          ]
-        : []),
-
-      {
-        name: "Balance",
-        selector: (row) => (
-          <div style={{ textAlign: "right", fontWeight: 600 }}>
-            ₹ {parseFloat(row.balance).toFixed(2)}
-          </div>
-        ),
-        right: true,
-      },
-      {
-        name: "RRN",
-        selector: (row) => <div style={{ textAlign: "center" }}>{row.rrn}</div>,
-        center: true,
-      },
-      {
         name: "Status",
         selector: (row) => <CommonStatus value={row.status} />,
-
         center: true,
       },
       // ...((user?.role === "adm" || user?.role === "sadm") &&
@@ -643,10 +428,7 @@ const AepsTxn = ({ query }) => {
   );
 
   const columnsWithSelection = useMemo(() => {
-    // Only show checkbox if user is NOT adm or sadm
-    if (user?.role === "adm" || user?.role === "sadm") {
-      return columns; // no selection column
-    }
+    if (user?.role === "adm" || user?.role === "sadm") return columns;
     return [
       {
         name: "",
@@ -657,20 +439,19 @@ const AepsTxn = ({ query }) => {
             disabled={row.status?.toLowerCase() === "failed"}
             onChange={() => {
               const isSelected = selectedRows.some((r) => r.id === row.id);
-              const newSelectedRows = isSelected
-                ? selectedRows.filter((r) => r.id !== row.id)
-                : [...selectedRows, row];
-              setSelectedRows(newSelectedRows);
+              setSelectedRows(
+                isSelected
+                  ? selectedRows.filter((r) => r.id !== row.id)
+                  : [...selectedRows, row]
+              );
             }}
           />
         ),
-        width: "40px",
+        width: 40,
       },
       ...columns,
     ];
   }, [selectedRows, columns]);
-
-  const queryParam = "";
 
   return (
     <>
@@ -679,96 +460,39 @@ const AepsTxn = ({ query }) => {
         columns={columnsWithSelection}
         endpoint={ApiEndpoints.GET_AEPS_TXN}
         filters={filters}
-        queryParam={queryParam}
-        enableActionsHover={true}
+        queryParam={query || ""}
+        enableActionsHover
         enableSelection={false}
         selectedRows={selectedRows}
         onSelectionChange={setSelectedRows}
         customHeader={
-          <>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: 1,
-                padding: "8px",
-              }}
-            >
-              {selectedRows.length > 0 && (
-                <Tooltip title="PRINT">
-                  <Button
-                    variant="contained"
-                    size="small"
-                    color="primary"
-                    onClick={() => {
-                      if (!selectedRows || selectedRows.length === 0) {
-                        alert(
-                          "Please select at least one transaction to print."
-                        );
-                        return;
-                      }
-
-                      // Save all selected rows
-                      sessionStorage.setItem(
-                        "txnData",
-                        JSON.stringify(selectedRows)
-                      );
-
-                      // Open receipt page in a new tab
-                      window.open("/print-aeps", "_blank");
-                    }}
-                    sx={{ ml: 1 }}
-                  >
-                    <PrintIcon
-                      sx={{ fontSize: 20, color: "#e3e6e9ff", mr: 1 }}
-                    />
-                  </Button>
-                </Tooltip>
-              )}
-            </Box>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: 1,
-                padding: "8px",
-                flexWrap: "wrap",
-              }}
-            >
-              {user?.role === "adm" && (
-                <IconButton
-                  color="primary"
-                  onClick={handleExportExcel}
-                  title="Export to Excel"
-                >
-                  <FileDownloadIcon />
-                </IconButton>
-              )}
-              <Scheduler onRefresh={refreshPlans} />
-            </Box>
-          </>
+          <Box display="flex" alignItems="center" gap={1} flexWrap="wrap">
+            {user?.role === "adm" && (
+              <IconButton
+                color="primary"
+                onClick={handleExportExcel}
+                title="Export to Excel"
+              >
+                <FileDownloadIcon />
+              </IconButton>
+            )}
+            <Scheduler onRefresh={refreshPlans} />
+          </Box>
         }
       />
 
-      {/* AEPS Details Drawer */}
+      {/* Transaction Drawer */}
       <Drawer
         anchor="right"
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
       >
-        <Box
-          sx={{
-            width: 400,
-            display: "flex",
-            flexDirection: "column",
-            height: "100%",
-          }}
-        >
+        <Box width={400} display="flex" flexDirection="column" height="100%">
           {selectedRow && (
             <TransactionDetailsCard
               amount={selectedRow.amount}
               status={selectedRow.status}
-              onClose={() => setDrawerOpen(false)} // ✅ Close drawer
+              onClose={() => setDrawerOpen(false)}
               companyLogoUrl={biggpayLogo}
               dateTime={ddmmyyWithTime(selectedRow.created_at)}
               message={selectedRow.message || "No message"}
@@ -797,6 +521,8 @@ const AepsTxn = ({ query }) => {
           )}
         </Box>
       </Drawer>
+
+      {/* Modals */}
       <CommonModal
         open={responseModalOpen}
         onClose={() => setResponseModalOpen(false)}
@@ -811,16 +537,12 @@ const AepsTxn = ({ query }) => {
         ]}
       >
         <Typography
-          sx={{
-            whiteSpace: "pre-wrap",
-            fontSize: "14px",
-            color: "#333",
-            wordBreak: "break-word",
-          }}
+          sx={{ whiteSpace: "pre-wrap", fontSize: 14, wordBreak: "break-word" }}
         >
           {selectedApiResponse}
         </Typography>
       </CommonModal>
+
       <CommonModal
         open={confirmModalOpen}
         onClose={() => setConfirmModalOpen(false)}
@@ -839,10 +561,43 @@ const AepsTxn = ({ query }) => {
           },
         ]}
       >
-        <Typography sx={{ fontSize: 14 }}>
+        <Typography fontSize={14}>
           Are you sure you want to refund transaction ID:{" "}
-          {selectedForRefund?.txn_id}?
+          <strong>{selectedForRefund?.txn_id}</strong>?
         </Typography>
+      </CommonModal>
+
+      <CommonModal
+        open={openFailModal}
+        onClose={() => setOpenFailModal(false)}
+        title="Mark as Failed"
+        footerButtons={[
+          { text: "Cancel", onClick: () => setOpenFailModal(false) },
+          {
+            text: "Submit",
+            variant: "contained",
+            onClick: async () => {
+              await apiCall("post", ApiEndpoints.REFUND_FAILED_TXN, {
+                txn_id: selectedTxn?.txn_id,
+                reason,
+              });
+              showToast("Transaction marked as failed", "success");
+              setOpenFailModal(false);
+              setReason("");
+              refreshPlans();
+            },
+          },
+        ]}
+      >
+        <Typography fontSize={14} mb={1}>
+          Transaction ID: <strong>{selectedTxn?.txn_id}</strong>
+        </Typography>
+        <textarea
+          value={reason}
+          onChange={(e) => setReason(e.target.value)}
+          placeholder="Enter reason"
+          style={{ width: "100%", height: 60, padding: 6 }}
+        />
       </CommonModal>
       <CommonModal
         open={openFailModal}

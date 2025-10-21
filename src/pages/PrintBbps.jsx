@@ -53,11 +53,11 @@ const PrintBbps = () => {
     "Date",
     "Ref Number",
     "Biller Name",
-    "RRN",
+    "UTR",
     "Number",
-    "Mobile",
+    // "Mobile",
     "Amount",
-    "Status",
+   
   ];
 
   return (
@@ -160,11 +160,11 @@ const PrintBbps = () => {
                     : "",
                   txn.txn_id || "",
                   txn.biller_name || "",
-                  txn.rrn || "",
+                  txn.operator_id || "",
                   txn.consumer_number || "",
-                  txn.customer_mobile || "",
+                  // txn.customer_mobile || "",
                   `₹ ${amount.toFixed(2)}`,
-                  txn.status || "",
+                 
                 ];
 
                 return (
@@ -172,7 +172,7 @@ const PrintBbps = () => {
                     {values.map((v, i) => (
                       <Box
                         key={i}
-                        className={`table-cell ${i === 6 ? "amount-red" : ""}`}
+                        className={`table-cell ${i === 5 ? "amount-red" : ""}`}
                       >
                         {v}
                       </Box>
@@ -192,11 +192,11 @@ const PrintBbps = () => {
                     : "",
                   txn.txn_id || "",
                   txn.biller_name || "",
-                  txn.rrn || "",
+                  txn.operator_id || "",
                   txn.consumer_number || "",
-                  txn.customer_mobile || "",
+                  // txn.customer_mobile || "",
                   `₹ ${amount.toFixed(2)}`,
-                  txn.status || "",
+                
                 ];
 
                 return (
