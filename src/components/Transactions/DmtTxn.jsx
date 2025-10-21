@@ -67,15 +67,14 @@ const DmtTxn = ({ query }) => {
   const [selectedTransaction, setSelectedTrancation] = useState("");
   const [routes, setRoutes] = useState([]);
   const [openSuccessModal, setOpenSuccessModal] = useState(false);
-const [selectedSuccessTxn, setSelectedSuccessTxn] = useState(null);
-
+  const [selectedSuccessTxn, setSelectedSuccessTxn] = useState(null);
 
   const [openLeinModal, setOpenLeinModal] = useState(false);
 
   const handleSuccessClick = (row) => {
-  setSelectedSuccessTxn(row);
-  setOpenSuccessModal(true);
-};
+    setSelectedSuccessTxn(row);
+    setOpenSuccessModal(true);
+  };
 
   useEffect(() => {
     const fetchRoutes = async () => {
@@ -227,9 +226,6 @@ const [selectedSuccessTxn, setSelectedSuccessTxn] = useState(null);
     [routes] // ✅ depends on routes, so dropdown updates automatically
   );
 
- 
-
-
   const columns = useMemo(() => {
     const baseColumns = [
       {
@@ -244,10 +240,10 @@ const [selectedSuccessTxn, setSelectedSuccessTxn] = useState(null);
             </Tooltip>
             {!(user?.role === "ret" || user?.role === "dd") && (
               <Tooltip title={`Updated: ${dateToTime(row.updated_at)}`} arrow>
-                <span style={{ marginTop: "8px" }}>
-                  {ddmmyy(row.updated_at)}
-                  {dateToTime1(row.updated_at)}
-                </span>
+                <div style={{ display: "inline-flex", gap: 4 }}>
+                  <span>{ddmmyy(row.updated_at)}</span>
+                  <span>{dateToTime1(row.updated_at)}</span>
+                </div>
               </Tooltip>
             )}
           </div>
@@ -623,11 +619,14 @@ const [selectedSuccessTxn, setSelectedSuccessTxn] = useState(null);
                   {row?.status === "PENDING" && (
                     <>
                       <Tooltip title="Click To Success">
-                              <DoneIcon
-        sx={{ color: "green", fontSize: 25, cursor: "pointer" }}
-        onClick={() => handleSuccessClick(row)} // ✅ open modal
-      />
-
+                        <DoneIcon
+                          sx={{
+                            color: "green",
+                            fontSize: 25,
+                            cursor: "pointer",
+                          }}
+                          onClick={() => handleSuccessClick(row)} // ✅ open modal
+                        />
                       </Tooltip>
 
                       <Tooltip title="Click To Refund">
@@ -955,13 +954,13 @@ const [selectedSuccessTxn, setSelectedSuccessTxn] = useState(null);
           {selectedForRefund?.txn_id}?
         </Typography>
       </CommonModal>
-  
-<ConfirmSuccessTxnModal
-  open={openSuccessModal}
-  onClose={() => setOpenSuccessModal(false)}
-  txnId={selectedSuccessTxn?.txn_id}
-  onSuccess={refreshPlans} // optional: refresh the table after success
-/>
+
+      <ConfirmSuccessTxnModal
+        open={openSuccessModal}
+        onClose={() => setOpenSuccessModal(false)}
+        txnId={selectedSuccessTxn?.txn_id}
+        onSuccess={refreshPlans} // optional: refresh the table after success
+      />
       {openLeinModal && (
         <AddLein
           open={openLeinModal}
@@ -971,9 +970,6 @@ const [selectedSuccessTxn, setSelectedSuccessTxn] = useState(null);
           type="transaction"
         />
       )}
-
-
-
     </>
   );
 };

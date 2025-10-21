@@ -69,7 +69,7 @@ const CreditCardTxn = ({ query }) => {
   const [refundLoading, setRefundLoading] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
   const [routes, setRoutes] = useState([]);
-    const [openSuccessModal, setOpenSuccessModal] = useState(false);
+  const [openSuccessModal, setOpenSuccessModal] = useState(false);
   const [selectedSuccessTxn, setSelectedSuccessTxn] = useState(null);
 
   const { showToast } = useToast();
@@ -99,10 +99,10 @@ const CreditCardTxn = ({ query }) => {
     fetchRoutes();
   }, []);
 
-   const handleSuccessClick = (row) => {
-  setSelectedSuccessTxn(row);
-  setOpenSuccessModal(true);
-};
+  const handleSuccessClick = (row) => {
+    setSelectedSuccessTxn(row);
+    setOpenSuccessModal(true);
+  };
 
   const handleRefundTxn = async (row) => {
     try {
@@ -302,10 +302,10 @@ const CreditCardTxn = ({ query }) => {
             </Tooltip>
             {!(user?.role === "ret" || user?.role === "dd") && (
               <Tooltip title={`Updated: ${dateToTime(row.updated_at)}`} arrow>
-                <span style={{ marginTop: "8px" }}>
-                  {ddmmyy(row.updated_at)}
-                  {dateToTime1(row.updated_at)}
-                </span>
+                <div style={{ display: "inline-flex", gap: 4 }}>
+                  <span>{ddmmyy(row.updated_at)}</span>
+                  <span>{dateToTime1(row.updated_at)}</span>
+                </div>
               </Tooltip>
             )}
           </div>
@@ -637,13 +637,16 @@ const CreditCardTxn = ({ query }) => {
                   {/* PENDING: CheckCircle + Replay */}
                   {row?.status === "PENDING" && (
                     <>
-                       <Tooltip title="Click To Success">
-                                                  <DoneIcon
-                            sx={{ color: "green", fontSize: 25, cursor: "pointer" }}
-                            onClick={() => handleSuccessClick(row)} // ✅ open modal
-                          />
-                    
-                                          </Tooltip>
+                      <Tooltip title="Click To Success">
+                        <DoneIcon
+                          sx={{
+                            color: "green",
+                            fontSize: 25,
+                            cursor: "pointer",
+                          }}
+                          onClick={() => handleSuccessClick(row)} // ✅ open modal
+                        />
+                      </Tooltip>
                       <Tooltip title="Click To Refund">
                         <ReplayIcon
                           sx={{ color: "red", fontSize: 25, cursor: "pointer" }}
@@ -715,15 +718,15 @@ const CreditCardTxn = ({ query }) => {
                 <IconButton
                   color="secondary"
                   size="small"
-                    onClick={() => {
-      // Save individual transaction data
-      sessionStorage.setItem("txnData", JSON.stringify(row));
+                  onClick={() => {
+                    // Save individual transaction data
+                    sessionStorage.setItem("txnData", JSON.stringify(row));
 
-      // Open receipt page in a new tab
-      window.open("/print-creditCard", "_blank");
-    }}
-    sx={{ backgroundColor: "transparent" }}
-  >
+                    // Open receipt page in a new tab
+                    window.open("/print-creditCard", "_blank");
+                  }}
+                  sx={{ backgroundColor: "transparent" }}
+                >
                   <PrintIcon />
                 </IconButton>
               </Tooltip>
@@ -831,23 +834,29 @@ const CreditCardTxn = ({ query }) => {
                       variant="contained"
                       size="small"
                       color="primary"
-                  onClick={() => {
-      if (!selectedRows || selectedRows.length === 0) {
-        alert("Please select at least one transaction to print.");
-        return;
-      }
+                      onClick={() => {
+                        if (!selectedRows || selectedRows.length === 0) {
+                          alert(
+                            "Please select at least one transaction to print."
+                          );
+                          return;
+                        }
 
-      // Save all selected rows
-      sessionStorage.setItem("txnData", JSON.stringify(selectedRows));
+                        // Save all selected rows
+                        sessionStorage.setItem(
+                          "txnData",
+                          JSON.stringify(selectedRows)
+                        );
 
-      // Open receipt page in a new tab
-      window.open("/print-creditCard", "_blank");
-    }}
-    sx={{ ml: 1 }}
-  >
+                        // Open receipt page in a new tab
+                        window.open("/print-creditCard", "_blank");
+                      }}
+                      sx={{ ml: 1 }}
+                    >
                       <PrintIcon
                         sx={{ fontSize: 20, color: "#e3e6e9ff", mr: 1 }}
-                      />Print
+                      />
+                      Print
                     </Button>
                   </Tooltip>
                 )}

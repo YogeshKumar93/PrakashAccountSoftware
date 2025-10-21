@@ -74,16 +74,16 @@ const BbpxTxn = ({ query }) => {
   const [selectedApiResponse, setSelectedApiResponse] = useState("");
   const [selectedRows, setSelectedRows] = useState([]);
   const [routes, setRoutes] = useState([]);
-    const [openSuccessModal, setOpenSuccessModal] = useState(false);
+  const [openSuccessModal, setOpenSuccessModal] = useState(false);
   const [selectedSuccessTxn, setSelectedSuccessTxn] = useState(null);
 
   const navigate = useNavigate();
   const { showToast } = useToast();
 
-    const handleSuccessClick = (row) => {
-  setSelectedSuccessTxn(row);
-  setOpenSuccessModal(true);
-};
+  const handleSuccessClick = (row) => {
+    setSelectedSuccessTxn(row);
+    setOpenSuccessModal(true);
+  };
   const handleRefundClick = (row) => {
     setSelectedForRefund(row);
     setConfirmModalOpen(true);
@@ -305,8 +305,6 @@ const BbpxTxn = ({ query }) => {
   //   );
   // };
 
- 
-
   const columns = useMemo(
     () => [
       {
@@ -320,10 +318,10 @@ const BbpxTxn = ({ query }) => {
               </div>
             </Tooltip>
             <Tooltip title={`Updated: ${dateToTime(row.updated_at)}`} arrow>
-              <span style={{ marginTop: "8px" }}>
-                {ddmmyy(row.updated_at)}
-                {dateToTime1(row.updated_at)}
-              </span>
+              <div style={{ display: "inline-flex", gap: 4 }}>
+                <span>{ddmmyy(row.updated_at)}</span>
+                <span>{dateToTime1(row.updated_at)}</span>
+              </div>
             </Tooltip>
           </div>
         ),
@@ -648,12 +646,15 @@ const BbpxTxn = ({ query }) => {
                   {/* PENDING: CheckCircle + Replay */}
                   {row?.status === "PENDING" && (
                     <>
-                        <Tooltip title="Click To Success">
-                              <DoneIcon
-        sx={{ color: "green", fontSize: 25, cursor: "pointer" }}
-        onClick={() => handleSuccessClick(row)} // ✅ open modal
-      />
-
+                      <Tooltip title="Click To Success">
+                        <DoneIcon
+                          sx={{
+                            color: "green",
+                            fontSize: 25,
+                            cursor: "pointer",
+                          }}
+                          onClick={() => handleSuccessClick(row)} // ✅ open modal
+                        />
                       </Tooltip>
                       <Tooltip title="Click To Refund">
                         <ReplayIcon
@@ -939,12 +940,12 @@ const BbpxTxn = ({ query }) => {
           {selectedForRefund?.txn_id}?
         </Typography>
       </CommonModal>
-        <ConfirmSuccessTxnModal
-  open={openSuccessModal}
-  onClose={() => setOpenSuccessModal(false)}
-  txnId={selectedSuccessTxn?.txn_id}
-  onSuccess={refreshPlans} // optional: refresh the table after success
-/>
+      <ConfirmSuccessTxnModal
+        open={openSuccessModal}
+        onClose={() => setOpenSuccessModal(false)}
+        txnId={selectedSuccessTxn?.txn_id}
+        onSuccess={refreshPlans} // optional: refresh the table after success
+      />
       {/* BBPS Details Drawer */}
 
       <Drawer

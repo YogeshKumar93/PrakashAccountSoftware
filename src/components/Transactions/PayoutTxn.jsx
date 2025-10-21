@@ -226,9 +226,9 @@ const PayoutTxn = ({ query }) => {
         label: "Service Name",
         type: "dropdown",
         options: [
-          { value: "Vendor Payment 1", label: "Vendor Payment 1" },
+          { value: "Vendor Payment", label: "Vendor Payment" },
           { value: "Vendor Payment 2", label: "Vendor Payment 2" },
-          { value: "Upi Payment 1", label: "Upi Payment 1" },
+          { value: "Upi Payment", label: "Upi Payment" },
           { value: "Upi Payment 2", label: "Upi Payment 2" },
         ],
         defaultValue: "pending",
@@ -262,10 +262,10 @@ const PayoutTxn = ({ query }) => {
               </div>
             </Tooltip>
             <Tooltip title={`Updated: ${dateToTime(row.updated_at)}`} arrow>
-              <span style={{ marginTop: "8px" }}>
-                {ddmmyy(row.updated_at)}
-                {dateToTime1(row.updated_at)}
-              </span>
+              <div style={{ display: "inline-flex", gap: 4 }}>
+                <span>{ddmmyy(row.updated_at)}</span>
+                <span>{dateToTime1(row.updated_at)}</span>
+              </div>
             </Tooltip>
           </div>
         ),

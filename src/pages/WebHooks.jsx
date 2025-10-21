@@ -41,10 +41,10 @@ const WebHooks = ({ query }) => {
               </div>
             </Tooltip>
             <Tooltip title={`Updated: ${dateToTime(row.updated_at)}`} arrow>
-              <span style={{ marginTop: "8px" }}>
-                {ddmmyy(row.updated_at)}
-                {dateToTime1(row.updated_at)}
-              </span>
+              <div style={{ display: "inline-flex", gap: 4 }}>
+                <span>{ddmmyy(row.updated_at)}</span>
+                <span>{dateToTime1(row.updated_at)}</span>
+              </div>
             </Tooltip>
           </div>
         ),

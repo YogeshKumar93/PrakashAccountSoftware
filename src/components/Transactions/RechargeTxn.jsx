@@ -71,15 +71,15 @@ const RechargeTxn = ({ query }) => {
   const [selectedTransaction, setSelectedTrancation] = useState("");
   const [openLeinModal, setOpenLeinModal] = useState(false);
   const [routes, setRoutes] = useState([]);
-    const [openSuccessModal, setOpenSuccessModal] = useState(false);
+  const [openSuccessModal, setOpenSuccessModal] = useState(false);
   const [selectedSuccessTxn, setSelectedSuccessTxn] = useState(null);
 
   const { showToast } = useToast();
 
-    const handleSuccessClick = (row) => {
-  setSelectedSuccessTxn(row);
-  setOpenSuccessModal(true);
-};
+  const handleSuccessClick = (row) => {
+    setSelectedSuccessTxn(row);
+    setOpenSuccessModal(true);
+  };
   const handleRefundClick = (row) => {
     setSelectedForRefund(row);
     setConfirmModalOpen(true);
@@ -225,7 +225,6 @@ const RechargeTxn = ({ query }) => {
     ],
     [routes]
   );
-  
 
   const columns = useMemo(
     () => [
@@ -240,10 +239,10 @@ const RechargeTxn = ({ query }) => {
               </div>
             </Tooltip>
             <Tooltip title={`Updated: ${dateToTime(row.updated_at)}`} arrow>
-              <span style={{ marginTop: "8px" }}>
-                {ddmmyy(row.updated_at)}
-                {dateToTime1(row.updated_at)}
-              </span>
+              <div style={{ display: "inline-flex", gap: 4 }}>
+                <span>{ddmmyy(row.updated_at)}</span>
+                <span>{dateToTime1(row.updated_at)}</span>
+              </div>
             </Tooltip>
           </div>
         ),
@@ -559,12 +558,15 @@ const RechargeTxn = ({ query }) => {
                   {row?.status === "PENDING" && (
                     <>
                       <Tooltip title="Click To Success">
-                                                   <DoneIcon
-                             sx={{ color: "green", fontSize: 25, cursor: "pointer" }}
-                             onClick={() => handleSuccessClick(row)} // ✅ open modal
-                           />
-                     
-                                           </Tooltip>
+                        <DoneIcon
+                          sx={{
+                            color: "green",
+                            fontSize: 25,
+                            cursor: "pointer",
+                          }}
+                          onClick={() => handleSuccessClick(row)} // ✅ open modal
+                        />
+                      </Tooltip>
                       <Tooltip title="Click To Refund">
                         <ReplayIcon
                           sx={{ color: "red", fontSize: 25, cursor: "pointer" }}
@@ -635,15 +637,15 @@ const RechargeTxn = ({ query }) => {
                   color="secondary"
                   size="small"
                   onClick={() => {
-      // Save individual transaction data
-      sessionStorage.setItem("txnData", JSON.stringify(row));
+                    // Save individual transaction data
+                    sessionStorage.setItem("txnData", JSON.stringify(row));
 
-      // Open receipt page in a new tab
-      window.open("/print-recharge", "_blank");
-    }}
-    sx={{ backgroundColor: "transparent" }}
-  >
-                  <PrintIcon /> 
+                    // Open receipt page in a new tab
+                    window.open("/print-recharge", "_blank");
+                  }}
+                  sx={{ backgroundColor: "transparent" }}
+                >
+                  <PrintIcon />
                 </IconButton>
               </Tooltip>
             )}
@@ -749,19 +751,24 @@ const RechargeTxn = ({ query }) => {
                       variant="contained"
                       size="small"
                       color="primary"
-                    onClick={() => {
-      if (!selectedRows || selectedRows.length === 0) {
-        alert("Please select at least one transaction to print.");
-        return;
-      }
+                      onClick={() => {
+                        if (!selectedRows || selectedRows.length === 0) {
+                          alert(
+                            "Please select at least one transaction to print."
+                          );
+                          return;
+                        }
 
-      // Save all selected rows
-      sessionStorage.setItem("txnData", JSON.stringify(selectedRows));
+                        // Save all selected rows
+                        sessionStorage.setItem(
+                          "txnData",
+                          JSON.stringify(selectedRows)
+                        );
 
-      // Open receipt page in a new tab
-      window.open("/print-recharge", "_blank");
-    }}
-    sx={{ ml: 1 }}
+                        // Open receipt page in a new tab
+                        window.open("/print-recharge", "_blank");
+                      }}
+                      sx={{ ml: 1 }}
                     >
                       <PrintIcon
                         sx={{ fontSize: 20, color: "#e3e6e9ff", mr: 1 }}
@@ -891,12 +898,12 @@ const RechargeTxn = ({ query }) => {
           {selectedForRefund?.txn_id}?
         </Typography>
       </CommonModal>
-       <ConfirmSuccessTxnModal
-         open={openSuccessModal}
-         onClose={() => setOpenSuccessModal(false)}
-         txnId={selectedSuccessTxn?.txn_id}
-         onSuccess={refreshPlans} // optional: refresh the table after success
-       />
+      <ConfirmSuccessTxnModal
+        open={openSuccessModal}
+        onClose={() => setOpenSuccessModal(false)}
+        txnId={selectedSuccessTxn?.txn_id}
+        onSuccess={refreshPlans} // optional: refresh the table after success
+      />
       {openLeinModal && (
         <AddLein
           open={openLeinModal}
