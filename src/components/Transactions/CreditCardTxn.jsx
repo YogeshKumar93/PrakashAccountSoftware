@@ -49,6 +49,7 @@ import AddLein from "../../pages/AddLein";
 import Scheduler from "../common/Scheduler";
 import { json2Excel } from "../../utils/exportToExcel";
 import { apiErrorToast } from "../../utils/ToastUtil";
+import ConfirmSuccessTxnModal from "./ConfirmSuccessTxnModal";
 
 const CreditCardTxn = ({ query }) => {
   const authCtx = useContext(AuthContext);
@@ -68,6 +69,8 @@ const CreditCardTxn = ({ query }) => {
   const [refundLoading, setRefundLoading] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
   const [routes, setRoutes] = useState([]);
+    const [openSuccessModal, setOpenSuccessModal] = useState(false);
+  const [selectedSuccessTxn, setSelectedSuccessTxn] = useState(null);
 
   const { showToast } = useToast();
   useEffect(() => {
@@ -95,6 +98,11 @@ const CreditCardTxn = ({ query }) => {
 
     fetchRoutes();
   }, []);
+
+   const handleSuccessClick = (row) => {
+  setSelectedSuccessTxn(row);
+  setOpenSuccessModal(true);
+};
 
   const handleRefundTxn = async (row) => {
     try {
@@ -629,9 +637,13 @@ const CreditCardTxn = ({ query }) => {
                   {/* PENDING: CheckCircle + Replay */}
                   {row?.status === "PENDING" && (
                     <>
-                      <Tooltip title="Click To Success">
-                        <DoneIcon sx={{ color: "green", fontSize: 25 }} />
-                      </Tooltip>
+                       <Tooltip title="Click To Success">
+                                                  <DoneIcon
+                            sx={{ color: "green", fontSize: 25, cursor: "pointer" }}
+                            onClick={() => handleSuccessClick(row)} // ✅ open modal
+                          />
+                    
+                                          </Tooltip>
                       <Tooltip title="Click To Refund">
                         <ReplayIcon
                           sx={{ color: "red", fontSize: 25, cursor: "pointer" }}
@@ -966,6 +978,12 @@ const CreditCardTxn = ({ query }) => {
           {selectedForRefund?.txn_id}?
         </Typography>
       </CommonModal>
+      <ConfirmSuccessTxnModal
+        open={openSuccessModal}
+        onClose={() => setOpenSuccessModal(false)}
+        txnId={selectedSuccessTxn?.txn_id}
+        onSuccess={refreshPlans} // optional: refresh the table after success
+      />
       {openLeinModal && (
         <AddLein
           open={openLeinModal}
