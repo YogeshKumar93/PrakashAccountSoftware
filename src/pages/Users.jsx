@@ -39,7 +39,6 @@ import debounce from "lodash.debounce";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import ChangeRoleModal from "../components/ChangeRole";
 
-
 const roleLabels = {
   ret: "Retailer",
   adm: "Admin",
@@ -77,12 +76,12 @@ const Users = ({ query }) => {
   const [appliedFilters, setAppliedFilters] = useState({}); // applied filter payload
   // const navigate = useNavigate();
   const [openChangeRole, setOpenChangeRole] = useState(false);
-// const [selectedUser, setSelectedUser] = useState(null);
+  // const [selectedUser, setSelectedUser] = useState(null);
 
-const handleChangeRole = (row) => {
-  setSelectedUser(row); // store selected user details
-  setOpenChangeRole(true); // open the modal
-};
+  const handleChangeRole = (row) => {
+    setSelectedUser(row); // store selected user details
+    setOpenChangeRole(true); // open the modal
+  };
 
   const handleOpenAssignPlans = (user) => {
     setSelectedUser(user);
@@ -318,11 +317,13 @@ const handleChangeRole = (row) => {
 
     return [
       {
-        id: "mobile",
-        label: "Mobile Number",
-        type: "textfield",
-        textType: "number",
+        id: "role",
+        label: "Role",
+        type: "dropdown",
+        roles: ["adm", "md", "zsm", "asm"],
+        options: roleOptions,
       },
+
       {
         id: "id",
         label: "User",
@@ -338,18 +339,17 @@ const handleChangeRole = (row) => {
         type: "textfield",
         roles: ["adm"],
       },
+      // {
+      //   id: "establishment",
+      //   label: "Establishment",
+      //   type: "textfield",
+      //   roles: ["adm"],
+      // },
       {
-        id: "establishment",
-        label: "Establishment",
+        id: "mobile",
+        label: "Mobile Number",
         type: "textfield",
-        roles: ["adm"],
-      },
-      {
-        id: "role",
-        label: "Role",
-        type: "dropdown",
-        roles: ["adm", "md", "zsm", "asm"],
-        options: roleOptions,
+        textType: "number",
       },
     ];
   }, [user?.role, userOptions, appliedFilters]); // Add appliedFilters to dependencies
@@ -473,7 +473,7 @@ const handleChangeRole = (row) => {
           ]
         : []),
     ];
-      if (["adm", "sadm"].includes(userRole.role)) {
+    if (["adm", "sadm"].includes(userRole.role)) {
       baseColumns.push({
         name: "KYC",
         selector: (row) => {
@@ -537,7 +537,6 @@ const handleChangeRole = (row) => {
                   </IconButton>
                 </Tooltip>
               )}
-
             </Box>
           );
         } else {
@@ -546,30 +545,24 @@ const handleChangeRole = (row) => {
       },
     });
 
-
-
-
-if (userRole.role === "sadm") {
-  baseColumns.push({
-    name: "Chg Role",
-    selector: (row) => (
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-        <Tooltip title="Change Role">
-          <IconButton
-            size="small"
-            sx={{ color: "secondary.main" }}
-            onClick={() => handleChangeRole(row)} // open your ChangeRoleModal
-          >
-            <ManageAccountsIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
-      </Box>
-    ),
-  });
-}
-
-
-
+    if (userRole.role === "sadm") {
+      baseColumns.push({
+        name: "Chg Role",
+        selector: (row) => (
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Tooltip title="Change Role">
+              <IconButton
+                size="small"
+                sx={{ color: "secondary.main" }}
+                onClick={() => handleChangeRole(row)} // open your ChangeRoleModal
+              >
+                <ManageAccountsIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        ),
+      });
+    }
 
     // Actions column
     if (["adm", "di", "md", "sadm"].includes(userRole?.role)) {
@@ -712,14 +705,13 @@ if (userRole.role === "sadm") {
         />
       )}
       {openChangeRole && (
-  <ChangeRoleModal
-    open={openChangeRole}
-    onClose={() => setOpenChangeRole(false)}
-    user={selectedUser}
-    onSuccess={refreshUsers} // refresh table after API success
-  />
-)}
-
+        <ChangeRoleModal
+          open={openChangeRole}
+          onClose={() => setOpenChangeRole(false)}
+          user={selectedUser}
+          onSuccess={refreshUsers} // refresh table after API success
+        />
+      )}
     </Box>
   );
 };
