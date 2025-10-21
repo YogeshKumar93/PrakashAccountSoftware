@@ -56,11 +56,9 @@ const AepsTxn = ({ query }) => {
   const [refundLoading, setRefundLoading] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
   const [routes, setRoutes] = useState([]);
- const [openFailModal, setOpenFailModal] = useState(false);
+  const [openFailModal, setOpenFailModal] = useState(false);
 
-const [reason, setReason] = useState("");
-
-
+  const [reason, setReason] = useState("");
 
   const handleOpenLein = (row) => {
     setOpenLeinModal(true);
@@ -183,53 +181,51 @@ const [reason, setReason] = useState("");
     }
   };
 
+  // const ActionColumn = ({ row }) => {
+  //   const [anchorEl, setAnchorEl] = useState(null);
+  //   const open = Boolean(anchorEl);
 
-const ActionColumn = ({ row }) => {
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
+  //   return (
+  //     <>
+  //       <IconButton size="small" onClick={(e) => setAnchorEl(e.currentTarget)}>
+  //         <MoreVertIcon />
+  //       </IconButton>
+  //       <Menu anchorEl={anchorEl} open={open} onClose={() => setAnchorEl(null)}>
+  //         {row.status === "PENDING" && (
+  //           <>
+  //             <MenuItem
+  //               onClick={() => {
+  //                 // ✅ your existing success handler (keep as is)
+  //                 setAnchorEl(null);
+  //                 handleMarkSuccess(row);
+  //               }}
+  //             >
+  //               Mark Success
+  //             </MenuItem>
 
-  return (
-    <>
-      <IconButton size="small" onClick={(e) => setAnchorEl(e.currentTarget)}>
-        <MoreVertIcon />
-      </IconButton>
-      <Menu anchorEl={anchorEl} open={open} onClose={() => setAnchorEl(null)}>
-        {row.status === "PENDING" && (
-          <>
-            <MenuItem
-              onClick={() => {
-                // ✅ your existing success handler (keep as is)
-                setAnchorEl(null);
-                handleMarkSuccess(row);
-              }}
-            >
-              Mark Success
-            </MenuItem>
-
-            <MenuItem
-              onClick={() => {
-                setSelectedTxn(row);
-                setOpenFailModal(true);
-                setAnchorEl(null);
-              }}
-            >
-              Mark Failed
-            </MenuItem>
-          </>
-        )}
-        <MenuItem
-          onClick={() => {
-            handleOpenLein(row);
-            setAnchorEl(null);
-          }}
-        >
-          Mark Lein
-        </MenuItem>
-      </Menu>
-    </>
-  );
-};
-
+  //             <MenuItem
+  //               onClick={() => {
+  //                 setSelectedTxn(row);
+  //                 setOpenFailModal(true);
+  //                 setAnchorEl(null);
+  //               }}
+  //             >
+  //               Mark Failed
+  //             </MenuItem>
+  //           </>
+  //         )}
+  //         <MenuItem
+  //           onClick={() => {
+  //             handleOpenLein(row);
+  //             setAnchorEl(null);
+  //           }}
+  //         >
+  //           Mark Lein
+  //         </MenuItem>
+  //       </Menu>
+  //     </>
+  //   );
+  // };
 
   const columns = useMemo(
     () => [
@@ -539,23 +535,23 @@ const ActionColumn = ({ row }) => {
 
         center: true,
       },
-       ...((user?.role === "adm" || user?.role === "sadm") &&
-      user?.permissions?.txn_actions === 1
-        ? [
-            {
-              name: "Action",
-              selector: (row) => (
-                <ActionColumn
-                  row={row}
-                  // handleRefundClick={handleRefundClick}
-                  handleOpenLein={handleOpenLein}
-                />
-              ),
-              center: true,
-              width: "100px",
-            },
-          ]
-        : []),
+      // ...((user?.role === "adm" || user?.role === "sadm") &&
+      // user?.permissions?.txn_actions === 1
+      //   ? [
+      //       {
+      //         name: "Action",
+      //         selector: (row) => (
+      //           <ActionColumn
+      //             row={row}
+      //             // handleRefundClick={handleRefundClick}
+      //             handleOpenLein={handleOpenLein}
+      //           />
+      //         ),
+      //         center: true,
+      //         width: "100px",
+      //       },
+      //     ]
+      //   : []),
       {
         name: "View",
         selector: (row) => (
@@ -848,39 +844,38 @@ const ActionColumn = ({ row }) => {
           {selectedForRefund?.txn_id}?
         </Typography>
       </CommonModal>
-  <CommonModal
-  open={openFailModal}
-  onClose={() => setOpenFailModal(false)}
-  title="Mark as Failed"
-  footerButtons={[
-    { text: "Cancel", onClick: () => setOpenFailModal(false) },
-    {
-      text: "Submit",
-      variant: "contained",
-      onClick: async () => {
-        await apiCall("post", ApiEndpoints.REFUND_FAILED_TXN, {
-          txn_id: selectedTxn?.txn_id,
-          reason,
-        });
-        showToast("Transaction marked as failed", "success");
-        setOpenFailModal(false);
-        setReason("");
-        refreshPlans();
-      },
-    },
-  ]}
->
-  <Typography fontSize={14} mb={1}>
-    Transaction ID: <strong>{selectedTxn?.txn_id}</strong>
-  </Typography>
-  <textarea
-    value={reason}
-    onChange={(e) => setReason(e.target.value)}
-    placeholder="Enter reason"
-    style={{ width: "100%", height: 60, padding: 6 }}
-  />
-</CommonModal>
-
+      <CommonModal
+        open={openFailModal}
+        onClose={() => setOpenFailModal(false)}
+        title="Mark as Failed"
+        footerButtons={[
+          { text: "Cancel", onClick: () => setOpenFailModal(false) },
+          {
+            text: "Submit",
+            variant: "contained",
+            onClick: async () => {
+              await apiCall("post", ApiEndpoints.REFUND_FAILED_TXN, {
+                txn_id: selectedTxn?.txn_id,
+                reason,
+              });
+              showToast("Transaction marked as failed", "success");
+              setOpenFailModal(false);
+              setReason("");
+              refreshPlans();
+            },
+          },
+        ]}
+      >
+        <Typography fontSize={14} mb={1}>
+          Transaction ID: <strong>{selectedTxn?.txn_id}</strong>
+        </Typography>
+        <textarea
+          value={reason}
+          onChange={(e) => setReason(e.target.value)}
+          placeholder="Enter reason"
+          style={{ width: "100%", height: 60, padding: 6 }}
+        />
+      </CommonModal>
 
       {openLeinModal && (
         <AddLein
