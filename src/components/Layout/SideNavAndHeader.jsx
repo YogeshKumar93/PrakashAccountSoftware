@@ -538,7 +538,7 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
                     lineHeight: "16px",
                   }}
                 >
-                  {user?.name || userName}
+                  {user?.establishment || "N/A"}
                 </Typography>
 
                 <IconButton

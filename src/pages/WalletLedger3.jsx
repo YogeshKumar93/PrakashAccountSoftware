@@ -1,13 +1,10 @@
 import { useMemo, useCallback, useContext, useEffect, useState } from "react";
 import { Box, Drawer, IconButton, Tooltip, Typography } from "@mui/material";
- 
- 
 
- 
 // import { capitalize1 } from "../../utils/TextUtil";
- 
+
 // import CommonStatus from "../common/CommonStatus";
- 
+
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import CommonLoader from "../components/common/CommonLoader";
 import CommonTable from "../components/common/CommonTable";
@@ -25,10 +22,10 @@ const WalletLedger3 = ({ query }) => {
   const authCtx = useContext(AuthContext);
   const user = authCtx?.user;
   const [loading, setLoading] = useState(true); // initially true
-   const [selectedRow, setSelectedRow] = useState(null);
-    const [openCreate, setOpenCreate] = useState(false);
-    const [drawerOpen, setDrawerOpen] = useState(false);
-      const [services, setServices] = useState([]);
+  const [selectedRow, setSelectedRow] = useState(null);
+  const [openCreate, setOpenCreate] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [services, setServices] = useState([]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -38,44 +35,43 @@ const WalletLedger3 = ({ query }) => {
     return () => clearTimeout(timer);
   }, []);
 
-  
-     const fetchServices = async () => {
-        try {
-          const { response } = await apiCall("POST", ApiEndpoints.GET_SERVICES);
-          if (response?.data) {
-            setServices(
-              response?.data.map((service) => ({
-                value: service.name, // ✅ send name in payload
-                label: service.name || `Service ${service.name}`,
-              }))
-            );
-          }
-        } catch (error) {
-          console.error("Error fetching services:", error);
-        }
-      };
-       useEffect(() => {
-     
-      fetchServices();
-    }, []);
+  const fetchServices = async () => {
+    try {
+      const { response } = await apiCall("POST", ApiEndpoints.GET_SERVICES);
+      if (response?.data) {
+        setServices(
+          response?.data.map((service) => ({
+            value: service.name, // ✅ send name in payload
+            label: service.name || `Service ${service.name}`,
+          }))
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching services:", error);
+    }
+  };
+  useEffect(() => {
+    fetchServices();
+  }, []);
 
   const filters = useMemo(
     () => [
-       {
+      {
         id: "service_name",
         label: "Service Name",
         type: "dropdown",
         options: services,
       },
-      {
-        id: "date_range",
-        // label: "Date Range",
-        type: "daterange",
-      },
+
       {
         id: "mobile",
         label: "Mobile",
         type: "textfield",
+      },
+      {
+        id: "date_range",
+        // label: "Date Range",
+        type: "daterange",
       },
     ],
     []
@@ -239,7 +235,7 @@ const WalletLedger3 = ({ query }) => {
         />
       )}
 
-   {/* Complaint Modal */}
+      {/* Complaint Modal */}
       {openCreate && selectedTxn && (
         <ComplaintForm
           open={openCreate}
@@ -291,7 +287,6 @@ const WalletLedger3 = ({ query }) => {
           )}
         </Box>
       </Drawer>
-
     </>
   );
 };

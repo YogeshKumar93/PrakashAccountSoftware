@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef, useMemo } from "react";
+import React, { useState, useContext, useRef, useMemo, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 import CommonTable from "../common/CommonTable";
 import ApiEndpoints from "../../api/ApiEndpoints";
@@ -20,13 +20,17 @@ import { IconButton } from "rsuite";
 import ReceiptButton from "../ReceiptButton";
 import DeleteFundRequestModal from "./DelelteFundReques";
 import DeleteFundRequest from "./DelelteFundReques";
+import { debounce } from "lodash";
+import { apiCall } from "../../api/apiClient";
 
 const FundRequest = () => {
   const authCtx = useContext(AuthContext);
   const user = authCtx.user;
   const [activeTab, setActiveTab] = useState("pending"); // default
-
+  const [userSearch, setUserSearch] = useState("");
+  const [userOptions, setUserOptions] = useState([]);
   const fetchUsersRef = useRef(null);
+  const [appliedFilters, setAppliedFilters] = useState({}); // applied filter payload
 
   // ✅ Single modal state
   const [modal, setModal] = useState({ type: null, row: null, status: null });
@@ -46,6 +50,41 @@ const FundRequest = () => {
   const handleCloseModal = () => {
     setModal({ type: null, row: null, status: null });
   };
+
+  useEffect(() => {
+    if (userSearch.length <= 4) {
+      setUserOptions([]); // Clear options if less than or equal to 4 chars
+      return;
+    }
+
+    const fetchUsersByEstablishment = async (searchTerm) => {
+      try {
+        const { error, response } = await apiCall(
+          "post",
+          ApiEndpoints.GET_USER_DEBOUNCE,
+          {
+            establishment: searchTerm, // send under establishment key
+          }
+        );
+        if (!error && response?.data) {
+          setUserOptions(
+            response.data.map((u) => ({
+              label: u.establishment,
+              value: u.id, // ✅ This is the id
+            }))
+          );
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    const debouncedFetch = debounce(fetchUsersByEstablishment, 500); // 500ms delay
+    debouncedFetch(userSearch);
+
+    return () => debouncedFetch.cancel(); // cleanup on unmount or change
+  }, [userSearch]);
+
   // Simple number to words converter (for up to crores)
   const numberToWords = (num) => {
     if (!num || isNaN(num)) return "";
@@ -121,41 +160,64 @@ const FundRequest = () => {
       {
         name: "Date",
         selector: (row) => (
-          <MuiBox display="flex" flexDirection="column">
+          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
             <Tooltip title={`Created: ${ddmmyyWithTime(row.created_at)}`} arrow>
-              <span>
-                {ddmmyy(row.created_at)} {dateToTime1(row.created_at)}
+              <div style={{ display: "inline-flex", gap: 4 }}>
+                <span>{ddmmyy(row.created_at)}</span>
+                <span>{dateToTime1(row.created_at)}</span>
+              </div>
+            </Tooltip>
+            <Tooltip title={`Updated: ${dateToTime1(row.updated_at)}`} arrow>
+              <span style={{ marginTop: "8px" }}>
+                {ddmmyy(row.updated_at)}
+                {dateToTime1(row.updated_at)}
               </span>
             </Tooltip>
-            <Tooltip title={`Updated: ${ddmmyyWithTime(row.updated_at)}`} arrow>
-              <span>
-                {ddmmyy(row.updated_at)} {dateToTime1(row.updated_at)}
-              </span>
-            </Tooltip>
-          </MuiBox>
+          </div>
         ),
-        width: "140px",
         wrap: true,
+        width: "80px",
       },
-      ...(user?.role !== "md" && user?.role !== "di"
-        ? [
-            {
-              name: "ID",
-              selector: (row) => row?.id,
-              width: "70px",
-            },
-          ]
-        : []),
+      // ...(user?.role !== "md" && user?.role !== "di"
+      //   ? [
+      //       {
+      //         name: "ID",
+      //         selector: (row) => row?.id,
+      //         width: "70px",
+      //       },
+      //     ]
+      //   : []),
       ...(user?.role === "adm" || user?.role === "sadm"
         ? [
             {
               name: "Role",
-              selector: (row) => (
-                <Typography sx={{ fontSize: "10px", fontWeight: 600 }}>
-                  {row.role}
-                </Typography>
-              ),
-              width: "100px",
+              selector: (row) => {
+                const getReadableRole = (role) => {
+                  switch (role) {
+                    case "ret":
+                      return "Retailer";
+                    case "dd":
+                      return "Direct Dealer";
+                    case "di":
+                      return "Distributor";
+                    case "adm":
+                      return "Admin";
+                    case "sadm":
+                      return "Super Admin";
+                    case "md":
+                      return "Master Distributor";
+                    case "zsm":
+                      return "Zonal Sales Manager";
+                    case "asm":
+                      return "Area Sales Manager";
+                    default:
+                      return role || "N/A";
+                  }
+                };
+
+                return <Typography>{getReadableRole(row.role)}</Typography>;
+              },
+              width: "120px",
               wrap: true,
             },
           ]
@@ -203,7 +265,8 @@ const FundRequest = () => {
                 sx={{
                   color: "text.secondary",
                   fontStyle: "italic",
-                  fontSize: "8px",
+                  fontSize: "9px",
+                  fontWeight: 600,
                 }}
               >
                 {amountInWords ? `${amountInWords} only` : ""}
@@ -332,9 +395,18 @@ const FundRequest = () => {
       //   ],
       //   defaultValue: "pending",
       // },
+      {
+        id: "user_id",
+        label: "User",
+        type: "autocomplete",
+        options: userOptions,
+        onSearch: (val) => setUserSearch(val),
+        getOptionLabel: (option) => option.label,
+        // Remove valueKey and handle the value extraction in handleFilterChange
+      },
       { id: "date_range", type: "daterange" },
     ],
-    []
+    [user?.role, userOptions, appliedFilters]
   );
 
   return (

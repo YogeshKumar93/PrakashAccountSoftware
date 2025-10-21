@@ -441,9 +441,12 @@ const CommonTable = ({
   useEffect(() => {
     if (onFetchRef) onFetchRef(fetchData);
   }, [fetchData, onFetchRef]);
+  // Fetch only when queryParam changes, not when fetchData reference changes
   useEffect(() => {
     fetchData();
-  }, [queryParam, fetchData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(queryParam)]);
+
   // useEffect(() => {
   //   fetchData();
   // }, [queryParam]);
@@ -674,7 +677,7 @@ const CommonTable = ({
                 {filter.label}
               </Typography>
               <DateRangePicker
-                size="sm" // ✅ smaller built-in size
+                size="md" // ✅ smaller built-in size
                 editable
                 ranges={predefinedRanges}
                 cleanable
@@ -698,6 +701,7 @@ const CommonTable = ({
                 container={() => document.body}
                 style={{
                   width: "100%",
+                  height: 40,
                   border: "1px solid #ccc",
                   borderRadius: "6px",
                   zIndex: 9999,
@@ -725,7 +729,7 @@ const CommonTable = ({
               }}
               sx={{
                 "& .MuiInputBase-root": {
-                  height: 32, // ✅ total input height
+                  height: 40, // ✅ total input height
                 },
                 "& .MuiInputLabel-root": {
                   fontSize: "0.8rem", // optional: smaller label
