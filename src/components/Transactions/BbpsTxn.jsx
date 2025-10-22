@@ -875,7 +875,7 @@ const BbpxTxn = ({ query }) => {
                 display: "flex",
                 alignItems: "center",
                 gap: 1,
-                padding: "8px",
+             
                 flexWrap: "wrap",
               }}
             >
