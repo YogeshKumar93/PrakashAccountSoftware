@@ -24,40 +24,12 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CommonModal from "../components/common/CommonModal";
 import { apiCall } from "../api/apiClient";
 import ApiEndpoints from "../api/ApiEndpoints";
 import { okSuccessToast, apiErrorToast } from "../utils/ToastUtil";
-import { useSchemaForm } from "../hooks/useSchemaForm";
-import {
-  abhy2,
-  airtel2,
-  axis2,
-  bandhan2,
-  bob2,
-  bom2,
-  canara2,
-  cbi2,
-  dbs2,
-  hdfc2,
-  icici2,
-  idbi2,
-  idib2,
-  indus2,
-  jk2,
-  kotak2,
-  pnb2,
-  rbl2,
-  sbi2,
-  stand2,
-  union2,
-  yes2,
-} from "../utils/iconsImports";
 import { useToast } from "../utils/ToastContext";
-import LevinBeneficiaryDetails from "./LevinUpiBeneficiaryDetails";
 import AuthContext from "../contexts/AuthContext";
 import LevinUpiBeneficiaryDetails from "./LevinUpiBeneficiaryDetails";
 import { upi, upi2 } from "../iconsImports";

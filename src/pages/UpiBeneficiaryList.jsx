@@ -20,6 +20,7 @@ import {
   DialogContent,
   DialogActions,
   MenuItem,
+  Grid,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
@@ -57,6 +58,7 @@ import {
 import UpiBeneficiaryDetails from "./UpiBeneficiaryDetails";
 import { useToast } from "../utils/ToastContext";
 import { upi2 } from "../iconsImports";
+import CommonModal from "../components/common/CommonModal";
 
 const UpiBeneficiaryList = ({ sender, onSuccess }) => {
   const theme = useTheme();
@@ -76,6 +78,10 @@ const UpiBeneficiaryList = ({ sender, onSuccess }) => {
   const [beneficiaryName, setBeneficiaryName] = useState("");
   const [vpa, setVpa] = useState("");
   const [customSuffix, setCustomSuffix] = useState("");
+  const [verifyOpen, setVerifyOpen] = useState(false);
+  const [mpinDigits, setMpinDigits] = useState(Array(6).fill(""));
+  const [pendingPayload, setPendingPayload] = useState(null);
+  const [tupResponse, setTupResponse] = useState(null);
 
   const handleAddBeneficiary = async () => {
     // if (!beneficiaryName.trim() || !vpa.trim()) {
@@ -118,6 +124,158 @@ const UpiBeneficiaryList = ({ sender, onSuccess }) => {
       setSubmitting(false);
     }
   };
+  const handleAddAndVerifyBeneficiary = () => {
+    const finalSuffix = vpaSuffix === "other" ? customSuffix : vpaSuffix;
+    const combinedVpa = `${vpaPrefix}@${finalSuffix}`;
+
+    const payload = {
+      beneficiary_name: beneficiaryName,
+      suffix: finalSuffix,
+      sender_id: sender?.id,
+      mobile_number: sender?.mobile_number,
+      ben_acc: combinedVpa,
+      operator: 21,
+      latitude: location?.lat || "",
+      longitude: location?.long || "",
+      pf: "WEB",
+    };
+
+    setPendingPayload(payload);
+    setVerifyOpen(true);
+  };
+  // ✅ MPIN change handler
+  const handleMpinChange = (index, value) => {
+    if (/^[0-9]?$/.test(value)) {
+      const newDigits = [...mpinDigits];
+      newDigits[index] = value;
+      setMpinDigits(newDigits);
+      if (value && index < 5)
+        document.getElementById(`mpin-${index + 1}`)?.focus();
+    }
+  };
+  const handleVerify = async () => {
+    if (mpinDigits.some((d) => !d)) {
+      showToast("Please enter all 6 digits of MPIN", "error");
+      return;
+    }
+
+    const mpin = mpinDigits.join("");
+    setSubmitting(true);
+
+    try {
+      const verifyPayload = { ...pendingPayload, mpin };
+      const { response, error } = await apiCall(
+        "post",
+        ApiEndpoints.DMT1_VERIFY_BENEFICIARY,
+        verifyPayload
+      );
+
+      if (!response) {
+        showToast(error?.message || "Failed to verify beneficiary", "error");
+        setVerifyOpen(false);
+        setMpinDigits(Array(6).fill(""));
+        return;
+      }
+
+      if (
+        response?.data?.statuscode === "TUP" ||
+        response?.message?.includes("Transaction Under Process")
+      ) {
+        setTupResponse(response);
+        setVerifyOpen(false);
+        setMpinDigits(Array(6).fill(""));
+        return;
+      }
+
+      // ✅ Verification success, add beneficiary
+      const finalSuffix = vpaSuffix === "other" ? customSuffix : vpaSuffix;
+      const combinedVpa = `${vpaPrefix}@${finalSuffix}`;
+
+      const addPayload = {
+        ...pendingPayload,
+        suffix: finalSuffix,
+        ben_acc: combinedVpa,
+        type: "UPI",
+        beneficiary_name: response?.data?.name || beneficiaryName,
+        account_number: combinedVpa,
+        mobile_number: sender?.mobile_number,
+        is_verified: 1,
+      };
+
+      const { response: addRes, error: addErr } = await apiCall(
+        "post",
+        ApiEndpoints.CREATE_BENEFICIARY,
+        addPayload
+      );
+
+      if (addRes) {
+        okSuccessToast(
+          addRes?.message || "Beneficiary verified & added successfully"
+        );
+        setVerifyOpen(false);
+        setOpenModal(false);
+        setMpinDigits(Array(6).fill(""));
+        setBeneficiaryName("");
+        setVpaPrefix("");
+        setVpaSuffix("ybl");
+        setCustomSuffix("");
+        onSuccess?.(sender.mobile_number);
+      } else {
+        showToast(addErr?.message || "Failed to add beneficiary", "error");
+      }
+    } catch (err) {
+      showToast(err?.message || "Something went wrong", "error");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  // ✅ TUP confirmation
+  const handleTUPConfirmation = async () => {
+    setSubmitting(true);
+    const finalSuffix = vpaSuffix === "other" ? customSuffix : vpaSuffix;
+    const combinedVpa = `${vpaPrefix}@${finalSuffix}`;
+
+    try {
+      const addPayload = {
+        ...pendingPayload,
+        suffix: finalSuffix,
+        ben_acc: combinedVpa,
+        account_number: combinedVpa,
+        mobile_number: sender?.mobile_number,
+        tup_reference: tupResponse?.data?.txnReferenceId,
+        type: "UPI",
+        is_verified: 0,
+      };
+
+      const { response, error } = await apiCall(
+        "post",
+        ApiEndpoints.CREATE_BENEFICIARY,
+        addPayload
+      );
+
+      if (response) {
+        okSuccessToast(
+          response?.message ||
+            "Beneficiary added successfully (Verification Pending)"
+        );
+        setTupResponse(null);
+        setOpenModal(false);
+        onSuccess?.(sender.mobile_number);
+      } else {
+        showToast(error?.message || "Failed to add beneficiary", "error");
+      }
+    } catch (err) {
+      showToast(err?.message || "Something went wrong", "error");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleTUPClose = () => {
+    setTupResponse(null);
+    setMpinDigits(Array(6).fill(""));
+  };
 
   const handleDeleteBeneficiary = async (beneficiaryId) => {
     try {
@@ -136,31 +294,6 @@ const UpiBeneficiaryList = ({ sender, onSuccess }) => {
       apiErrorToast(err?.message || "Error deleting beneficiary");
     }
   };
-
-  // const bankImageMapping = {
-  //   SBI: sbi2,
-  //   IBKL: idbi2,
-  //   UTIB: axis2,
-  //   HDFC: hdfc2,
-  //   ICIC: icici2,
-  //   KKBK: kotak2,
-  //   BARB: bob2,
-  //   PUNB: pnb2,
-  //   MAHB: bom2,
-  //   UBIN: union2,
-  //   DBSS: dbs2,
-  //   RATN: rbl2,
-  //   YESB: yes2,
-  //   INDB: indus2,
-  //   AIRP: airtel2,
-  //   ABHY: abhy2,
-  //   CNRB: canara2,
-  //   BDBL: bandhan2,
-  //   CBIN: cbi2,
-  //   IDIB: idib2,
-  //   SCBL: stand2,
-  //   JAKA: jk2,
-  // };
 
   const beneficiaries =
     sender?.beneficiary?.length > 0
@@ -507,14 +640,81 @@ const UpiBeneficiaryList = ({ sender, onSuccess }) => {
           </Button>
           <Button
             variant="contained"
-            onClick={handleAddBeneficiary}
+            onClick={handleAddAndVerifyBeneficiary}
             disabled={submitting}
           >
-            {submitting ? "Saving..." : "Save Beneficiary"}
+            {submitting ? "Saving..." : "Verify & Add"}
           </Button>
         </DialogActions>
       </Dialog>
-
+      {verifyOpen && (
+        <CommonModal
+          open={verifyOpen}
+          onClose={() => setVerifyOpen(false)}
+          title="Enter 6-digit MPIN"
+          iconType="info"
+          size="small"
+          dividers
+          footerButtons={[
+            {
+              text: "Cancel",
+              variant: "outlined",
+              onClick: () => setVerifyOpen(false),
+            },
+            {
+              text: submitting ? "Verifying..." : "Verify",
+              variant: "contained",
+              color: "primary",
+              onClick: handleVerify,
+            },
+          ]}
+        >
+          <Grid container spacing={1} justifyContent="center" sx={{ mt: 1 }}>
+            {mpinDigits.map((digit, idx) => (
+              <Grid item key={idx}>
+                <TextField
+                  id={`mpin-${idx}`}
+                  value={digit}
+                  type="password"
+                  onChange={(e) => handleMpinChange(idx, e.target.value)}
+                  inputProps={{
+                    maxLength: 1,
+                    style: { textAlign: "center", fontSize: "1.2rem" },
+                  }}
+                  sx={{ width: 45 }}
+                />
+              </Grid>
+            ))}
+          </Grid>
+        </CommonModal>
+      )}
+      {tupResponse && (
+        <CommonModal
+          open={!!tupResponse}
+          onClose={handleTUPClose}
+          title="Verification in Progress"
+          iconType="info"
+          size="small"
+          dividers
+          footerButtons={[
+            { text: "Cancel", variant: "outlined", onClick: handleTUPClose },
+            {
+              text: submitting ? "Adding..." : "Add Beneficiary Anyway",
+              variant: "contained",
+              color: "primary",
+              onClick: handleTUPConfirmation,
+            },
+          ]}
+        >
+          <Typography>
+            Verification is under process. You can add the beneficiary now, but
+            it will be marked as unverified until verification completes.
+          </Typography>
+          <Typography variant="caption">
+            Transaction Reference: {tupResponse?.data?.txnReferenceId || "N/A"}
+          </Typography>
+        </CommonModal>
+      )}
       {/* Verify UPI Beneficiary Modal */}
       {verifyModal && selectedBene && (
         <VerifyUpiBene
