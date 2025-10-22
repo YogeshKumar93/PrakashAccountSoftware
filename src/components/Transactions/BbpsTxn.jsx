@@ -585,6 +585,33 @@ const BbpxTxn = ({ query }) => {
             },
           ]
         : []),
+             ...(user?.role === "adm" ||
+     
+      user?.role === "sadm" 
+     
+     
+        ? [
+            {
+              name: "A Comm",
+              selector: (row) => (
+                <div
+                  style={{
+                    textAlign: "right",
+                    fontSize: "13px",
+                    fontWeight: 600,
+                  }}
+                >
+                  <div style={{ color: "green" }}>
+                    {parseFloat(row?.a_comm || 0).toFixed(2)}
+                  </div>
+                
+                </div>
+              ),
+              right: true,
+              width: "50px",
+            },
+          ]
+        : []),
       {
         name: "Status",
         selector: (row) => (
