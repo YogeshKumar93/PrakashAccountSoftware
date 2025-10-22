@@ -60,7 +60,7 @@ const ConfirmActionModal = ({
       ]}
     >
       <Typography sx={{ fontSize: 14 }}>
-        Are you sure you want to proceed with transaction ID: {txnId}?
+        Are you sure you want to proceed with Transaction ID: {txnId}?
       </Typography>
     </CommonModal>
   );
