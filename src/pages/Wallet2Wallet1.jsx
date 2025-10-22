@@ -26,7 +26,7 @@ import PrintIcon from "@mui/icons-material/Print";
 import { useNavigate } from "react-router-dom";
 import W2wTransfer from "./w2wTransfer";
 import { android2, linux2, macintosh2, windows2 } from "../iconsImports";
-import { okhttp } from "../utils/iconsImports";
+import { okhttp, postman } from "../utils/iconsImports";
 
 import { useToast } from "../utils/ToastContext";
 import CommonMpinModal from "../components/common/CommonMpinModal";
