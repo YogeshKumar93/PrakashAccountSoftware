@@ -71,6 +71,7 @@ const AccountLadger = ({ query }) => {
         onSearch: (val) => setUserSearch(val),
         getOptionLabel: (option) => option.label,
         // Remove valueKey and handle the value extraction in handleFilterChange
+        roles: ["adm", "sadm"],
       },
     ],
     [services, user?.role, userOptions]
@@ -230,27 +231,27 @@ const AccountLadger = ({ query }) => {
       //   selector: (row) => <CommonStatus value={row.status} />,
       //   center: true,
       // },
-      {
-        name: "Action",
-        selector: (row) => (
-          <button
-            onClick={() => {
-              setSelectedRowId(row.txn_id);
-              setDetailOpen(true);
-            }}
-            style={{
-              background: "transparent",
-              border: "none",
-              cursor: "pointer",
-              color: "#007bff",
-              fontSize: "16px",
-            }}
-          >
-            <RemoveRedEye />
-          </button>
-        ),
-        center: true,
-      },
+      // {
+      //   name: "Action",
+      //   selector: (row) => (
+      //     <button
+      //       onClick={() => {
+      //         setSelectedRowId(row.txn_id);
+      //         setDetailOpen(true);
+      //       }}
+      //       style={{
+      //         background: "transparent",
+      //         border: "none",
+      //         cursor: "pointer",
+      //         color: "#007bff",
+      //         fontSize: "16px",
+      //       }}
+      //     >
+      //       <RemoveRedEye />
+      //     </button>
+      //   ),
+      //   center: true,
+      // },
     ],
     [user]
   );
