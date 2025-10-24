@@ -93,9 +93,9 @@ const LevinUpiBeneficiaryDetails = ({
           const purposesData = response?.data || [];
           setPurposes(purposesData);
           if (purposesData.length > 0) setSelectedPurpose(purposesData[0].id);
-        } else apiErrorToast(error);
+        } else showToast(error);
       } catch (err) {
-        apiErrorToast(err);
+        showToast(err);
       } finally {
         setLoadingPurposes(false);
       }
@@ -176,7 +176,7 @@ const LevinUpiBeneficiaryDetails = ({
     const value = e.target.value;
     if (/^\d*$/.test(value)) {
       if (parseFloat(value) > parseFloat(sender?.rem_limit || 0)) {
-        apiErrorToast("Exceeds Rem Limit");
+        showToast("Exceeds Rem Limit");
         return;
       }
       setAmount(value);
