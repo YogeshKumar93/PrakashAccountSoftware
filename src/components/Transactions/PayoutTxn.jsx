@@ -79,8 +79,7 @@ const PayoutTxn = ({ query }) => {
   const [openSuccessModal, setOpenSuccessModal] = useState(false);
   const [selectedSuccessTxn, setSelectedSuccessTxn] = useState(null);
   const [refundModalOpen, setRefundModalOpen] = useState(false);
-const [refundTxnId, setRefundTxnId] = useState(null);
-
+  const [refundTxnId, setRefundTxnId] = useState(null);
 
   const handleRefundClick = (row) => {
     setSelectedForRefund(row);
@@ -230,7 +229,7 @@ const [refundTxnId, setRefundTxnId] = useState(null);
         ],
         defaultValue: "pending",
       },
-      { id: "mobile_number", label: "Mobile Number", type: "textfield" },
+      { id: "mobile_number", label: "Sender Number", type: "textfield" },
       {
         id: "txn_id",
         label: "Txn ID",
@@ -460,7 +459,7 @@ const [refundTxnId, setRefundTxnId] = useState(null);
         ? [] // ❌ hide for ret and dd
         : [
             {
-              name: "TxnId/Ref",
+              name: "TxnId",
               selector: (row) => (
                 <>
                   <div style={{ textAlign: "left", fontSize: "13px" }}>
@@ -785,14 +784,17 @@ const [refundTxnId, setRefundTxnId] = useState(null);
                   {/* FAILED or REFUND: Refresh */}
                   {row?.status === "REFUNDPENDING" && (
                     <Tooltip title="REFUND TXN">
-                   <ReplayIcon
-  sx={{ color: "orange", fontSize: 25, cursor: "pointer" }}
-  onClick={() => {
-    setRefundTxnId(row.txn_id);
-    setRefundModalOpen(true);
-  }}
-/>
-
+                      <ReplayIcon
+                        sx={{
+                          color: "orange",
+                          fontSize: 25,
+                          cursor: "pointer",
+                        }}
+                        onClick={() => {
+                          setRefundTxnId(row.txn_id);
+                          setRefundModalOpen(true);
+                        }}
+                      />
                     </Tooltip>
                   )}
                 </div>
@@ -985,15 +987,15 @@ const [refundTxnId, setRefundTxnId] = useState(null);
         onSuccess={refreshPlans} // optional: refresh the table after success
       />
       <ConfirmActionModal
-  open={refundModalOpen}
-  onClose={() => setRefundModalOpen(false)}
-  title="Confirm Refund"
-  txnId={refundTxnId}
-  apiEndpoint={ApiEndpoints.REFUND_TXN}
-  onSuccess={refreshPlans}
-  confirmText="Refund"
-  cancelText="Cancel"
-/>
+        open={refundModalOpen}
+        onClose={() => setRefundModalOpen(false)}
+        title="Confirm Refund"
+        txnId={refundTxnId}
+        apiEndpoint={ApiEndpoints.REFUND_TXN}
+        onSuccess={refreshPlans}
+        confirmText="Refund"
+        cancelText="Cancel"
+      />
 
       {openLeinModal && (
         <AddLein

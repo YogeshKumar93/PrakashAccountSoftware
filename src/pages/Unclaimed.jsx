@@ -132,7 +132,7 @@ const Unclaimed = () => {
             mb={2}
             sx={{ display: "flex", justifyContent: "space-between", gap: 2 }}
           >
-            <Box sx={{ display: "flex", gap: 1 }}>
+            {/* <Box sx={{ display: "flex", gap: 1 }}>
               <TextField
                 label="User ID"
                 name="userId"
@@ -155,8 +155,8 @@ const Unclaimed = () => {
                 Search
               </Button>
               <Button onClick={handleReset}>Reset</Button>
-            </Box>
-
+            </Box> */}
+            {/* 
             <Box sx={{ display: "flex", gap: 1 }}>
               <Tooltip title="Download Sample Excel">
                 <IconButton
@@ -176,7 +176,7 @@ const Unclaimed = () => {
                   <Icon path={mdiFileExcel} size={1} />
                 </IconButton>
               </Tooltip>
-            </Box>
+            </Box> */}
           </Box>
 
           <Box style={{ height: 500, width: "100%" }}>

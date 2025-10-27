@@ -213,7 +213,7 @@ const RechargeTxn = ({ query }) => {
         options: routes, // ✅ dynamic routes here
         roles: ["adm"],
       },
-      { id: "mobile_number", label: "Mobile Number", type: "textfield" },
+      { id: "mobile_number", label: "Sender Number", type: "textfield" },
       { id: "txn_id", label: "Txn ID", type: "textfield" },
       {
         id: "user_id",
@@ -250,20 +250,20 @@ const RechargeTxn = ({ query }) => {
         width: "80px",
       },
 
-      ...(user?.role === "adm" || user?.role === "sadm"
-        ? [
-            {
-              name: "Route",
-              selector: (row) => (
-                <div style={{ fontSize: "10px", fontWeight: "600" }}>
-                  {row.route}
-                </div>
-              ),
-              center: true,
-              width: "70px",
-            },
-          ]
-        : []),
+      // ...(user?.role === "adm" || user?.role === "sadm"
+      //   ? [
+      //       {
+      //         name: "Route",
+      //         selector: (row) => (
+      //           <div style={{ fontSize: "10px", fontWeight: "600" }}>
+      //             {row.route}
+      //           </div>
+      //         ),
+      //         center: true,
+      //         width: "70px",
+      //       },
+      //     ]
+      //   : []),
       {
         name: "Pf",
         selector: (row) => {
@@ -325,13 +325,19 @@ const RechargeTxn = ({ query }) => {
             <Box
               sx={{
                 display: "flex",
+                flexDirection: "column", // stack vertically
                 alignItems: "center",
                 fontSize: "13px",
-                textAlign: "justify",
-                gap: 2,
+                textAlign: "center",
+                gap: 0.5,
               }}
             >
               {icon}
+              {(user?.role === "adm" || user?.role === "sadm") && (
+                <Typography variant="caption" sx={{ fontSize: 10 }}>
+                  {row.route || "-"}
+                </Typography>
+              )}
             </Box>
           );
         },
@@ -400,18 +406,22 @@ const RechargeTxn = ({ query }) => {
         ? []
         : [
             {
-              name: "Order Id / Client Ref",
+              name: "Txn Id ",
               selector: (row) => (
                 <div style={{ textAlign: "left" }}>
-                  {row.txn_id} <br />
-                  {row.client_ref}
+                  {row.txn_id}
+                  {/* <br />
+                  {row.client_ref} */}
                 </div>
               ),
               center: true,
               width: "70px",
             },
           ]),
-      ...(user?.role === "adm" || user?.role === "di" || user?.role === "md"
+      ...(user?.role === "adm" ||
+      user?.role === "di" ||
+      user?.role === "md" ||
+      user?.role === "sadm"
         ? []
         : [
             {
