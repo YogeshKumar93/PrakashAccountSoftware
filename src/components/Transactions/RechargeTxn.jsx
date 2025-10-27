@@ -165,27 +165,6 @@ const RechargeTxn = ({ query }) => {
       console.error(error);
     }
   };
-
-  const handleExportExcel = async () => {
-    try {
-      // Fetch all users (without pagination/filters) from API
-      const { error, response } = await apiCall(
-        "post",
-        ApiEndpoints.GET_RECHARGE_TXN,
-        { export: 1 }
-      );
-      const usersData = response?.data || [];
-
-      if (usersData.length > 0) {
-        json2Excel("RechargeTxns", usersData); // generates and downloads Users.xlsx
-      } else {
-        apiErrorToast("no data found");
-      }
-    } catch (error) {
-      console.error("Excel export failed:", error);
-      alert("Failed to export Excel");
-    }
-  };
   const navigate = useNavigate();
   const handleOpenLein = (row) => {
     setOpenLeinModal(true);
@@ -213,7 +192,7 @@ const RechargeTxn = ({ query }) => {
         options: routes, // ✅ dynamic routes here
         roles: ["adm"],
       },
-      { id: "mobile_number", label: "Mobile Number", type: "textfield" },
+      { id: "mobile_number", label: "Sender Number", type: "textfield" },
       { id: "txn_id", label: "Txn ID", type: "textfield" },
       {
         id: "user_id",
@@ -250,20 +229,20 @@ const RechargeTxn = ({ query }) => {
         width: "80px",
       },
 
-      ...(user?.role === "adm" || user?.role === "sadm"
-        ? [
-            {
-              name: "Route",
-              selector: (row) => (
-                <div style={{ fontSize: "10px", fontWeight: "600" }}>
-                  {row.route}
-                </div>
-              ),
-              center: true,
-              width: "70px",
-            },
-          ]
-        : []),
+      // ...(user?.role === "adm" || user?.role === "sadm"
+      //   ? [
+      //       {
+      //         name: "Route",
+      //         selector: (row) => (
+      //           <div style={{ fontSize: "10px", fontWeight: "600" }}>
+      //             {row.route}
+      //           </div>
+      //         ),
+      //         center: true,
+      //         width: "70px",
+      //       },
+      //     ]
+      //   : []),
       {
         name: "Pf",
         selector: (row) => {
@@ -325,13 +304,19 @@ const RechargeTxn = ({ query }) => {
             <Box
               sx={{
                 display: "flex",
+                flexDirection: "column", // stack vertically
                 alignItems: "center",
                 fontSize: "13px",
-                textAlign: "justify",
-                gap: 2,
+                textAlign: "center",
+                gap: 0.5,
               }}
             >
               {icon}
+              {(user?.role === "adm" || user?.role === "sadm") && (
+                <Typography variant="caption" sx={{ fontSize: 10 }}>
+                  {row.route || "-"}
+                </Typography>
+              )}
             </Box>
           );
         },
@@ -400,18 +385,22 @@ const RechargeTxn = ({ query }) => {
         ? []
         : [
             {
-              name: "Order Id / Client Ref",
+              name: "Txn Id ",
               selector: (row) => (
                 <div style={{ textAlign: "left" }}>
-                  {row.txn_id} <br />
-                  {row.client_ref}
+                  {row.txn_id}
+                  {/* <br />
+                  {row.client_ref} */}
                 </div>
               ),
               center: true,
               width: "70px",
             },
           ]),
-      ...(user?.role === "adm" || user?.role === "di" || user?.role === "md"
+      ...(user?.role === "adm" ||
+      user?.role === "di" ||
+      user?.role === "md" ||
+      user?.role === "sadm"
         ? []
         : [
             {
@@ -757,70 +746,53 @@ const RechargeTxn = ({ query }) => {
           enableSelection={false}
           selectedRows={selectedRows}
           onSelectionChange={setSelectedRows}
+          enableExcelExport={true}
+          exportFileName="RechargeTransactions"
+          exportEndpoint={ApiEndpoints.GET_RECHARGE_TXN}
           customHeader={
-            <>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 1,
-                  padding: "8px",
-                }}
-              >
-                {selectedRows.length > 0 && (
-                  <Tooltip title="PRINT">
-                    <Button
-                      variant="contained"
-                      size="small"
-                      color="primary"
-                      onClick={() => {
-                        if (!selectedRows || selectedRows.length === 0) {
-                          alert(
-                            "Please select at least one transaction to print."
-                          );
-                          return;
-                        }
-
-                        // Save all selected rows
-                        sessionStorage.setItem(
-                          "txnData",
-                          JSON.stringify(selectedRows)
-                        );
-
-                        // Open receipt page in a new tab
-                        window.open("/print-recharge", "_blank");
-                      }}
-                      sx={{ ml: 1 }}
-                    >
-                      <PrintIcon
-                        sx={{ fontSize: 20, color: "#e3e6e9ff", mr: 1 }}
-                      />
-                      Print
-                    </Button>
-                  </Tooltip>
-                )}
-              </Box>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 1,
-                  padding: "8px",
-                  flexWrap: "wrap",
-                }}
-              >
-                {user?.role === "adm" && (
-                  <IconButton
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                flexWrap: "nowrap", // Ensure they stay in one line
+              }}
+            >
+              {selectedRows.length > 0 && (
+                <Tooltip title="PRINT">
+                  <Button
+                    variant="contained"
+                    size="small"
                     color="primary"
-                    onClick={handleExportExcel}
-                    title="Export to Excel"
+                    onClick={() => {
+                      if (!selectedRows || selectedRows.length === 0) {
+                        alert(
+                          "Please select at least one transaction to print."
+                        );
+                        return;
+                      }
+
+                      // Save all selected rows
+                      sessionStorage.setItem(
+                        "txnData",
+                        JSON.stringify(selectedRows)
+                      );
+
+                      // Open receipt page in a new tab
+                      window.open("/print-recharge", "_blank");
+                    }}
                   >
-                    <FileDownloadIcon />
-                  </IconButton>
-                )}
-                <Scheduler onRefresh={refreshPlans} />
-              </Box>
-            </>
+                    <PrintIcon
+                      sx={{ fontSize: 20, color: "#e3e6e9ff", mr: 1 }}
+                    />
+                    Print
+                  </Button>
+                </Tooltip>
+              )}
+
+              {/* Scheduler and Excel Export will be automatically added here by enhancedCustomHeader */}
+              <Scheduler onRefresh={refreshPlans} />
+            </Box>
           }
         />
       </Box>

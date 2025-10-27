@@ -44,9 +44,6 @@ import { useToast } from "../../utils/ToastContext";
 import TransactionDrawer from "../TransactionDrawer";
 import Scheduler from "../common/Scheduler";
 import AddLein from "../../pages/AddLein";
-import { json2Excel } from "../../utils/exportToExcel";
-import { apiErrorToast } from "../../utils/ToastUtil";
-import FileDownloadIcon from "@mui/icons-material/FileDownload"; // Excel export icon
 import ConfirmSuccessTxnModal from "./ConfirmSuccessTxnModal";
 
 const DmtTxn = ({ query }) => {
@@ -105,7 +102,12 @@ const DmtTxn = ({ query }) => {
     setConfirmModalOpen(true);
   };
   const fetchUsersRef = useRef(null);
-
+  const appliedFiltersRef = useRef({});
+  const handleFilterChange = (appliedFilters) => {
+    appliedFiltersRef.current = appliedFilters;
+    console.log("Filters changed:", appliedFilters);
+    // You can add additional logic here when filters change
+  };
   const handleFetchRef = (fetchFn) => {
     fetchUsersRef.current = fetchFn;
   };
@@ -120,26 +122,7 @@ const DmtTxn = ({ query }) => {
       fetchUsersRef.current();
     }
   };
-  const handleExportExcel = async () => {
-    try {
-      // Fetch all users (without pagination/filters) from API
-      const { error, response } = await apiCall(
-        "post",
-        ApiEndpoints.GET_DMT_TXN,
-        { export: 1 }
-      );
-      const usersData = response?.data || [];
 
-      if (usersData.length > 0) {
-        json2Excel("DmtTxns", usersData); // generates and downloads Users.xlsx
-      } else {
-        apiErrorToast("no data found");
-      }
-    } catch (error) {
-      console.error("Excel export failed:", error);
-      alert("Failed to export Excel");
-    }
-  };
   const handleConfirmRefund = async () => {
     if (!selectedForRefund) return;
     setRefundLoading(true);
@@ -823,6 +806,10 @@ const DmtTxn = ({ query }) => {
           enableSelection={false}
           selectedRows={selectedRows}
           onSelectionChange={setSelectedRows}
+          onFilterChange={handleFilterChange}
+          enableExcelExport={true}
+          exportFileName="DmtTransactions"
+          exportEndpoint={ApiEndpoints.GET_DMT_TXN}
           customHeader={
             <>
               <Box
@@ -875,15 +862,6 @@ const DmtTxn = ({ query }) => {
                   flexWrap: "wrap",
                 }}
               >
-                {user?.role === "adm" && (
-                  <IconButton
-                    color="primary"
-                    onClick={handleExportExcel}
-                    title="Export to Excel"
-                  >
-                    <FileDownloadIcon />
-                  </IconButton>
-                )}
                 <Scheduler onRefresh={refreshPlans} />
               </Box>
             </>

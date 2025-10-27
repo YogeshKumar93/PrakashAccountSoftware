@@ -422,7 +422,7 @@ const Users = ({ query }) => {
                 return (
                   // <Tooltip title={parentName}>
                   <div style={{ textAlign: "left", cursor: "pointer" }}>
-                    {row.parent_establishment}
+                    {row.parent_establishment || "--"}
                   </div>
                   // </Tooltip>
                 );

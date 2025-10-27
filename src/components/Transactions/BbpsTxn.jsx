@@ -849,6 +849,9 @@ const BbpxTxn = ({ query }) => {
         enableSelection={false}
         selectedRows={selectedRows}
         onSelectionChange={setSelectedRows}
+        enableExcelExport={true}
+        exportFileName="BbpsTransactions"
+        exportEndpoint={ApiEndpoints.GET_BBPS_TXN}
         customHeader={
           <>
             <Box
@@ -901,15 +904,6 @@ const BbpxTxn = ({ query }) => {
                 flexWrap: "wrap",
               }}
             >
-              {user?.role === "adm" && (
-                <IconButton
-                  color="primary"
-                  onClick={handleExportExcel}
-                  title="Export to Excel"
-                >
-                  <FileDownloadIcon />
-                </IconButton>
-              )}
               <Scheduler onRefresh={refreshPlans} />
             </Box>
           </>

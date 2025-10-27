@@ -7,6 +7,7 @@ import CommonLoader from "../components/common/CommonLoader";
 import { useToast } from "../utils/ToastContext";
 
 const TAB_CONFIG = [
+  { key: "user_details", label: "User Details" },
   { key: "basic", label: "Basic" },
   { key: "address", label: "Address" },
   { key: "kyc", label: "KYC" },
@@ -15,7 +16,7 @@ const TAB_CONFIG = [
 const formatLabel = (key) =>
   key.replace(/_/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
 const EditUser = ({ open, onClose, user, onFetchRef }) => {
-  const [selectedTab, setSelectedTab] = useState("basic");
+  const [selectedTab, setSelectedTab] = useState("user_details");
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
@@ -46,7 +47,7 @@ const EditUser = ({ open, onClose, user, onFetchRef }) => {
       { name: "address", label: "Address", type: "text" },
       // Add other business fields as needed
     ],
-    // Add more tabs as needed
+    user_details: [{ name: "name", label: " Name", type: "text" }],
   };
 
   // Fetch data when modal opens or tab changes

@@ -79,15 +79,19 @@ const PayoutTxn = ({ query }) => {
   const [openSuccessModal, setOpenSuccessModal] = useState(false);
   const [selectedSuccessTxn, setSelectedSuccessTxn] = useState(null);
   const [refundModalOpen, setRefundModalOpen] = useState(false);
-const [refundTxnId, setRefundTxnId] = useState(null);
-
+  const [refundTxnId, setRefundTxnId] = useState(null);
 
   const handleRefundClick = (row) => {
     setSelectedForRefund(row);
     setConfirmModalOpen(true);
   };
   const fetchUsersRef = useRef(null);
-
+  const appliedFiltersRef = useRef({});
+  const handleFilterChange = (appliedFilters) => {
+    appliedFiltersRef.current = appliedFilters;
+    console.log("Filters changed:", appliedFilters);
+    // You can add additional logic here when filters change
+  };
   const handleFetchRef = (fetchFn) => {
     fetchUsersRef.current = fetchFn;
   };
@@ -151,26 +155,6 @@ const [refundTxnId, setRefundTxnId] = useState(null);
 
     setRefundLoading(false);
   };
-  const handleExportExcel = async () => {
-    try {
-      // Fetch all users (without pagination/filters) from API
-      const { error, response } = await apiCall(
-        "post",
-        ApiEndpoints.GET_PAYOUT_TXN,
-        { export: 1 }
-      );
-      const usersData = response?.data || [];
-
-      if (usersData.length > 0) {
-        json2Excel("PayoutTxns", usersData); // generates and downloads Users.xlsx
-      } else {
-        apiErrorToast("no data found");
-      }
-    } catch (error) {
-      console.error("Excel export failed:", error);
-      alert("Failed to export Excel");
-    }
-  };
 
   const handleRefundTxn = async (row) => {
     try {
@@ -230,7 +214,7 @@ const [refundTxnId, setRefundTxnId] = useState(null);
         ],
         defaultValue: "pending",
       },
-      { id: "mobile_number", label: "Mobile Number", type: "textfield" },
+      { id: "mobile_number", label: "Sender Number", type: "textfield" },
       {
         id: "txn_id",
         label: "Txn ID",
@@ -460,7 +444,7 @@ const [refundTxnId, setRefundTxnId] = useState(null);
         ? [] // ❌ hide for ret and dd
         : [
             {
-              name: "TxnId/Ref",
+              name: "TxnId",
               selector: (row) => (
                 <>
                   <div style={{ textAlign: "left", fontSize: "13px" }}>
@@ -785,14 +769,17 @@ const [refundTxnId, setRefundTxnId] = useState(null);
                   {/* FAILED or REFUND: Refresh */}
                   {row?.status === "REFUNDPENDING" && (
                     <Tooltip title="REFUND TXN">
-                   <ReplayIcon
-  sx={{ color: "orange", fontSize: 25, cursor: "pointer" }}
-  onClick={() => {
-    setRefundTxnId(row.txn_id);
-    setRefundModalOpen(true);
-  }}
-/>
-
+                      <ReplayIcon
+                        sx={{
+                          color: "orange",
+                          fontSize: 25,
+                          cursor: "pointer",
+                        }}
+                        onClick={() => {
+                          setRefundTxnId(row.txn_id);
+                          setRefundModalOpen(true);
+                        }}
+                      />
                     </Tooltip>
                   )}
                 </div>
@@ -848,6 +835,10 @@ const [refundTxnId, setRefundTxnId] = useState(null);
         enableSelection={false}
         selectedRows={selectedRows}
         onSelectionChange={setSelectedRows}
+        onFilterChange={handleFilterChange}
+        enableExcelExport={true}
+        exportFileName="PayoutTransactions"
+        exportEndpoint={ApiEndpoints.GET_PAYOUT_TXN}
         customHeader={
           <>
             <Box
@@ -898,15 +889,6 @@ const [refundTxnId, setRefundTxnId] = useState(null);
                 flexWrap: "wrap",
               }}
             >
-              {user?.role === "adm" && (
-                <IconButton
-                  color="primary"
-                  onClick={handleExportExcel}
-                  title="Export to Excel"
-                >
-                  <FileDownloadIcon />
-                </IconButton>
-              )}
               <Scheduler onRefresh={refreshPlans} />
             </Box>
           </>
@@ -985,15 +967,15 @@ const [refundTxnId, setRefundTxnId] = useState(null);
         onSuccess={refreshPlans} // optional: refresh the table after success
       />
       <ConfirmActionModal
-  open={refundModalOpen}
-  onClose={() => setRefundModalOpen(false)}
-  title="Confirm Refund"
-  txnId={refundTxnId}
-  apiEndpoint={ApiEndpoints.REFUND_TXN}
-  onSuccess={refreshPlans}
-  confirmText="Refund"
-  cancelText="Cancel"
-/>
+        open={refundModalOpen}
+        onClose={() => setRefundModalOpen(false)}
+        title="Confirm Refund"
+        txnId={refundTxnId}
+        apiEndpoint={ApiEndpoints.REFUND_TXN}
+        onSuccess={refreshPlans}
+        confirmText="Refund"
+        cancelText="Cancel"
+      />
 
       {openLeinModal && (
         <AddLein
