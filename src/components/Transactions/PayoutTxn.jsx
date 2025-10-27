@@ -86,7 +86,12 @@ const PayoutTxn = ({ query }) => {
     setConfirmModalOpen(true);
   };
   const fetchUsersRef = useRef(null);
-
+  const appliedFiltersRef = useRef({});
+  const handleFilterChange = (appliedFilters) => {
+    appliedFiltersRef.current = appliedFilters;
+    console.log("Filters changed:", appliedFilters);
+    // You can add additional logic here when filters change
+  };
   const handleFetchRef = (fetchFn) => {
     fetchUsersRef.current = fetchFn;
   };
@@ -149,26 +154,6 @@ const PayoutTxn = ({ query }) => {
     }
 
     setRefundLoading(false);
-  };
-  const handleExportExcel = async () => {
-    try {
-      // Fetch all users (without pagination/filters) from API
-      const { error, response } = await apiCall(
-        "post",
-        ApiEndpoints.GET_PAYOUT_TXN,
-        { export: 1 }
-      );
-      const usersData = response?.data || [];
-
-      if (usersData.length > 0) {
-        json2Excel("PayoutTxns", usersData); // generates and downloads Users.xlsx
-      } else {
-        apiErrorToast("no data found");
-      }
-    } catch (error) {
-      console.error("Excel export failed:", error);
-      alert("Failed to export Excel");
-    }
   };
 
   const handleRefundTxn = async (row) => {
@@ -850,6 +835,10 @@ const PayoutTxn = ({ query }) => {
         enableSelection={false}
         selectedRows={selectedRows}
         onSelectionChange={setSelectedRows}
+        onFilterChange={handleFilterChange}
+        enableExcelExport={true}
+        exportFileName="PayoutTransactions"
+        exportEndpoint={ApiEndpoints.GET_PAYOUT_TXN}
         customHeader={
           <>
             <Box
@@ -900,15 +889,6 @@ const PayoutTxn = ({ query }) => {
                 flexWrap: "wrap",
               }}
             >
-              {user?.role === "adm" && (
-                <IconButton
-                  color="primary"
-                  onClick={handleExportExcel}
-                  title="Export to Excel"
-                >
-                  <FileDownloadIcon />
-                </IconButton>
-              )}
               <Scheduler onRefresh={refreshPlans} />
             </Box>
           </>

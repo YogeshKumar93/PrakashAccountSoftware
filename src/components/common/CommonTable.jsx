@@ -44,6 +44,8 @@ import { DateRangePicker } from "rsuite";
 import { predefinedRanges, yyyymmdd } from "../../utils/DateUtils";
 import "rsuite/dist/rsuite.min.css";
 import AuthContext from "../../contexts/AuthContext";
+import { useExcelExport } from "../../hooks/useExcelExport";
+import ExportExcelButton from "./ExportExcelButton";
 
 // Memoized TablePaginationActions component
 const TablePaginationActions = memo(function TablePaginationActions(props) {
@@ -145,6 +147,11 @@ const CommonTable = ({
   rowHoverHandlers, // Add this prop to accept hover handlers
   rowProps,
   enableActionsHover = true,
+  onFilterChange, // Add this prop
+  enableExcelExport = false, // New prop to enable export
+  exportFileName = "TableData", // New prop for export file name
+  exportEndpoint, // New prop for export API endpoint (can be different from main endpoint)
+  onExportComplete,
 }) => {
   const { afterToday } = DateRangePicker;
   const [hoveredRow, setHoveredRow] = useState(null);
@@ -159,6 +166,8 @@ const CommonTable = ({
   const [filterModalOpen, setFilterModalOpen] = useState(false);
   const [dateRange, setDateRange] = useState([null, null]);
   const authCtx = useContext(AuthContext);
+  const [exportFilters, setExportFilters] = useState({}); // ✅ Use state for export filters
+
   const user = authCtx?.user;
   // Use refs to track values without causing re-renders
   const appliedFiltersRef = useRef({});
@@ -166,6 +175,7 @@ const CommonTable = ({
   const rowsPerPageRef = useRef(defaultPageSize);
   const refreshIntervalRef = useRef(refreshInterval);
   const hasFetchedInitialData = useRef(false);
+  const currentAppliedFiltersRef = useRef({});
 
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
@@ -186,6 +196,58 @@ const CommonTable = ({
     });
     return values;
   }, [availableFilters]);
+  useEffect(() => {
+    setFilterValues(initialFilterValues);
+    setAppliedFilters(initialFilterValues);
+    setExportFilters(initialFilterValues); // ✅ Initialize export filters state
+    appliedFiltersRef.current = initialFilterValues;
+    console.log("🔍 [Table] Initialized all filters:", initialFilterValues);
+  }, [initialFilterValues]);
+  const { handleExportExcel } = useExcelExport();
+
+  const handleTableExport = useCallback(async () => {
+    const result = await handleExportExcel(
+      exportEndpoint || endpoint,
+      exportFilters, // ✅ Use state instead of ref
+      exportFileName
+    );
+
+    if (onExportComplete) {
+      onExportComplete(result);
+    }
+  }, [
+    endpoint,
+    exportEndpoint,
+    exportFileName,
+    handleExportExcel,
+    onExportComplete,
+    exportFilters, // ✅ Add to dependencies
+  ]);
+
+  const enhancedCustomHeader = useMemo(
+    () => (
+      <>
+        {customHeader}
+        {enableExcelExport && (
+          <ExportExcelButton
+            endpoint={exportEndpoint || endpoint}
+            appliedFilters={exportFilters} // ✅ Use state instead of ref
+            fileName={exportFileName}
+            variant="icon"
+          />
+        )}
+      </>
+    ),
+    [
+      customHeader,
+      enableExcelExport,
+      exportEndpoint,
+      endpoint,
+      exportFileName,
+      exportFilters,
+    ]
+  );
+
   const visibleFilters = useMemo(() => {
     return availableFilters.filter((filter) => {
       if (!filter.roles) return true; // filters with no role restriction
@@ -331,6 +393,11 @@ const CommonTable = ({
     }));
   }, []);
   const applyFilters = useCallback(() => {
+    console.log(
+      "🔍 [Table] applyFilters called with filterValues:",
+      filterValues
+    );
+
     // Copy current filter values
     const formattedFilters = { ...filterValues };
 
@@ -364,10 +431,21 @@ const CommonTable = ({
         delete formattedFilters[key];
       }
     });
+    console.log("🔍 [Table] Formatted filters:", formattedFilters);
 
     // Apply filters
     setAppliedFilters(formattedFilters);
+    setExportFilters(formattedFilters); // ✅ Update export filters state
     appliedFiltersRef.current = formattedFilters;
+    console.log(
+      "🔍 [Table] currentAppliedFiltersRef updated:",
+      currentAppliedFiltersRef.current
+    );
+
+    if (onFilterChange) {
+      onFilterChange(formattedFilters);
+    }
+
     setPage(0);
     pageRef.current = 0;
 
@@ -378,15 +456,25 @@ const CommonTable = ({
 
     // Fetch data with new filters
     fetchData();
-  }, [filterValues, fetchData, availableFilters, isSmallScreen]);
+  }, [
+    filterValues,
+    fetchData,
+    availableFilters,
+    isSmallScreen,
+    onFilterChange,
+  ]);
   const resetFilters = useCallback(() => {
     setFilterValues(initialFilterValues);
     setAppliedFilters(initialFilterValues);
+    setExportFilters(initialFilterValues); // ✅ Reset export filters too
     appliedFiltersRef.current = initialFilterValues;
+    if (onFilterChange) {
+      onFilterChange(initialFilterValues);
+    }
     setPage(0);
     pageRef.current = 0;
     fetchData();
-  }, [initialFilterValues, fetchData]);
+  }, [initialFilterValues, fetchData, onFilterChange]);
   const removeFilter = useCallback(
     (filterId) => {
       const filterConfig = availableFilters.find((f) => f.id === filterId);
@@ -399,20 +487,26 @@ const CommonTable = ({
       } else {
         resetValue = "";
       }
-
-      setFilterValues((prev) => ({ ...prev, [filterId]: resetValue }));
-      setAppliedFilters((prev) => ({ ...prev, [filterId]: resetValue }));
-      appliedFiltersRef.current = {
+      const newFilters = {
         ...appliedFiltersRef.current,
         [filterId]: resetValue,
       };
+      setFilterValues((prev) => ({ ...prev, [filterId]: resetValue }));
+      setAppliedFilters(newFilters);
+      setExportFilters(newFilters); // ✅ Update export filters
+
+      appliedFiltersRef.current = newFilters;
+      // currentAppliedFiltersRef.current = newFilters; // ✅ Sync export filters
+
+      if (onFilterChange) {
+        onFilterChange(newFilters);
+      }
       setPage(0);
       pageRef.current = 0;
       fetchData();
     },
-    [availableFilters, fetchData]
+    [availableFilters, fetchData, onFilterChange]
   );
-
   const handleChangePage = useCallback(
     (event, newPage) => {
       setPage(newPage);
@@ -926,7 +1020,11 @@ const CommonTable = ({
                   </IconButton>
                 </Tooltip>
               </Box>
-              <Box sx={{ marginLeft: "auto" }}>{customHeader}</Box>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                {enhancedCustomHeader}
+              </Box>
+              {/* <Box sx={{ marginLeft: "auto" }}>{customHeader}</Box> */}
+              {/* <Box sx={{ marginLeft: "auto" }}>{enhancedCustomHeader}</Box> */}
             </Box>
             {/* Applied filters chips */}
             {/* <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>

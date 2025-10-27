@@ -818,6 +818,9 @@ const CreditCardTxn = ({ query }) => {
           enableSelection={false}
           selectedRows={selectedRows}
           onSelectionChange={setSelectedRows}
+          enableExcelExport={true}
+          exportFileName="CreditCardTransactions"
+          exportEndpoint={ApiEndpoints.GET_CREDIT_CARD}
           customHeader={
             <>
               <Box
@@ -870,15 +873,6 @@ const CreditCardTxn = ({ query }) => {
                   flexWrap: "wrap",
                 }}
               >
-                {user?.role === "adm" && (
-                  <IconButton
-                    color="primary"
-                    onClick={handleExportExcel}
-                    title="Export to Excel"
-                  >
-                    <FileDownloadIcon />
-                  </IconButton>
-                )}
                 <Scheduler onRefresh={refreshPlans} />
               </Box>
             </>
