@@ -252,3 +252,32 @@ export const predefinedRanges = [
 export const afterToday = () => (date) => {
   return date > new Date();
 };
+
+
+export  const maskSensitiveData = (value, type) => {
+  if (!value) return "N/A";
+  
+  const cleaned = value.toString().replace(/\D/g, '');
+  
+  switch(type) {
+    case 'aadhaar':
+      return cleaned.length >= 4 ? `${"*".repeat(8)}${cleaned.slice(-4)}` : "XXXXXXXXXXXX";
+    
+    case 'mobile':
+      return cleaned.length >= 4 ? `${"*".repeat(6)}${cleaned.slice(-4)}` : "**********";
+    
+    case 'account':
+      return cleaned.length >= 4 ? `${"*".repeat(cleaned.length - 4)}${cleaned.slice(-4)}` : "****";
+    
+    case 'pan':
+      return cleaned.length >= 4 ? `${cleaned.slice(0, 2)}${"*".repeat(cleaned.length - 4)}${cleaned.slice(-2)}` : "*****";
+    
+    case 'email':
+      const [local, domain] = value.split('@');
+      if (!domain) return "***@***";
+      return `${local.slice(0, 2)}${"*".repeat(Math.max(0, local.length - 2))}@${domain}`;
+    
+    default:
+      return cleaned.length >= 4 ? `${"*".repeat(cleaned.length - 4)}${cleaned.slice(-4)}` : "****";
+  }
+};

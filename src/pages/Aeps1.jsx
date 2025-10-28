@@ -93,8 +93,8 @@ const Aeps1 = () => {
         sessionKey: scanData.sessionKey,
         srno: scanData.srno,
         pf: scanData.pf,
-        latitude: location.lat,
-        longitude: location.long,
+        latitude: location?.lat||"28.77",
+        longitude: location?.long||"77.82",
         operator: 22,
         type: "DAILY_LOGIN",
       };
