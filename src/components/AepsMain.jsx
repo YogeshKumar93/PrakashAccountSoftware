@@ -176,7 +176,7 @@ const handleAPICall = async (scanData) => {
   console.log("THe aesps traction data is", transactionData);
   return (
     <>
-      <CommonLoader loading={loading} />
+      {/* <CommonLoader loading={loading} /> */}
 
       {/* Show receipt if cash withdrawal was successful */}
       {showReceipt && transactionData && (

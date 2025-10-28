@@ -98,6 +98,13 @@ const CreditCardBillPayment = ({
     }
   };
 
+    // ✅ Disable Pay button until all fields are filled
+  const isFormComplete =
+    formValues.cnumber.trim() &&
+    formValues.number.trim() &&
+    formValues.name.trim() &&
+    formValues.amount.trim();
+
   return (
     <>
       <Box sx={{}}>
@@ -162,7 +169,7 @@ const CreditCardBillPayment = ({
             variant="contained"
             color="primary"
             onClick={() => setMpinModalOpen(true)}
-            disabled={submitting}
+            disabled={submitting || !isFormComplete}
           >
             {submitting ? "Processing..." : "Pay"}
           </Button>

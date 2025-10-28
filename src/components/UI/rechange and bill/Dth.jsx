@@ -377,6 +377,7 @@ const Dth = () => {
                   variant="contained"
                   sx={{ backgroundColor: "#6C4BC7" }}
                   onClick={handleRecharge}
+                  disabled={!customerId || !manualAmount || !MpinCallBackVal}
                 >
                   Pay ₹{manualAmount || 0}
                 </Button>

@@ -361,7 +361,7 @@ const userRole = user?.role;
                   textTransform: "none",
                 }}
                 onClick={handleSendClick}
-                disabled={creating}
+                disabled={!amount || !remark}
               >
                 {creating ? (
                   <CircularProgress size={24} sx={{ color: "#fff" }} />
