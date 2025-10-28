@@ -193,7 +193,7 @@ const DmtTxn = ({ query }) => {
         label: "Route",
         type: "dropdown",
         options: routes, // ✅ dynamic routes here
-        roles: ["adm"],
+        roles: ["adm", "sadm"],
       },
 
       { id: "sender_mobile", label: "Sender Mobile", type: "textfield" },

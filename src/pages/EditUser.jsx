@@ -47,7 +47,10 @@ const EditUser = ({ open, onClose, user, onFetchRef }) => {
       { name: "address", label: "Address", type: "text" },
       // Add other business fields as needed
     ],
-    user_details: [{ name: "name", label: " Name", type: "text" }],
+    user_details: [
+      { name: "name", label: " Name", type: "text" },
+      { name: "establishment", label: "Establishment", type: "text" },
+    ],
   };
 
   // Fetch data when modal opens or tab changes
