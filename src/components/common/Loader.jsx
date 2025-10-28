@@ -163,14 +163,14 @@ const Loader = ({ loading, children }) => {
             .circle1 {
               width: 120px;
               height: 120px;
-              border: 5px solid #1877f2;
+              border: 5px solid #014A50;
               animation: rotateAnimation1 3.2s linear infinite;
             }
 
             .circle2 {
               width: 150px;
               height: 150px;
-              border: 5px solid #f18d18;
+              border: 5px solid #1877F2;
               animation: rotateAnimation2 3.2s linear infinite;
               opacity: 0.25;
             }
@@ -206,6 +206,68 @@ const Loader = ({ loading, children }) => {
         </Box>,
         document.body // 👈 Mounts loader at top level, above all portals
       )}
+      {children}
+      <style jsx>{`
+        .loader-text {
+          margin-top: 50px;
+        }
+        .loader-container {
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .circle1,
+        .circle2 {
+          position: absolute;
+          border-radius: 20%;
+        }
+
+        .circle1 {
+          width: 120px;
+          height: 120px;
+          border: 5px solid #014A50;
+          animation: rotateAnimation1 3.2s linear infinite;
+        }
+
+        .circle2 {
+          width: 150px;
+          height: 150px;
+          border: 5px solid #1877F2;
+          animation: rotateAnimation2 3.2s linear infinite;
+          opacity: 0.25;
+        }
+
+        @keyframes rotateAnimation1 {
+          0% {
+            transform: rotate(0deg);
+          }
+          100% {
+            transform: rotate(360deg);
+          }
+        }
+
+        @keyframes rotateAnimation2 {
+          0% {
+            transform: rotate(0deg);
+          }
+          100% {
+            transform: rotate(-360deg);
+          }
+        }
+
+        @keyframes scaleAnimation {
+          0%,
+          100% {
+            transform: scale(1);
+          }
+          50% {
+            transform: scale(0.9);
+          }
+        }
+      `}</style>
+    
     </>
   );
 };

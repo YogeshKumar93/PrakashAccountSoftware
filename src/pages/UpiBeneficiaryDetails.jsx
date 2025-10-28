@@ -10,6 +10,7 @@ import ResetMpin from "../components/common/ResetMpin";
 import CommonModal from "../components/common/CommonModal";
 
 import { convertNumberToWordsIndian } from "../utils/NumberUtil";
+import Loader from "../components/common/Loader";
 
 const UpiBeneficiaryDetails = ({
   open,
@@ -20,6 +21,7 @@ const UpiBeneficiaryDetails = ({
   sender,
 }) => {
   const [amount, setAmount] = useState("");
+    const [submitting, setSubmitting] = useState(false);
   const [loading, setLoading] = useState(false);
   const [otpRef, setOtpRef] = useState(null);
   const [otp, setOtp] = useState("");
@@ -70,7 +72,7 @@ const UpiBeneficiaryDetails = ({
   const handleProceed = async () => {
     if (!mpin || mpin.length !== 6)
       return apiErrorToast("Please enter the 6-digit M-PIN");
-
+ setSubmitting(true);
     setLoading(true);
     try {
       const payload = {
@@ -108,6 +110,7 @@ const UpiBeneficiaryDetails = ({
     } catch (err) {
       apiErrorToast(err);
     } finally {
+       setSubmitting(false);
       setLoading(false);
     }
   };
@@ -197,6 +200,7 @@ const UpiBeneficiaryDetails = ({
           onChange={setMpin}
           numInputs={6}
           inputType="password"
+            submitting={submitting}
           renderInput={(props) => <input {...props} />}
           inputStyle={{
             width: "40px",
@@ -215,6 +219,7 @@ const UpiBeneficiaryDetails = ({
 
   return (
     <>
+      <Loader loading={submitting || loading}>
       <CommonModal
         open={open}
         onClose={onClose}
@@ -222,6 +227,7 @@ const UpiBeneficiaryDetails = ({
         iconType="info"
         size="small"
         customContent={customContent}
+         loading={loading || submitting}
         footerButtons={[
           {
             text: "Cancel",
@@ -238,6 +244,7 @@ const UpiBeneficiaryDetails = ({
           },
         ]}
       />
+      </Loader>
     </>
   );
 };

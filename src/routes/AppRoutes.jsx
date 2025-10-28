@@ -80,6 +80,7 @@ import PrintAeps from "../pages/PrintAeps";
 import OnBoarding from "../components/OnBoarding";
 import PrintCreditCard from "../pages/PrintCreditCard";
 import BankStatementDesign from "../components/AEPS/BankStatementDesign";
+import AepsReceipt from "../pages/AepsReceipt";
 
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated, loading, user } = useContext(AuthContext);
@@ -127,6 +128,8 @@ export default function AppRoutes() {
           <Route path="landingpageintro1" element={<LandingPageIntro1 />} />
           <Route path="landingpageintro2" element={<LandingPageIntro2 />} />
           <Route path="landingpageintro3" element={<LandingPageIntro3 />} /> */}
+
+              <Route path="/aepsReceipt" element={<AepsReceipt />} />
 
         <Route path="/qrLogin" element={<QrLoginPage />} />
         <Route path="/login" element={<Login />} />
