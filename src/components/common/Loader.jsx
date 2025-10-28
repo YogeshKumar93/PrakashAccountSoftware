@@ -96,15 +96,17 @@
 
 // export default Loader
 
+import { createPortal } from "react-dom";
 import { Box } from "@mui/material";
 import { smLogo } from "../../iconsImports";
 
-// import { smLogo } from "../../iconsImports";
-
 const Loader = ({ loading, children }) => {
+  if (!loading) return children;
+
   return (
-    <div>
-      {loading && (
+    <>
+      {children}
+      {createPortal(
         <Box
           sx={{
             position: "fixed",
@@ -117,7 +119,7 @@ const Loader = ({ loading, children }) => {
             justifyContent: "center",
             backdropFilter: "blur(5px)",
             background: "rgba(0, 0, 0, 0.2)",
-            zIndex: 9998,
+            zIndex: 20000, // higher than MUI modal (1300–1500)
             flexDirection: "column",
           }}
         >
@@ -137,7 +139,72 @@ const Loader = ({ loading, children }) => {
           <div className="loader-text">
             Wait! While we are processing your request.....
           </div>
-        </Box>
+
+          <style jsx>{`
+            .loader-text {
+              margin-top: 50px;
+              color: #fff;
+              font-weight: 500;
+              text-align: center;
+            }
+            .loader-container {
+              position: relative;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            }
+
+            .circle1,
+            .circle2 {
+              position: absolute;
+              border-radius: 20%;
+            }
+
+            .circle1 {
+              width: 120px;
+              height: 120px;
+              border: 5px solid #1877f2;
+              animation: rotateAnimation1 3.2s linear infinite;
+            }
+
+            .circle2 {
+              width: 150px;
+              height: 150px;
+              border: 5px solid #f18d18;
+              animation: rotateAnimation2 3.2s linear infinite;
+              opacity: 0.25;
+            }
+
+            @keyframes rotateAnimation1 {
+              0% {
+                transform: rotate(0deg);
+              }
+              100% {
+                transform: rotate(360deg);
+              }
+            }
+
+            @keyframes rotateAnimation2 {
+              0% {
+                transform: rotate(0deg);
+              }
+              100% {
+                transform: rotate(-360deg);
+              }
+            }
+
+            @keyframes scaleAnimation {
+              0%,
+              100% {
+                transform: scale(1);
+              }
+              50% {
+                transform: scale(0.9);
+              }
+            }
+          `}</style>
+        </Box>,
+        document.body // 👈 Mounts loader at top level, above all portals
       )}
       {children}
       <style jsx>{`
@@ -201,6 +268,7 @@ const Loader = ({ loading, children }) => {
         }
       `}</style>
     </div>
+    </>
   );
 };
 

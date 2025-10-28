@@ -221,7 +221,7 @@ const BbpxTxn = ({ query }) => {
         label: "Route",
         type: "dropdown",
         options: routes, // ✅ dynamic routes here
-        roles: ["adm"],
+        roles: ["adm", "sadm"],
       },
       { id: "consumer_number", label: "Consumer Number", type: "textfield" },
       { id: "txn_id", label: "Txn ID", type: "textfield" },

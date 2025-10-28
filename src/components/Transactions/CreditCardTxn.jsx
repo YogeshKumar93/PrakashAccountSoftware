@@ -142,7 +142,7 @@ const CreditCardTxn = ({ query }) => {
         label: "Route",
         type: "dropdown",
         options: routes, // ✅ dynamic routes here
-        roles: ["adm"],
+        roles: ["adm", "sadm"],
       },
       { id: "number", label: "Number", type: "textfield" },
       { id: "card_number", label: "Card Number", type: "textfield" },

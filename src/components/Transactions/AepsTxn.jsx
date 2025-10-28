@@ -144,7 +144,7 @@ const AepsTxn = ({ query }) => {
         label: "Route",
         type: "dropdown",
         options: routes,
-        roles: ["adm"],
+        roles: ["adm", "sadm"],
       },
       { id: "txn_id", label: "Txn ID", type: "textfield" },
       {
@@ -456,7 +456,6 @@ const AepsTxn = ({ query }) => {
   return (
     <>
       <CommonTable
-       
         columns={columnsWithSelection}
         endpoint={ApiEndpoints.GET_AEPS_TXN}
         filters={filters}
@@ -467,59 +466,59 @@ const AepsTxn = ({ query }) => {
         onSelectionChange={setSelectedRows}
         customHeader={
           <>
-           <Box
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 1,
-                          padding: "8px",
-                        }}
-                      >
-                        {selectedRows.length > 0 && (
-                          <Tooltip title="Print">
-                            <Button
-                              variant="contained"
-                              size="small"
-                              color="primary"
-                              onClick={() => {
-                                if (!selectedRows || selectedRows.length === 0) {
-                                  alert(
-                                    "Please select at least one transaction to print."
-                                  );
-                                  return;
-                                }
-          
-                                // Save all selected rows
-                                sessionStorage.setItem(
-                                  "txnData",
-                                  JSON.stringify(selectedRows)
-                                );
-          
-                                // Open receipt page in a new tab
-                                window.open("/print-aeps", "_blank");
-                              }}
-                              sx={{ ml: 1 }}
-                            >
-                              <PrintIcon
-                                sx={{ fontSize: 20, color: "#e3e6e9ff", mr: 1 }}
-                              />
-                              Print
-                            </Button>
-                          </Tooltip>
-                        )}
-                      </Box>
-          <Box display="flex" alignItems="center" gap={1} flexWrap="wrap">
-            {user?.role === "adm" && (
-              <IconButton
-                color="primary"
-                onClick={handleExportExcel}
-                title="Export to Excel"
-              >
-                <FileDownloadIcon />
-              </IconButton>
-            )}
-            <Scheduler onRefresh={refreshPlans} />
-          </Box>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                padding: "8px",
+              }}
+            >
+              {selectedRows.length > 0 && (
+                <Tooltip title="Print">
+                  <Button
+                    variant="contained"
+                    size="small"
+                    color="primary"
+                    onClick={() => {
+                      if (!selectedRows || selectedRows.length === 0) {
+                        alert(
+                          "Please select at least one transaction to print."
+                        );
+                        return;
+                      }
+
+                      // Save all selected rows
+                      sessionStorage.setItem(
+                        "txnData",
+                        JSON.stringify(selectedRows)
+                      );
+
+                      // Open receipt page in a new tab
+                      window.open("/print-aeps", "_blank");
+                    }}
+                    sx={{ ml: 1 }}
+                  >
+                    <PrintIcon
+                      sx={{ fontSize: 20, color: "#e3e6e9ff", mr: 1 }}
+                    />
+                    Print
+                  </Button>
+                </Tooltip>
+              )}
+            </Box>
+            <Box display="flex" alignItems="center" gap={1} flexWrap="wrap">
+              {user?.role === "adm" && (
+                <IconButton
+                  color="primary"
+                  onClick={handleExportExcel}
+                  title="Export to Excel"
+                >
+                  <FileDownloadIcon />
+                </IconButton>
+              )}
+              <Scheduler onRefresh={refreshPlans} />
+            </Box>
           </>
         }
       />

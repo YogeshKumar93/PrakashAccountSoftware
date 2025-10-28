@@ -6,6 +6,8 @@ import { useToast } from "../utils/ToastContext";
 import AuthContext from "../contexts/AuthContext";
 import { apiCall } from "../api/apiClient";
 import MpinInput from "./MpinInput";
+import Loader from "../components/common/Loader";
+
 const OutletDmt1 = ({ open, handleClose, onSuccess }) => {
   const { schema, formData, handleChange, errors, loading } = useSchemaForm(
     ApiEndpoints.DMT1_OUTLET_INITIATE_SCHEMA,
@@ -27,6 +29,7 @@ const OutletDmt1 = ({ open, handleClose, onSuccess }) => {
       latitude: location?.lat || "",
       longitude: location?.long || "",
     };
+
     const { error, response } = await apiCall(
       "post",
       ApiEndpoints.DMT1_OUTLET_INITIATE,
@@ -39,7 +42,6 @@ const OutletDmt1 = ({ open, handleClose, onSuccess }) => {
         "success"
       );
 
-      // 🔑 Save payload for OTP validation
       setInitPayload({
         ...payload,
         otpReferenceID: response?.data?.otpReferenceID,
@@ -47,7 +49,7 @@ const OutletDmt1 = ({ open, handleClose, onSuccess }) => {
         hash2: response?.data?.hash,
       });
 
-      setOtpModalOpen(true); // ✅ open MPIN/OTP dialog
+      setOtpModalOpen(true);
     } else {
       showToast(error?.message || "Failed to initiate DMT1 outlet", "error");
       handleClose();
@@ -58,11 +60,12 @@ const OutletDmt1 = ({ open, handleClose, onSuccess }) => {
   // ✅ OTP Submit handler
   const handleOtpSubmit = async (pin) => {
     setOtpError("");
+    setSubmitting(true);
     const { error, response } = await apiCall(
       "post",
       ApiEndpoints.VALIDATE_DMT1_OUTLET,
       {
-        ...initPayload, // includes formData + otpReferenceId + hash
+        ...initPayload,
         otp: pin,
       }
     );
@@ -75,6 +78,7 @@ const OutletDmt1 = ({ open, handleClose, onSuccess }) => {
     } else {
       setOtpError(error?.message || "OTP Validation Failed");
     }
+    setSubmitting(false);
   };
 
   // ✅ Required fields
@@ -92,7 +96,7 @@ const OutletDmt1 = ({ open, handleClose, onSuccess }) => {
   );
 
   return (
-    <>
+    <Loader loading={submitting || loading}>
       {/* Main Outlet Form */}
       <CommonModal
         open={open}
@@ -134,7 +138,7 @@ const OutletDmt1 = ({ open, handleClose, onSuccess }) => {
         submitting={submitting}
         errorMsg={otpError}
       />
-    </>
+    </Loader>
   );
 };
 
