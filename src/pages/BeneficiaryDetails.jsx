@@ -18,6 +18,7 @@ import { useToast } from "../utils/ToastContext";
 import CommonModal from "../components/common/CommonModal";
 import ResetMpin from "../components/common/ResetMpin";
 import { convertNumberToWordsIndian } from "../utils/NumberUtil";
+import Loader from "../components/common/Loader";
 
 const BeneficiaryDetails = ({
   open,
@@ -27,6 +28,7 @@ const BeneficiaryDetails = ({
   senderId,
   sender,
   onPayoutSuccess,
+ 
 }) => {
   const [transferMode, setTransferMode] = useState("IMPS");
   const [amount, setAmount] = useState("");
@@ -41,11 +43,13 @@ const BeneficiaryDetails = ({
   const [selectedPurpose, setSelectedPurpose] = useState("");
   const [loadingPurposes, setLoadingPurposes] = useState(false);
   const [resetMpinModalOpen, setResetMpinModalOpen] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   if (!beneficiary) return null;
 
   useEffect(() => {
     const fetchPurposes = async () => {
+      //  setSubmitting(true);
       setLoadingPurposes(true);
       try {
         const { error, response } = await apiCall(
@@ -59,10 +63,13 @@ const BeneficiaryDetails = ({
           setPurposes(purposesData);
           if (purposesData.length > 0) setSelectedPurpose(purposesData[0].id);
         } else apiErrorToast(error);
+        
       } catch (err) {
+        
         apiErrorToast(err);
       } finally {
         setLoadingPurposes(false);
+        //  setSubmitting(false);
       }
     };
     fetchPurposes();
@@ -73,7 +80,7 @@ const BeneficiaryDetails = ({
     if (!mpin || mpin.length !== 6) {
       return showToast("Please enter the 6-digit M-PIN", "error");
     }
-
+ setSubmitting(true);
     setLoading(true);
     try {
       const selectedPurposeType =
@@ -128,11 +135,14 @@ const BeneficiaryDetails = ({
         setOtpRef(null);
         onClose();
       } else {
+           
         showToast(error?.message || "Payout unsuccessfull", "error");
       }
     } catch (err) {
+     
       showToast(err);
     } finally {
+       setSubmitting(false);
       setLoading(false);
     }
   };
@@ -284,6 +294,7 @@ const BeneficiaryDetails = ({
   );
 
   return (
+    <Loader loading={submitting || loading} >
     <CommonModal
       open={open}
       onClose={onClose}
@@ -291,22 +302,24 @@ const BeneficiaryDetails = ({
       iconType="info"
       size="small"
       customContent={customContent}
+       loading={loading || submitting}
       footerButtons={[
         {
           text: "Cancel",
           variant: "outlined",
           onClick: onClose,
-          disabled: loading,
+          disabled: submitting,
         },
         {
-          text: loading ? "Processing..." : "Proceed",
+          text: submitting ? "Processing..." : "Proceed",
           variant: "contained",
           color: "success",
           onClick: handleProceed,
-          disabled: loading,
+          disabled: submitting,
         },
       ]}
     />
+    </Loader>
   );
 };
 

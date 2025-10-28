@@ -163,14 +163,14 @@ const Loader = ({ loading, children }) => {
             .circle1 {
               width: 120px;
               height: 120px;
-              border: 5px solid #1877f2;
+              border: 5px solid #014A50;
               animation: rotateAnimation1 3.2s linear infinite;
             }
 
             .circle2 {
               width: 150px;
               height: 150px;
-              border: 5px solid #f18d18;
+              border: 5px solid #1877F2;
               animation: rotateAnimation2 3.2s linear infinite;
               opacity: 0.25;
             }
@@ -267,7 +267,7 @@ const Loader = ({ loading, children }) => {
           }
         }
       `}</style>
-    </div>
+    
     </>
   );
 };

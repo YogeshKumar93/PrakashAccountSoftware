@@ -18,6 +18,7 @@ import { useToast } from "../utils/ToastContext";
 import CommonModal from "../components/common/CommonModal";
 import ResetMpin from "../components/common/ResetMpin";
 import { convertNumberToWordsIndian } from "../utils/NumberUtil";
+import Loader from "../components/common/Loader";
 
 const LevinUpiBeneficiaryDetails = ({
   open,
@@ -29,6 +30,7 @@ const LevinUpiBeneficiaryDetails = ({
   onLevinSuccess,
 }) => {
   const [transferMode, setTransferMode] = useState("IMPS");
+   const [submitting, setSubmitting] = useState(false);
   const [amount, setAmount] = useState("");
   const [loading, setLoading] = useState(false);
   const [otpRef, setOtpRef] = useState(null);
@@ -109,7 +111,7 @@ const LevinUpiBeneficiaryDetails = ({
     if (!mpin || mpin.length !== 6) {
       return showToast("Please enter the 6-digit M-PIN", "error");
     }
-
+  setSubmitting(true);
     setLoading(true);
     try {
       const selectedPurposeType =
@@ -167,6 +169,7 @@ const LevinUpiBeneficiaryDetails = ({
     } catch (err) {
       showToast(err);
     } finally {
+        setSubmitting(false);
       setLoading(false);
     }
   };
@@ -277,6 +280,7 @@ const LevinUpiBeneficiaryDetails = ({
           numInputs={6}
           inputType="password"
           renderInput={(props) => <input {...props} />}
+              loading={loading || submitting}
           inputStyle={{
             width: "40px",
             height: "40px",
@@ -309,6 +313,7 @@ const LevinUpiBeneficiaryDetails = ({
   );
 
   return (
+     <Loader loading={submitting || loading}>
     <CommonModal
       open={open}
       onClose={onClose}
@@ -316,6 +321,7 @@ const LevinUpiBeneficiaryDetails = ({
       iconType="info"
       size="small"
       customContent={customContent}
+          loading={loading || submitting}
       footerButtons={[
         {
           text: "Cancel",
@@ -332,6 +338,7 @@ const LevinUpiBeneficiaryDetails = ({
         },
       ]}
     />
+    </Loader>
   );
 };
 
