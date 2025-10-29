@@ -50,6 +50,7 @@ const EditUser = ({ open, onClose, user, onFetchRef }) => {
     user_details: [
       { name: "name", label: " Name", type: "text" },
       { name: "establishment", label: "Establishment", type: "text" },
+      { name: "mobile", label: "Mobile", type: "text" },
     ],
   };
 
