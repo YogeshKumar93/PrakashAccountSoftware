@@ -85,8 +85,8 @@ const SoliTechPayout = () => {
         setOpenVerifyModal(true);
       } else {
         setSender(null);
-        setOpenRegisterModal(true); // ensure modal opens on unknown user
-        showToast(error?.message || "Something went wrong", "error");
+        setOpenRegisterModal(true);
+        // showToast(error?.message || "Something went wrong", "error");
       }
     } else {
       // If no response or error → open register modal

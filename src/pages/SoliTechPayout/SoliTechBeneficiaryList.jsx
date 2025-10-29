@@ -203,10 +203,10 @@ const SoliTechBeneficiaryList = ({
           onSuccess?.(); // Refresh the list
         }
       } else {
-        showToast(error?.message || "Verification failed", "error");
+        showToast(error?.message, "error");
       }
-    } catch (err) {
-      showToast("Verification failed", "error");
+    } catch (error) {
+      showToast(error, "error");
     } finally {
       setSubmitting(false);
     }

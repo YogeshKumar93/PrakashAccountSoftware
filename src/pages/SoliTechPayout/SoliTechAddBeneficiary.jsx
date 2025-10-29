@@ -121,7 +121,7 @@ const SoliTechAddBeneficiary = ({
       if (response?.status === true && response?.data) {
         // Auto-fill the IFSC code from response.data
         setFormData((prev) => ({ ...prev, ifsc_code: response.data }));
-        showToast("IFSC code auto-filled", "success");
+        // showToast("IFSC code auto-filled", "success");
       } else {
         showToast(error?.message || "Failed to load IFSC code", "error");
       }
@@ -205,7 +205,6 @@ const SoliTechAddBeneficiary = ({
         bank_name: formData.bank_name,
         bank_code: formData.bank_code,
         ifsc_code: formData.ifsc_code, // Include IFSC in payload (e.g., "KKBK0005033")
-        // bene_pincode: formData.bene_pincode,
       };
 
       const { response, error } = await apiCall(
@@ -291,50 +290,10 @@ const SoliTechAddBeneficiary = ({
       ]}
     >
       <Box sx={{ maxHeight: isMobile ? "70vh" : "auto", overflowY: "auto" }}>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+        {/* <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
           Fill in the beneficiary details. You will need to verify with MPIN
           before adding.
-        </Typography>
-
-        {/* Beneficiary Name */}
-        <TextField
-          fullWidth
-          margin="normal"
-          name="bene_name"
-          label="Beneficiary Name"
-          placeholder="Enter beneficiary full name"
-          value={formData.bene_name}
-          onChange={handleChange}
-          error={!!errors.bene_name}
-          helperText={
-            errors.bene_name ||
-            "Enter the beneficiary's full name as per bank records"
-          }
-          required
-          inputProps={{
-            maxLength: 50,
-          }}
-        />
-
-        {/* Account Number */}
-        <TextField
-          fullWidth
-          margin="normal"
-          name="bene_account"
-          label="Account Number"
-          placeholder="Enter account number"
-          value={formData.bene_account}
-          onChange={handleChange}
-          error={!!errors.bene_account}
-          helperText={
-            errors.bene_account || "Enter the beneficiary's bank account number"
-          }
-          required
-          inputProps={{
-            maxLength: 18,
-            pattern: "[0-9]*",
-          }}
-        />
+        </Typography> */}
 
         {/* Bank Selection - Autocomplete Dropdown */}
         <Autocomplete
@@ -361,11 +320,7 @@ const SoliTechAddBeneficiary = ({
               label="Select Bank"
               placeholder="Search bank by name or code"
               error={!!errors.bank_name || !!errors.bank_code}
-              helperText={
-                errors.bank_name ||
-                errors.bank_code ||
-                "Select the beneficiary's bank"
-              }
+              helperText={errors.bank_name || errors.bank_code}
               required
               InputProps={{
                 ...params.InputProps,
@@ -386,14 +341,9 @@ const SoliTechAddBeneficiary = ({
                 <Typography variant="body2" fontWeight="500">
                   {option.BankName}
                 </Typography>
-                <Typography variant="caption" color="text.secondary">
+                {/* <Typography variant="caption" color="text.secondary">
                   Code: {option.BankCode}
-                  {option.AccountVerificationAllowed && (
-                    <Box component="span" color="success.main" ml={1}>
-                      ✓ Verification Available
-                    </Box>
-                  )}
-                </Typography>
+                </Typography> */}
               </Box>
             </li>
           )}
@@ -414,10 +364,11 @@ const SoliTechAddBeneficiary = ({
             onChange={handleChange}
             error={!!errors.ifsc_code}
             helperText={
-              errors.ifsc_code ||
-              (loadingIfsc
-                ? "Fetching IFSC code from bank..."
-                : "IFSC code auto-filled from bank selection")
+              errors.ifsc_code
+              // ||
+              // (loadingIfsc
+              //   ? "Fetching IFSC code from bank..."
+              //   : "IFSC code auto-filled from bank selection")
             }
             required
             disabled={loadingIfsc}
@@ -434,6 +385,39 @@ const SoliTechAddBeneficiary = ({
             }}
           />
         )}
+        {/* Account Number */}
+        <TextField
+          fullWidth
+          margin="normal"
+          name="bene_account"
+          label="Account Number"
+          placeholder="Enter account number"
+          value={formData.bene_account}
+          onChange={handleChange}
+          error={!!errors.bene_account}
+          helperText={errors.bene_account}
+          required
+          inputProps={{
+            maxLength: 18,
+            pattern: "[0-9]*",
+          }}
+        />
+        {/* Beneficiary Name */}
+        <TextField
+          fullWidth
+          margin="normal"
+          name="bene_name"
+          label="Beneficiary Name"
+          placeholder="Enter beneficiary full name"
+          value={formData.bene_name}
+          onChange={handleChange}
+          error={!!errors.bene_name}
+          helperText={errors.bene_name}
+          required
+          inputProps={{
+            maxLength: 50,
+          }}
+        />
 
         {/* Pincode */}
         {/* <TextField

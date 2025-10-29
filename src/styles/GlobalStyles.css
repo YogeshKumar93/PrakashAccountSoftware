@@ -727,5 +727,22 @@ th:last-child::after {
   /* .rs-picker-dropdown, .rs-picker-container { */
   z-index: 9999 !important;
 }
-
+.landing-bg_para {
+  align-items: center;
+  color: #1d1d1d;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-align: left;
+  margin-top: 0.8rem;
+  font-family: "poppins" !important;
+}
+.landing-bg_biggpay_font {
+  align-items: center;
+  font-size: 4rem;
+  font-weight: bolder;
+  letter-spacing: 0.05em;
+  text-align: left;
+  font-family: "poppins" !important;
+}
 /* ******************************************************* */
