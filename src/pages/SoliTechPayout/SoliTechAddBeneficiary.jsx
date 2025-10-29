@@ -37,7 +37,6 @@ const SoliTechAddBeneficiary = ({
     bene_account: "",
     bank_name: "",
     bank_code: "",
-    bene_pincode: "",
     ifsc_code: "",
   });
 
@@ -56,8 +55,7 @@ const SoliTechAddBeneficiary = ({
       formData.bene_account?.trim() &&
       formData.bank_name?.trim() &&
       formData.bank_code?.trim() &&
-      formData.ifsc_code?.trim() && // IFSC is now required
-      formData.bene_pincode?.trim()
+      formData.ifsc_code?.trim()
     );
   }, [formData]);
 
@@ -182,7 +180,6 @@ const SoliTechAddBeneficiary = ({
       account_number: formData.bene_account,
       bank_name: formData.bank_name,
       ifsc_code: formData.ifsc_code, // This will be the IFSC from API response (e.g., "KKBK0005033")
-      pincode: formData.bene_pincode,
       bank_code: formData.bank_code,
       is_verified: 1,
     };
@@ -208,7 +205,7 @@ const SoliTechAddBeneficiary = ({
         bank_name: formData.bank_name,
         bank_code: formData.bank_code,
         ifsc_code: formData.ifsc_code, // Include IFSC in payload (e.g., "KKBK0005033")
-        bene_pincode: formData.bene_pincode,
+        // bene_pincode: formData.bene_pincode,
       };
 
       const { response, error } = await apiCall(
@@ -231,7 +228,6 @@ const SoliTechAddBeneficiary = ({
           bank_name: "",
           bank_code: "",
           ifsc_code: "",
-          bene_pincode: "",
         });
         setBankSearch("");
       } else {
@@ -255,7 +251,6 @@ const SoliTechAddBeneficiary = ({
         bank_name: "",
         bank_code: "",
         ifsc_code: "",
-        bene_pincode: "",
       });
       setErrors({});
       setBankSearch("");
@@ -441,7 +436,7 @@ const SoliTechAddBeneficiary = ({
         )}
 
         {/* Pincode */}
-        <TextField
+        {/* <TextField
           fullWidth
           margin="normal"
           name="bene_pincode"
@@ -458,7 +453,7 @@ const SoliTechAddBeneficiary = ({
             maxLength: 6,
             pattern: "[0-9]*",
           }}
-        />
+        /> */}
       </Box>
     </CommonModal>
   );

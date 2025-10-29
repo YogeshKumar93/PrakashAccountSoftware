@@ -286,10 +286,11 @@ const ApiEndpoints = {
   SOLITECH_ADD_BENEFICIARY: "payout/addBeneficiary",
   SOLITECH_GET_BANKS: "payout/getBanks",
   SOLITECH_REMMITER_LOGIN: "payout/remitterLogin",
-  SOLITECH_PAYOUT: "payout/payOut2",
+  SOLITECH_PAYOUT: "payments/v2/payOut3",
   SOLITECH_DELETE_BENEFICIARY: "payout/deleteBeneficiary2",
   SOLITECH_CHECK_TRANSACTION_STATUS: "payout/checkTransactionStatus",
   SOLITECH_BANK_IFSC: "payout/getIfsc",
+
   CHANGE_PARENT: "auth/changeParent",
   BASIC_SCHEMA: "business/basicSchema",
   CONTACT_SCHEMA: "business/contactSchema",

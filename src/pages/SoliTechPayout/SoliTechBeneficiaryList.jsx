@@ -60,7 +60,13 @@ import CommonModal from "../../components/common/CommonModal";
 import { Search } from "@mui/icons-material";
 import SoliTechAddBeneficiary from "./SoliTechAddBeneficiary";
 import CommonDeleteModal from "../../components/CommonDeleteModal";
-const SoliTechBeneficiaryList = ({ sender, onSuccess, onSelect }) => {
+import SoliTechBeneficiaryDetails from "./SoliTechBeneficiaryDetails";
+const SoliTechBeneficiaryList = ({
+  sender,
+  onSuccess,
+  onSelect,
+  onPayoutSuccess,
+}) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const { showToast } = useToast();
@@ -77,6 +83,9 @@ const SoliTechBeneficiaryList = ({ sender, onSuccess, onSelect }) => {
   const [selectedBeneficiary, setSelectedBeneficiary] = useState(null);
   const [pendingBeneficiary, setPendingBeneficiary] = useState(null);
   const { location } = useContext(AuthContext);
+  const [openPayoutModal, setOpenPayoutModal] = useState(false);
+  const [selectedPayoutBeneficiary, setSelectedPayoutBeneficiary] =
+    useState(null);
 
   const bankImageMapping = {
     SBI: sbi2,
@@ -412,7 +421,10 @@ const SoliTechBeneficiaryList = ({ sender, onSuccess, onSelect }) => {
                         <Button
                           size="small"
                           variant="contained"
-                          onClick={() => onSelect?.(b)}
+                          onClick={() => {
+                            setSelectedPayoutBeneficiary(b);
+                            setOpenPayoutModal(true);
+                          }}
                           sx={{
                             backgroundColor: "#5c3ac8",
                             fontSize: "0.7rem",
@@ -616,6 +628,20 @@ const SoliTechBeneficiaryList = ({ sender, onSuccess, onSelect }) => {
             ))}
           </Grid>
         </CommonModal>
+      )}
+      {openPayoutModal && selectedPayoutBeneficiary && (
+        <SoliTechBeneficiaryDetails
+          open={openPayoutModal}
+          onClose={() => {
+            setOpenPayoutModal(false);
+            setSelectedPayoutBeneficiary(null);
+          }}
+          beneficiary={selectedPayoutBeneficiary}
+          sender={sender}
+          senderMobile={sender?.mobile_number}
+          senderId={sender?.id}
+          onPayoutSuccess={onPayoutSuccess}
+        />
       )}
     </>
   );

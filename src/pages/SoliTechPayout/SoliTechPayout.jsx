@@ -20,6 +20,7 @@ import SoliTechBeneficiaryList from "./SoliTechBeneficiaryList";
 import SoliTechBeneficiaryDetails from "./SoliTechBeneficiaryDetails";
 import SuperTransferReceipt from "../SuperTransferReceipt";
 import SearchIcon from "@mui/icons-material/Search";
+import SolitechReceipt from "../SolitechReceipt";
 
 const SoliTechPayout = () => {
   const theme = useTheme();
@@ -160,7 +161,7 @@ const SoliTechPayout = () => {
 
   if (payoutResponse) {
     return (
-      <SuperTransferReceipt
+      <SolitechReceipt
         payoutResponse={payoutResponse}
         onRepeat={() => setPayoutResponse(null)}
       />
@@ -193,16 +194,6 @@ const SoliTechPayout = () => {
             />
           )}
         />
-        {/* <TextField
-          label="Mobile Number"
-          variant="outlined"
-          fullWidth
-          value={mobile}
-          autoComplete="on" // <-- enable autocomplete for phone numbers
-          onChange={handleChange}
-          inputProps={{ maxLength: 10 }}
-          sx={{ mb: 1 }}
-        /> */}
         <TextField
           label="Account Number"
           variant="outlined"
