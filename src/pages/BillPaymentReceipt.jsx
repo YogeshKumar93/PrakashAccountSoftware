@@ -23,7 +23,6 @@ const BillPaymentReceipt = ({
     message,
     data: {
       transactionId,
-      operator__id,
       amount,
       operator,
       data: { param1, order_id, providerId },
@@ -45,7 +44,7 @@ const BillPaymentReceipt = ({
     if (navigator.share) {
       navigator.share({
         title: "Payment Receipt",
-        text: `Payment of ₹${amount} to ${operator} completed successfully. Transaction ID: ${transactionId || operator__id} `,
+        text: `Payment of ₹${amount} to ${operator} completed successfully. Transaction ID: ${transactionId}`,
       });
     } else {
       // Fallback: copy to clipboard
@@ -146,10 +145,6 @@ const BillPaymentReceipt = ({
 
               {/* Provider ID */}
               {/* <DetailRow label="Provider ID" value={providerId} /> */}
- <DetailRow
-                label="Transaction ID"
-                value={transactionId || operator__id}  {/* Show operatorId if transactionId is not available */}
-              />
 
               {/* Biller Info */}
               {billerDetails && (
