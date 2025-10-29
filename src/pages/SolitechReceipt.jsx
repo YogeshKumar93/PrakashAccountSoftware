@@ -51,12 +51,12 @@ const SolitechReceipt = ({ payoutResponse, onRepeat, onNewTxn }) => {
     ];
 
     const values = [
-      payoutResponse?.response?.data?.mobileNumber || "---",
+      payoutResponse?.mobile_number || "---",
       payoutResponse?.sender_name || "---",
-      payoutResponse?.response?.data?.beneficiaryName || "---",
-      payoutResponse?.response?.data?.beneficiaryAccount || "---",
-      `₹${payoutResponse?.response?.data?.transferAmount || 0}`,
-      payoutResponse?.response?.data?.transferMode || "---",
+      payoutResponse?.beneficiary_name || "---",
+      payoutResponse?.account_number || "---",
+      `₹${payoutResponse?.amount || 0}`,
+      payoutResponse?.mop || "---",
       payoutResponse?.purpose || "N/A",
       payoutResponse?.operator_id || "---",
     ];
