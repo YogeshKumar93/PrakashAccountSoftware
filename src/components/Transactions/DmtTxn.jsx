@@ -471,7 +471,7 @@ const DmtTxn = ({ query }) => {
             </div>
           </div>
         ),
-        right: true,
+        center: false,
         width: "60px",
       },
       ...(user?.role === "adm" ||
@@ -559,24 +559,36 @@ const DmtTxn = ({ query }) => {
         name: "Status",
         selector: (row) => (
           <div
-            style={{ textAlign: "right", fontSize: "11px", fontWeight: 600 }}
+            style={{
+              textAlign: "left",
+              fontSize: "11px",
+              fontWeight: 600,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-start",
+              justifyContent: "center",
+              width: "100%",
+            }}
           >
             <div>
-              <CommonStatus value={row.status} />{" "}
+              <CommonStatus value={row.status} />
             </div>
             <div
               style={{
-                whiteSpace: "normal", // allow wrapping
-                wordBreak: "break-word", // break long values
-                textAlign: "right",
+                whiteSpace: "normal", // allow wrapping for long text
+                wordBreak: "break-word", // break long continuous strings
+                textAlign: "left",
+                marginTop: "4px",
+                fontSize: "11px",
+                maxWidth: "120px", // optional for consistent width
               }}
             >
-              {row.operator_id}
+              {row?.operator_id || "N/A"}
             </div>
           </div>
         ),
-        center: true,
-        width: "70px",
+        center: false, // ensures DataTable doesn’t center the column
+        width: "90px", // slightly wider to avoid text clipping
       },
       // {
       //   name: "Action",

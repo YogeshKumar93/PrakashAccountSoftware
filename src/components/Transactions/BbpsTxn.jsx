@@ -611,29 +611,39 @@ const BbpxTxn = ({ query }) => {
         name: "Status",
         selector: (row) => (
           <div
-            style={{ textAlign: "right", fontSize: "11px", fontWeight: 600 }}
+            style={{
+              textAlign: "left",
+              fontSize: "11px",
+              fontWeight: 600,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-start",
+              justifyContent: "center",
+              width: "100%",
+            }}
           >
             <div>
               <CommonStatus value={row.status} />
             </div>
-            <Tooltip title={row.operator_id || ""} arrow>
+            <Tooltip title={row?.operator_id || ""} arrow>
               <div
                 style={{
                   whiteSpace: "nowrap",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
-                  maxWidth: "100px", // fixed width
-                  textAlign: "right",
+                  maxWidth: "100px", // fixed width for truncation
+                  textAlign: "left",
                   cursor: "pointer",
+                  marginTop: "4px",
                 }}
               >
-                {row.operator_id}
+                {row?.operator_id || "N/A"}
               </div>
             </Tooltip>
           </div>
         ),
-        center: true,
-        width: "120px", // adjust as needed
+        center: false, // keep the column left-aligned
+        width: "120px", // can adjust if needed
       },
       ...(user?.role === "adm" || user?.role === "sadm"
         ? [

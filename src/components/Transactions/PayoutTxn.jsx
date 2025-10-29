@@ -618,14 +618,30 @@ const PayoutTxn = ({ query }) => {
       {
         name: "Status",
         selector: (row) => (
-          <div style={{ textAlign: "center" }}>
+          <div
+            style={{
+              textAlign: "left",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-start",
+              justifyContent: "center",
+              width: "100%",
+            }}
+          >
             <CommonStatus value={row.status} />
-            <div style={{ fontSize: "10px", marginTop: "4px" }}>
+            <div
+              style={{
+                fontSize: "11px",
+                marginTop: "4px",
+                wordBreak: "break-all", // prevents long IDs from breaking layout
+                maxWidth: "120px", // optional: keeps long text wrapped neatly
+              }}
+            >
               {row?.operator_id || "N/A"}
             </div>
           </div>
         ),
-        center: true,
+        center: false, // ensures it's not forced to center by the table
       },
       ...(user?.role === "adm" || user?.role === "sadm"
         ? [
