@@ -23,6 +23,7 @@ const BillPaymentReceipt = ({
     message,
     data: {
       transactionId,
+      operator__id,
       amount,
       operator,
       data: { param1, order_id, providerId },
@@ -37,6 +38,22 @@ const BillPaymentReceipt = ({
   const handleDownload = () => {
     // Implement PDF download functionality
     console.log("Downloading receipt...");
+  };
+
+  // Share receipt
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: "Payment Receipt",
+        text: `Payment of ₹${amount} to ${operator} completed successfully. Transaction ID: ${transactionId || operator__id} `,
+      });
+    } else {
+      // Fallback: copy to clipboard
+      navigator.clipboard.writeText(
+        `Payment Receipt\nAmount: ₹${amount}\nOperator: ${operator}\nTransaction ID: ${transactionId}`
+      );
+      alert("Receipt details copied to clipboard!");
+    }
   };
 
   // Print receipt
@@ -129,6 +146,10 @@ const BillPaymentReceipt = ({
 
               {/* Provider ID */}
               {/* <DetailRow label="Provider ID" value={providerId} /> */}
+ <DetailRow
+                label="Transaction ID"
+                value={transactionId || operator__id}  {/* Show operatorId if transactionId is not available */}
+              />
 
               {/* Biller Info */}
               {billerDetails && (
