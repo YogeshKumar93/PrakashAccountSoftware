@@ -8,18 +8,33 @@ const ComingSoon = () => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        height: "80vh",
         flexDirection: "column",
         textAlign: "center",
+        p: 3,
+        height: "200px",
       }}
     >
       <Typography
-        variant="h2"
-        sx={{ fontWeight: "bold", color: "primary.main", mb: 2 }}
+        variant="h6"
+        sx={{
+          fontWeight: 700,
+          color: "#5210c1",
+          mb: 1,
+          display: "flex",
+          alignItems: "center",
+          gap: "6px",
+        }}
       >
         🚧 Coming Soon
       </Typography>
-      <Typography variant="body1" color="text.secondary">
+      <Typography
+        variant="body2"
+        sx={{
+          color: "text.secondary",
+          maxWidth: 280,
+          lineHeight: 1.4,
+        }}
+      >
         We’re working hard to bring you this feature. Stay tuned!
       </Typography>
     </Box>

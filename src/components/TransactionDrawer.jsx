@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import {
   Box,
   Typography,
@@ -12,6 +12,7 @@ import DownloadIcon from "@mui/icons-material/Download";
 import PanToolIcon from "@mui/icons-material/PanTool";
 import AuthContext from "../contexts/AuthContext";
 import { ddmmyyWithTime } from "../utils/DateUtils";
+import ComplaintForm from "./ComplaintForm";
 
 const statusColors = {
   SUCCESS: "#b7f0a6",
@@ -25,9 +26,11 @@ const TransactionDrawer = ({
   onClose,
   companyLogoUrl,
   width = 400,
+  type,
 }) => {
   const authCtx = useContext(AuthContext);
   const user = authCtx?.user;
+  const [complaintOpen, setComplaintOpen] = useState(false);
 
   // Split row into groups
   const transactionDetails = [
@@ -65,6 +68,23 @@ const TransactionDrawer = ({
     }
     return true; // for other roles, show all
   });
+  const handleComplaintClick = () => {
+    setComplaintOpen(true);
+  };
+
+  // Handle complaint form close
+  const handleComplaintClose = () => {
+    setComplaintOpen(false);
+  };
+
+  // Handle complaint success
+  const handleComplaintSuccess = (responseData) => {
+    setComplaintOpen(false);
+    // You can add any additional logic here after successful complaint creation
+    if (onRaiseIssue) {
+      onRaiseIssue(responseData);
+    }
+  };
   if (!row) return null;
 
   const renderSection = (title, data) => (
@@ -89,62 +109,84 @@ const TransactionDrawer = ({
   );
 
   return (
-    <Paper
-      elevation={0}
-      sx={{ width, height: "90%", display: "flex", flexDirection: "column" }}
-    >
-      {/* Header */}
-      <Box
-        sx={{
-          bgcolor: statusColors[row.status] || "#f5f5f5",
-          display: "flex",
-          flexDirection: "column",
-          position: "sticky",
-          top: 0,
-          zIndex: 10,
-          height: 180,
-        }}
+    <>
+      <Paper
+        elevation={0}
+        sx={{ width, height: "90%", display: "flex", flexDirection: "column" }}
       >
-        <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
-          <IconButton size="small" onClick={onClose}>
-            <CloseIcon />
-          </IconButton>
-          {companyLogoUrl && (
-            <Box
-              component="img"
-              src={companyLogoUrl}
-              alt="Company Logo"
-              sx={{ height: 72, width: 100, objectFit: "contain" }}
-            />
-          )}
+        {/* Header */}
+        <Box
+          sx={{
+            bgcolor: statusColors[row.status] || "#f5f5f5",
+            display: "flex",
+            flexDirection: "column",
+            position: "sticky",
+            top: 0,
+            zIndex: 10,
+            height: 180,
+          }}
+        >
+          <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
+            <IconButton size="small" onClick={onClose}>
+              <CloseIcon />
+            </IconButton>
+            {companyLogoUrl && (
+              <Box
+                component="img"
+                src={companyLogoUrl}
+                alt="Company Logo"
+                sx={{ height: 72, width: 100, objectFit: "contain" }}
+              />
+            )}
+          </Box>
+
+          <Typography variant="h4" fontWeight="bold" textAlign="center">
+            ₹ {row.amount}
+          </Typography>
+          <Typography
+            variant="h6"
+            textAlign="center"
+            color={row.status === "SUCCESS" ? "success.main" : "error"}
+          >
+            {row.status}
+          </Typography>
+          <Typography variant="caption" textAlign="center">
+            {ddmmyyWithTime(row.created_at)}
+          </Typography>
         </Box>
 
-        <Typography variant="h4" fontWeight="bold" textAlign="center">
-          ₹ {row.amount}
-        </Typography>
-        <Typography
-          variant="h6"
-          textAlign="center"
-          color={row.status === "SUCCESS" ? "success.main" : "error"}
-        >
-          {row.status}
-        </Typography>
-        <Typography variant="caption" textAlign="center">
-          {ddmmyyWithTime(row.created_at)}
-        </Typography>
-      </Box>
+        <Divider />
 
-      <Divider />
+        {/* Details List */}
+        <Box p={2} flex={1} overflow="auto">
+          <IconButton
+            size="small"
+            onClick={handleComplaintClick}
+            title="Raise Complaint"
+            sx={{ color: "secondary.main" }}
+          >
+            <PanToolIcon />
+          </IconButton>
+          {renderSection("Transaction Details", transactionDetails)}
 
-      {/* Details List */}
-      <Box p={2} flex={1} overflow="auto">
-        {renderSection("Transaction Details", transactionDetails)}
-        <Divider sx={{ my: 1 }} />
-        {renderSection("Commission Details", filteredCommissionDetails)}
-        <Divider sx={{ my: 1 }} />
-        {renderSection("Beneficiary Details", beneficiaryDetails)}
-      </Box>
-    </Paper>
+          <Divider sx={{ my: 1 }} />
+          {renderSection("Commission Details", filteredCommissionDetails)}
+          <Divider sx={{ my: 1 }} />
+          {renderSection("Beneficiary Details", beneficiaryDetails)}
+        </Box>
+      </Paper>
+      <ComplaintForm
+        open={complaintOpen}
+        onClose={handleComplaintClose}
+        onSuccess={handleComplaintSuccess}
+        txnId={{
+          id: row.id, // Transaction ID for the complaint
+          txn_id: row.txn_id, // Transaction reference number
+          ...row, // Spread all row data to pass complete transaction info
+        }}
+        type={type} // You can customize this based on your needs
+      />
+    </>
   );
 };
 

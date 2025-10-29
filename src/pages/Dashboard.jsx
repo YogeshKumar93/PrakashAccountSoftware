@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -12,62 +11,11 @@ import {
   Filler,
 } from "chart.js";
 import {
-  Grid,
-  Card,
   Typography,
   Box,
-  Select,
-  MenuItem,
   useMediaQuery,
-  LinearProgress,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Avatar,
-  Chip,
-  IconButton,
-  Button,
   CircularProgress,
 } from "@mui/material";
-import {
-  Group,
-  SupervisorAccount,
-  CorporateFare,
-  Engineering,
-  AdminPanelSettings,
-  AccountCircle,
-  Devices,
-  TrendingUp,
-  PointOfSale,
-  CheckCircle,
-  Schedule,
-  AccountBalanceWallet,
-  AccountBalance,
-  Api,
-  Search,
-  Notifications,
-  Menu as MenuIcon,
-  ArrowDropUp,
-  ArrowDropDown,
-  Refresh,
-  TrendingDown,
-} from "@mui/icons-material";
-import {
-  Payment,
-  Receipt,
-  CompareArrows,
-  AllInbox,
-  VerifiedUser,
-  PaymentRounded,
-  Train,
-  LocalAtm,
-  TransferWithinAStation,
-} from "@mui/icons-material";
-import { motion } from "framer-motion";
 import { useTheme } from "@mui/material/styles";
 import { apiCall } from "../api/apiClient";
 import ApiEndpoints from "../api/ApiEndpoints";

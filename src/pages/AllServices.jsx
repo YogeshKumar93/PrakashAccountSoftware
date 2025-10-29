@@ -520,48 +520,43 @@ export default function AllServices() {
       key: "pg",
       label: "Paymnent Gateway",
       icon: PG1,
-      component: ComingSoon,
-
-      // subMenu: [
-      //   {
-      //     key: "upiPay",
-      //     label: "UPI Pay",
-      //     icon: PG1,
-      //     component: ComingSoon,
-      //     type: "upi",
-      //   },
-      // ],
+      subMenu: [
+        {
+          key: "upiPay",
+          label: "UPI Pay",
+          icon: PG1,
+          component: ComingSoon,
+          type: "upi",
+        },
+      ],
     },
     {
       key: "qrcoll",
       label: "Qr Collection",
       icon: QRCODE1,
-      component: ComingSoon,
-      // subMenu: [
-      //   {
-      //     key: "upiPay",
-      //     label: "UPI Pay",
-      //     icon: QrCodeIcon,
-      //     component: UpiTransfer,
-      //     type: "upi",
-      //   },
-      // ],
+      subMenu: [
+        {
+          key: "upiPay",
+          label: "UPI Pay",
+          icon: QrCodeIcon,
+          component: ComingSoon,
+          type: "upi",
+        },
+      ],
     },
     {
       key: "partpaynent",
       label: "Part Payment",
       icon: TATAPOWER1,
-      component: ComingSoon,
-
-      // subMenu: [
-      //   {
-      //     key: "upiPay",
-      //     label: "UPI Pay",
-      //     icon: QrCodeIcon,
-      //     component: UpiTransfer,
-      //     type: "upi",
-      //   },
-      // ],
+      subMenu: [
+        {
+          key: "upiPay",
+          label: "UPI Pay",
+          icon: QrCodeIcon,
+          component: ComingSoon,
+          type: "upi",
+        },
+      ],
     },
   ].filter(Boolean);
 
@@ -699,28 +694,54 @@ export default function AllServices() {
             {currentView?.subMenuLabel || activeMenuData.label}
           </Typography>
 
-          {activeMenuData.subMenu && !currentView && (
-            <Grid container spacing={2}>
-              {activeMenuData.subMenu.map((sub) => (
-                <Grid
-                  item
-                  xs={6}
-                  sm={4}
-                  md={3}
-                  lg={2.4}
-                  key={sub.key}
-                  sx={{ display: "flex", justifyContent: "center" }}
+          {activeMenuData.subMenu && (
+            <>
+              {/* ✅ If the menu has only one subMenu and it’s ComingSoon, open it directly */}
+              {activeMenuData.subMenu.length === 1 &&
+              activeMenuData.subMenu[0].component === ComingSoon ? (
+                <Box
+                  sx={{
+                    mt: 2,
+                    p: 3,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    borderRadius: 3,
+                    border: "1px dashed #D6D3E8",
+                    background: "#F9F8FF",
+                  }}
                 >
-                  <SubMenuCard
-                    icon={sub.icon}
-                    user={user}
-                    label={sub.label}
-                    onClick={() => handleSubMenuClick(sub, activeMenuData)}
-                    isActive={activeSubMenu === sub.key}
-                  />
-                </Grid>
-              ))}
-            </Grid>
+                  <ComingSoon />
+                </Box>
+              ) : (
+                /* ✅ Otherwise, show normal submenu grid */
+                !currentView && (
+                  <Grid container spacing={2}>
+                    {activeMenuData.subMenu.map((sub) => (
+                      <Grid
+                        item
+                        xs={6}
+                        sm={4}
+                        md={3}
+                        lg={2.4}
+                        key={sub.key}
+                        sx={{ display: "flex", justifyContent: "center" }}
+                      >
+                        <SubMenuCard
+                          icon={sub.icon}
+                          user={user}
+                          label={sub.label}
+                          onClick={() =>
+                            handleSubMenuClick(sub, activeMenuData)
+                          }
+                          isActive={activeSubMenu === sub.key}
+                        />
+                      </Grid>
+                    ))}
+                  </Grid>
+                )
+              )}
+            </>
           )}
 
           {/* 👇 Agar submenu me se koi component select ho gaya */}

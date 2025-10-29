@@ -921,11 +921,12 @@ const PayoutTxn = ({ query }) => {
           <TransactionDrawer
             row={selectedRow} // pass whole row
             onRaiseIssue={() => {
-              setSelectedTxn(selectedRow.txn_id);
+              setSelectedTxn(selectedRow);
               setOpenCreate(true);
             }}
             onClose={() => setDrawerOpen(false)}
             companyLogoUrl={Logo}
+            type="payout"
           />
         )}
       </Drawer>
