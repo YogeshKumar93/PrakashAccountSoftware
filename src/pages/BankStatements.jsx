@@ -190,13 +190,12 @@ const handleUploadExcel = async (file) => {
         );
 
         if (response) {
-          console.log(`✅ Row ${i + 1} uploaded successfully`);
+      showToast(response?.message, "success");
         } else {
-          console.error(`❌ Row ${i + 1} failed`, error);
+      showToast(error?.message, "error");
         }
       }
 
-      showToast("Excel upload completed!", "success");
       refreshStatements(); // refresh table after upload
     };
 
