@@ -21,6 +21,7 @@ import SoliTechBeneficiaryDetails from "./SoliTechBeneficiaryDetails";
 import SuperTransferReceipt from "../SuperTransferReceipt";
 import SearchIcon from "@mui/icons-material/Search";
 import SolitechReceipt from "../SolitechReceipt";
+import SoliTechSenderOtpModal from "./SolitechSenderOtpModal";
 
 const SoliTechPayout = () => {
   const theme = useTheme();
@@ -38,6 +39,7 @@ const SoliTechPayout = () => {
   const { showToast } = useToast();
   const [mobileListOpen, setMobileListOpen] = useState(false);
   const [mobileList, setMobileList] = useState([]);
+
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("mobileNumbers") || "[]");
     setHistory(saved);
@@ -264,6 +266,17 @@ const SoliTechPayout = () => {
           mobile={mobile}
           onRegistered={handleSenderRegistered}
           fetchSender={handleFetchSender}
+        />
+      )}
+      {openVerifyModal && otpData && (
+        <SoliTechSenderOtpModal
+          open={openVerifyModal}
+          onClose={() => setOpenVerifyModal(false)}
+          otpData={otpData}
+          onVerified={() => {
+            setOpenVerifyModal(false);
+            handleFetchSender(otpData.mobile_number); // refetch sender
+          }}
         />
       )}
     </Box>

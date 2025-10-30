@@ -65,7 +65,7 @@ const SoliTechSenderRegister = ({
         });
 
         onClose();
-        fetchSender?.(mobile);
+        // fetchSender?.(mobile);
       } else {
         showToast(error || "Failed to register sender", "error");
       }
@@ -143,7 +143,6 @@ const SoliTechSenderRegister = ({
         helperText={errors.mobile_number}
         disabled
       />
-
     </CommonModal>
   );
 };

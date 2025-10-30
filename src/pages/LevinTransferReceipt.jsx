@@ -57,12 +57,12 @@ const LevinTransferReceipt = ({ levinResponse, onRepeat, sender }) => {
     ];
 
     const values = [
-      levinResponse?.response?.data?.mobileNumber || "---",
-      levinResponse?.sender_name || "---",
+      sender?.mobile_number || "---",
+      sender?.sender_name || "---",
       levinResponse?.response?.data?.beneficiaryName || "---",
-      levinResponse?.response?.data?.beneficiaryAccount || "---",
+      levinResponse?.beneficiary?.account_number || "---",
       `₹${levinResponse?.response?.data?.transferAmount || 0}`,
-      levinResponse?.response?.data?.transferMode || "---",
+      levinResponse?.transferMode || "---",
       levinResponse?.purpose || "N/A",
       levinResponse?.operator_id || "---",
     ];
