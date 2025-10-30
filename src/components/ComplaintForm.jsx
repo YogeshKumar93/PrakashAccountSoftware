@@ -159,7 +159,13 @@ const ComplaintForm = ({ txnId, onSuccess, open, onClose, type }) => {
   };
 
   return (
-    <CommonModal open={open} onClose={onClose} maxWidth="md" footerButtons={[]}>
+    <CommonModal
+      title="Raise Complaint"
+      open={open}
+      onClose={onClose}
+      maxWidth="md"
+      footerButtons={[]}
+    >
       <Box component="form" onSubmit={handleSubmit}>
         {transactionDetails && (
           <Card sx={{ m: 3, mb: 2 }} variant="outlined">

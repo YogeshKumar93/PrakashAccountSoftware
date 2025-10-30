@@ -64,6 +64,12 @@ const AccountLadger = ({ query }) => {
         type: "daterange",
       },
       {
+        id: "txn_id",
+        label: "Txn ID",
+        type: "textfield",
+        roles: ["adm", "sadm"],
+      },
+      {
         id: "user_id",
         label: "Type Est.",
         type: "autocomplete",
