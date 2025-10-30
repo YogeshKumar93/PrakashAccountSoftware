@@ -8,7 +8,6 @@ import {
   IconButton,
 } from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
-import ShareIcon from "@mui/icons-material/Share";
 import PrintIcon from "@mui/icons-material/Print";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
@@ -18,44 +17,50 @@ const BillPaymentReceipt = ({
   billerDetails,
   inputValues,
 }) => {
+  const { status, message, data = {} } = receiptData || {};
+
+  // Handle both response formats
   const {
-    status,
-    message,
-    data: {
-      transactionId,
-      amount,
-      operator,
-      data: { param1, order_id, providerId },
-    },
-  } = receiptData;
+    transactionId,
+    amount,
+    operator,
+    data: nestedData = {},
+    status: innerStatus,
+    response,
+    operator_id,
+    indicore_ref,
+  } = data || {};
+
+  // 🧠 Try to extract details safely for both response types
+  let parsedResponse = {};
+  if (typeof response === "string" && response.includes("|")) {
+    const parts = response.split("|");
+    parsedResponse = {
+      code: parts[0],
+      msg: parts[1],
+      orderId: parts[2],
+      unknown1: parts[3],
+      refId: parts[4],
+    };
+  }
+
+  const transactionStatus =
+    innerStatus || data?.status || parsedResponse?.msg || "N/A";
+  const order_id =
+    nestedData?.order_id || parsedResponse?.orderId || indicore_ref || "-";
+  const finalAmount = amount || nestedData?.amount || "-";
+  const finalOperator = operator || operator_id || "Unknown Operator";
+  const customerNumber =
+    nestedData?.param1 || nestedData?.customerNumber || "-";
 
   // Format date and time
   const currentDate = new Date().toLocaleDateString();
   const currentTime = new Date().toLocaleTimeString();
 
-  // Download receipt as PDF
   const handleDownload = () => {
-    // Implement PDF download functionality
     console.log("Downloading receipt...");
   };
 
-  // Share receipt
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: "Payment Receipt",
-        text: `Payment of ₹${amount} to ${operator} completed successfully. Transaction ID: ${transactionId}`,
-      });
-    } else {
-      // Fallback: copy to clipboard
-      navigator.clipboard.writeText(
-        `Payment Receipt\nAmount: ₹${amount}\nOperator: ${operator}\nTransaction ID: ${transactionId}`
-      );
-      alert("Receipt details copied to clipboard!");
-    }
-  };
-
-  // Print receipt
   const handlePrint = () => {
     window.print();
   };
@@ -77,29 +82,28 @@ const BillPaymentReceipt = ({
         }}
       >
         <CardContent sx={{ p: 4 }}>
-          {/* Success Header */}
+          {/* Header */}
           <Box textAlign="center" mb={3}>
             <CheckCircleIcon
               sx={{
                 fontSize: 64,
-                color: "success.main",
+                color:
+                  transactionStatus?.toLowerCase() === "pending"
+                    ? "warning.main"
+                    : transactionStatus?.toLowerCase() === "failed"
+                    ? "error.main"
+                    : "success.main",
                 mb: 2,
               }}
             />
-            {/* <Typography
-              variant="h5"
-              fontWeight="bold"
-              color="success.main"
-              gutterBottom
-            >
-              Payment Successful!
-            </Typography> */}
+
             <Typography
               variant="body1"
               color="text.secondary"
               fontWeight="bold"
             >
-              {message || "Your payment has been processed successfully"}
+              {message ||
+                `Transaction ${transactionStatus?.toLowerCase()} successfully`}
             </Typography>
           </Box>
 
@@ -130,35 +134,26 @@ const BillPaymentReceipt = ({
               >
                 <Typography fontWeight="bold">Amount Paid</Typography>
                 <Typography variant="h6" fontWeight="bold" color="success.main">
-                  ₹{amount}
+                  ₹{finalAmount}
                 </Typography>
               </Box>
 
-              {/* Order ID */}
               <DetailRow label="Order ID" value={order_id} />
+              <DetailRow label="Operator" value={finalOperator} />
+              <DetailRow label="Customer Number" value={customerNumber} />
+              <DetailRow label="Status" value={transactionStatus} />
 
-              {/* Operator */}
-              <DetailRow label="Operator" value={operator} />
-
-              {/* Customer Number */}
-              <DetailRow label="Customer Number" value={param1} />
-
-              {/* Provider ID */}
-              {/* <DetailRow label="Provider ID" value={providerId} /> */}
-
-              {/* Biller Info */}
               {billerDetails && (
                 <DetailRow
                   label="Biller"
-                  value={billerDetails.billerInfo?.name}
+                  value={billerDetails?.billerInfo?.name}
                 />
               )}
 
-              {/* Date & Time */}
               <DetailRow label="Date" value={currentDate} />
               <DetailRow label="Time" value={currentTime} />
 
-              {/* Additional parameters from input */}
+              {/* Additional dynamic inputs */}
               {inputValues &&
                 Object.entries(inputValues).map(([key, value]) => (
                   <DetailRow
@@ -183,16 +178,6 @@ const BillPaymentReceipt = ({
             >
               <DownloadIcon />
             </IconButton>
-
-            {/* <IconButton
-              onClick={handleShare}
-              sx={{
-                backgroundColor: "#f0f0f0",
-                "&:hover": { backgroundColor: "#e0e0e0" },
-              }}
-            >
-              <ShareIcon />
-            </IconButton> */}
 
             <IconButton
               onClick={handlePrint}
@@ -229,7 +214,7 @@ const BillPaymentReceipt = ({
   );
 };
 
-// Reusable detail row component
+// 🔹 Reusable DetailRow Component
 const DetailRow = ({ label, value }) => (
   <Box
     sx={{

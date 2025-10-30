@@ -194,7 +194,6 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
   const handleLogout = () => {
     handleUserMenuClose();
     authCtx.logout();
-    window.location.href = "/qrLogin";
   };
   const getResolvedPath = (item) =>
     item.to?.[user?.role] || item.to?.default || "/";
@@ -333,7 +332,6 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
           disableRipple
           onClick={() => {
             handleLogout();
-            navigate("/qrLogin");
           }}
           sx={{
             width: "100%",
@@ -558,7 +556,6 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
             transformOrigin={{ horizontal: "right", vertical: "right" }}
             anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
             PaperProps={{
-             
               sx: {
                 mt: 1.5,
                 MozBorderRadiusBottom: "6px",
@@ -576,7 +573,7 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
                 display: "flex",
                 alignItems: "center",
                 gap: 2,
-               color: "#3D0075",
+                color: "#3D0075",
 
                 bgcolor: "#EEE8FF",
 
@@ -605,7 +602,7 @@ const SideNavAndHeader = ({ userRole, userName = "User Name", userAvatar }) => {
             <Divider />
 
             {/* Menu Items */}
-            <Box sx={{ width: "320px", p: 2.5, }}>
+            <Box sx={{ width: "320px", p: 2.5 }}>
               <MenuItem onClick={() => navigate(roleRoutes[user?.role])}>
                 <ListItemIcon>
                   <PersonIcon fontSize="small" />

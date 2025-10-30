@@ -19,19 +19,26 @@ const TwoFA = ({ open, onClose }) => {
 
   const handleTwoFA = async () => {
     if (!mpin || mpin.length < 6) {
-      showToast("Please enter your 6-digit MPIN", "warning");
+      showToast("Please enter your 6-digit MPIN", "error");
       return;
     }
 
     try {
       setLoading(true);
-      const response = await apiCall("POST", ApiEndpoints.CHANGE_TWO_FA, {
-        mpin,
-      });
-
-      showToast(response?.message || "2FA changed successfully", "success");
-       loadUserProfile();
-      onClose();
+      const { error, response } = await apiCall(
+        "POST",
+        ApiEndpoints.CHANGE_TWO_FA,
+        {
+          mpin,
+        }
+      );
+      if (response) {
+        showToast(response?.message || "2FA changed successfully", "success");
+        loadUserProfile();
+        onClose();
+      } else {
+        showToast(error?.message, "error");
+      }
     } catch (error) {
       showToast(error?.message || "Something went wrong", "error");
       console.error(error);
