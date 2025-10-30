@@ -240,15 +240,9 @@ const PayoutTxn = ({ query }) => {
 
   const columns = useMemo(
     () => [
-       {
+      {
         name: "S.No",
-        selector: (row) => (
-          <div
-            style={{ textAlign: "left", fontSize: "14px", fontWeight: "600" }}
-          >
-            {row.user_id || "N/A"}
-          </div>
-        ),
+        selector: (row) => row.serialNo,
         wrap: true,
         width: "80px",
       },
