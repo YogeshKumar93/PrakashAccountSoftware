@@ -82,6 +82,8 @@ import PrintCreditCard from "../pages/PrintCreditCard";
 import BankStatementDesign from "../components/AEPS/BankStatementDesign";
 import AepsReceipt from "../pages/AepsReceipt";
 import Terms from "../pages/Terms";
+import DownloadExcel from "../pages/DownloadExcel";
+import UploadExcel from "../pages/UploadExcel";
 
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated, loading, user } = useContext(AuthContext);
@@ -192,6 +194,8 @@ export default function AppRoutes() {
               <Route path="admin/banks" element={<Banks />} />
               <Route path="admin/wallet-ledger" element={<WalletLedgers />} />
               <Route path="admin/purpose" element={<Purposes />} />
+              <Route path="admin/downloadexcel" element={<DownloadExcel />} />
+               <Route path="admin/uploadexcel" element={<UploadExcel />} />
               <Route
                 path="admin/bankstatements/:id"
                 element={<BankStatements />}

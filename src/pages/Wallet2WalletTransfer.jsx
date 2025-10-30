@@ -229,6 +229,18 @@ const Wallet2WalletTransfer = ({}) => {
 
   const columns = useMemo(
     () => [
+     {
+        name: "S.No",
+        selector: (row) => (
+          <div
+            style={{ textAlign: "left", fontSize: "14px", fontWeight: "600" }}
+          >
+            {row.id || "N/A"}
+          </div>
+        ),
+        wrap: true,
+        width: "80px",
+      },
       {
         name: "Date",
         selector: (row) => (

@@ -13,12 +13,15 @@ import {
   DialogActions,
 } from "@mui/material";
 import { DateRangePicker } from "rsuite";
+import * as XLSX from "xlsx";
+
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CommonTable from "../components/common/CommonTable";
 import CreateBankStatement from "./CreateBankStatement";
 import CommonLoader from "../components/common/CommonLoader";
 import DeleteIcon from "@mui/icons-material/Delete";
 import predefinedRanges from "../utils/predefinedRanges";
+import DownloadExcel from "./DownloadExcel";
 import {
   yyyymmdd,
   datemonthYear1,
@@ -49,7 +52,7 @@ const BankStatements = () => {
 
   const handleOpenDeleteModal = () => setOpenDeleteModal(true);
   const handleCloseDeleteModal = () => setOpenDeleteModal(false);
-
+  const [openDownloadExcel, SetOpenDownloadExcel] = useState(false);
   const { bank_id, bank_name, balance: oldBalance } = location.state || {};
 
   const [loading, setLoading] = useState(true);
@@ -74,6 +77,7 @@ const BankStatements = () => {
     link.download = "uplodeexcel2.xlsx";
     link.click();
   };
+
   const handleConfirmDelete = async () => {
     try {
       const payload = { bank_id: bank_id };
@@ -96,6 +100,113 @@ const BankStatements = () => {
       handleCloseDeleteModal();
     }
   };
+
+ const handleDownloadExcel = async () => {
+  try {
+    showToast("Preparing Excel download...", "info");
+
+    // Fetch filtered data (same API as your table)
+    const { response, error } = await apiCall(
+      "POST",
+      `${ApiEndpoints.GET_BANK_STATEMENTS}?${query}`
+    );
+
+    if (error || !response?.data) {
+      showToast("No data found for selected filters", "warning");
+      return;
+    }
+
+    const tableData = response.data.map((row, index) => ({
+      "S.No": index + 1,
+      Date: ddmmyy(row.created_at),
+      Time: dateToTime1(row.created_at),
+      "Handled By": row.handle_by,
+      Particulars: row.particulars,
+      Remarks: row.remarks,
+      MOP: row.mop,
+      Credit: row.credit,
+      Debit: row.debit,
+      Balance: row.balance,
+      Status: row.status === 0 ? "UNCLAIMED" : "CLAIMED",
+    }));
+
+    // Convert to Excel worksheet
+    const worksheet = XLSX.utils.json_to_sheet(tableData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Bank Statements");
+
+    // Trigger download
+    XLSX.writeFile(workbook, `BankStatements_${bank_name || "Bank"}.xlsx`);
+
+    showToast("Excel downloaded successfully!", "success");
+  } catch (err) {
+    console.error("Excel download error:", err);
+    showToast("Failed to download Excel", "error");
+  }
+};
+
+
+// 👇 Add this inside BankStatements component
+const handleUploadExcel = async (file) => {
+  try {
+    const reader = new FileReader();
+
+    reader.onload = async (e) => {
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type: "array" });
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+      const jsonData = XLSX.utils.sheet_to_json(worksheet);
+
+      if (!jsonData.length) {
+        showToast("No data found in Excel", "error");
+        return;
+      }
+
+      showToast(`Uploading ${jsonData.length} records...`, "info");
+
+      // Process each row sequentially
+      for (let i = 0; i < jsonData.length; i++) {
+        const row = jsonData[i];
+
+        // Build payload same as CreateBankStatement form
+        const payload = {
+          bank_id: bank_id,
+          balance: oldBalance || 0,
+          date: row.date ? new Date(row.date).toISOString().split("T")[0] : new Date().toISOString().split("T")[0],
+          credit: Number(row.credit || 0),
+          debit: Number(row.debit || 0),
+          mop: row.mop || "",
+          handle_by: row.handle_by || "",
+          particulars: row.particulars || "",
+        };
+
+     
+
+        const { response, error } = await apiCall(
+          "POST",
+          ApiEndpoints.CREATE_BANK_STATEMENT,
+          payload
+        );
+
+        if (response) {
+          console.log(`✅ Row ${i + 1} uploaded successfully`);
+        } else {
+          console.error(`❌ Row ${i + 1} failed`, error);
+        }
+      }
+
+      showToast("Excel upload completed!", "success");
+      refreshStatements(); // refresh table after upload
+    };
+
+    reader.readAsArrayBuffer(file);
+  } catch (err) {
+    console.error("Error reading Excel file:", err);
+    showToast("Failed to process Excel file", "error");
+  }
+};
+
 
   const columns = [
     {
@@ -232,6 +343,14 @@ const BankStatements = () => {
             bankId={bank_id}
             balance={oldBalance}
           />
+
+          <DownloadExcel 
+           open={openDownloadExcel}
+  handleClose={() => SetOpenDownloadExcel(false)}
+  onFetchRef={refreshStatements}
+  bankId={bank_id}
+  balance={oldBalance}
+          />
           <Dialog open={openDeleteModal} onClose={handleCloseDeleteModal}>
             <DialogTitle>Confirm Delete</DialogTitle>
             <DialogContent>
@@ -280,7 +399,7 @@ const BankStatements = () => {
                 </Button>
 
                 <Box sx={{ display: "flex", gap: 1 }}>
-                  <Tooltip title="Upload Excel">
+                  <Tooltip title="Download Sample Excel">
                     <IconButton
                       component="label"
                       size="small"
@@ -290,6 +409,8 @@ const BankStatements = () => {
                           backgroundColor: "rgba(80, 11, 185, 0.27)",
                         },
                       }}
+                      onClick={() => SetOpenDownloadExcel(true)}
+
                     >
                       {/* Use the imported image */}
                       <img
@@ -298,42 +419,39 @@ const BankStatements = () => {
                         style={{ width: 23, height: 23 }}
                       />
 
-                      <input
-                        type="file"
-                        accept=".xlsx, .xls"
-                        hidden
-                        onChange={(e) => {
-                          const file = e.target.files[0];
-                          if (file) {
-                            ExcelToJsonUploader({
-                              file,
-                              bankId: bank_id,
-                              refresh: refreshStatements,
-                              setQuery,
-                            });
-                            e.target.value = "";
-                          }
-                        }}
-                      />
+                     
                     </IconButton>
                   </Tooltip>
 
-                  <Tooltip title="Download Sample Excel">
-                    <IconButton
-                      size="small"
-                      sx={{
-                        "&:hover": { backgroundColor: "#54a09fff" },
-                        padding: "6px",
-                      }}
-                      onClick={handleDownloadSample}
-                    >
-                      <img
-                        src={sampleFileImg}
-                        alt="Excel"
-                        style={{ width: 23, height: 23 }}
-                      />
-                    </IconButton>
-                  </Tooltip>
+   <Tooltip title="Upload Excel">
+  <IconButton
+    component="label"
+    size="small"
+    sx={{
+      color: "#fff",
+      "&:hover": { backgroundColor: "#098f60ff" },
+    }}
+  >
+    <img src={excelImg} alt="Upload Excel" style={{ width: 23, height: 23 }} />
+    <input
+      type="file"
+      accept=".xlsx, .xls"
+      hidden
+      onChange={(e) => {
+        const file = e.target.files[0];
+        if (file) {
+          handleUploadExcel(file); // ✅ this now works
+          e.target.value = ""; // reset input
+        }
+      }}
+    />
+  </IconButton>
+</Tooltip>
+
+
+
+
+
                   <Tooltip title="Delete Last Txn">
                     <IconButton
                       size="small"
@@ -345,40 +463,23 @@ const BankStatements = () => {
                   </Tooltip>
 
                   {/* Upload Excel */}
-                  <Tooltip title="Download Excel">
-                    <IconButton
-                      component="label"
-                      size="small"
-                      sx={{
-                        color: "#fff",
-                        "&:hover": { backgroundColor: "#098f60ff" },
-                      }}
-                    >
-                      {/* Use the imported image */}
-                      <img
-                        src={excelImg}
-                        alt="Excel"
-                        style={{ width: 23, height: 23 }}
-                      />
-                      <input
-                        type="file"
-                        accept=".xlsx, .xls"
-                        hidden
-                        onChange={(e) => {
-                          const file = e.target.files[0];
-                          if (file) {
-                            ExcelToJsonUploader({
-                              file,
-                              bankId: bank_id,
-                              refresh: refreshStatements,
-                              setQuery,
-                            });
-                            e.target.value = "";
-                          }
-                        }}
-                      />
-                    </IconButton>
-                  </Tooltip>
+                 <Tooltip title="Download Excel">
+  <IconButton
+    size="small"
+    sx={{
+      color: "#fff",
+      "&:hover": { backgroundColor: "#098f60ff" },
+    }}
+    onClick={handleDownloadExcel} // ✅ attach function here
+  >
+    <img
+      src={excelImg}
+      alt="Download Excel"
+      style={{ width: 23, height: 23 }}
+    />
+  </IconButton>
+</Tooltip>
+
                 </Box>
               </Box>
             }
