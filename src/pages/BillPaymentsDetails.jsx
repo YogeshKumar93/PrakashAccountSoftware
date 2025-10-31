@@ -149,10 +149,22 @@ const BillPaymentsDetails = ({
         payload
       );
       if (response) {
-        okSuccessToast(response.data.message);
+        okSuccessToast(response.message);
         loadUserProfile();
         // Store receipt data and show receipt
-        setReceiptData(response.data);
+        // setReceiptData(response.data);
+        const amountToShow = billData?.BillAmount || inputValues?.amount || "-";
+        const billernumber = billData?.BillNumber || "-";
+        const messageTxn = response?.message; // ✅ "Transaction success"
+        setReceiptData({
+          ...response.data,
+          data: {
+            ...response.data.data,
+            amount: amountToShow, // ✅ include amount here
+            billnumber: billernumber,
+            Txnmessage: messageTxn, // ✅ add here
+          },
+        });
         setShowReceipt(true);
       } else {
         apiErrorToast(error?.message || "Payment failed");
