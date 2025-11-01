@@ -195,7 +195,7 @@ export default function AppRoutes() {
               <Route path="admin/wallet-ledger" element={<WalletLedgers />} />
               <Route path="admin/purpose" element={<Purposes />} />
               <Route path="admin/downloadexcel" element={<DownloadExcel />} />
-               <Route path="admin/uploadexcel" element={<UploadExcel />} />
+              <Route path="admin/uploadexcel" element={<UploadExcel />} />
               <Route
                 path="admin/bankstatements/:id"
                 element={<BankStatements />}

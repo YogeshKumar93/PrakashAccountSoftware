@@ -72,7 +72,9 @@ const TransactionDetail = () => {
 
   useEffect(() => {
     fetchTxnDetails();
-    fetchBankBalance();
+    if (user?.role === "adm" || user?.role === "sadm") {
+      fetchBankBalance();
+    }
   }, []);
 
   if (loading) {
