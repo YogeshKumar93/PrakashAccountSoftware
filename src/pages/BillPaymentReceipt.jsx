@@ -17,46 +17,38 @@ const BillPaymentReceipt = ({
   billerDetails,
   inputValues,
 }) => {
-  const { status, message, data = {} } = receiptData || {};
+  console.log("Receipt Data:", receiptData);
 
-  // Handle both response formats
+  const { data = {} } = receiptData || {};
+
   const {
-    transactionId,
-    amount,
-    operator,
-    data: nestedData = {},
-    status: innerStatus,
+    status: txnStatus,
     response,
     operator_id,
     indicore_ref,
-  } = data || {};
+    amount,
+    billnumber,
+    Txnmessage, // ✅ pick it here
+  } = data;
+  console.log("data", data);
 
-  // 🧠 Try to extract details safely for both response types
-  let parsedResponse = {};
-  if (typeof response === "string" && response.includes("|")) {
-    const parts = response.split("|");
-    parsedResponse = {
-      code: parts[0],
-      msg: parts[1],
-      orderId: parts[2],
-      unknown1: parts[3],
-      refId: parts[4],
-    };
-  }
+  // ✅ Determine final values to display
+  const transactionStatus = txnStatus || "N/A";
+  const orderId = indicore_ref || "-";
+  const finalOperator = receiptData?.operator_id || "Unknown Operator";
+  const finalAmount =
+    amount ||
+    inputValues?.amount || // fallback if amount was entered manually
+    "-";
+  const billerNumber = billnumber || "-";
+  const transactionMessage =
+    Txnmessage || receiptData?.message || response || "Transaction Completed";
+  console.log("transactionmessage", transactionMessage);
 
-  const transactionStatus =
-    innerStatus || data?.status || parsedResponse?.msg || "N/A";
-  const order_id =
-    nestedData?.order_id || parsedResponse?.orderId || indicore_ref || "-";
-  const finalAmount = amount || nestedData?.amount || "-";
-  const finalOperator = operator || operator_id || "Unknown Operator";
-  const customerNumber =
-    nestedData?.param1 || nestedData?.customerNumber || "-";
-
-  // Format date and time
   const currentDate = new Date().toLocaleDateString();
   const currentTime = new Date().toLocaleTimeString();
 
+  // ✅ Handlers
   const handleDownload = () => {
     console.log("Downloading receipt...");
   };
@@ -82,7 +74,7 @@ const BillPaymentReceipt = ({
         }}
       >
         <CardContent sx={{ p: 4 }}>
-          {/* Header */}
+          {/* ✅ Header */}
           <Box textAlign="center" mb={3}>
             <CheckCircleIcon
               sx={{
@@ -96,20 +88,18 @@ const BillPaymentReceipt = ({
                 mb: 2,
               }}
             />
-
             <Typography
               variant="body1"
               color="text.secondary"
               fontWeight="bold"
             >
-              {message ||
-                `Transaction ${transactionStatus?.toLowerCase()} successfully`}
+              {transactionMessage || response || "Transaction Completed"}
             </Typography>
           </Box>
 
           <Divider sx={{ my: 3 }} />
 
-          {/* Transaction Details */}
+          {/* ✅ Transaction Details */}
           <Box sx={{ mb: 3 }}>
             <Typography
               variant="h6"
@@ -138,14 +128,13 @@ const BillPaymentReceipt = ({
                 </Typography>
               </Box>
 
-              <DetailRow label="Order ID" value={order_id} />
-              <DetailRow label="Operator" value={finalOperator} />
-              <DetailRow label="Customer Number" value={customerNumber} />
-              <DetailRow label="Status" value={transactionStatus} />
+              {/* <DetailRow label="Order ID" value={orderId} /> */}
+              <DetailRow label="Operator ID" value={finalOperator} />
+              <DetailRow label="Bill Number" value={billerNumber} />
 
               {billerDetails && (
                 <DetailRow
-                  label="Biller"
+                  label="Biller Name"
                   value={billerDetails?.billerInfo?.name}
                 />
               )}
@@ -153,7 +142,7 @@ const BillPaymentReceipt = ({
               <DetailRow label="Date" value={currentDate} />
               <DetailRow label="Time" value={currentTime} />
 
-              {/* Additional dynamic inputs */}
+              {/* Show any additional dynamic inputs */}
               {inputValues &&
                 Object.entries(inputValues).map(([key, value]) => (
                   <DetailRow
@@ -167,7 +156,7 @@ const BillPaymentReceipt = ({
 
           <Divider sx={{ my: 3 }} />
 
-          {/* Action Buttons */}
+          {/* ✅ Action Buttons */}
           <Box sx={{ display: "flex", gap: 2, justifyContent: "center" }}>
             <IconButton
               onClick={handleDownload}
@@ -190,7 +179,7 @@ const BillPaymentReceipt = ({
             </IconButton>
           </Box>
 
-          {/* Close Button */}
+          {/* ✅ Done Button */}
           <Button
             fullWidth
             variant="contained"
@@ -214,7 +203,7 @@ const BillPaymentReceipt = ({
   );
 };
 
-// 🔹 Reusable DetailRow Component
+// 🔹 Reusable Row Component
 const DetailRow = ({ label, value }) => (
   <Box
     sx={{

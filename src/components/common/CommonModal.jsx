@@ -582,7 +582,7 @@ const CommonModal = ({
     const sizeMap = { small: "sm", medium: "md", large: "lg" };
     return sizeMap[size] || "md";
   };
-  console.log("The field config in common modal is", fieldConfig);
+  // console.log("The field config in common modal is", fieldConfig);
   return (
     <Dialog
       open={open}

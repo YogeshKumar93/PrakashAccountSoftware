@@ -261,7 +261,6 @@ const CommonTable = ({
     appliedFiltersRef.current = initialFilterValues;
   }, []);
 
-  // Memoized fetch data function
   const fetchData = useCallback(
     async (isManualRefresh = false) => {
       setLoading(true);
@@ -327,6 +326,14 @@ const CommonTable = ({
               response || // case: direct response
               [];
 
+            // ✅ Add serial numbers here
+            const dataWithSerial = Array.isArray(normalizedData)
+              ? normalizedData.map((item, index) => ({
+                  ...item,
+                  serialNo: index + 1,
+                }))
+              : [{ ...normalizedData, serialNo: 1 }];
+
             // ✅ Handle total count safely
             let total =
               response?.data?.total ||
@@ -334,12 +341,15 @@ const CommonTable = ({
               normalizedData?.length ||
               0;
 
-            setData(
-              Array.isArray(normalizedData) ? normalizedData : [normalizedData]
-            );
+            setData(dataWithSerial); // ✅ Use dataWithSerial instead of normalizedData
             setTotalCount(total);
           } else if (Array.isArray(response)) {
-            setData(response);
+            // ✅ Also add serial numbers for array response case
+            const dataWithSerial = response.map((item, index) => ({
+              ...item,
+              serialNo: index + 1,
+            }));
+            setData(dataWithSerial);
             setTotalCount(response.length);
           } else {
             setData([]);
@@ -725,7 +735,7 @@ const CommonTable = ({
               renderInput={(params) => (
                 <TextField
                   {...params}
-                   size="small"
+                  size="small"
                   label={filter.label}
                   variant="outlined"
                 />
