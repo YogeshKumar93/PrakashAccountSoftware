@@ -225,6 +225,12 @@ const AepsTxn = ({ query }) => {
 
   const columns = useMemo(
     () => [
+       {
+        name: "S.No",
+        selector: (row) => row.serialNo,
+        wrap: true,
+        width: "80px",
+      },
       {
         name: "Date",
         selector: (row) => (

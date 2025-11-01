@@ -290,6 +290,12 @@ const CreditCardTxn = ({ query }) => {
 
   const columns = useMemo(() => {
     const baseColumns = [
+       {
+        name: "S.No",
+        selector: (row) => row.serialNo,
+        wrap: true,
+        width: "80px",
+      },
       {
         name: "Date",
         selector: (row) => (
