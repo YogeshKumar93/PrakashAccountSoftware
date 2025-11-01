@@ -21,6 +21,7 @@ import BeneficiaryDetails from "./BeneficiaryDetails";
 import UpiBeneficiaryList from "./UpiBeneficiaryList";
 import UpiBeneficiaryDetails from "./UpiBeneficiaryDetails";
 import CommonLoader from "../components/common/CommonLoader";
+import { useToast } from "../utils/ToastContext";
 
 const UpiTransfer = () => {
   const theme = useTheme();
@@ -34,7 +35,7 @@ const UpiTransfer = () => {
   const [selectedBeneficiary, setSelectedBeneficiary] = useState(null);
   const [loading, setLoading] = useState(false);
   const [history, setHistory] = useState([]);
-
+  const { showToast } = useToast();
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("mobileNumbers") || "[]");
     setHistory(saved);
@@ -54,14 +55,18 @@ const UpiTransfer = () => {
 
     setLoading(true); // start loader
     try {
-      const response = await apiCall("post", ApiEndpoints.GET_SENDER, {
-        mobile_number: number,
-        type: "UPI",
-      });
+      const { error, response } = await apiCall(
+        "post",
+        ApiEndpoints.GET_SENDER,
+        {
+          mobile_number: number,
+          type: "UPI",
+        }
+      );
       setLoading(false); // stop loader
       const data = response?.data || response?.response?.data;
 
-      if (response)
+      if (response) {
         if (data && data?.is_active === 1) {
           // okSuccessToast(response.message || "Sender fetched successfully");
 
@@ -71,6 +76,19 @@ const UpiTransfer = () => {
           setSender(null);
           setOpenRegisterModal(true);
         }
+      } else if (error) {
+        if (error?.message === "The number is inactive") {
+          setSender(null);
+          setOpenRegisterModal(false);
+          setOtpData({
+            mobile_number: error?.errors?.mobile_number || number,
+            otp_ref: error?.errors?.otp_ref,
+          });
+          setOpenVerifyModal(true);
+        } else {
+          showToast(error?.message || "Something went wrong");
+        }
+      }
     } catch (error) {
       apiErrorToast(error);
       console.error("Error fetching sender:", error);
