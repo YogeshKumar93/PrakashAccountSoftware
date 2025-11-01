@@ -328,9 +328,13 @@ const Beneficiaries = ({ beneficiaries, onSelect, sender, onSuccess }) => {
     SCBL: stand2,
     JAKA: jk2,
   };
-  const filteredBeneficiaries = normalized.filter((b) =>
-    b.beneficiary_name.toLowerCase().includes(searchText.toLowerCase())
-  );
+  const filteredBeneficiaries = normalized.filter((b) => {
+    const lowerSearch = searchText.toLowerCase();
+    return (
+      b.beneficiary_name?.toLowerCase().includes(lowerSearch) ||
+      b.account_number?.toLowerCase().includes(lowerSearch)
+    );
+  });
 
   return (
     <Card
