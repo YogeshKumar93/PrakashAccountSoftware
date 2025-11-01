@@ -277,6 +277,9 @@ const AccountLadger = ({ query }) => {
           filters={filters}
           queryParam={queryParam}
           refresh={true}
+            enableExcelExport={true}
+                  exportFileName="PayoutTransactions"
+                  exportEndpoint={ApiEndpoints.GET_WALLETLEDGER}
         />
       )}
       <WalletTxnData

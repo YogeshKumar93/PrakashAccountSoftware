@@ -307,6 +307,12 @@ const BbpxTxn = ({ query }) => {
 
   const columns = useMemo(
     () => [
+       {
+        name: "S.No",
+        selector: (row) => row.serialNo,
+        wrap: true,
+        width: "80px",
+      },
       {
         name: "Date",
         selector: (row) => (
@@ -860,6 +866,7 @@ const BbpxTxn = ({ query }) => {
         selectedRows={selectedRows}
         onSelectionChange={setSelectedRows}
         enableExcelExport={true}
+        
         exportFileName="BbpsTransactions"
         exportEndpoint={ApiEndpoints.GET_BBPS_TXN}
         customHeader={
