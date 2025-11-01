@@ -262,7 +262,7 @@ const RechargeTxn = ({ query }) => {
                 alt="description of image"
               />
             );
-          } else if (row.pf.toLowerCase().includes("android")) {
+          } else if (row.pf.toLowerCase().includes("p2pae")) {
             icon = (
               <img
                 src={android2}

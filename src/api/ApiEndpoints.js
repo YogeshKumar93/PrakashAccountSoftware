@@ -14,24 +14,9 @@ const ApiEndpoints = {
   GET_LOGIN_HISTORY: "user/getLoginHistory",
 
   GET_FILES: "user/getFile",
-  GET_SCHEME: "schemes/getScheme",
-  EDIT_SUPER_RATE: "admin/updateSuperRate",
-  GET_UTILITY_SCHEME: "schemes/utilitySchemes",
-  GET_DMT_SCHEMA: "schemes/dmtSchemes",
-  GET_PAYOUT_SCHEMA: "schemes/payoutSchemes",
-  GET_PAYOUT2_SCHEMA: "schemes/payout2Schemes",
   AGEMENT_DATE: "admin/aggreementDate",
   SEND_OTP_Okyc: "user/sendOtpOkyc",
   VERIFY_OTP_OKYC: "user/verifyOtpOkyc",
-  UPDATE_UTILITY_SCHEME: "schemes/updateUtilityScheme",
-  UPDATE_PAYOUT_SCHEME: "schemes/updatePayoutScheme",
-  UPDATE_PAYOUT2_SCHEME: "schemes/updatePayout2Scheme",
-  UPDATE_DMT_SCHEME: "schemes/updateDmtScheme",
-  CREATE_UTILITY_SCHEME: "schemes/createUtilityScheme",
-  CREATE_PAYOUT_SCHEME: "schemes/createPayoutScheme",
-  CREATE_PAYOUT2_SCHEME: "schemes/createPayout2Scheme",
-  CREATE_DMT_SCHEME: "schemes/createDmtScheme",
-  // GET_NEWS: "admin/news",
 
   GET_ME_USER: "user/getUser",
 
@@ -75,16 +60,20 @@ const ApiEndpoints = {
   GET_CREDIT_CARD: "/creditcard/getCreditCard",
 
   GET_BANK_BALANCE: "bank/getBankBalance",
-
+  // whitelisted accputn apis
   CREATE_WHITE_LISTED_ACCOUNT: "risk/createWhiteListedAccount",
   UPDATE_WHITE_LISTED_ACCOUNT: "risk/updateWhiteListedAccount",
   DELETE_WHITE_LISTED_ACCOUNT: "risk/deleteWhiteListedAccount",
   GET_WHITE_LISTED_ACCOUNT: "risk/getWhiteListedAccount",
+  // -----
 
+  // blacklisted account apis
   CREATE_BLACK_LISTED_ACCOUNT: "risk/createBlackListedAccount",
   UPDATE_BLACK_LISTED_ACCOUNT: "risk/updateBlackListedAccount",
   DELETE_BLACK_LISTED_ACCOUNT: "risk/deleteBlackListedAccount",
   GET_BLACK_LISTED_ACCOUNT: "risk/getBlackListedAccount",
+  // -------
+
   CHANGE_TWO_FA: "auth/changeTwoFa",
   // ****************************** NEW API'S ******************************
   SIGN_IN: "auth/signIn",
@@ -134,11 +123,15 @@ const ApiEndpoints = {
   REGISTER_REMITTER_UPI: "payout/registerRemitterUpi",
   VERIFY_REMITTER_UPI: "payout/verifyRemitterUpi",
   // ****************************** NEW API'S ABOVE ******************************
+
+  // dashboard apis.
   GET_TXN_SUMMARY: "dashboard/getRetTxnSummary",
   GET_SERVICE_WISE_PROFIT: "dashboard/getServiceWiseProfitSummary",
   GET_SERVICE_WISE_PROFIT_DI: "dashboard/getServiceWiseProfitSummaryForDi",
   GET_SERVICE_WISE_PROFIT_MD: "dashboard/getServiceWiseProfitSummaryForMd",
   GET_SERVICE_WISE_PROFIT_ADMIN: "dashboard/getServiceWiseProfitSummaryNew",
+  // -------
+
   GET_FUND_REQUESTS: "fundrequest/getFundRequests",
   CREATE_FUND_REQUEST: "fundrequest/createFundRequest",
   UPDATE_FUND_REQUEST: "fundrequest/updateFundRequest",
@@ -166,24 +159,27 @@ const ApiEndpoints = {
 
   // ****************************** NEW API'S ABOVE ******************************
   GET_COMMISSION_RULE: "commission/getCommissions",
+  // Notification apis
   GET_NOTIFICATION: "notification/getNotification",
   MARK_READ_NOTI: "notification/updateNotification",
   ADMIN_NOTIFICATION: "notification/createNotification",
   UPDATE_NOTIFICATION: "notification/updateNotification",
   DELETE_NOTIFICATION: "notification/deleteNotification",
+  // -----
 
+  // bank statement apis
   GET_BANK_STATEMENTS: "bankStatement/getBankStatement",
   CREATE_BANK_STATEMENT: "bankStatement/createBankStatement",
   UPDATE_BANK_STATEMENT: "bankStatement/updateBankStatement",
   DELETE_BANK_STATEMENT: "bankStatement/deleteBankStatement",
   GET_BANK_STATEMENT_SCHEMA: "bankStatement/getBankStatementSchema",
+  // -----
 
   GET_DASHBOARD1: "dashboard/getRoleWiseCounts",
   GET_DASHBOARD2: "dashboard/getServiceWiseSummary",
   GET_ACCOUNT_STATEMENTS: "accountStatement/getAccountStatement",
   CREATE_ACCOUNT_STATEMENT: "accountStatement/createAccountStatement",
   UPDATE_ACCOUNT_STATEMENT: "accountStatement/updateAccountStatement",
-  // DELETE_ACCOUNT_STATEMENT: "accountStatement/deleteAccountStatement",
   GET_ACCOUNT_STATEMENT_SCHEMA: "accountStatement/getAccountStatementSchema",
   DELETE_ACCOUNT_STATEMENT: "account/deleteLastTransaction",
   CREATE_BANK_ADMIN: "bank/createBank",
@@ -209,10 +205,12 @@ const ApiEndpoints = {
   GET_COMMISSION_SCHEMA: "commission/getCommissionSchema",
   UPDATE_COMMISSION_RULE: "commission/updateCommissionRule",
   GET_SENDER: "payout/getSender",
+
   LEVIN_SENDER: "payout/remitterStatus2",
   LEVIN_REGISTER: "payout/registerRemitter",
   LEVIN_VERIFY: "payout/verifyRemitter",
   LEVIN_TXN: "payments/v2/payOut2",
+
   REFUND_TXN_BYADMIN: "refund/refundTxnByAdmin",
   REGISTER_SENDER: "payout/registerSender",
   REGISTER_SENDER_SCHEMA: "payout/registerSenderSchema",
@@ -282,6 +280,7 @@ const ApiEndpoints = {
   CREATE_KYC: "business/createKyc",
   CREATE_STATUS: "business/createStatus",
 
+  // solitech api's.
   SOLITECH_GET_SENDER: "payout/getSender2",
   SOLITECH_ADD_BENEFICIARY: "payout/addBeneficiary",
   SOLITECH_GET_BANKS: "payout/getBanks",
@@ -291,6 +290,8 @@ const ApiEndpoints = {
   SOLITECH_CHECK_TRANSACTION_STATUS: "payout/checkTransactionStatus",
   SOLITECH_BANK_IFSC: "payout/getIfsc",
   SOLITECH_VERIFY_OTP: "payout/verifyRemitterLogin",
+  // ---------
+
   CHANGE_PARENT: "auth/changeParent",
   BASIC_SCHEMA: "business/basicSchema",
   CONTACT_SCHEMA: "business/contactSchema",
@@ -332,16 +333,6 @@ const ApiEndpoints = {
 
   // ****************************** NEW API'S ABOVE ******************************
 
-  ADMIN_OP_SERVICE: "admin/service",
-  VERIFY_PAN: "admin/verifyPan",
-  ADMIN_PG_ORDERS: "admin/pgOrders",
-  VERIFY_AADHAAR: "admin/verifyAadhaar",
-  TWOFA_AUTH: "auth/twoFactorAuthentication",
-  WALLET_DEBIT: "/admin/walletDebit",
-  CREATE_VA: "admin/createVa",
-  VIRTUAL_ACCS: "admin/virtualAccounts",
-  VIRTUAL_TRANSACTIONS: "admin/vaTransactions",
-  BANK_DETAILS: "admin/bankDepData",
   SEND_OTP: "user/sendOtp",
   GET_API_TOKEN: "user/getApiToken",
   GET_API_KEY: "user/getApiKey",
@@ -354,17 +345,9 @@ const ApiEndpoints = {
   GET_SENDER_BY_ACC: "payout/getSenderByAcc",
 
   // wallet
-  GET_BANK_CREDIT_REQ: "wallet/getBanksForCrRequest",
-  CREDIT_REQ: "wallet/createCrRequest",
-  MONEY_TRANSFER: "wallet/w1ToW1Transfer",
-  DMT_RATE_CHANGE: "wallet/editRetByAd",
-  W2TOW1_TRANSFER: "wallet/w2ToW1Transfer",
   GET_NUMBER_INFO: "prepaid/getNumberInfo",
   PREPAID_RECHARGE: "prepaid/prepaidRecharge",
   // dmr
-  DMR_SETTLEMENTS: "/dmr/settlementBene",
-  CHANGE_NAME_OTP: "dmr/updateRemitter",
-  CHANGE_NAME: "dmr/validateRemitter",
   GET_REMMITTER_STATUS: "dmr/getRemitterStatus", // fast response
   NEW_GET_REMMITTER_STATUS: "dmr/remitterStatusExpress",
   DMT2_REM_STAT: "dmr/getRemitterStatusDmt2",
@@ -400,99 +383,9 @@ const ApiEndpoints = {
   VERIFY_ACC: "dmr/accountVerification",
   DMT2_MT: "dmr/transactionDmt2",
 
-  // aeps
-  AEPS_BANK: "aeps/getBanks",
-  // AEPS_CASHWITHDRAWAL: "aeps/cashWithdrawl",
-  AEPS_APAY: "aeps/aadhaarPay",
-  AEPS_BALANCE: "aeps/balanceInquiry",
-  AEPS_STATEMENT: "aeps/miniStatement",
-  AEPS_INITIATE: "aeps/initiateSignup",
-  AEPS_VALIDATE: "aeps/validateSignup",
-  AEPS_OUTLET_STATUS: "aeps/outletLoginStatus",
-  AEPS_OUTLET_LOGIN: "aeps/outletLogin",
-
-  DMR_WALLET_TRANSFER: "dmr/walletTransfer",
-
-  CHANGE_USERNAME_OTP: "",
-  CHANGE_USERNAME: "",
-  GET_BOOKS: "books/getBooks",
-  ADD_BOOKS: "books/addBook",
-  KHATA_BOOKS_STATEMENT: "books/getBookTransaction",
-  ADD_BOOKS_STATEMENT: "books/addBookTransaction",
-
-  // REG user
-  USER_REG: "wallet/userRegistration",
-  USER_PERSONALINFO: "wallet/addPersonalInfo",
-  USER_BUSINESSINFO: "wallet/addBusinessInfo",
-  GET_DISTRICTS: "prepaid/getDistricts",
-  GET_STATES: "getStates",
-  GET_HANDLER_DETAILS: "auth/getUserByUsername",
-  VERIFY_MOBILE: "auth/verifyMobile",
-  SIGN_UP_LAST: "aeps/initiateSignup",
-  GET_USERROLES: "onboarding/userOnboarding",
-
-  // Admin employees
-  EMPLOYEES: "/emp/getEmployee",
-  ADD_EMPLOYEES: "emp/createEmp",
-  EDIT_EMPLOYEES: "emp/updateEmp",
-  //Admin Dashboard
-  ADMIN_DASHBOARD_GET_BANK_BALANCE: "reports/getBankBalance",
-  ADMIN_DASHBOARD_GET_API_BALANCE: "admin/apiBalances",
-  ADMIN_DASHBOARD_GET_WALLET_BALANCE: "reports/getFloat",
-  ADMIN_DASHBOARD_GET_PRIMARY_BALANCE: "reports/getPrimaryData",
-  ADMIN_DASHBOARD_GET_TERTIARY_BALANCE: "reports/getTertiaryData",
-  ADMIN_DASHBOARD_GET_GRAPH_DATA: "reports/getGraphData",
-  ADMIN_DASHBOARD_GET_TXN_DATA: "reports/transactionCount",
-  ADMIN_DASHBOARD_GET_USER_DATA: "admin/getUserCount",
   ASM_PRODUCTION_SALE_DATA: "reports/asmReportAll",
   GET_RET_PROD_SALE: "reports/getTertiaryDataServiceWise",
 
-  ACCOUNT_BALANCE: "admin/accBalance",
-  DASHBOARD_ASM_REPORT: "reports/getTertiaryDataServiceWise",
-  MY_EARNINGS: "reports/myEarnings",
-  GET_TRIPLE_BARCHART_DATA: "reports/getTertiaryDataServiceWise",
-  GET_ASM_TRIPLE_BARCHART_DATA: "reports/asmReportAll",
-  //admin acc
-  ADMIN_ACC_GET_USER: "reports/getUsersForAcc",
-  ADMIN_ACC_GET_TXN: "reports/getTransactionsForAcc",
-  ADMIN_ACC_GET_LEADGER: "reports/getLedgerForAcc",
-  ADMIN_ACC_GET_BANK_TXN: "reports/getBanktransactionForAcc",
-  ADMIN_ACC_GET_ACC_USER: "reports/getAccUsersForAcc",
-  ACC_GET_ACC_USER: "reports/getUsersForAcc",
-  GET_COUNT: "admin/getCount",
-  ADMIN_ACCOUNTS_LIMITS: "admin/accountLimit",
-  // nepal
-  PRABHU_KYC: "nepalTransfer/initiateEKycPrabhu",
-  MACHINE_KYC: "nepalTransfer/eKycenrollment",
-  NEPAL_CUSTOMER_STATUS: "nepalTransfer/getCustomerByMobileOrId",
-  NEPAL_OTP: "nepalTransfer/sendOtp",
-  NEPAL_STATE_DIS: "nepalTransfer/getStateDistrict",
-  NEPAL_STATIC_DATA: "nepalTransfer/getStaticData",
-  NEPAL_CREATE_CUSTOMER: "nepalTransfer/createCustomer",
-  NEPAL_CREATE_RECEIVER: "nepalTransfer/CreateReceiver",
-  NEPAL_BANK_BRANCH: "nepalTransfer/AcPayBankBranchList",
-  NEPAL_VALIDATE_RECEIVER: "nepalTransfer/ValidateBankAccount",
-  NEPAL_CUSTOMER_ONBOARD: "nepalTransfer/customerOnboarding",
-  NEPAL_SEND_TRANSACTION: "nepalTransfer/sendTransaction",
-  NEPAL_TRANSACTION: "nepalTransfer/SearchTransaction",
-  NEPAL_UVTRANSACTION: "nepalTransfer/UnverifiedTransactions",
-  NEPAL_UVCUSTOMERS: "nepalTransfer/UnverifiedCustomers",
-  NEPAL_COMPLIANCE_TRANSACTION: "nepalTransfer/ComplianceTransactions",
-  GET_SERVICE_CHARGE: "nepalTransfer/GetServiceChargeByCollection",
-
-  // aeps2 api
-  REMITTER_KYC: "dmr/remitterKyc",
-  REMITTER_KYC_dmt2: "dmr/remitterEkycDmt2",
-  OTP_PSPRINT: "dmr/otpForDmt2",
-  DMR_MONEY_TRANSFER: "dmr/transactionDmr",
-  REGISTER_REMITTER_DMT3: "dmr/registerRemitterDmt3",
-  DMT3_ADD_REM: "dmr/remitterEkycDmt3",
-  GET_REMMITTER_STATUS_DMT3: "dmr/getRemitterStatusDmt3",
-  VALIDATE_SUP_OTP: "dmr/verifySupRemitter",
-  VALIDATE_EXP_OTP: "dmr/verifyExpRemitter",
-  VALIDATE_SUP_OTP: "dmr/verifySupRemitter",
-  GET_REMMITTER_STATUS_NEW: "dmr/getRemitterStatusNew",
-  GET_REMMITTER_STATUS_SUPER: "dmr/remitterStatusSuper",
   GET_TIME: "https://timeapi.io/api/time/current/zone?timeZone=Asia%2FKolkata",
 };
 export default ApiEndpoints;

@@ -1,4 +1,3 @@
-
 import InterpreterModeIcon from "@mui/icons-material/InterpreterMode";
 import PermIdentityIcon from "@mui/icons-material/PermIdentity";
 import RecordVoiceOverIcon from "@mui/icons-material/RecordVoiceOver";
@@ -149,11 +148,6 @@ export const COMPLAINT_STATUS = [
   },
 ];
 
-export const PRABHUTXN_TYPE = {
-  PRABHU: ApiEndpoints.NEPAL_TRANSACTION,
-  UNVERIFIED: ApiEndpoints.NEPAL_UVTRANSACTION,
-  COMPLIANCE: ApiEndpoints.NEPAL_COMPLIANCE_TRANSACTION,
-};
 export const vendor_tab_value = {
   0: "express",
   1: "super",

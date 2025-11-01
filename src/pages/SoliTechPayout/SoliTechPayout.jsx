@@ -22,6 +22,7 @@ import SuperTransferReceipt from "../SuperTransferReceipt";
 import SearchIcon from "@mui/icons-material/Search";
 import SolitechReceipt from "../SolitechReceipt";
 import SoliTechSenderOtpModal from "./SolitechSenderOtpModal";
+import MobileNumberList from "../MobileNumberList";
 
 const SoliTechPayout = () => {
   const theme = useTheme();
@@ -266,6 +267,17 @@ const SoliTechPayout = () => {
           mobile={mobile}
           onRegistered={handleSenderRegistered}
           fetchSender={handleFetchSender}
+        />
+      )}
+      {mobileListOpen && (
+        <MobileNumberList
+          open={mobileListOpen}
+          onClose={() => setMobileListOpen(false)}
+          numbers={mobileList}
+          onSelect={(selectedMobile) => {
+            setMobile(selectedMobile);
+            handleFetchSender(selectedMobile);
+          }}
         />
       )}
       {openVerifyModal && otpData && (
