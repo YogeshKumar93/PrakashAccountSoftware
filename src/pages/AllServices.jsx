@@ -289,7 +289,7 @@ export default function AllServices() {
       label: "Money Transfer",
       icon: sendmoney,
       subMenu: [
-        hasPermission("dmt1") && {
+        hasPermission("DMT1") && {
           key: "dmt1",
           label: "Airtel Dmt",
           icon: AIR1,
@@ -297,7 +297,7 @@ export default function AllServices() {
           type: "mobile",
           title: "Dmt1",
         },
-        hasPermission("dmt2") && {
+        hasPermission("DMT2") && {
           key: "dmt2",
           label: "Fino Dmt",
           icon: FINO,
@@ -313,7 +313,7 @@ export default function AllServices() {
       icon: vapy_1,
       subMenu: [
         // Fund Transfer1 → requires vendor permission
-        hasPermission("vendor") && {
+        hasPermission("FT1") && {
           key: "walletSuper",
           label: "Fund Transfer1",
           icon: AccountBalanceWalletIcon,
@@ -321,14 +321,14 @@ export default function AllServices() {
           type: "super",
         },
         // Fund Transfer2 → requires levin permission
-        hasPermission("levin") && {
+        hasPermission("FT2") && {
           key: "fundtransfer2",
           label: "Fund Transfer2",
           icon: AccountBalanceWalletIcon,
           component: LevinFundTransfer,
           type: "super",
         },
-        hasPermission("soliteck") && {
+        hasPermission("FT3") && {
           key: "fundtransfer3",
           label: "Fund Transfer3",
           icon: AccountBalanceWalletIcon,
@@ -337,26 +337,26 @@ export default function AllServices() {
         },
       ].filter(Boolean), // remove null items
     },
-    hasPermission("upi") && {
+    {
       key: "qrUpi",
       label: "UPI Transfer",
       icon: upi_1,
       subMenu: [
-        {
-          key: "upiPay",
+        hasPermission("UPI1") && {
+          key: "UPI1",
           label: "UPI 1",
           icon: QrCodeIcon,
           component: UpiTransfer,
           type: "upi",
         },
-        {
-          key: "LEVIN UPI",
+        hasPermission("UPI2") && {
+          key: "UPI2",
           label: "UPI 2",
           icon: QrCodeIcon,
           component: LevinUpiTransfer,
           type: "upi",
         },
-      ],
+      ].filter(Boolean),
     },
     {
       key: "aeps",
