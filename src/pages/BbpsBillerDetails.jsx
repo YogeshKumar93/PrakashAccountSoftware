@@ -422,14 +422,16 @@ const BbpsBillerDetails = ({
                     variant="outlined"
                     value={billData?.BillAmount || ""}
                     onChange={(e) =>
-                      acceptsAdhoc
-                        ? setBillData((prev) => ({
-                            ...prev,
-                            BillAmount: e.target.value,
-                          }))
-                        : null
+                      (acceptsAdhoc || category?.category_key === "C15") &&
+                      setBillData((prev) => ({
+                        ...prev,
+                        BillAmount: e.target.value,
+                      }))
                     }
-                    disabled={!acceptsAdhoc}
+                    disabled={
+                      !(acceptsAdhoc || category?.category_key === "C15")
+                    }
+                    // disabled={!acceptsAdhoc}
                     InputProps={{
                       startAdornment: (
                         <Typography sx={{ mr: 0.5 }}>₹</Typography>
@@ -445,7 +447,7 @@ const BbpsBillerDetails = ({
                   />
                 </Box>
 
-                {!acceptsAdhoc && (
+                {!(acceptsAdhoc || category?.category_key === "C15") && (
                   <Typography variant="caption" color="red" sx={{ mt: 0.5 }}>
                     Amount cannot be edited for this biller.
                   </Typography>
