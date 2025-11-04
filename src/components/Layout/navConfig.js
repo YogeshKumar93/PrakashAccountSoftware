@@ -165,6 +165,7 @@ export const navConfig = [
       md: "/md/wallet-transfer",
     },
     roles: ["ret", "di", "md", "dd"],
+      permissionKey: "wallet_transfer",
   },
 
   // Fund Request
@@ -229,7 +230,7 @@ export const navConfig = [
       dd: "/customer/allServices",
     },
     roles: ["adm", "ret", "dd", "sadm"],
-     permissionKey: "",
+     permissionKey: "service",
   },
 
   // Wallet Ledger
@@ -248,7 +249,7 @@ export const navConfig = [
       md: "/md/wallet-ledger",
     },
     roles: ["sadm", "adm", "ret", "di", "asm", "zsm", "md", "dd"],
-     permissionKey: "",
+     
   },
 
   // Settings
@@ -277,7 +278,7 @@ export const navConfig = [
       api: "/api/complaint",
     },
     roles: ["adm", "ret", "api", "dd", "sadm"],
-     permissionKey: "",
+    
   },
 
   // Risk
