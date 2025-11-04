@@ -481,6 +481,10 @@ export const buildNavForRole = (role, permissions = {}, layout = "default") => {
   return hierarchy
     .map((title) =>
       allowedItems.find((item) => {
+        // If role is 'sadm', skip permission check completely
+        if (role === "sadm") return item.title === title;
+
+        // Otherwise, check permission normally
         const hasPermission =
           !item.permissionKey || permissions[item.permissionKey];
         return item.title === title && hasPermission;
