@@ -33,14 +33,18 @@ const PrintBbps = () => {
     }
   }, [location.state]);
 
- const totalAmountValue = data
-  .filter(txn => txn.status?.toLowerCase() === "success")
-  .reduce((acc, txn) => acc + parseFloat(txn.amount || 0), 0);
-
+  const totalAmountValue = data
+    .filter((txn) => txn.status?.toLowerCase() === "success")
+    .reduce((acc, txn) => acc + parseFloat(txn.amount || 0), 0);
 
   if (!data || data.length === 0) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="100vh"
+      >
         <Typography color="error" variant="h6">
           No Transaction Data Available
         </Typography>
@@ -52,12 +56,11 @@ const PrintBbps = () => {
   const headers = [
     "Date",
     "Ref Number",
-    "Biller Name",    
+    "Biller Name",
     "Number",
     "Status",
     // "Mobile",
     "Amount",
-   
   ];
 
   return (
@@ -77,12 +80,30 @@ const PrintBbps = () => {
         .amount-red { font-weight: 700; color: #d32f2f; }
       `}</style>
 
-      <Box display="flex" flexDirection="column" alignItems="center" minHeight="100vh" pt={4}>
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        minHeight="100vh"
+        pt={4}
+      >
         {/* Receipt Settings */}
         <Box display="flex" justifyContent="center" mb={2} className="no-print">
-          <RadioGroup row value={receiptType} onChange={(e) => setReceiptType(e.target.value)}>
-            <FormControlLabel value="large" control={<Radio />} label="Large Receipt" />
-            <FormControlLabel value="small" control={<Radio />} label="Small Receipt" />
+          <RadioGroup
+            row
+            value={receiptType}
+            onChange={(e) => setReceiptType(e.target.value)}
+          >
+            <FormControlLabel
+              value="large"
+              control={<Radio />}
+              label="Large Receipt"
+            />
+            <FormControlLabel
+              value="small"
+              control={<Radio />}
+              label="Small Receipt"
+            />
           </RadioGroup>
           <RadioGroup
             row
@@ -90,7 +111,11 @@ const PrintBbps = () => {
             onChange={(e) => setOrientation(e.target.value)}
             sx={{ ml: 3 }}
           >
-            <FormControlLabel value="portrait" control={<Radio />} label="Portrait" />
+            <FormControlLabel
+              value="portrait"
+              control={<Radio />}
+              label="Portrait"
+            />
           </RadioGroup>
         </Box>
 
@@ -111,12 +136,32 @@ const PrintBbps = () => {
           }}
         >
           {/* Header */}
-          <Box display="flex" justifyContent="space-between" alignItems="center" borderBottom="2px solid #e0e0e0">
-            <Box sx={{ width: 140, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <Box component="img" src={biggpayLogo} alt="Logo" sx={{ width: 130, height: 60, objectFit: "contain" }} />
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            borderBottom="2px solid #e0e0e0"
+          >
+            <Box
+              sx={{
+                width: 140,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Box
+                component="img"
+                src={biggpayLogo}
+                alt="Logo"
+                sx={{ width: 130, height: 60, objectFit: "contain" }}
+              />
             </Box>
             <Box textAlign="right">
-              <Typography variant="subtitle2" sx={{ fontWeight: 600, textTransform: "capitalize" }}>
+              <Typography
+                variant="subtitle2"
+                sx={{ fontWeight: 600, textTransform: "capitalize" }}
+              >
                 {user ? user.establishment : "Null"}
               </Typography>
               <Typography variant="body2" color="text.secondary">
@@ -138,7 +183,7 @@ const PrintBbps = () => {
                 "&:hover": { borderColor: "#ff9a3c", color: "#ff9a3c" },
               }}
             >
-               Transaction Summary
+              Transaction Summary
             </Button>
           </Box>
 
@@ -156,16 +201,19 @@ const PrintBbps = () => {
                 const amount = parseFloat(txn.amount || 0);
                 const values = [
                   txn.created_at
-                    ? `${new Date(txn.created_at).toLocaleDateString()} ${new Date(txn.created_at).toLocaleTimeString()}`
+                    ? `${new Date(
+                        txn.created_at
+                      ).toLocaleDateString()} ${new Date(
+                        txn.created_at
+                      ).toLocaleTimeString()}`
                     : "",
                   txn.txn_id || "",
                   txn.biller_name || "",
-                  txn.operator_id || "",
+                  // txn.operator_id || "",
                   txn.consumer_number || "",
                   txn.status || "",
                   // txn.customer_mobile || "",
                   `₹ ${amount.toFixed(2)}`,
-                 
                 ];
 
                 return (
@@ -184,20 +232,31 @@ const PrintBbps = () => {
             </Box>
           ) : (
             // Small receipt stacked view
-            <Box mt={2} sx={{ border: "1px solid #e0e0e0", borderRadius: 2, overflow: "hidden" }}>
+            <Box
+              mt={2}
+              sx={{
+                border: "1px solid #e0e0e0",
+                borderRadius: 2,
+                overflow: "hidden",
+              }}
+            >
               {data.map((txn, idx) => {
                 const amount = parseFloat(txn.amount || 0);
                 const values = [
                   txn.created_at
-                    ? `${new Date(txn.created_at).toLocaleDateString()} ${new Date(txn.created_at).toLocaleTimeString()}`
+                    ? `${new Date(
+                        txn.created_at
+                      ).toLocaleDateString()} ${new Date(
+                        txn.created_at
+                      ).toLocaleTimeString()}`
                     : "",
                   txn.txn_id || "",
                   txn.biller_name || "",
-                  txn.operator_id || "",
+                  // txn.operator_id || "",
                   txn.consumer_number || "",
+                  txn.status || "",
                   // txn.customer_mobile || "",
                   `₹ ${amount.toFixed(2)}`,
-                
                 ];
 
                 return (
@@ -205,12 +264,21 @@ const PrintBbps = () => {
                     key={idx}
                     sx={{
                       mb: 2,
-                      borderBottom: idx !== data.length - 1 ? "1px solid #f0f0f0" : "none",
+                      borderBottom:
+                        idx !== data.length - 1 ? "1px solid #f0f0f0" : "none",
                     }}
                   >
                     {headers.map((label, i) => (
-                      <Box key={i} display="flex" justifyContent="space-between" sx={{ px: 1, py: 1.3 }}>
-                        <Typography variant="body2" sx={{ fontWeight: 600, fontSize: "0.85rem" }}>
+                      <Box
+                        key={i}
+                        display="flex"
+                        justifyContent="space-between"
+                        sx={{ px: 1, py: 1.3 }}
+                      >
+                        <Typography
+                          variant="body2"
+                          sx={{ fontWeight: 600, fontSize: "0.85rem" }}
+                        >
                           {label}:
                         </Typography>
                         <Typography
@@ -230,14 +298,19 @@ const PrintBbps = () => {
               })}
             </Box>
           )}
-            <Box display="flex" justifyContent="flex-end" mt={1} sx={{ pr: 2 }}>
-                   <Typography variant="body1" sx={{ fontWeight: 700 }}>
-                     Total Amount: ₹ {totalAmountValue.toFixed(2)}
-                   </Typography>
-                 </Box>
+          <Box display="flex" justifyContent="flex-end" mt={1} sx={{ pr: 2 }}>
+            <Typography variant="body1" sx={{ fontWeight: 700 }}>
+              Total Amount: ₹ {totalAmountValue.toFixed(2)}
+            </Typography>
+          </Box>
 
           {/* Print Button */}
-          <Box display="flex" justifyContent="flex-end" mt={{ xs: 1, sm: 1 }} className="no-print">
+          <Box
+            display="flex"
+            justifyContent="flex-end"
+            mt={{ xs: 1, sm: 1 }}
+            className="no-print"
+          >
             <Button
               onClick={() => window.print()}
               variant="contained"
@@ -254,11 +327,19 @@ const PrintBbps = () => {
           </Box>
 
           {/* Footer */}
-          <Box display="flex" justifyContent="space-between" alignItems="center" mt={3}>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            mt={3}
+          >
             <Typography variant="caption" fontWeight={500}>
               © 2025 All Rights Reserved
             </Typography>
-            <Typography variant="caption" sx={{ display: "block", textAlign: "right" }}>
+            <Typography
+              variant="caption"
+              sx={{ display: "block", textAlign: "right" }}
+            >
               This is a system-generated receipt. No signature required.
             </Typography>
           </Box>
