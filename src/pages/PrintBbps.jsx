@@ -52,9 +52,9 @@ const PrintBbps = () => {
   const headers = [
     "Date",
     "Ref Number",
-    "Biller Name",
-    "UTR",
+    "Biller Name",    
     "Number",
+    "Status",
     // "Mobile",
     "Amount",
    
@@ -162,6 +162,7 @@ const PrintBbps = () => {
                   txn.biller_name || "",
                   txn.operator_id || "",
                   txn.consumer_number || "",
+                  txn.status || "",
                   // txn.customer_mobile || "",
                   `₹ ${amount.toFixed(2)}`,
                  
