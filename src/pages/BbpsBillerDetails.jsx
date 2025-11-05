@@ -24,6 +24,7 @@ const BbpsBillerDetails = ({
   onBack,
   selectedBillerIdImage,
   category,
+  categoryKey,
   biller,
 }) => {
   const [detailsLoading, setDetailsLoading] = useState(false);
@@ -39,6 +40,7 @@ const BbpsBillerDetails = ({
   const loadUserProfile = authCtx.loadUserProfile;
 
   console.log("locations", location);
+  console.log("categoryKey", categoryKey);
 
   const handleSendClick = () => {
     setMpinModalOpen(true);
@@ -422,14 +424,20 @@ const BbpsBillerDetails = ({
                     variant="outlined"
                     value={billData?.BillAmount || ""}
                     onChange={(e) =>
-                      (acceptsAdhoc || category?.category_key === "C15") &&
+                      (acceptsAdhoc ||
+                        category?.category_key === "C15" ||
+                        categoryKey === "C15") &&
                       setBillData((prev) => ({
                         ...prev,
                         BillAmount: e.target.value,
                       }))
                     }
                     disabled={
-                      !(acceptsAdhoc || category?.category_key === "C15")
+                      !(
+                        acceptsAdhoc ||
+                        category?.category_key === "C15" ||
+                        categoryKey === "C15"
+                      )
                     }
                     // disabled={!acceptsAdhoc}
                     InputProps={{
@@ -447,7 +455,11 @@ const BbpsBillerDetails = ({
                   />
                 </Box>
 
-                {!(acceptsAdhoc || category?.category_key === "C15") && (
+                {!(
+                  acceptsAdhoc ||
+                  category?.category_key === "C15" ||
+                  categoryKey === "C15"
+                ) && (
                   <Typography variant="caption" color="red" sx={{ mt: 0.5 }}>
                     Amount cannot be edited for this biller.
                   </Typography>

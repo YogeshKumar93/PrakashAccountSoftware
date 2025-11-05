@@ -15,6 +15,7 @@ const SolitechReceipt = ({ payoutResponse, onRepeat, onNewTxn }) => {
     ["Purpose", payoutResponse?.purpose || "N/A"],
     ["UTR", payoutResponse?.operator_id || "N/A"],
   ];
+  const currentTime = new Date().toLocaleTimeString();
 
   const handlePrint = () => {
     const printWin = window.open("", "_blank");
@@ -157,6 +158,7 @@ const SolitechReceipt = ({ payoutResponse, onRepeat, onNewTxn }) => {
             sx={{ lineHeight: 1 }}
           >
             Date: {new Date().toLocaleDateString()}
+            {currentTime}
           </Typography>
         </Box>
 

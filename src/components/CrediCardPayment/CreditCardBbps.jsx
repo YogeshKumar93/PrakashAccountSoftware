@@ -29,6 +29,7 @@ const CreditCardBbps = ({ category, onBack }) => {
   const [selectedBiller, setSelectedBiller] = useState(null);
   const [meta, setMeta] = useState(null);
   const [page, setPage] = useState(1);
+  const [selectedCategoryKey, setSelectedCategoryKey] = useState(null);
 
   const authCtx = useContext(AuthContext);
   const user = authCtx.user;
@@ -54,6 +55,8 @@ const CreditCardBbps = ({ category, onBack }) => {
 
         const records = response?.data?.records || [];
         const metaInfo = response?.data?.meta || null;
+        const categoryKeys = records.map((item) => item.categoryKey);
+        console.log("Category Keys:", categoryKeys);
 
         setBillers(records);
         setMeta(metaInfo);
@@ -129,6 +132,7 @@ const CreditCardBbps = ({ category, onBack }) => {
           onBack={() => setSelectedBillerId(null)}
           category={category}
           biller={selectedBiller}
+          categoryKey={selectedCategoryKey} // ✅ send categoryKey to child
         />
       ) : null}
 
@@ -171,6 +175,7 @@ const CreditCardBbps = ({ category, onBack }) => {
                       setSelectedBillerId(biller.billerId);
                       setSelectedBiller(biller);
                       setSelectedBillerIdImage(biller.iconUrl);
+                      setSelectedCategoryKey(biller.categoryKey); // ✅ store categoryKey for selected biller
                     }
                   }}
                 >
