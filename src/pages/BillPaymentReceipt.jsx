@@ -129,7 +129,7 @@ const BillPaymentReceipt = ({
               </Box>
 
               {/* <DetailRow label="Order ID" value={orderId} /> */}
-              <DetailRow label="Operator ID" value={finalOperator} />
+              {/* <DetailRow label="Operator ID" value={finalOperator} /> */}
               <DetailRow label="Bill Number" value={billerNumber} />
 
               {billerDetails && (

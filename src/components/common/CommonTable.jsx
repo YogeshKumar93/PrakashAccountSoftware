@@ -1066,11 +1066,14 @@ const CommonTable = ({
             </Box> */}
           </Paper>
 
-          {/* Mobile filter button */}
+          {/* Mobile filter + header row */}
           <Box
             sx={{
               display: { xs: "flex", md: "none" },
-              justifyContent: "flex-end",
+              justifyContent: "space-between",
+              alignItems: "center",
+              flexWrap: "wrap", // ✅ ensures no overflow on small screens
+              gap: 1,
               mb: 2,
             }}
           >
@@ -1078,9 +1081,13 @@ const CommonTable = ({
               variant="outlined"
               startIcon={<FilterListIcon />}
               onClick={() => setFilterModalOpen(true)}
+              size="small" // ✅ smaller button looks better on mobile
             >
               Filters
             </Button>
+
+            {/* custom header aligned to the right */}
+            <Box>{customHeader}</Box>
           </Box>
 
           {/* Filter Modal for mobile */}
