@@ -60,9 +60,6 @@ const Wallet2WalletTransfer = ({}) => {
     }
   };
 
- 
-
-
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
@@ -124,30 +121,26 @@ const Wallet2WalletTransfer = ({}) => {
     }, 500)
   ).current;
 
- 
+  // const handleExportExcel = async () => {
+  //   try {
+  //     // Fetch all users (without pagination/filters) from API
+  //     const { error, response } = await apiCall(
+  //       "post",
+  //       ApiEndpoints.GET_BBPS_TXN,
+  //       { export: 1 }
+  //     );
+  //     const usersData = response?.data?.data || [];
 
-
-    // const handleExportExcel = async () => {
-    //   try {
-    //     // Fetch all users (without pagination/filters) from API
-    //     const { error, response } = await apiCall(
-    //       "post",
-    //       ApiEndpoints.GET_BBPS_TXN,
-    //       { export: 1 }
-    //     );
-    //     const usersData = response?.data?.data || [];
-  
-    //     if (usersData.length > 0) {
-    //       json2Excel("BbpsTxns", usersData); // generates and downloads Users.xlsx
-    //     } else {
-    //       apiErrorToast("no data found");
-    //     }
-    //   } catch (error) {
-    //     console.error("Excel export failed:", error);
-    //     alert("Failed to export Excel");
-    //   }
-    // };
-
+  //     if (usersData.length > 0) {
+  //       json2Excel("BbpsTxns", usersData); // generates and downloads Users.xlsx
+  //     } else {
+  //       apiErrorToast("no data found");
+  //     }
+  //   } catch (error) {
+  //     console.error("Excel export failed:", error);
+  //     alert("Failed to export Excel");
+  //   }
+  // };
 
   // Debounced search for receiver
   const debouncedReceiverSearch = useRef(
@@ -258,7 +251,7 @@ const Wallet2WalletTransfer = ({}) => {
 
   const columns = useMemo(
     () => [
-     {
+      {
         name: "S.No",
         selector: (row) => (
           <div
@@ -582,7 +575,7 @@ const Wallet2WalletTransfer = ({}) => {
     ],
     [user]
   );
- const columnsWithSelection = useMemo(() => {
+  const columnsWithSelection = useMemo(() => {
     // Only show checkbox if user is NOT adm or sadm
     if (user?.role === "adm" || user?.role === "sadm") {
       return columns; // no selection column
@@ -609,9 +602,9 @@ const Wallet2WalletTransfer = ({}) => {
       ...columns,
     ];
   }, [selectedRows, columns]);
-  
+
   return (
-       <Box>
+    <Box>
       {loading ? (
         <CommonLoader loading={loading} text="Loading Wallet Transfers" />
       ) : (
@@ -625,12 +618,12 @@ const Wallet2WalletTransfer = ({}) => {
           refresh={true}
           includeClientRef={false}
           enableSelection={false}
-           
           selectedRows={selectedRows}
           onSelectionChange={setSelectedRows}
-            enableExcelExport={true}
-        exportFileName="W2WTransactions"
-        exportEndpoint={ApiEndpoints.WALLET_GET_W2W_TRANSACTION}
+          enableExcelExport={true}
+          exportFileName="W2WTransactions"
+          exportEndpoint={tableEndpoint}
+          exportPayload={{ ...appliedFilters, service: "W2W transfer" }} // ✅ add this line
           customHeader={
             <Box
               sx={{
@@ -648,7 +641,9 @@ const Wallet2WalletTransfer = ({}) => {
                     color="primary"
                     onClick={() => {
                       if (!selectedRows || selectedRows.length === 0) {
-                        alert("Please select at least one transaction to print.");
+                        alert(
+                          "Please select at least one transaction to print."
+                        );
                         return;
                       }
                       sessionStorage.setItem(
@@ -669,7 +664,6 @@ const Wallet2WalletTransfer = ({}) => {
         />
       )}
     </Box>
-
   );
 };
 
