@@ -147,80 +147,80 @@ const BankStatements = () => {
   };
 
   // 👇 Add this inside BankStatements component
-  const handleUploadExcel = async (file) => {
-    try {
-      const reader = new FileReader();
+const handleUploadExcel = async (file) => {
+  try {
+    const reader = new FileReader();
 
-      reader.onload = async (e) => {
-        const data = new Uint8Array(e.target.result);
-        const workbook = XLSX.read(data, { type: "array" });
-        const sheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[sheetName];
-        const jsonData = XLSX.utils.sheet_to_json(worksheet);
+    reader.onload = async (e) => {
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type: "array" });
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+      const jsonData = XLSX.utils.sheet_to_json(worksheet);
 
-        if (!jsonData.length) {
-          showToast("No data found in Excel", "error");
+      if (!jsonData.length) {
+        showToast("No data found in Excel", "error");
+        return;
+      }
 
+      showToast(`Uploading ${jsonData.length} records...`, "info");
+      setLoading(true);
+
+      let successCount = 0;
+
+      // ✅ Loop through all rows but stop if an API call fails
+      for (let i = 0; i < jsonData.length; i++) {
+        const row = jsonData[i];
+
+        const payload = {
+          bank_id: bank_id,
+          balance: oldBalance || 0,
+          date: (() => {
+            if (row.date) {
+              const parsedDate = new Date(row.date);
+              if (!isNaN(parsedDate)) {
+                return parsedDate.toISOString().slice(0, 19).replace("T", " ");
+              }
+            }
+            return new Date().toISOString().slice(0, 19).replace("T", " ");
+          })(),
+          credit: Number(row.credit || 0),
+          debit: Number(row.debit || 0),
+          mop: row.mop || "",
+          handle_by: row.handle_by || "",
+          particulars: row.particulars || "",
+        };
+
+        const { response, error } = await apiCall(
+          "POST",
+          ApiEndpoints.CREATE_BANK_STATEMENT,
+          payload
+        );
+
+        if (response) {
+          successCount++;
+        } else {
+            showToast(error?.errors, "error");
+          setLoading(false);
+          // ❌ Stop loop immediately if one API fails
           return;
         }
+      }
 
-        showToast(`Uploading ${jsonData.length} records...`, "info");
+      showToast(`✅ Uploaded ${successCount} records successfully`, "success");
+      refreshStatements();
+      setOpenUploadSuccess(true);
+      setLoading(false);
+    };
 
-        // Process each row sequentially
-        for (let i = 0; i < jsonData.length; i++) {
-          const row = jsonData[i];
+    reader.readAsArrayBuffer(file);
+  } catch (err) {
+    console.error("Error reading Excel file:", err);
+    showToast("Failed to process Excel file", "error");
+    setLoading(false);
+  }
+};
 
-          // Build payload same as CreateBankStatement form
-          const payload = {
-            bank_id: bank_id,
-            balance: oldBalance || 0,
-            date: (() => {
-              if (row.date) {
-                const parsedDate = new Date(row.date);
-                if (!isNaN(parsedDate)) {
-                  // ✅ Format for DATETIME column
-                  return parsedDate
-                    .toISOString()
-                    .slice(0, 19)
-                    .replace("T", " ");
-                }
-              }
-              // ✅ Fallback: current datetime
-              return new Date().toISOString().slice(0, 19).replace("T", " ");
-            })(),
-
-            credit: Number(row.credit || 0),
-            debit: Number(row.debit || 0),
-            mop: row.mop || "",
-            handle_by: row.handle_by || "",
-            particulars: row.particulars || "",
-          };
-          const { response, error } = await apiCall(
-            "POST",
-            ApiEndpoints.CREATE_BANK_STATEMENT,
-            payload
-          );
-
-          if (response) {
-            setLoading(true);
-
-            showToast(response?.message, "success");
-            refreshStatements(); // refresh table after upload
-          } else {
-            showToast(error?.message, "error");
-            setLoading(false);
-          }
-        }
-        setLoading(false);
-        setOpenUploadSuccess(true);
-      };
-
-      reader.readAsArrayBuffer(file);
-    } catch (err) {
-      console.error("Error reading Excel file:", err);
-      showToast("Failed to process Excel file", "error");
-    }
-  };
 
   const columns = [
     {
