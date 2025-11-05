@@ -151,6 +151,7 @@ const CommonTable = ({
   enableExcelExport = false, // New prop to enable export
   exportFileName = "TableData", // New prop for export file name
   exportEndpoint, // New prop for export API endpoint (can be different from main endpoint)
+  exportPayload,
   onExportComplete,
 }) => {
   const { afterToday } = DateRangePicker;
@@ -206,8 +207,13 @@ const CommonTable = ({
   const { handleExportExcel } = useExcelExport();
 
   const handleTableExport = useCallback(async () => {
+    const payload = {
+      ...exportFilters, // filters from UI
+      ...exportPayload, // extra payload from props
+    };
     const result = await handleExportExcel(
       exportEndpoint || endpoint,
+      payload,
       exportFilters, // ✅ Use state instead of ref
       exportFileName
     );
@@ -221,6 +227,7 @@ const CommonTable = ({
     exportFileName,
     handleExportExcel,
     onExportComplete,
+    exportPayload,
     exportFilters, // ✅ Add to dependencies
   ]);
 
@@ -231,7 +238,7 @@ const CommonTable = ({
         {enableExcelExport && (
           <ExportExcelButton
             endpoint={exportEndpoint || endpoint}
-            appliedFilters={exportFilters} // ✅ Use state instead of ref
+            appliedFilters={{ ...exportFilters, ...exportPayload }} // ✅ merge both
             fileName={exportFileName}
             variant="icon"
           />
