@@ -249,6 +249,8 @@ const ApiEndpoints = {
   DMT1_TXN: "dmt1/dmtTxn",
   DMT1_VERIFY_BENEFICIARY: "dmt1/accountVerification",
 
+  GET_ALL_TXN: "admin/getAllTxn",
+
   DMT1_REGISTER_REMMITER: "dmt1/registerRemitter",
   VALIDATE_REMITTER_DMT1: "dmt1/validateRemitter",
 

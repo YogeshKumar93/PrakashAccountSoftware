@@ -21,9 +21,27 @@ import TrainIcon from "@mui/icons-material/Train";
 import { Wallet } from "@mui/icons-material";
 import Wallet2WalletTransfer from "./Wallet2WalletTransfer";
 import CreditCardTxn from "../components/Transactions/CreditCardTxn";
+import AllTranscation from "./AllTranscation";
 
 export const Transaction = () => {
   const tabItems = [
+     {
+      label: (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            minWidth: "80px",
+            justifyContent: "flex-start",
+          }}
+        >
+          <SwapHorizIcon fontSize="small" />
+          <span>All Transcation</span>
+        </div>
+      ),
+      component: <AllTranscation />,
+    },
     {
       label: (
         <div
