@@ -57,7 +57,7 @@ const AddInst = ({ open, onClose, userId, onFetchRef }) => {
     <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
       <DialogTitle>
         <Typography variant="h6" fontWeight={600}>
-          Add InstId to {userId}
+          Add InstId  {userId}
         </Typography>
       </DialogTitle>
 
@@ -67,6 +67,7 @@ const AddInst = ({ open, onClose, userId, onFetchRef }) => {
         <TextField
           label="User ID"
           value={userId}
+          disabled
           fullWidth
           size="small"
           InputProps={{ readOnly: true }} // ✅ prevent editing
