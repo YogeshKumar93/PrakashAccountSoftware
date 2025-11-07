@@ -35,7 +35,7 @@ export const Transaction = () => {
           }}
         >
           <SwapHorizIcon fontSize="small" />
-          <span>All Transactions</span>
+          <span>All Txns</span>
         </div>
       ),
       component: <AllTranscation />,

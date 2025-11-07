@@ -68,17 +68,18 @@ const titleMap = {
     "/customer/login_history": "Login History",
     "/customer/invoice": "Invoices",
     "/customer/travel": "Travel Booking",
-     "/customer/profile": "My Profile",
+    "/customer/profile": "My Profile",
   },
 
   asm: {
     "/asm/dashboard": "Dashboard",
     "/asm/users": "Users",
-    "/asm/transactions": "Transactions",
+    "/asm/transcations": "Transactions",
     "/asm/cred-req": "Fund Requests",
     "/asm/my-profile": "My Profile",
     "/asm/login_history": "Login History",
-     "/asm/profile": "My Profile",
+    "/asm/profile": "My Profile",
+    "/asm/wallet-ledger": "Wallet Ledger",
   },
 
   zsm: {
@@ -88,21 +89,21 @@ const titleMap = {
     "/zsm/cred-req": "Fund Requests",
     "/zsm/my-profile": "My Profile",
     "/zsm/login_history": "Login History",
-     "/zsm/profile": "My Profile",
+    "/zsm/profile": "My Profile",
   },
 
   md: {
     "/md/dashboard": "Dashboard",
     "/md/users": "Users",
-    "/md/cred-req": "Fund Requests",
-    "/md/transactions": "Transactions",
+    "/md/fund-request": "Fund Requests",
+    "/md/transcations": "Transactions",
     "/md/sale": "My Sale",
     "/md/purchase": "My Purchase",
-    "/md/ledger": "My Ledger",
+    "/md/wallet-ledger": "Wallet Ledger",
     "/md/my-profile": "My Profile",
     "/md/khata-book": "Khata Book",
     "/md/login_history": "Login History",
-     "/md/profile": "My Profile",
+    "/md/profile": "My Profile",
   },
 
   ad: {
@@ -116,7 +117,7 @@ const titleMap = {
     "/ad/my-profile": "My Profile",
     "/ad/khata-book": "Khata Book",
     "/ad/login_history": "Login History",
-     "/ad/profile": "My Profile",
+    "/ad/profile": "My Profile",
   },
 
   "api-user": {
@@ -133,12 +134,12 @@ const titleMap = {
     "/di/dashboard": "Dashboard",
     "/di/users": "Users",
     "/di/transactions": "Transactions",
-    "/di/cred-req": "Fund Requests",
+    "/di/fund-request": "Fund Requests",
     "/di/wallet-transfer": "Wallet Transfer",
     "/di/wallet-ledger": "Wallet Ledger",
     "/di/my-profile": "My Profile",
     "/di/login_history": "Login History",
-     "/di/profile": "My Profile",
+    "/di/profile": "My Profile",
   },
 };
 
@@ -156,15 +157,9 @@ export const setTitleFunc = (path, states = {}) => {
   if (path === "/customer/khata-statement") {
     return `Khata Statement ${states.name} (${states.id})`;
   }
-if (path.startsWith("/admin/bankstatements/")) {
-  return `${states.bank_name}  (${states.acc_number}) Statement`;
-}
-
-
-
-
-
- 
+  if (path.startsWith("/admin/bankstatements/")) {
+    return `${states.bank_name}  (${states.acc_number}) Statement`;
+  }
 
   return title;
 };

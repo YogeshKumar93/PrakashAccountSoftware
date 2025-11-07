@@ -29,6 +29,8 @@ const AdminCreateUser = ({ open, onClose, onFetchRef }) => {
   const [schemaFields, setSchemaFields] = useState([]);
   const [formData, setFormData] = useState({});
   const [loadingSchema, setLoadingSchema] = useState(false);
+  const [formErrors, setFormErrors] = useState({});
+
   console.log("The schema fiels is ", schemaFields);
   const rolesList = [
     "sadm",
@@ -100,6 +102,46 @@ const AdminCreateUser = ({ open, onClose, onFetchRef }) => {
       fetchSchema();
     }
   }, [role]);
+  const validateField = (field, value) => {
+    const { required, validation } = field;
+    const errors = [];
+
+    // Required check
+    if (required && !value.trim()) {
+      errors.push(`${field.label} is required`);
+    }
+
+    // Validation type checks
+    if (validation) {
+      if (validation.maxLength && value.length > validation.maxLength) {
+        errors.push(
+          `${field.label} must be at most ${validation.maxLength} characters`
+        );
+      }
+
+      if (validation.format === "email") {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (value && !emailRegex.test(value)) {
+          errors.push("Invalid email format");
+        }
+      }
+
+      if (validation.regex) {
+        try {
+          // clean the incoming regex string like "\/^[6-9][0-9]{9}$\/"
+          const cleaned = validation.regex.replaceAll("/", "");
+          const regex = new RegExp(cleaned);
+          if (value && !regex.test(value)) {
+            errors.push(`Invalid ${field.label}`);
+          }
+        } catch (err) {
+          console.warn("Invalid regex in schema for", field.name);
+        }
+      }
+    }
+
+    return errors;
+  };
 
   const fetchSchema = async (selectedUserId) => {
     try {
@@ -162,14 +204,30 @@ const AdminCreateUser = ({ open, onClose, onFetchRef }) => {
       return;
     }
 
-    // Convert flat formData → user + business + business_address
+    const newErrors = {};
+    let hasError = false;
+
+    // validate each schema field
+    schemaFields.forEach((field) => {
+      const value = formData[field.name] || "";
+      const fieldErrors = validateField(field, value);
+      if (fieldErrors.length > 0) {
+        newErrors[field.name] = fieldErrors.join(", ");
+        hasError = true;
+      }
+    });
+
+    setFormErrors(newErrors);
+
+    if (hasError) {
+      showToast("Please fix validation errors before submitting", "error");
+      return;
+    }
+
     const { user, business, business_address } =
       buildUserBusinessPayload(formData);
-
     const payload = { role, user, business, business_address };
     if (selectedUser) payload.parent = selectedUser;
-
-    console.log("Payload sending to API:", payload); // debug
 
     setSubmitting(true);
     try {
@@ -261,6 +319,9 @@ const AdminCreateUser = ({ open, onClose, onFetchRef }) => {
               size="small"
               variant="outlined"
               type={field.type || "text"}
+              error={!!formErrors[field.name]}
+              helperText={formErrors[field.name] || ""}
+              placeholder={field.placeholder || ""}
             />
           ))}
       </DialogContent>
