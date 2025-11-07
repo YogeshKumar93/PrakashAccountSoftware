@@ -46,19 +46,39 @@ const CreateFundRequest = ({ open, handleClose, handleSave }) => {
     }
   }, [open, formData.date, setFormData]);
 
-  // ✅ File input handler (backend required)
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    setReceipt(file);
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result); // base64 preview
-      };
-      reader.readAsDataURL(file);
-    } else {
+    if (!file) {
+      setReceipt(null);
       setImagePreview(null);
+      return;
     }
+
+    // ✅ Allowed image types
+    const validTypes = ["image/png", "image/jpeg", "image/jpg"];
+    if (!validTypes.includes(file.type)) {
+      showToast("Only PNG, JPG, or JPEG images are allowed", "error");
+      e.target.value = null; // reset input
+      setReceipt(null);
+      setImagePreview(null);
+      return;
+    }
+
+    // ✅ Maximum size: 2 MB
+    const maxSizeMB = 2;
+    if (file.size > maxSizeMB * 1024 * 1024) {
+      showToast(`File size should not exceed ${maxSizeMB} MB`, "error");
+      e.target.value = null;
+      setReceipt(null);
+      setImagePreview(null);
+      return;
+    }
+
+    // ✅ Valid file — set preview
+    setReceipt(file);
+    const reader = new FileReader();
+    reader.onloadend = () => setImagePreview(reader.result);
+    reader.readAsDataURL(file);
   };
 
   const validateForm = () => {

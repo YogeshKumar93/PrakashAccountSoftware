@@ -294,7 +294,9 @@ const CommonFormField = ({
               (opt) =>
                 opt?.value === formData[name] ||
                 opt?.id === formData[name] ||
-                opt?.bank_id === formData[name]
+                opt?.bank_id === formData[name] ||
+                opt?.code === formData[name] || // ✅ added to handle route field
+                opt?.name === formData[name]
             ) || null
           }
           onChange={(e, newValue) => {
