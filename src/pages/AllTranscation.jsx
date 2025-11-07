@@ -9,27 +9,11 @@ import {
   Menu,
   MenuItem,
 } from "@mui/material";
- 
- 
- 
- 
+
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import PrintIcon from "@mui/icons-material/Print";
-import FileDownloadIcon from "@mui/icons-material/FileDownload";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import LaptopIcon from "@mui/icons-material/Laptop";
 import { useNavigate } from "react-router-dom";
-
 import biggpayLogo from "../assets/Images/PPALogor.png";
- 
-
- 
- 
- 
- 
- 
-
- 
 import ApiEndpoints from "../api/ApiEndpoints";
 import CommonTable from "../components/common/CommonTable";
 import { dateToTime1, ddmmyy, ddmmyyWithTime } from "../utils/DateUtils";
@@ -60,15 +44,10 @@ const AllTranscation = ({ query }) => {
   const [refundLoading, setRefundLoading] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
   const [routes, setRoutes] = useState([]);
-  const [openFailModal, setOpenFailModal] = useState(false);
-
-  const [reason, setReason] = useState("");
-
-  // const handleOpenLein = (row) => {
-  //   setOpenLeinModal(true);
-  //   setSelectedTrancation(row);
-  // };
-
+  const fetchUsersRef = useRef(null);
+  const handleFetchRef = (fetchFn) => {
+    fetchUsersRef.current = fetchFn;
+  };
   const refreshPlans = () => {
     fetchUsersRef.current?.();
   };
@@ -104,40 +83,7 @@ const AllTranscation = ({ query }) => {
     fetchRoutes();
   }, []);
 
-  const handleOpenLein = (row) => {
-    setOpenLeinModal(true);
-    setSelectedTransaction(row);
-  };
-
   const handleCloseLein = () => setOpenLeinModal(false);
-
-  const handleRefundClick = (row) => {
-    setSelectedForRefund(row);
-    setConfirmModalOpen(true);
-  };
-
-  const handleConfirmRefund = async () => {
-    if (!selectedForRefund) return;
-    setRefundLoading(true);
-
-    const { error, response } = await apiCall("post", ApiEndpoints.REFUND_TXN, {
-      txn_id: selectedForRefund.txn_id,
-    });
-
-    if (response) {
-      showToast(
-        response?.message || "Refund processed successfully",
-        "success"
-      );
-      setConfirmModalOpen(false);
-      setSelectedForRefund(null);
-      refreshPlans();
-    } else {
-      showToast(error?.message || "Failed to process refund", "error");
-    }
-
-    setRefundLoading(false);
-  };
 
   // Filters
   const filters = useMemo(
@@ -162,7 +108,7 @@ const AllTranscation = ({ query }) => {
         roles: ["adm", "sadm"],
       },
       { id: "txn_id", label: "Txn ID", type: "textfield" },
-            { id: "amount", label: "Amount", type: "textfield" },
+      { id: "amount", label: "Amount", type: "textfield" },
       {
         id: "user_id",
         label: "User ID",
@@ -174,74 +120,9 @@ const AllTranscation = ({ query }) => {
     [routes]
   );
 
-  // const handleExportExcel = async () => {
-  //   try {
-  //     const { error, response } = await apiCall(
-  //       "post",
-  //       ApiEndpoints.GET_AEPS_TXN,
-  //       { export: 1 }
-  //     );
-  //     const usersData = response?.data?.data || [];
-  //     if (usersData.length > 0) {
-  //       json2Excel("AepsTxns", usersData);
-  //     } else {
-  //       apiErrorToast("No data found");
-  //     }
-  //   } catch (error) {
-  //     console.error("Excel export failed:", error);
-  //     apiErrorToast("Failed to export Excel");
-  //   }
-  // };
-
-  // const ActionColumn = ({ row }) => {
-  //   const [anchorEl, setAnchorEl] = useState(null);
-  //   const open = Boolean(anchorEl);
-
-  //   return (
-  //     <>
-  //       <IconButton size="small" onClick={(e) => setAnchorEl(e.currentTarget)}>
-  //         <MoreVertIcon />
-  //       </IconButton>
-  //       <Menu anchorEl={anchorEl} open={open} onClose={() => setAnchorEl(null)}>
-  //         {row.status === "PENDING" && (
-  //           <>
-  //             <MenuItem
-  //               onClick={() => {
-  //                 // ✅ your existing success handler (keep as is)
-  //                 setAnchorEl(null);
-  //                 handleMarkSuccess(row);
-  //               }}
-  //             >
-  //               Mark Success
-  //             </MenuItem>
-
-  //             <MenuItem
-  //               onClick={() => {
-  //                 setSelectedTxn(row);
-  //                 setOpenFailModal(true);
-  //                 setAnchorEl(null);
-  //               }}
-  //             >
-  //               Mark Failed
-  //             </MenuItem>
-  //           </>
-  //         )}
-  //         <MenuItem
-  //           onClick={() => {
-  //             handleOpenLein(row);
-  //             setAnchorEl(null);
-  //           }}
-  //         >
-  //           Mark Lein
-  //         </MenuItem>
-  //       </Menu>
-  //     </>
-  //   );
-  // };
-
   const columns = useMemo(
     () => [
-       {
+      {
         name: "S.No",
         selector: (row) => row.serialNo,
         wrap: true,
@@ -252,11 +133,14 @@ const AllTranscation = ({ query }) => {
         selector: (row) => (
           <Box display="flex" flexDirection="column">
             <Tooltip title={`Created: ${ddmmyyWithTime(row.created_at)}`} arrow>
-              <span>
+              {/* <span>
                 {ddmmyy(row.created_at)} {dateToTime1(row.created_at)}
-              </span>
+              </span> */}
+              <div style={{ display: "inline-flex", gap: 4 }}>
+                <span>{ddmmyy(row.created_at)}</span>
+                <span>{dateToTime1(row.created_at)}</span>
+              </div>
             </Tooltip>
-        
           </Box>
         ),
         wrap: true,
@@ -288,11 +172,9 @@ const AllTranscation = ({ query }) => {
         center: true,
         width: "70px",
       },
-       {
+      {
         name: "Txn ID",
-        selector: (row) => (
-          <div style={{ fontSize: "10px", fontWeight: "600" }}>{row.txn_id}</div>
-        ),
+        selector: (row) => <div>{row.txn_id}</div>,
         center: true,
         width: "70px",
       },
@@ -593,58 +475,58 @@ const AllTranscation = ({ query }) => {
           exportEndpoint={ApiEndpoints.GET_ALL_TXN}
         customHeader={
           <>
-           <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 1,
-                  padding: "8px",
-                }}
-              >
-                {selectedRows.length > 0 && (
-                  <Tooltip title="PRINT">
-                    <Button
-                      variant="contained"
-                      size="small"
-                      color="primary"
-                      onClick={() => {
-                        if (!selectedRows || selectedRows.length === 0) {
-                          alert(
-                            "Please select at least one transaction to print."
-                          );
-                          return;
-                        }
-
-                        // Save all selected rows
-                        sessionStorage.setItem(
-                          "txnData",
-                          JSON.stringify(selectedRows)
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                padding: "8px",
+              }}
+            >
+              {selectedRows.length > 0 && (
+                <Tooltip title="PRINT">
+                  <Button
+                    variant="contained"
+                    size="small"
+                    color="primary"
+                    onClick={() => {
+                      if (!selectedRows || selectedRows.length === 0) {
+                        alert(
+                          "Please select at least one transaction to print."
                         );
+                        return;
+                      }
 
-                        // Open receipt page in a new tab
-                        window.open("/print-dmt2", "_blank");
-                      }}
-                      sx={{ ml: 1 }}
-                    >
-                      <PrintIcon
-                        sx={{ fontSize: 20, color: "#e3e6e9ff", mr: 1 }}
-                      />
-                      Print
-                    </Button>
-                  </Tooltip>
-                )}
-              </Box>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 1,
-                  padding: "8px",
-                  flexWrap: "wrap",
-                }}
-              >
-                <Scheduler onRefresh={refreshPlans} />
-              </Box>
+                      // Save all selected rows
+                      sessionStorage.setItem(
+                        "txnData",
+                        JSON.stringify(selectedRows)
+                      );
+
+                      // Open receipt page in a new tab
+                      window.open("/print-dmt2", "_blank");
+                    }}
+                    sx={{ ml: 1 }}
+                  >
+                    <PrintIcon
+                      sx={{ fontSize: 20, color: "#e3e6e9ff", mr: 1 }}
+                    />
+                    Print
+                  </Button>
+                </Tooltip>
+              )}
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                padding: "8px",
+                flexWrap: "wrap",
+              }}
+            >
+              <Scheduler onRefresh={refreshPlans} />
+            </Box>
           </>
         }
       />
@@ -709,95 +591,6 @@ const AllTranscation = ({ query }) => {
         >
           {selectedApiResponse}
         </Typography>
-      </CommonModal>
-
-      <CommonModal
-        open={confirmModalOpen}
-        onClose={() => setConfirmModalOpen(false)}
-        title="Confirm Refund"
-        footerButtons={[
-          {
-            text: "Cancel",
-            variant: "outlined",
-            onClick: () => setConfirmModalOpen(false),
-          },
-          {
-            text: "Confirm",
-            variant: "contained",
-            onClick: handleConfirmRefund,
-            disabled: refundLoading,
-          },
-        ]}
-      >
-        <Typography fontSize={14}>
-          Are you sure you want to refund transaction ID:{" "}
-          <strong>{selectedForRefund?.txn_id}</strong>?
-        </Typography>
-      </CommonModal>
-
-      <CommonModal
-        open={openFailModal}
-        onClose={() => setOpenFailModal(false)}
-        title="Mark as Failed"
-        footerButtons={[
-          { text: "Cancel", onClick: () => setOpenFailModal(false) },
-          {
-            text: "Submit",
-            variant: "contained",
-            onClick: async () => {
-              await apiCall("post", ApiEndpoints.REFUND_FAILED_TXN, {
-                txn_id: selectedTxn?.txn_id,
-                reason,
-              });
-              showToast("Transaction marked as failed", "success");
-              setOpenFailModal(false);
-              setReason("");
-              refreshPlans();
-            },
-          },
-        ]}
-      >
-        <Typography fontSize={14} mb={1}>
-          Transaction ID: <strong>{selectedTxn?.txn_id}</strong>
-        </Typography>
-        <textarea
-          value={reason}
-          onChange={(e) => setReason(e.target.value)}
-          placeholder="Enter reason"
-          style={{ width: "100%", height: 60, padding: 6 }}
-        />
-      </CommonModal>
-      <CommonModal
-        open={openFailModal}
-        onClose={() => setOpenFailModal(false)}
-        title="Mark as Failed"
-        footerButtons={[
-          { text: "Cancel", onClick: () => setOpenFailModal(false) },
-          {
-            text: "Submit",
-            variant: "contained",
-            onClick: async () => {
-              await apiCall("post", ApiEndpoints.REFUND_FAILED_TXN, {
-                txn_id: selectedTxn?.txn_id,
-                reason,
-              });
-              showToast("Transaction marked as failed", "success");
-              setOpenFailModal(false);
-              setReason("");
-              refreshPlans();
-            },
-          },
-        ]}
-      >
-        <Typography fontSize={14} mb={1}>
-          Transaction ID: <strong>{selectedTxn?.txn_id}</strong>
-        </Typography>
-        <textarea
-          value={reason}
-          onChange={(e) => setReason(e.target.value)}
-          placeholder="Enter reason"
-          style={{ width: "100%", height: 60, padding: 6 }}
-        />
       </CommonModal>
 
       {openLeinModal && (

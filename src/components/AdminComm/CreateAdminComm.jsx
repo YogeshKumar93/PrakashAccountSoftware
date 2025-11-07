@@ -19,7 +19,6 @@ const CreateAdminComm = ({ open, handleClose, handleSave, onFetchRef }) => {
     "value_type",
     "route",
     "a_comm",
-
     "min_amount",
     "max_amount",
   ];

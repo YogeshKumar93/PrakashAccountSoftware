@@ -49,7 +49,6 @@ const LevinUpiRegisterRemitter = ({ open, onClose, mobile, onRegistered }) => {
     setSubmitting(true);
     setErrors({});
     try {
-      // include type = "bank" by default
       const payload = { ...formData, type: "bank" };
 
       const { error, response } = await apiCall(

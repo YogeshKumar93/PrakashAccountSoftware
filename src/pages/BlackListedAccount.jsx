@@ -28,7 +28,6 @@ const BlackListedAccount = ({ filters = [] }) => {
   const [deleteModal, setDeleteModal] = useState({ open: false, row: null });
   const [loading, setLoading] = useState(true);
 
-
   const fetchBanksRef = useRef(null);
 
   const handleFetchRef = (fetchFn) => {
@@ -49,7 +48,6 @@ const BlackListedAccount = ({ filters = [] }) => {
     const timer = setTimeout(() => setLoading(false), 1000);
     return () => clearTimeout(timer);
   }, []);
-
 
   const openModal = (row = null) => setModalState({ open: true, data: row });
   const closeModal = () => setModalState({ open: false, data: null });
@@ -114,17 +112,18 @@ const BlackListedAccount = ({ filters = [] }) => {
               </IconButton>
             </Tooltip>
 
-            {user?.role === "adm" && (
-              <Tooltip title="Delete">
-                <IconButton
-                  color="error"
-                  size="small"
-                  onClick={() => handleDelete(row)}
-                >
-                  <DeleteIcon fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            )}
+            {user?.role === "adm" ||
+              (user?.role === "sadm" && (
+                <Tooltip title="Delete">
+                  <IconButton
+                    color="error"
+                    size="small"
+                    onClick={() => handleDelete(row)}
+                  >
+                    <DeleteIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              ))}
           </Box>
         ),
         width: "120px",
@@ -155,22 +154,22 @@ const BlackListedAccount = ({ filters = [] }) => {
               open={modalState.open}
               onClose={closeModal}
               onFetchRef={refreshBanks}
-              initialData={modalState.data} 
+              initialData={modalState.data}
             />
           )}
 
-        
-          {deleteModal.open && user?.role === "adm" && (
-            <DeleteRiskAccount
-              open={deleteModal.open}
-              handleClose={() => setDeleteModal({ open: false, row: null })}
-              selectedRow={deleteModal.row}
-              onFetchRef={refreshBanks}
-              endpoint={ApiEndpoints.DELETE_BLACK_LISTED_ACCOUNT}
-              title="Delete White-Listed Account"
-              field="acc_no"
-            />
-          )}
+          {deleteModal.open &&
+            (user?.role === "adm" || user?.role === "sadm") && (
+              <DeleteRiskAccount
+                open={deleteModal.open}
+                handleClose={() => setDeleteModal({ open: false, row: null })}
+                selectedRow={deleteModal.row}
+                onFetchRef={refreshBanks}
+                endpoint={ApiEndpoints.DELETE_BLACK_LISTED_ACCOUNT}
+                title="Delete White-Listed Account"
+                field="acc_no"
+              />
+            )}
         </>
       )}
     </>

@@ -7,8 +7,6 @@ import BbpxTxn from "../components/Transactions/BbpsTxn";
 import AepsTxn from "../components/Transactions/AepsTxn";
 import RechargeTxn from "../components/Transactions/RechargeTxn";
 import PayoutTxn from "../components/Transactions/PayoutTxn";
-import MatmTxn from "../components/Transactions/MatmTxn";
-import IrctcTxn from "../components/Transactions/IrctcTxn";
 import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 // Icons
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
@@ -48,7 +46,7 @@ export const Transaction = () => {
           }}
         >
           <SwapHorizIcon fontSize="small" />
-          <span>All Transcation</span>
+          <span>All Txns</span>
         </div>
       ),
       component: <AllTranscation />,

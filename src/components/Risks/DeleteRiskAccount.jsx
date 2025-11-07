@@ -2,18 +2,20 @@ import React, { useState } from "react";
 import { Typography, Box } from "@mui/material";
 import { apiCall } from "../../api/apiClient";
 import CommonModal from "../common/CommonModal"; // मान लिया कि ये आपका modal wrapper है
+import { okSuccessToast } from "../../utils/ToastUtil";
+import { useToast } from "../../utils/ToastContext";
 
 const DeleteRiskAccount = ({
   open,
   handleClose,
   selectedRow,
   onFetchRef,
-  endpoint,      // 🔑 dynamic API endpoint
+  endpoint, // 🔑 dynamic API endpoint
   title = "Delete Record",
   field = "acc_no", // 🔑 कौन सा field show करना है confirmation में
 }) => {
   const [loading, setLoading] = useState(false);
-
+  const { showToast } = useToast();
   const handleConfirmDelete = async () => {
     try {
       setLoading(true);
@@ -22,9 +24,11 @@ const DeleteRiskAccount = ({
       });
 
       if (response) {
+        okSuccessToast(response?.message);
         onFetchRef?.();
         handleClose();
       } else {
+        showToast(error?.message);
         console.error("Delete failed:", error || response);
       }
     } catch (err) {
@@ -56,8 +60,7 @@ const DeleteRiskAccount = ({
     >
       <Box sx={{ p: 2 }}>
         <Typography sx={{ mt: 3 }}>
-          Are you sure you want to delete{" "}
-          <b>{selectedRow?.[field]}</b>?
+          Are you sure you want to delete <b>{selectedRow?.[field]}</b>?
         </Typography>
       </Box>
     </CommonModal>

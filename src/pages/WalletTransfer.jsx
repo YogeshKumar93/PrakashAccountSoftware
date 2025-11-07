@@ -97,13 +97,13 @@ export const WalletTransfer = () => {
         ),
         component: <W2wTransfer />,
       },
-      {
-        label: createTabLabel(
-          <WalletIcon fontSize="small" />,
-          "W3 TO W1 Transfer"
-        ),
-        component: <Wallet3ToWallet1 />,
-      },
+      // {
+      //   label: createTabLabel(
+      //     <WalletIcon fontSize="small" />,
+      //     "W3 TO W1 Transfer"
+      //   ),
+      //   component: <Wallet3ToWallet1 />,
+      // },
     ];
   }
 

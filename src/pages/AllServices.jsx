@@ -86,6 +86,7 @@ import BillPayments from "./BillPayments";
 import W2wTransfer from "./w2wTransfer";
 import LevinUpiTransfer from "./LevinUpiTransfer";
 import SoliTechPayout from "./SoliTechPayout/SoliTechPayout";
+import PartPayment from "../components/common/PartPayment";
 
 const MenuCard = ({ icon, label, onClick, isActive, user }) => {
   return (
@@ -548,15 +549,16 @@ export default function AllServices() {
       key: "partpaynent",
       label: "Part Payment",
       icon: TATAPOWER1,
-      subMenu: [
-        {
-          key: "upiPay",
-          label: "UPI Pay",
-          icon: QrCodeIcon,
-          component: ComingSoon,
-          type: "upi",
-        },
-      ],
+      component: PartPayment,
+      // subMenu: [
+      //   {
+      //     key: "upiPay",
+      //     label: "UPI Pay",
+      //     icon: QrCodeIcon,
+      //     component: ComingSoon,
+      //     type: "upi",
+      //   },
+      // ],
     },
   ].filter(Boolean);
 

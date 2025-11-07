@@ -17,8 +17,6 @@ import AuthContext from "../contexts/AuthContext";
 import { dateToTime, ddmmyy } from "../utils/DateUtils";
 import CommonTable from "../components/common/CommonTable";
 import ApiEndpoints from "../api/ApiEndpoints";
-import CreateServiceModal from "../components/CreateServiceModal";
-import EditServiceModal from "../components/EditServiceModaL";
 import ReButton from "../components/common/ReButton";
 import CreateCommissionRule from "./CreateCommissionRule";
 import EditCommissionModal from "../components/EditCommissionModal";
