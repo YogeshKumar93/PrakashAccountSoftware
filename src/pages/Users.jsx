@@ -296,6 +296,16 @@ const Users = ({ query }) => {
             >
               <ListItemText>Change Parent</ListItemText>
             </MenuItem>,
+                    <MenuItem
+  key="add_inst"
+  onClick={() => {
+    setSelectedUser(row);   // <--- store selected user
+    setOpenAddInst(true);   // <--- open modal
+    handleMenuClose();
+  }}
+>
+  <ListItemText>Add InstId</ListItemText>
+</MenuItem>
           ]}
 
           <MenuItem
@@ -307,19 +317,7 @@ const Users = ({ query }) => {
           >
             <ListItemText>Lein Amount</ListItemText>
           </MenuItem>
-          {(user?.role === "adm" || user?.role === "sadm") && (
-
-              <MenuItem
-  key="add_inst"
-  onClick={() => {
-    setSelectedUser(row);   // <--- store selected user
-    setOpenAddInst(true);   // <--- open modal
-    handleMenuClose();
-  }}
->
-  <ListItemText>Add InstId</ListItemText>
-</MenuItem>
-          )}
+        
         </Menu>
     
 
