@@ -73,6 +73,12 @@ const AllTranscation = ({ query }) => {
     fetchUsersRef.current?.();
   };
 
+
+    const fetchUsersRef = useRef(null);
+
+  const handleFetchRef = (fetchFn) => {
+    fetchUsersRef.current = fetchFn;
+  };
   // Fetch routes dynamically
   useEffect(() => {
     const fetchRoutes = async () => {
@@ -256,18 +262,28 @@ const AllTranscation = ({ query }) => {
         wrap: true,
         width: "190px",
       },
-      //  {
-      //   name: "User ID",
-      //   selector: (row) => (
-      //     <div style={{ fontSize: "10px", fontWeight: "600" }}>{row.user_id}</div>
-      //   ),
-      //   center: true,
-      //   width: "70px",
-      // },
-      {
-        name: "Service",
+      ...(user?.role === "adm" || user?.role === "sadm" ? [
+        {
+        name: "Route",
         selector: (row) => (
-          <div style={{ fontSize: "10px", fontWeight: "600" }}>{row.service_name}</div>
+          <div style={{ fontSize: "10px", fontWeight: "600" }}>{row.route}</div>
+        ),
+        center: true,
+        width: "70px",
+      },
+      ] : []),
+       {
+        name: "User ID",
+        selector: (row) => (
+          <div style={{ fontSize: "10px", fontWeight: "600" }}>{row.user_id}</div>
+        ),
+        center: true,
+        width: "70px",
+      },
+     {
+        name: "Operator",
+        selector: (row) => (
+          <div style={{ fontSize: "10px", fontWeight: "600" }}>{row.operator_name}</div>
         ),
         center: true,
         width: "70px",
@@ -280,14 +296,7 @@ const AllTranscation = ({ query }) => {
         center: true,
         width: "70px",
       },
-       {
-        name: "Operator",
-        selector: (row) => (
-          <div style={{ fontSize: "10px", fontWeight: "600" }}>{row.operator_name}</div>
-        ),
-        center: true,
-        width: "70px",
-      },
+      
     //   {
     //     name: "Pf",
     //     selector: (row) => {
@@ -352,13 +361,21 @@ const AllTranscation = ({ query }) => {
         right: true,
       },
        {
-        name: "Ret. Comm.",
+        name: "Ret.Comm.",
         selector: (row) => (
           <div style={{ fontSize: "10px", fontWeight: "600" }}>{row.ret_comm}</div>
         ),
         center: true,
         width: "70px",
       },
+
+      ...(user?.role === "adm" ||
+        user?.role === "di" ||
+        user?.role === "md" ||
+        user?.role === "sadm" ||
+        user?.role === "asm" ||
+        user?.role === "zsm"
+        ? [
        {
         name: "Di. Comm.",
         selector: (row) => (
@@ -367,6 +384,13 @@ const AllTranscation = ({ query }) => {
         center: true,
         width: "70px",
       },
+      ] : []),
+      ...(user?.role === "adm" ||
+        user?.role === "md" ||
+        user?.role === "sadm" ||
+        user?.role === "asm" ||
+        user?.role === "zsm"
+        ?[
        {
         name: "Md. Comm.",
         selector: (row) => (
@@ -375,9 +399,46 @@ const AllTranscation = ({ query }) => {
         center: true,
         width: "70px",
       },
-      {
+      ] : []),
+       {
+        name: "Charge",
+        selector: (row) => (
+          <div style={{ fontSize: "10px", fontWeight: "600" }}>{row.charges}</div>
+        ),
+        center: true,
+        width: "70px",
+      },
+       {
         name: "Status",
-        selector: (row) => <CommonStatus value={row.status} />,
+        selector: (row) => (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              minHeight: "50px",
+            }}
+          >
+            <CommonStatus value={row.status} />
+            <Tooltip title={`Operator ID: ${row?.operator_id || "N/A"}`} arrow>
+              <div
+                style={{
+                  fontSize: "11px",
+                  marginTop: "4px",
+                  fontWeight: "600",
+                  maxWidth: "80px",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  textAlign: "center",
+                }}
+              >
+                {row?.operator_id || "N/A"}
+              </div>
+            </Tooltip>
+          </div>
+        ),
         center: true,
       },
       // ...((user?.role === "adm" || user?.role === "sadm") &&
@@ -397,57 +458,57 @@ const AllTranscation = ({ query }) => {
       //       },
       //     ]
       //   : []),
-      {
-        name: "View",
-        selector: (row) => (
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              minWidth: "80px",
-              gap: 1, // space between icons
-            }}
-          >
-            {/* View Transaction visible to all */}
-            <Tooltip title="View Transaction">
-              <IconButton
-                color="info"
-                onClick={() => {
-                  setSelectedRow(row);
-                  setDrawerOpen(true);
-                }}
-                size="small"
-                sx={{ backgroundColor: "transparent" }}
-              >
-                <VisibilityIcon />
-              </IconButton>
-            </Tooltip>
+      // {
+      //   name: "View",
+      //   selector: (row) => (
+      //     <Box
+      //       sx={{
+      //         display: "flex",
+      //         alignItems: "center",
+      //         justifyContent: "center",
+      //         minWidth: "80px",
+      //         gap: 1, // space between icons
+      //       }}
+      //     >
+      //       {/* View Transaction visible to all */}
+      //       <Tooltip title="View Transaction">
+      //         <IconButton
+      //           color="info"
+      //           onClick={() => {
+      //             setSelectedRow(row);
+      //             setDrawerOpen(true);
+      //           }}
+      //           size="small"
+      //           sx={{ backgroundColor: "transparent" }}
+      //         >
+      //           <VisibilityIcon />
+      //         </IconButton>
+      //       </Tooltip>
 
-            {/* Print Aeps visible only to ret and dd */}
-            {(user?.role === "ret" || user?.role === "dd") && (
-              <Tooltip title="Print Aeps">
-                <IconButton
-                  color="secondary"
-                  size="small"
-                  onClick={() => {
-                    // Save individual transaction data
-                    sessionStorage.setItem("txnData", JSON.stringify(row));
+      //       {/* Print Aeps visible only to ret and dd */}
+      //       {(user?.role === "ret" || user?.role === "dd") && (
+      //         <Tooltip title="Print Aeps">
+      //           <IconButton
+      //             color="secondary"
+      //             size="small"
+      //             onClick={() => {
+      //               // Save individual transaction data
+      //               sessionStorage.setItem("txnData", JSON.stringify(row));
 
-                    // Open receipt page in a new tab
-                    window.open("/print-aeps", "_blank");
-                  }}
-                  sx={{ backgroundColor: "transparent" }}
-                >
-                  <PrintIcon />
-                </IconButton>
-              </Tooltip>
-            )}
-          </Box>
-        ),
-        width: "100px",
-        center: true,
-      },
+      //               // Open receipt page in a new tab
+      //               window.open("/print-aeps", "_blank");
+      //             }}
+      //             sx={{ backgroundColor: "transparent" }}
+      //           >
+      //             <PrintIcon />
+      //           </IconButton>
+      //         </Tooltip>
+      //       )}
+      //     </Box>
+      //   ),
+      //   width: "100px",
+      //   center: true,
+      // },
       // ...(user?.role === "ret" || user?.role === "dd"
       //   ? [
       //       {
@@ -516,18 +577,19 @@ const AllTranscation = ({ query }) => {
   return (
     <>
       <CommonTable
+        onFetchRef={handleFetchRef}
         columns={columnsWithSelection}
         endpoint={ApiEndpoints.GET_ALL_TXN}
         filters={filters}
         queryParam={query || ""}
         enableActionsHover
         enableSelection={false}
-         enableExcelExport={true}
+         
         selectedRows={selectedRows}
         onSelectionChange={setSelectedRows}
          
-          
-          exportFileName="DmtTransactions"
+         enableExcelExport={true}
+          exportFileName="AllTransactions"
           exportEndpoint={ApiEndpoints.GET_ALL_TXN}
         customHeader={
           <>
