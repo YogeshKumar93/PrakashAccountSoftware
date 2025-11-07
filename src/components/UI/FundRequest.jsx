@@ -427,6 +427,7 @@ const FundRequest = () => {
         onSearch: (val) => setUserSearch(val),
         getOptionLabel: (option) => option.label,
         // Remove valueKey and handle the value extraction in handleFilterChange
+        roles: ["adm", "sadm"],
       },
       { id: "date_range", type: "daterange" },
     ],

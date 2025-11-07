@@ -16,13 +16,16 @@ import DescriptionIcon from "@mui/icons-material/Description";
 import { useNavigate } from "react-router-dom";
 import CreateEditWhiteListedAccountModal from "../components/Risks/CreateEditWhiteListedAccountModal";
 import DeleteRiskAccount from "../components/Risks/DeleteRiskAccount";
+import EditWhitelistedAcc from "./EditWhitelistedAcc";
 
 const WhiteListedAccount = ({ filters = [] }) => {
   const authCtx = useContext(AuthContext);
   const user = authCtx?.user;
   const navigate = useNavigate();
 
-  const [openModal, setOpenModal] = useState(false); 
+  const [openModal, setOpenModal] = useState(false);
+  const [editopenModal, setEditOpenModal] = useState(false);
+
   const [selectedRow, setSelectedRow] = useState(null);
 
   const [loading, setLoading] = useState(true);
@@ -82,7 +85,15 @@ const WhiteListedAccount = ({ filters = [] }) => {
         wrap: true,
         width: "140px",
       },
-
+      {
+        name: "Account Name",
+        selector: (row) => (
+          <Tooltip title={row.acc_name}>
+            <div style={{ textAlign: "left" }}>{row.acc_name}</div>
+          </Tooltip>
+        ),
+        wrap: true,
+      },
       {
         name: "Account Number",
         selector: (row) => (
@@ -112,24 +123,25 @@ const WhiteListedAccount = ({ filters = [] }) => {
                 color="primary"
                 onClick={() => {
                   setSelectedRow(row);
-                  setOpenModal(true); // edit mode
+                  setEditOpenModal(true); // edit mode
                 }}
               >
                 <Edit fontSize="small" />
               </IconButton>
             </Tooltip>
 
-            {user?.role === "adm" && (
-              <Tooltip title="Delete">
-                <IconButton
-                  color="error"
-                  size="small"
-                  onClick={() => handleDelete(row)}
-                >
-                  <DeleteIcon fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            )}
+            {user?.role === "adm" ||
+              (user?.role === "sadm" && (
+                <Tooltip title="Delete">
+                  <IconButton
+                    color="error"
+                    size="small"
+                    onClick={() => handleDelete(row)}
+                  >
+                    <DeleteIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              ))}
           </Box>
         ),
         width: "120px",
@@ -165,6 +177,14 @@ const WhiteListedAccount = ({ filters = [] }) => {
             <CreateEditWhiteListedAccountModal
               open={openModal}
               onClose={() => setOpenModal(false)}
+              onFetchRef={refreshBanks}
+              initialData={selectedRow}
+            />
+          )}
+          {editopenModal && (
+            <EditWhitelistedAcc
+              open={editopenModal}
+              onClose={() => setEditOpenModal(false)}
               onFetchRef={refreshBanks}
               initialData={selectedRow}
             />

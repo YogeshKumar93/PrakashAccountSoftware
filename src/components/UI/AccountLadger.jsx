@@ -53,9 +53,9 @@ const AccountLadger = ({ query }) => {
   const filters = useMemo(
     () => [
       {
-        id: "service_name",
+        id: "service",
         label: "Service Name",
-        type: "dropdown",
+        type: "autocomplete",
         options: services,
       },
       {
@@ -277,9 +277,9 @@ const AccountLadger = ({ query }) => {
           filters={filters}
           queryParam={queryParam}
           refresh={true}
-            enableExcelExport={true}
-                  exportFileName="PayoutTransactions"
-                  exportEndpoint={ApiEndpoints.GET_WALLETLEDGER}
+          enableExcelExport={true}
+          exportFileName="PayoutTransactions"
+          exportEndpoint={ApiEndpoints.GET_WALLETLEDGER}
         />
       )}
       <WalletTxnData

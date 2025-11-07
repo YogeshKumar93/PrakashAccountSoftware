@@ -382,6 +382,7 @@ const Users = ({ query }) => {
         onSearch: (val) => setUserSearch(val),
         getOptionLabel: (option) => option?.label || "",
         isOptionEqualToValue: (option, value) => option.id === value.id, // ✅ this line keeps selection visible
+        roles: ["adm,sadm"],
       },
       {
         id: "parent_id",

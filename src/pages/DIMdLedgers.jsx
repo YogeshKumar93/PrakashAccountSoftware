@@ -23,15 +23,6 @@ export const DiMdLedgers = () => {
       ),
       content: <AccountLadger />,
     },
-    {
-      label: (
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <ReceiptIcon fontSize="small" />
-          Wallet Ledger 3
-        </div>
-      ),
-      content: <WalletLedger3 />,
-    },
   ];
 
   return <CommonTabs tabs={tabItems} value={tab} onChange={handleChange} />;

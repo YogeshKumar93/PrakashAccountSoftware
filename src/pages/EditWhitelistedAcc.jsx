@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Box, Button, TextField, MenuItem } from "@mui/material";
-import { apiCall } from "../../api/apiClient";
-import ApiEndpoints from "../../api/ApiEndpoints";
-import { useToast } from "../../utils/ToastContext";
-import CommonModal from "../common/CommonModal";
-const CreateEditWhiteListedAccountModal = ({
+import { okSuccessToast } from "../utils/ToastUtil";
+import ApiEndpoints from "../api/ApiEndpoints";
+import { apiCall } from "../api/apiClient";
+import CommonModal from "../components/common/CommonModal";
+import { useToast } from "../utils/ToastContext";
+const EditWhitelistedAcc = ({
   open,
   onClose,
   onFetchRef,
@@ -55,9 +56,6 @@ const CreateEditWhiteListedAccountModal = ({
     if (!formData.acc_no) newErrors.acc_no = "Account number is required";
     else if (formData.acc_no.length < 9 || formData.acc_no.length > 16)
       newErrors.acc_no = "Account number must be between 9 and 16 digits";
-
-    if (!formData.acc_name) newErrors.acc_name = "Account name is required";
-
     if (!formData.acc_type) newErrors.acc_type = "Select account type";
 
     if (!formData.limit) newErrors.limit = "Limit is required";
@@ -74,20 +72,14 @@ const CreateEditWhiteListedAccountModal = ({
 
     setSubmitting(true);
     try {
-      const endpoint = initialData
-        ? ApiEndpoints.UPDATE_WHITE_LISTED_ACCOUNT
-        : ApiEndpoints.CREATE_WHITE_LISTED_ACCOUNT;
-
-      const { error, response } = await apiCall("POST", endpoint, formData);
+      const { error, response } = await apiCall(
+        "POST",
+        ApiEndpoints.UPDATE_WHITE_LISTED_ACCOUNT,
+        formData
+      );
 
       if (response) {
-        showToast(
-          response?.message ||
-            (initialData
-              ? "Account updated successfully"
-              : "Account created successfully"),
-          "success"
-        );
+        okSuccessToast(response?.message);
         onFetchRef?.();
         onClose();
       } else {
@@ -122,6 +114,7 @@ const CreateEditWhiteListedAccountModal = ({
         error={!!errors.acc_no}
         helperText={errors.acc_no}
       />
+
       <TextField
         label="Account Name"
         value={formData.acc_name}
@@ -157,7 +150,6 @@ const CreateEditWhiteListedAccountModal = ({
         error={!!errors.limit}
         helperText={errors.limit}
       />
-
       <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2, gap: 1 }}>
         <Button variant="outlined" onClick={onClose} disabled={submitting}>
           Cancel
@@ -174,4 +166,4 @@ const CreateEditWhiteListedAccountModal = ({
   );
 };
 
-export default CreateEditWhiteListedAccountModal;
+export default EditWhitelistedAcc;

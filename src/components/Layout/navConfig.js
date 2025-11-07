@@ -379,6 +379,7 @@ const roleHierarchy = {
       "Transactions",
       "Fund Request",
       "Wallet Transfer",
+
       "Wallet Ledger",
       // "Risk",
       "Login History",
@@ -439,15 +440,15 @@ const roleHierarchy = {
       "Transactions",
       "Wallet Ledger",
       "Complaint",
-      "Risk",
+      "Login History",
     ],
   },
   asm: {
     default: [
+      "Dashboard",
       "Manage Users",
       "Transactions",
       "Wallet Ledger",
-      "Transactions",
       "Login History",
     ],
     // 1: ["Services", "Transactions", "Wallet Ledger", "Risk"],

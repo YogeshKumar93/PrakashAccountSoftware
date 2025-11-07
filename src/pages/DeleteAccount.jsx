@@ -1,34 +1,29 @@
 import React, { useState } from "react";
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  Typography,
-  CircularProgress,
-  Box,
-} from "@mui/material";
+import { Typography, CircularProgress, Box } from "@mui/material";
 import { apiCall } from "../api/apiClient";
 import ApiEndpoints from "../api/ApiEndpoints";
 import CommonModal from "../components/common/CommonModal";
+import { okSuccessToast } from "../utils/ToastUtil";
+import { useToast } from "../utils/ToastContext";
 
-const DeleteAccount = ({ open, handleClose, selectedAccount,onFetchRef}) => {
+const DeleteAccount = ({ open, handleClose, selectedAccount, onFetchRef }) => {
   const [loading, setLoading] = useState(false);
-
+  const { showToast } = useToast();
   const handleConfirmDelete = async () => {
     try {
       setLoading(true);
       const { error, response } = await apiCall(
         "POST",
         `${ApiEndpoints.DELETE_ACCOUNT}`,
-        { id: selectedAccount.id } 
+        { id: selectedAccount.id }
       );
 
-      if  (response) {
+      if (response) {
+        okSuccessToast(response?.message);
         onFetchRef();
         handleClose();
       } else {
+        showToast(error?.message, "error");
         console.error("Delete failed:", error || response);
       }
     } catch (err) {
@@ -39,35 +34,30 @@ const DeleteAccount = ({ open, handleClose, selectedAccount,onFetchRef}) => {
   };
 
   return (
-      <CommonModal
+    <CommonModal
       open={open}
       onClose={handleClose}
       title="Delete Account"
       maxWidth="xs"
-   footerButtons={[
+      footerButtons={[
         {
           text: "Cancel",
           variant: "outlined",
-          onClick: handleClose
+          onClick: handleClose,
         },
         {
           text: loading ? "Deleting..." : "Confirm",
           variant: "contained",
           onClick: handleConfirmDelete,
-          disabled: loading
-        }
+          disabled: loading,
+        },
       ]}
     >
       <Box sx={{ p: 2 }}>
         <Typography sx={{ mt: 3 }}>
-          Are you sure you want to delete account{" "}
-          <b>{selectedAccount?.name}</b>?
+          Are you sure you want to delete account <b>{selectedAccount?.name}</b>
+          ?
         </Typography>
-
-
-       
-
-
       </Box>
     </CommonModal>
   );
