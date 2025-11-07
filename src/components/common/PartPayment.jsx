@@ -18,12 +18,12 @@ const PartPayment = ({ open, handleClose, data = {}, refreshData }) => {
   const [mpinModalOpen, setMpinModalOpen] = useState(false);
 
   const [formValues, setFormValues] = useState({
-    canumber: "",
+    ca_number: "",
     name: "",
     amount: "",
     latitude: location?.lat || 0,
     longitude: location?.long || 0,
-    operator: 11,
+    operator: 88,
   });
 
   const [formErrors, setFormErrors] = useState({});
@@ -36,7 +36,8 @@ const PartPayment = ({ open, handleClose, data = {}, refreshData }) => {
   const validate = () => {
     const errors = {};
 
-    if (!formValues.canumber.trim()) errors.canumber = "CA Number is required";
+    if (!formValues.ca_number.trim())
+      errors.ca_number = "CA Number is required";
     if (!formValues.name.trim()) errors.name = "Name is required";
     if (!formValues.amount.trim()) errors.amount = "Amount is required";
     else if (Number(formValues.amount) <= 0)
@@ -74,7 +75,7 @@ const PartPayment = ({ open, handleClose, data = {}, refreshData }) => {
   };
 
   const isFormComplete =
-    formValues.canumber.trim() &&
+    formValues.ca_number.trim() &&
     formValues.name.trim() &&
     formValues.amount.trim();
 
@@ -92,11 +93,11 @@ const PartPayment = ({ open, handleClose, data = {}, refreshData }) => {
 
         <TextField
           label="CA Number"
-          value={formValues.canumber}
-          onChange={(e) => handleChange("canumber", e.target.value)}
+          value={formValues.ca_number}
+          onChange={(e) => handleChange("ca_number", e.target.value)}
           fullWidth
-          error={!!formErrors.canumber}
-          helperText={formErrors.canumber}
+          error={!!formErrors.ca_number}
+          helperText={formErrors.ca_number}
         />
 
         <TextField

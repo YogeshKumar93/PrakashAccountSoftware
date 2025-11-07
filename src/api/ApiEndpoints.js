@@ -253,7 +253,7 @@ const ApiEndpoints = {
 
   DMT1_REGISTER_REMMITER: "dmt1/registerRemitter",
   VALIDATE_REMITTER_DMT1: "dmt1/validateRemitter",
-
+  PART_PAYMENT: "bbps/partPayment",
   DMT1_REGISTER_REMMITER_SCHEMA: "dmt1/getRegisterRemitterSchema",
   DMT1_KYC_REMITTER: "dmt1/kycRemitter",
   DMT2: "dmt2/remitterStatusDmt2",
