@@ -19,10 +19,11 @@ const PartPayment = ({ open, handleClose, data = {}, refreshData }) => {
 
   const [formValues, setFormValues] = useState({
     ca_number: "",
+    mobile: "",
     name: "",
     amount: "",
-    latitude: location?.lat || 0,
-    longitude: location?.long || 0,
+    latitude: location?.lat || "",
+    longitude: location?.long || "",
     operator: 88,
   });
 
@@ -39,6 +40,7 @@ const PartPayment = ({ open, handleClose, data = {}, refreshData }) => {
     if (!formValues.ca_number.trim())
       errors.ca_number = "CA Number is required";
     if (!formValues.name.trim()) errors.name = "Name is required";
+    if (!formValues.mobile.trim()) errors.mobile = "Mobile is required";
     if (!formValues.amount.trim()) errors.amount = "Amount is required";
     else if (Number(formValues.amount) <= 0)
       errors.amount = "Amount must be greater than 0";
@@ -98,6 +100,14 @@ const PartPayment = ({ open, handleClose, data = {}, refreshData }) => {
           fullWidth
           error={!!formErrors.ca_number}
           helperText={formErrors.ca_number}
+        />
+        <TextField
+          label="Mobile Number"
+          value={formValues.mobile}
+          onChange={(e) => handleChange("mobile", e.target.value)}
+          fullWidth
+          error={!!formErrors.mobile}
+          helperText={formErrors.mobile}
         />
 
         <TextField

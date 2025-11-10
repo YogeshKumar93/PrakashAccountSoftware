@@ -87,6 +87,7 @@ import W2wTransfer from "./w2wTransfer";
 import LevinUpiTransfer from "./LevinUpiTransfer";
 import SoliTechPayout from "./SoliTechPayout/SoliTechPayout";
 import PartPayment from "../components/common/PartPayment";
+import PartPaymentNew from "./PartPaymentNew";
 
 const MenuCard = ({ icon, label, onClick, isActive, user }) => {
   return (
@@ -549,7 +550,7 @@ export default function AllServices() {
       key: "partpaynent",
       label: "Part Payment",
       icon: TATAPOWER1,
-      component: PartPayment,
+      component: PartPaymentNew,
       // subMenu: [
       //   {
       //     key: "upiPay",
