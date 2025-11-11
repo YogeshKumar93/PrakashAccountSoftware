@@ -106,6 +106,11 @@ const AdminCreateUser = ({ open, onClose, onFetchRef }) => {
     const { required, validation } = field;
     const errors = [];
 
+    // 🔸 Make GST optional even if schema says required
+    if (field.name === "user.gst") {
+      return errors;
+    }
+
     // Required check
     if (required && !value.trim()) {
       errors.push(`${field.label} is required`);
@@ -128,7 +133,6 @@ const AdminCreateUser = ({ open, onClose, onFetchRef }) => {
 
       if (validation.regex) {
         try {
-          // clean the incoming regex string like "\/^[6-9][0-9]{9}$\/"
           const cleaned = validation.regex.replaceAll("/", "");
           const regex = new RegExp(cleaned);
           if (value && !regex.test(value)) {

@@ -136,12 +136,12 @@ const AllTranscation = ({ query }) => {
         wrap: true,
         width: "190px",
       },
-      {
-        name: "Service",
-        selector: (row) => <div>{row.service_name}</div>,
-        center: true,
-        width: "70px",
-      },
+      // {
+      //   name: "Service",
+      //   selector: (row) => <div>{row.service_name}</div>,
+      //   center: true,
+      //   width: "70px",
+      // },
       {
         name: "Txn ID",
         selector: (row) => <div>{row.txn_id}</div>,
