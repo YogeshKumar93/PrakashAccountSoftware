@@ -210,7 +210,7 @@ const ApiEndpoints = {
   LEVIN_REGISTER: "payout/registerRemitter",
   LEVIN_VERIFY: "payout/verifyRemitter",
   LEVIN_TXN: "payments/v2/payOut2",
-
+  GET_UUID: "misc/getUuid",
   REFUND_TXN_BYADMIN: "refund/refundTxnByAdmin",
   REGISTER_SENDER: "payout/registerSender",
   REGISTER_SENDER_SCHEMA: "payout/registerSenderSchema",
@@ -334,7 +334,7 @@ const ApiEndpoints = {
   // WALLET_DELETE: "wallet/delete",
 
   // ****************************** NEW API'S ABOVE ******************************
- ADD_INST_ID :"auth/insertInstId",
+  ADD_INST_ID: "auth/insertInstId",
   SEND_OTP: "user/sendOtp",
   GET_API_TOKEN: "user/getApiToken",
   GET_API_KEY: "user/getApiKey",
