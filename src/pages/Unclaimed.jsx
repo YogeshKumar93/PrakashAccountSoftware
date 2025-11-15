@@ -8,9 +8,6 @@ import {
   Tooltip,
 } from "@mui/material";
 import { DateRangePicker } from "rsuite";
-import Icon from "@mdi/react";
-import { mdiFileExcel } from "@mdi/js";
-
 import CommonTable from "../components/common/CommonTable";
 import CommonLoader from "../components/common/CommonLoader";
 import { apiCall } from "../api/apiClient";
@@ -179,7 +176,7 @@ const Unclaimed = () => {
             </Box> */}
           </Box>
 
-          <Box style={{  width: "100%" }}>
+          <Box style={{ width: "100%" }}>
             <CommonTable
               onFetchRef={handleFetchRef}
               endpoint={`${ApiEndpoints.GET_UNCLAIMED_ENTERIES}`}

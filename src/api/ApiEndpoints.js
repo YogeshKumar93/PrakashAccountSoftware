@@ -210,7 +210,7 @@ const ApiEndpoints = {
   LEVIN_REGISTER: "payout/registerRemitter",
   LEVIN_VERIFY: "payout/verifyRemitter",
   LEVIN_TXN: "payments/v2/payOut2",
-
+  GET_UUID: "misc/getUuid",
   REFUND_TXN_BYADMIN: "refund/refundTxnByAdmin",
   REGISTER_SENDER: "payout/registerSender",
   REGISTER_SENDER_SCHEMA: "payout/registerSenderSchema",
@@ -253,7 +253,7 @@ const ApiEndpoints = {
 
   DMT1_REGISTER_REMMITER: "dmt1/registerRemitter",
   VALIDATE_REMITTER_DMT1: "dmt1/validateRemitter",
-
+  PART_PAYMENT: "bbps/partPayment",
   DMT1_REGISTER_REMMITER_SCHEMA: "dmt1/getRegisterRemitterSchema",
   DMT1_KYC_REMITTER: "dmt1/kycRemitter",
   DMT2: "dmt2/remitterStatusDmt2",
@@ -334,7 +334,7 @@ const ApiEndpoints = {
   // WALLET_DELETE: "wallet/delete",
 
   // ****************************** NEW API'S ABOVE ******************************
- ADD_INST_ID :"auth/insertInstId",
+  ADD_INST_ID: "auth/insertInstId",
   SEND_OTP: "user/sendOtp",
   GET_API_TOKEN: "user/getApiToken",
   GET_API_KEY: "user/getApiKey",
@@ -387,6 +387,17 @@ const ApiEndpoints = {
 
   ASM_PRODUCTION_SALE_DATA: "reports/asmReportAll",
   GET_RET_PROD_SALE: "reports/getTertiaryDataServiceWise",
+
+  // LEVIN DTM API
+
+  LEVIN_DMT_SENDER: "dmt/getSender",
+  LEVIN_DMT_REGISTER_REM: "dmt/LevinDmtregisterRemitter",
+  LEVIN_DMT_SEND_OTP: "dmt/remitterSendOtp",
+  LEVIN_DMT_VALIDATE_SEND_OTP: "dmt/ValidateSendOtp",
+  LEVIN_DMT_REGISTER_2FA: "dmt/register2Fa",
+  LEVIN_DMT_TXN_OTP: "dmt/txnOtp",
+  LEVIN_DMT_TRANSATION2: "dmt/dmtTxn2",
+  LEVIN_DMT_ADD_BENEFICIARY: "dmt/addBeneficiarydmt2",
 
   GET_TIME: "https://timeapi.io/api/time/current/zone?timeZone=Asia%2FKolkata",
 };

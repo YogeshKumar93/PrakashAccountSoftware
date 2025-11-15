@@ -40,6 +40,7 @@ import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import ChangeRoleModal from "../components/ChangeRole";
 import ChangeParentModal from "./ChangeParentModal";
 import AddInst from "../components/User/AddInst";
+import { useToast } from "../utils/ToastContext";
 
 const roleLabels = {
   ret: "Retailer",
@@ -81,9 +82,7 @@ const Users = ({ query }) => {
   const [openChangeRole, setOpenChangeRole] = useState(false);
   // const [selectedUser, setSelectedUser] = useState(null);
   const [openChangeParent, setOpenChangeParent] = useState(false);
-
-
-
+  const { showToast } = useToast();
   const handleOpenChangeParent = (row) => {
     setSelectedUser(row);
     setOpenChangeParent(true);
@@ -197,6 +196,8 @@ const Users = ({ query }) => {
               label: u.establishment,
             }))
           );
+        } else {
+          showToast(error?.message, "error");
         }
       } catch (err) {
         console.error(err);
@@ -296,16 +297,16 @@ const Users = ({ query }) => {
             >
               <ListItemText>Change Parent</ListItemText>
             </MenuItem>,
-                    <MenuItem
-  key="add_inst"
-  onClick={() => {
-    setSelectedUser(row);   // <--- store selected user
-    setOpenAddInst(true);   // <--- open modal
-    handleMenuClose();
-  }}
->
-  <ListItemText>Add InstId</ListItemText>
-</MenuItem>
+            <MenuItem
+              key="add_inst"
+              onClick={() => {
+                setSelectedUser(row); // <--- store selected user
+                setOpenAddInst(true); // <--- open modal
+                handleMenuClose();
+              }}
+            >
+              <ListItemText>Add InstId</ListItemText>
+            </MenuItem>,
           ]}
 
           <MenuItem
@@ -317,10 +318,7 @@ const Users = ({ query }) => {
           >
             <ListItemText>Lein Amount</ListItemText>
           </MenuItem>
-        
         </Menu>
-    
-
       </Box>
     );
   }
@@ -380,7 +378,7 @@ const Users = ({ query }) => {
         onSearch: (val) => setUserSearch(val),
         getOptionLabel: (option) => option?.label || "",
         isOptionEqualToValue: (option, value) => option.id === value.id, // ✅ this line keeps selection visible
-        roles: ["adm,sadm"],
+        roles: ["adm", "sadm"],
       },
       {
         id: "parent_id",
@@ -624,7 +622,7 @@ const Users = ({ query }) => {
               sx={{ display: "flex", alignItems: "center", cursor: "pointer" }}
               onClick={() => {
                 handleOpenWalletTransfer(row);
-                handleMenuClose();
+                // handleMenuClose();
               }}
             >
               <CurrencyRupee fontSize="small" sx={{ color: "green" }} />
@@ -649,20 +647,19 @@ const Users = ({ query }) => {
         enableActionsHover={true}
         customHeader={
           <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-            {userRole.role === "di" && (
+            {["di", "md"].includes(userRole.role) && (
               <ReButton
                 label="Add User"
                 onClick={() => setOpenCreateUser(true)}
               />
             )}
+
             {["adm", "sadm"].includes(userRole.role) && (
               <ReButton
                 label="Create User"
                 onClick={() => setCreateAdmUser(true)}
               />
             )}
-   
-
 
             {/* <input
               type="text"
@@ -689,14 +686,13 @@ const Users = ({ query }) => {
         />
       )}
       {openAddInst && selectedUser && (
-  <AddInst
-    open={openAddInst}
-    onClose={() => setOpenAddInst(false)}
-    userId={selectedUser.id}     // ✅ Pass userId here
-    onFetchRef={refreshUsers}
-  />
-)}
-
+        <AddInst
+          open={openAddInst}
+          onClose={() => setOpenAddInst(false)}
+          userId={selectedUser.id} // ✅ Pass userId here
+          onFetchRef={refreshUsers}
+        />
+      )}
 
       {createadmuser && (
         <AdminCreateUser

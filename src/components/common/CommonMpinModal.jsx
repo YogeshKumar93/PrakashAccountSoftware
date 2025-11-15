@@ -8,7 +8,7 @@ import CommonModal from "./CommonModal";
 import AuthContext from "../../contexts/AuthContext";
 import ResetMpin from "./ResetMpin";
 import OtpInput from "react-otp-input";
-
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 const style = {
   position: "absolute",
   top: "50%",
@@ -193,7 +193,7 @@ const CommonMpinModal = ({
               border: "1px solid #ffcdd2",
             }}
           >
-            <ErrorOutline
+            <ErrorOutlineIcon
               sx={{
                 color: "#d32f2f",
                 fontSize: "18px",

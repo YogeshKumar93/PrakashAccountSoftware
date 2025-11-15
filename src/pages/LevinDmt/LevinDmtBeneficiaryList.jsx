@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import {
   Box,
   Card,
@@ -24,11 +24,11 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
-import CommonModal from "../components/common/CommonModal";
-import { apiCall } from "../api/apiClient";
-import ApiEndpoints from "../api/ApiEndpoints";
-import { okSuccessToast, apiErrorToast } from "../utils/ToastUtil";
-import { useSchemaForm } from "../hooks/useSchemaForm";
+import CommonModal from "../../components/common/CommonModal";
+import { apiCall } from "../../api/apiClient";
+import ApiEndpoints from "../../api/ApiEndpoints";
+import { okSuccessToast, apiErrorToast } from "../../utils/ToastUtil";
+import { useSchemaForm } from "../../hooks/useSchemaForm";
 import {
   abhy2,
   airtel2,
@@ -52,17 +52,19 @@ import {
   stand2,
   union2,
   yes2,
-} from "../utils/iconsImports";
+} from "../../utils/iconsImports";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import BeneficiaryDetails from "./BeneficiaryDetails";
-import { useToast } from "../utils/ToastContext";
-import AuthContext from "../contexts/AuthContext";
+import BeneficiaryDetails from "../BeneficiaryDetails";
+import { useToast } from "../../utils/ToastContext";
+import AuthContext from "../../contexts/AuthContext";
+import LevinBeneficiaryDetails from "./LevinBeneficiaryDetails";
 
-const BeneficiaryList = ({ sender, onSuccess, onPayoutSuccess }) => {
+const LevinDmtBeneficiaryList = ({ sender, onSuccess, onPayoutSuccess ,mobileNumber}) => {
+  console.log("THe sender in ben list is ", sender);
   const theme = useTheme();
 
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const { location, getUuid } = useContext(AuthContext);
+  const { location } = useContext(AuthContext);
   const [openModal, setOpenModal] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [openList, setOpenList] = useState(true);
@@ -74,42 +76,21 @@ const BeneficiaryList = ({ sender, onSuccess, onPayoutSuccess }) => {
   const [selectedBeneficiary, setSelectedBeneficiary] = useState(null);
   const [openPayModal, setOpenPayModal] = useState(false);
   const [tupResponse, setTupResponse] = useState(null); // 🔑 TUP response state
-  const [generatedUuid, setGeneratedUuid] = useState(null);
   const [verifyingBeneficiary, setVerifyingBeneficiary] = useState(null); // 🔑 Track which beneficiary is being verified
   const { schema, formData, handleChange, errors, setErrors, loading } =
     useSchemaForm(ApiEndpoints.ADD_BENEFICIARY_SCHEMA, openModal, {
       sender_id: sender?.id,
     });
   const { showToast } = useToast();
-  const [uuid, setUuid] = useState(null); // ✅ new state
 
   console.log("THe formdat is ", schema);
-  useEffect(() => {
-    if (verifyOpen) {
-      const fetchUuid = async () => {
-        try {
-          const { error, response } = await getUuid();
-          if (response) {
-            setUuid(response);
-          } else if (error) {
-            showToast(error?.message || "Failed to generate UUID", "error");
-            setVerifyOpen(false);
-          }
-        } catch (err) {
-          showToast("Error while generating UUID", "error");
-        }
-      };
-      fetchUuid();
-    }
-  }, [verifyOpen]); // 👈 triggers every time `open` changes
-  console.log("uuid ", uuid);
 
   const handleAddAndVerifyBeneficiary = () => {
     setErrors({});
     const payload = {
       ...formData,
       sender_id: sender?.id,
-      mobile_number: sender?.mobile_number,
+      mobile_number: mobileNumber,
       rem_mobile: sender?.mobileNumber,
       ben_name: formData.beneficiary_name,
       ben_acc: formData.account_number,
@@ -118,7 +99,6 @@ const BeneficiaryList = ({ sender, onSuccess, onPayoutSuccess }) => {
       latitude: location?.lat || "",
       longitude: location?.long || "",
       pf: "WEB",
-      client_ref: uuid,
     };
     setPendingPayload(payload);
     setVerifyOpen(true);
@@ -143,7 +123,7 @@ const BeneficiaryList = ({ sender, onSuccess, onPayoutSuccess }) => {
     setSelectedBeneficiary(beneficiary);
     setOpenPayModal(true);
   };
-  // 🔑 New function to handle verification of existing beneficiary
+  
   const handleVerifyExistingBeneficiary = (beneficiary) => {
     setVerifyingBeneficiary(beneficiary);
 
@@ -177,7 +157,6 @@ const BeneficiaryList = ({ sender, onSuccess, onPayoutSuccess }) => {
       const verifyPayload = {
         ...pendingPayload,
         mpin,
-        client_ref: uuid,
       };
 
       const { error: verifyError, response: verifyResponse } = await apiCall(
@@ -233,13 +212,13 @@ const BeneficiaryList = ({ sender, onSuccess, onPayoutSuccess }) => {
           sender_id: sender.id,
           type: "BANK",
           beneficiary_name: verifiedName || formData.beneficiary_name, // Fallback to typed name
-          mobile_number: sender?.mobile_number,
-          is_verified: 1, // ✅ Set as verified since verification was successful
+          mobile_number: mobileNumber,
+         is_verified: new Date().toISOString(), // ✅ Set as verified since verification was successful
         };
 
         const { error: addError, response: addResponse } = await apiCall(
           "post",
-          ApiEndpoints.CREATE_BENEFICIARY,
+          ApiEndpoints.LEVIN_DMT_ADD_BENEFICIARY,
           addPayload
         );
 
@@ -276,7 +255,6 @@ const BeneficiaryList = ({ sender, onSuccess, onPayoutSuccess }) => {
       const verifyPayload = {
         ...pendingPayload,
         mpin,
-        client_ref: generatedUuid,
       };
 
       const { error: verifyError, response: verifyResponse } = await apiCall(
@@ -291,10 +269,9 @@ const BeneficiaryList = ({ sender, onSuccess, onPayoutSuccess }) => {
           "error"
         );
         setSubmitting(false);
+        setVerifyOpen(false);
         setMpinDigits(Array(6).fill(""));
         setVerifyingBeneficiary(null);
-        setVerifyOpen(false);
-        setVerifyUpiOpen(false);
         return;
       } else {
         showToast(verifyResponse?.message, "success");
@@ -323,14 +300,14 @@ const BeneficiaryList = ({ sender, onSuccess, onPayoutSuccess }) => {
         sender_id: sender.id,
         type: "BANK",
         beneficiary_name: formData.beneficiary_name, // Use the originally typed name
-        mobile_number: sender?.mobile_number,
+        mobile_number: mobileNumber,
         tup_reference: tupResponse?.data?.txnReferenceId, // Include TUP reference if available
-        is_verified: 0, // ✅ Set as unverified since verification is pending
+       is_verified: new Date().toISOString(), // ✅ Set as unverified since verification is pending
       };
 
       const { error: addError, response: addResponse } = await apiCall(
         "post",
-        ApiEndpoints.CREATE_BENEFICIARY,
+        ApiEndpoints.LEVIN_DMT_ADD_BENEFICIARY,
         addPayload
       );
 
@@ -405,32 +382,6 @@ const BeneficiaryList = ({ sender, onSuccess, onPayoutSuccess }) => {
     SCBL: stand2,
     JAKA: jk2,
   };
-  useEffect(() => {
-    const fetchUuid = async () => {
-      try {
-        const { response, error } = await getUuid();
-        if (error || !response) {
-          showToast(
-            error?.message || "Failed to generate transaction ID",
-            "error"
-          );
-          setVerifyUpiOpen(false);
-          return;
-        }
-        console.log("Generated UUID:", response);
-        setGeneratedUuid(response);
-      } catch (err) {
-        console.error("Error fetching UUID:", err);
-        showToast("Error generating transaction ID", "error");
-      }
-    };
-
-    if (verifyUpiOpen) {
-      fetchUuid();
-    } else {
-      setGeneratedUuid(null);
-    }
-  }, [verifyUpiOpen]);
 
   const handleMpinChange = (index, value) => {
     if (/^[0-9]?$/.test(value)) {
@@ -445,15 +396,15 @@ const BeneficiaryList = ({ sender, onSuccess, onPayoutSuccess }) => {
 
   // show actual list or placeholder N/A
   const beneficiaries =
-    sender?.beneficiary?.length > 0
-      ? sender.beneficiary
+    sender?.length > 0
+      ? sender
       : [
           {
             id: "na",
             beneficiary_name: "No beneficiaries added",
             ifsc_code: "N/A",
             account_number: "N/A",
-            is_verified: 0,
+           is_verified: new Date().toISOString(),
             bank_name: null,
           },
         ];
@@ -621,16 +572,6 @@ const BeneficiaryList = ({ sender, onSuccess, onPayoutSuccess }) => {
                         >
                           Verify
                         </Button>
-                        // <Box display="flex" alignItems="center" gap={0.3}>
-                        //   <Typography
-                        //     variant="caption"
-                        //     color="red"
-                        //     fontWeight="500"
-                        //     sx={{ fontSize: "0.75rem" }}
-                        //   >
-                        //     Not Verified
-                        //   </Typography>
-                        // </Box>
                       )}
 
                       {/* Pay button */}
@@ -956,7 +897,7 @@ const BeneficiaryList = ({ sender, onSuccess, onPayoutSuccess }) => {
         </CommonModal>
       )}
       {openPayModal && (
-        <BeneficiaryDetails
+        <LevinBeneficiaryDetails
           open={openPayModal}
           onClose={() => setOpenPayModal(false)}
           beneficiary={selectedBeneficiary}
@@ -970,4 +911,4 @@ const BeneficiaryList = ({ sender, onSuccess, onPayoutSuccess }) => {
   );
 };
 
-export default BeneficiaryList;
+export default LevinDmtBeneficiaryList;

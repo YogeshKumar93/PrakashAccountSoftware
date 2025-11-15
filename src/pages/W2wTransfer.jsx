@@ -16,6 +16,7 @@ import { useToast } from "../utils/ToastContext";
 import CommonModal from "../components/common/CommonModal";
 import CommonMpinModal from "../components/common/CommonMpinModal";
 import AuthContext from "../contexts/AuthContext";
+import { convertNumberToWordsIndian } from "../utils/NumberUtil";
 
 const W2wTransfer = ({ handleFetchRef, type }) => {
   const [mobile, setMobile] = useState("");
@@ -32,26 +33,31 @@ const W2wTransfer = ({ handleFetchRef, type }) => {
   const [mobileError, setMobileError] = useState("");
   const [amountError, setAmountError] = useState("");
   const [remarkError, setRemarkError] = useState("");
-const navigate = useNavigate();
+  const navigate = useNavigate();
   const authCtx = useContext(AuthContext);
   const user = authCtx?.user;
-
+  const { getUuid } = useContext(AuthContext);
   const { showToast } = useToast();
- 
+  const [generatedUuid, setGeneratedUuid] = useState(null);
+
   const { loadUserProfile } = authCtx;
   const dashboardRoutes = {
-  adm: "/admin/dashboard",
-  sadm: "/admin/dashboard",
-  ret: "/customer/dashboard",
-  dd: "/customer/dashboard",
-  di: "/di/dashboard",
-  md: "/md/dashboard",
-  asm: "/asm/dashboard",
-  zsm: "/zsm/dashboard",
-  api: "/api/dashboard",
-};
-const userRole = user?.role;
-
+    adm: "/admin/dashboard",
+    sadm: "/admin/dashboard",
+    ret: "/customer/dashboard",
+    dd: "/customer/dashboard",
+    di: "/di/dashboard",
+    md: "/md/dashboard",
+    asm: "/asm/dashboard",
+    zsm: "/zsm/dashboard",
+    api: "/api/dashboard",
+  };
+  const userRole = user?.role;
+  const amountInWords = amount
+    ? `${convertNumberToWordsIndian(amount).replace(/\b\w/g, (char) =>
+        char.toUpperCase()
+      )} Only`
+    : "";
 
   // 🟢 Fetch user profile and get W1 balance
   useEffect(() => {
@@ -115,6 +121,30 @@ const userRole = user?.role;
     }
     return () => debouncedFetch.cancel();
   }, [mobile]);
+  useEffect(() => {
+    const fetchUuidOnModalOpen = async () => {
+      if (mpinModalOpen) {
+        try {
+          const { error: uuidError, response: uuidNumber } = await getUuid();
+          if (uuidError || !uuidNumber) {
+            showToast(
+              uuidError?.message || "Failed to generate transaction ID",
+              "error"
+            );
+            setMpinModalOpen(false);
+          } else {
+            console.log("Generated UUID:", uuidNumber);
+            // You can store it in state to reuse later
+            setGeneratedUuid(uuidNumber);
+          }
+        } catch (err) {
+          console.error("Error generating UUID:", err);
+        }
+      }
+    };
+
+    fetchUuidOnModalOpen();
+  }, [mpinModalOpen]);
 
   const handleCreateTransfer = async (mpin) => {
     if (!amount || parseFloat(amount) <= 0) {
@@ -134,12 +164,19 @@ const userRole = user?.role;
     setError("");
     setSuccess("");
     try {
+      const uuidNumber = generatedUuid;
+      if (!uuidNumber) {
+        showToast("Transaction ID not available. Please try again.", "error");
+        return;
+      }
+
       const payload = {
         reciever_id: receiver.id,
         amount: parseFloat(amount),
         remark,
         operator: 17,
         mpin,
+        client_ref: uuidNumber,
       };
 
       const { response, error } = await apiCall(
@@ -158,10 +195,9 @@ const userRole = user?.role;
         setMobile("");
         setModalOpen(false);
         await loadUserProfile(); // ✅ refresh user data
-       if (userRole && dashboardRoutes[userRole]) {
-  navigate(dashboardRoutes[userRole]);
-}
-
+        if (userRole && dashboardRoutes[userRole]) {
+          navigate(dashboardRoutes[userRole]);
+        }
       } else {
         showToast(error.message || error.errors, "error");
         setError(error?.message || "Transfer failed");
@@ -334,6 +370,17 @@ const userRole = user?.role;
                 error={Boolean(amountError)}
                 helperText={amountError}
               />
+              {amount && (
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "#555",
+                    fontWeight: 500,
+                  }}
+                >
+                  {amountInWords}
+                </Typography>
+              )}
 
               <TextField
                 label="Remark"
