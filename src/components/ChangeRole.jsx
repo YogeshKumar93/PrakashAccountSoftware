@@ -12,6 +12,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Autocomplete,
 } from "@mui/material";
 import { apiCall } from "../api/apiClient";
 import ApiEndpoints from "../api/ApiEndpoints";
@@ -189,29 +190,33 @@ const ChangeRoleModal = ({ open, onClose, user, onSuccess }) => {
 
           {/* ✅ Show Select Parent only when role actually changes */}
           {isRoleChanged && roleMapping[role] && (
-            <TextField
-              select
-              label="Select Parent"
-              fullWidth
-              value={parentId}
-              onChange={(e) => setParentId(e.target.value)}
-              margin="normal"
-              disabled={loadingParents}
-            >
-              {loadingParents ? (
-                <MenuItem disabled>
-                  <CircularProgress size={20} />
-                </MenuItem>
-              ) : parentList.length > 0 ? (
-                parentList.map((p) => (
-                  <MenuItem key={p.id} value={p.id}>
-                    {p.name} ({p.establishment})
-                  </MenuItem>
-                ))
-              ) : (
-                <MenuItem disabled>No parents available</MenuItem>
-              )}
-            </TextField>
+         <Autocomplete
+  options={parentList}
+  loading={loadingParents}
+  getOptionLabel={(option) =>
+    option ? `${option.name} (${option.establishment})` : ""
+  }
+  value={parentList.find((p) => p.id === parentId) || null}
+  onChange={(e, newValue) => setParentId(newValue ? newValue.id : "")}
+  renderInput={(params) => (
+    <TextField
+      {...params}
+      label="Select Parent"
+      margin="normal"
+      fullWidth
+      InputProps={{
+        ...params.InputProps,
+        endAdornment: (
+          <>
+            {loadingParents ? <CircularProgress size={20} /> : null}
+            {params.InputProps.endAdornment}
+          </>
+        )
+      }}
+    />
+  )}
+/>
+
           )}
 
           <Box
