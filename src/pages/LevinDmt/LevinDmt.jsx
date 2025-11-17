@@ -24,6 +24,7 @@ import LevinDmtRemitter2Fa from "./LevinDmtRemitter2Fa.jsx";
 import LevinDmtBeneficiaryList from "./LevinDmtBeneficiaryList.jsx";
 import LevinDmtSenderDetails from "./LevinDmtSenderDetails.jsx";
 import CommonLoader from "../../components/common/CommonLoader.jsx";
+import LevinBeneficiaryDetails from "./LevinBeneficiaryDetails.jsx";
 
 export const LevinDmt = () => {
   const [mobileNumber, setMobileNumber] = useState("");
@@ -35,6 +36,9 @@ export const LevinDmt = () => {
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [otpData, setOtpData] = useState(null);
   const [history, setHistory] = useState([]);
+  const [showBeneficiaryDetails, setShowBeneficiaryDetails] = useState(false); // ✅ NEW STATE
+  const [selectedBeneficiaryForPayout, setSelectedBeneficiaryForPayout] =
+    useState(null); // ✅ NEW STATE
   const { showToast } = useToast();
 
   // 🧠 Load saved mobile numbers on mount
@@ -64,6 +68,7 @@ export const LevinDmt = () => {
     setSenderData(null);
     setShowRegistration(false);
     setShowOtpModal(false);
+    setShowBeneficiaryDetails(false); // ✅ Reset when fetching new sender
 
     try {
       const { error, response } = await apiCall(
@@ -171,19 +176,46 @@ export const LevinDmt = () => {
 
   const handlePayoutSuccess = () => {
     showToast("Payout completed successfully!", "success");
+    // ✅ After payout success, go back to beneficiary list
+    setShowBeneficiaryDetails(false);
+    setSelectedBeneficiaryForPayout(null);
+  };
+
+  // ✅ NEW: Handle when beneficiary is selected for payout
+  const handleBeneficiarySelected = (beneficiary, senderData) => {
+    setSelectedBeneficiaryForPayout({
+      beneficiary,
+      sender: senderData,
+      senderId: senderData?.id,
+      senderMobile: senderData?.mobile_number,
+      amount: beneficiary.enteredAmount,
+    });
+    setShowBeneficiaryDetails(true);
+  };
+
+  // ✅ NEW: Handle back from beneficiary details
+  const handleBackFromBeneficiaryDetails = () => {
+    setShowBeneficiaryDetails(false);
+    setSelectedBeneficiaryForPayout(null);
   };
 
   const handleMobileInputChange = (event, newValue) => {
     const value = (newValue || "").replace(/\D/g, "").slice(0, 10);
     setMobileNumber(value);
+
     if (value.length === 10) {
       saveMobileToHistory(value);
       handleFetchSender(value);
     } else {
-      // Clear data if mobile number is incomplete
+      // 🔥 CLEAR ALL SENDER DATA AND STATES IMMEDIATELY
       setSenderData(null);
+      setSender(null);
+      setRegistrationData(null);
       setShowRegistration(false);
       setShowOtpModal(false);
+      setOtpData(null);
+      setShowBeneficiaryDetails(false); // ✅ Also clear beneficiary details
+      setSelectedBeneficiaryForPayout(null);
     }
   };
 
@@ -251,21 +283,6 @@ export const LevinDmt = () => {
               />
             )}
           />
-
-          {/* {loading && (
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              mb: { xs: 2, sm: 1 },
-            }}
-          >
-            <CircularProgress size={24} />
-            <Typography variant="body2" sx={{ ml: 1 }}>
-              Searching...
-            </Typography>
-          </Box>
-        )} */}
         </Box>
 
         {/* Registration Modal */}
@@ -292,22 +309,40 @@ export const LevinDmt = () => {
           />
         )}
 
-        {/* Beneficiary List - This will now use full width */}
-        <Box display="flex" flexDirection="column" gap={2}>
-          <Box width="100%">
-            <LevinDmtSenderDetails sender={sender} />
-          </Box>
-          {senderData && (
-            <Box sx={{ width: "100%" }}>
-              <LevinDmtBeneficiaryList
-                sender={senderData}
-                onSuccess={handleBeneficiarySuccess}
-                onPayoutSuccess={handlePayoutSuccess}
-                mobileNumber={mobileNumber}
-              />
+        {/* ✅ CONDITIONAL RENDERING: Show either beneficiary list OR beneficiary details */}
+        {showBeneficiaryDetails && selectedBeneficiaryForPayout ? (
+          // Show ONLY beneficiary details when a beneficiary is selected
+          <LevinBeneficiaryDetails
+            open={true}
+            onClose={handleBackFromBeneficiaryDetails}
+            beneficiary={selectedBeneficiaryForPayout.beneficiary}
+            sender={selectedBeneficiaryForPayout.sender}
+            senderId={selectedBeneficiaryForPayout.senderId}
+            senderMobile={selectedBeneficiaryForPayout.senderMobile}
+            onPayoutSuccess={handlePayoutSuccess}
+            amount={selectedBeneficiaryForPayout.amount}
+            showBackButton={true} // ✅ Add prop to show back button
+            onBack={handleBackFromBeneficiaryDetails} // ✅ Add back handler
+          />
+        ) : (
+          // Show sender details and beneficiary list when no beneficiary is selected
+          <Box display="flex" flexDirection="column" gap={2}>
+            <Box width="100%">
+              <LevinDmtSenderDetails sender={sender} />
             </Box>
-          )}
-        </Box>
+            {senderData && (
+              <Box sx={{ width: "100%" }}>
+                <LevinDmtBeneficiaryList
+                  sender={senderData}
+                  onSuccess={handleBeneficiarySuccess}
+                  onPayoutSuccess={handlePayoutSuccess}
+                  mobileNumber={mobileNumber}
+                  onBeneficiarySelected={handleBeneficiarySelected} // ✅ Pass the new handler
+                />
+              </Box>
+            )}
+          </Box>
+        )}
       </Box>
     </>
   );

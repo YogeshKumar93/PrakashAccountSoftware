@@ -295,7 +295,7 @@ export default function AllServices() {
         hasPermission("DMT3") && {
           key: "dmt3",
           label: "Airtel Dmt L",
-          icon: FINO,
+          icon: AIR1,
           component: LevinDmt,
           type: "mobile",
           title: "Dmt2",

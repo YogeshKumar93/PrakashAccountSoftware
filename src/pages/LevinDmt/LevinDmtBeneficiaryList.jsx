@@ -1,4 +1,4 @@
-import { useContext, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import {
   Box,
   Card,
@@ -64,11 +64,12 @@ const LevinDmtBeneficiaryList = ({
   onSuccess,
   onPayoutSuccess,
   mobileNumber,
+  onBeneficiarySelected,
 }) => {
   console.log("THe sender in ben list is ", sender);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const { location } = useContext(AuthContext);
+  const { location, getUuid } = useContext(AuthContext);
   const [open, setOpen] = useState(true);
   const [openModal, setOpenModal] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -83,6 +84,7 @@ const LevinDmtBeneficiaryList = ({
   const [verifyingBeneficiary, setVerifyingBeneficiary] = useState(null);
   const [amountInputs, setAmountInputs] = useState({});
   const [amountInWords, setAmountInWords] = useState({});
+  const [uuid, setUuid] = useState(null); // ✅ new state
 
   const { schema, formData, handleChange, errors, setErrors, loading } =
     useSchemaForm(ApiEndpoints.ADD_BENEFICIARY_SCHEMA, openModal, {
@@ -91,7 +93,24 @@ const LevinDmtBeneficiaryList = ({
   const { showToast } = useToast();
 
   console.log("THe formdat is ", schema);
-
+  useEffect(() => {
+    if (verifyOpen) {
+      const fetchUuid = async () => {
+        try {
+          const { error, response } = await getUuid();
+          if (response) {
+            setUuid(response);
+          } else if (error) {
+            showToast(error?.message || "Failed to generate UUID", "error");
+            setVerifyOpen(false);
+          }
+        } catch (err) {
+          showToast("Error while generating UUID", "error");
+        }
+      };
+      fetchUuid();
+    }
+  }, [verifyOpen]); // 👈 triggers every time `open` changes
   // ✅ Handle Amount Change with limit validation
   const handleAmountChange = (beneficiaryId, value) => {
     const numericValue = value.replace(/[^\d.]/g, "");
@@ -132,12 +151,16 @@ const LevinDmtBeneficiaryList = ({
       return;
     }
 
-    // Set selected beneficiary with entered amount
-    setSelectedBeneficiary({
-      ...beneficiary,
-      enteredAmount: parseFloat(amount),
-    });
-    setOpenPayModal(true);
+    // Call the parent handler instead of opening modal locally
+    if (onBeneficiarySelected) {
+      onBeneficiarySelected(
+        {
+          ...beneficiary,
+          enteredAmount: parseFloat(amount),
+        },
+        sender
+      );
+    }
 
     // Clear the amount input after sending
     setAmountInputs((prev) => ({
@@ -214,6 +237,7 @@ const LevinDmtBeneficiaryList = ({
       const verifyPayload = {
         ...pendingPayload,
         mpin,
+        client_ref: uuid,
       };
 
       const { error: verifyError, response: verifyResponse } = await apiCall(
@@ -939,7 +963,7 @@ const LevinDmtBeneficiaryList = ({
           </Box>
         </CommonModal>
       )}
-
+      {/* 
       {openPayModal && (
         <LevinBeneficiaryDetails
           open={openPayModal}
@@ -951,7 +975,7 @@ const LevinDmtBeneficiaryList = ({
           onPayoutSuccess={onPayoutSuccess}
           amount={selectedBeneficiary?.enteredAmount} // Pass the entered amount
         />
-      )}
+      )} */}
     </Card>
   );
 };
