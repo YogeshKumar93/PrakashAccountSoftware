@@ -46,6 +46,7 @@ import "rsuite/dist/rsuite.min.css";
 import AuthContext from "../../contexts/AuthContext";
 import { useExcelExport } from "../../hooks/useExcelExport";
 import ExportExcelButton from "./ExportExcelButton";
+import { RoleUserFilter } from "./RoleUserFilter";
 
 // Memoized TablePaginationActions component
 const TablePaginationActions = memo(function TablePaginationActions(props) {
@@ -405,10 +406,18 @@ const CommonTable = ({
   // Memoized filter handlers
   // ✅ Memoized filter change handler
   // ✅ Memoized filter change handler
-  const handleFilterChange = (id, newValue) => {
-    console.log("🧩 Updating filter value for:", id, newValue);
-    setFilterValues((prev) => ({ ...prev, [id]: newValue }));
-  };
+  // const handleFilterChange = (id, newValue) => {
+  //   console.log("🧩 Updating filter value for:", id, newValue);
+  //   setFilterValues((prev) => ({ ...prev, [id]: newValue }));
+  // };
+const handleFilterChange = (id, value) => {
+  console.log("🟢 [Table] Filter change:", id, value);
+  
+  // Update both states
+  setFilterValues(prev => ({ ...prev, [id]: value }));
+  setAppliedFilters(prev => ({ ...prev, [id]: value }));
+};
+
 
   const applyFilters = useCallback(() => {
     console.log("🔍 [Table] applyFilters called with:", filterValues);
@@ -424,7 +433,12 @@ const CommonTable = ({
         delete formattedFilters[key];
         return;
       }
-
+       // Add this case in the Object.keys(formattedFilters).forEach loop:
+if (filterConfig?.type === "roleuser" && val) {
+  // If val is an object with user_id, extract it, otherwise use as-is
+  formattedFilters[key] = typeof val === 'object' ? (val.id || val.id || val) : val;
+  return;
+}
       // 🧠 Extract ID or value for dropdown/autocomplete
       if (
         (filterConfig?.type === "dropdown" ||
@@ -748,25 +762,14 @@ const CommonTable = ({
                 />
               )}
             />
-          ) : filter.type === "dropdown" ? (
-            <FormControl>
-              <TextField
-                select
-                label={filter.label}
-                value={filterValues[filter.id] || "All"}
-                onChange={(e) => handleFilterChange(filter.id, e.target.value)}
-                size="small"
-                sx={{ minWidth: 120 }}
-              >
-                <MenuItem value="All">All</MenuItem>
-                {filter.options &&
-                  filter.options.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-              </TextField>
-            </FormControl>
+       ) :
+        filter.type === "roleuser" ? (
+   <RoleUserFilter
+                key={filter.id}
+                filter={filter}
+                value={appliedFilters[filter.id] || ""}
+                onChange={handleFilterChange}
+            />
           ) : filter.type === "date" ? (
             <TextField
               size="small"

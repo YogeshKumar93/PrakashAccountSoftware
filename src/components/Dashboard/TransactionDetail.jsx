@@ -18,8 +18,10 @@ const statusColors = {
   success: "#2E8B57",
   failed: "#C0392B",
   pending: "#E67E22",
-  processing: "#2980B9",
-  default: "#37649F",
+   refunded: "#B8860B",       // red
+  total: "#21aea4ff",          // teal
+  refundpending: "#FF6B6B",  // yellow
+  default: "#1A535C"         
 };
 
 const TransactionDetail = () => {
