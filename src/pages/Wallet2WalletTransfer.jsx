@@ -35,6 +35,17 @@ import { okhttp, postman } from "../utils/iconsImports";
 import { debounce } from "lodash";
 
 const Wallet2WalletTransfer = ({}) => {
+  const roleLabels = {
+  ret: "Retailer",
+  adm: "Admin",
+  sadm: "Super Admin",
+  di: "Distributor",
+  asm: "Area Sales Manager",
+  zsm: "Zonal Sales Manager",
+  api: "Api User",
+  dd: "Direct Dealer",
+  md: "Master Distributor",
+};
   const authCtx = useContext(AuthContext);
   const user = authCtx?.user;
   const navigate = useNavigate();
@@ -42,6 +53,7 @@ const Wallet2WalletTransfer = ({}) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [selectedRows, setSelectedRows] = useState([]);
+   const [userOptions, setUserOptions] = useState([]);
   // User search states
   const [senderSearch, setSenderSearch] = useState("");
   const [receiverSearch, setReceiverSearch] = useState("");
@@ -163,7 +175,6 @@ const Wallet2WalletTransfer = ({}) => {
             response.data.map((u) => ({
               label: u.establishment || u.name || "N/A",
               value: u.id,
-              id: u.id,
             }))
           );
         } else {
@@ -201,53 +212,61 @@ const Wallet2WalletTransfer = ({}) => {
       ? ApiEndpoints.WALLET_LIST
       : ApiEndpoints.WALLET_GET_W2W_TRANSACTION;
 
-  const filters = useMemo(
-    () => [
-      {
-        id: "sender_id",
-        label: "Sender",
-        type: "autocomplete",
-        options: senderOptions,
-        onSearch: (val) => setSenderSearch(val),
-        getOptionLabel: (option) => option.label || "N/A",
-        onChange: (selected) => {
-          // ✅ For sender, send the user_id and value should be the id
-          setAppliedFilters((prev) => ({
-            ...prev,
-            user_id: selected?.id || null, // send the actual user id
-          }));
-        },
-      },
-      {
-        id: "reciever_id",
-        label: "Receiver",
-        type: "autocomplete",
-        options: receiverOptions,
-        onSearch: (val) => setReceiverSearch(val),
-        getOptionLabel: (option) => option.label || "N/A",
-        onChange: (selected) => {
-          setAppliedFilters((prev) => ({
-            ...prev,
-            reciever_id: selected?.id || null,
-          }));
-        },
-      },
+   const filters = useMemo(() => {
+    const userRole = user?.role?.toLowerCase?.();
 
+    // ✅ Correct hierarchy order (Top → Bottom)
+    const hierarchy = [
+      "sadm",
+      "adm",
+      "zsm",
+      "asm",
+      "md",
+      "di",
+      "ret",
+      "dd",
+      "api",
+    ];
+
+    // ✅ Determine which roles to hide (current + above)
+    const hideRoles = (() => {
+      const index = hierarchy.indexOf(userRole);
+      if (index === -1) return [];
+      return hierarchy.slice(0, index + 1);
+    })();
+
+    // ✅ Filter dropdown options according to hierarchy
+    const roleOptions = Object.entries(roleLabels)
+      .filter(([key]) => !hideRoles.includes(key))
+      .sort((a, b) => hierarchy.indexOf(a[0]) - hierarchy.indexOf(b[0])) // ensure dropdown order
+      .map(([key, value]) => ({
+        label: value,
+        value: key,
+      }));
+
+    return [
+
+      {
+        id: "user_id",
+        label: "Select User by Role",
+        type: "roleuser",
+        roles: ["adm", "sadm","di","md","ret","zsm","asm","dd"],
+      },
+       
       {
         id: "txn_id",
         label: "Txn ID",
         type: "textfield",
         roles: ["adm", "sadm"],
       },
-      // { id: "amount", label: "Amount", type: "textfield" },
       {
         id: "date_range",
-        // label: "Date Range",
+        // label: "Date",
         type: "daterange",
+         
       },
-    ],
-    [user?.role, senderOptions, receiverOptions, appliedFilters]
-  );
+    ];
+  }, [user?.role, userOptions]);
 
   const columns = useMemo(
     () => [
@@ -391,18 +410,23 @@ const Wallet2WalletTransfer = ({}) => {
         : [
            
           ]),
+
+        ...(user?.role !== "md"
+  ? [
       {
-        name: "Reciever",
+        name: "Receiver",
         selector: (row) => (
-          <div
-            style={{ textAlign: "left", fontSize: "14px", fontWeight: "600" }}
-          >
+          <div style={{ textAlign: "left", fontSize: "14px", fontWeight: "600" }}>
             {row.receiver_est || "N/A"}
           </div>
         ),
         wrap: true,
         width: "80px",
       },
+    ]
+  : []
+),
+
       {
         name: "Service",
         selector: (row) => (
