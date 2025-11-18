@@ -207,14 +207,18 @@ const Users = ({ query }) => {
     const debouncedFetch = debounce(fetchUsersByEstablishment, 500); // 500ms delay
     debouncedFetch(userSearch);
 
-    return () => debouncedFetch.cancel(); // cleanup on unmount or change
+    return () => debouncedFetch.cancel();
   }, [userSearch]);
 
   // Fetch user map
   useEffect(() => {
     const fetchUserMap = async () => {
       try {
-        const res = await apiCall("post", ApiEndpoints.GET_USERS);
+        const res = await apiCall("post", ApiEndpoints.GET_USERS,
+         {
+          id: user?.id || user?.user_id,   
+        }
+      );
         const usersArray = res?.response?.data?.data;
         if (Array.isArray(usersArray)) {
           const map = {};
@@ -386,12 +390,12 @@ const Users = ({ query }) => {
         type: "textfield",
         roles: ["adm"],
       },
-      // {
-      //   id: "establishment",
-      //   label: "Establishment",
-      //   type: "textfield",
-      //   roles: ["adm"],
-      // },
+      {
+        id: "id",
+        label: "User Id",
+        type: "textfield",
+        roles: ["adm","sadm"],
+      },
       {
         id: "mobile",
         label: "Mobile Number",
