@@ -83,7 +83,7 @@ const Dashboard = () => {
       <Box
         sx={{
           overflow: "hidden",
-          bgcolor: "#eef2ff",
+          bgcolor: "#2448c0ff",
           py: 1.5,
           borderRadius: 2,
           boxShadow: "0 2px 6px rgba(0,0,0,0.08)",
