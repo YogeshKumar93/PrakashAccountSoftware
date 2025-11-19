@@ -1,89 +1,58 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "../pages/Login";
 import Dashboard from "../pages/Dashboard";
-import Users from "../pages/Users";
+// import Users from "../pages/Users";
 import SideNavAndHeader from "../components/Layout/SideNavAndHeader";
 import AuthContext from "../contexts/AuthContext";
 import { useContext } from "react";
-import AdminTransactions from "../components/UI/AdminTransactions";
-import AccountLadger from "../components/UI/AccountLadger";
-import MyPurchase from "../components/UI/MyPurchase";
-import MySale from "../components/UI/MySale";
-import FundRequest from "../components/UI/FundRequest";
-import DmtContainer from "../components/UI/MoneyTransfer/DMTcontainer";
-import RechargeAndBill from "../components/UI/rechange and bill/RechargeAndBill";
+ 
 import Accounts from "../pages/Accounts";
 import Notification from "../components/Notification/Notification";
-import Services from "../pages/Services";
-import Templates from "../pages/Templates";
-import Logs from "../pages/Logs";
-import RetailerLogs from "../pages/RetailerLogs";
+ 
+// import Templates from "../pages/Templates";
+ 
 import ProfilePage from "../components/MyProfile/Profile";
 import Banks from "../pages/Banks";
-import { Transaction } from "../pages/Transaction";
+// import { Transaction } from "../pages/Transaction";
 import Layouts from "../pages/Layouts";
-import CommissionRule from "../pages/CommissionRule";
+ 
 import { Banking } from "../pages/Banking";
-import { Settings } from "../pages/Settings";
-import SuperTransfer from "../pages/SuperTransfer";
-import { Recharge } from "../pages/Recharge";
+// import { Settings } from "../pages/Settings";
+ 
 import Navs from "../pages/Navs";
 
 import Statements from "../pages/Statements";
 
-import UpiTransfer from "../pages/UpiTransfer";
+ 
 import BankStatements from "../pages/BankStatements";
 import AccountStatement from "../pages/AccountStatement";
-import Aeps from "../pages/Aeps";
-import AllServices from "../pages/AllServices";
-import Dmt from "../pages/Dmt";
-import Bbps from "../pages/Bbps";
-import Wallet2WalletTransfer from "../pages/Wallet2WalletTransfer";
-import W2wTransfer from "../pages/w2wTransfer";
-import { SelectLayout } from "../pages/SelectLayout";
-import Cms from "../pages/Cms";
+ 
+// import { SelectLayout } from "../pages/SelectLayout";
+ 
 import QrLoginPage from "../pages/QrLoginPage";
-import BusinessDetails from "../components/BusinessDetails";
-import Complaint from "../pages/Complaint";
-import Risk from "../pages/Risk";
+ 
 import Virtual_Accounts from "../pages/Virtual_Accounts";
 import Login_History from "../pages/Login_History";
-import KycPending from "../pages/KycPending";
-import { MoneyTransfer } from "../components/UI/MoneyTransfer/MoneyTransfer";
-import MD_Dashboard from "../pages/Dashboard";
-import { Transfer } from "../pages/Transfer";
-import DmtReceipt1 from "../pages/DmtReceipt1";
-import PrintDmt from "../pages/printDmt";
-import PrintDmt2 from "../pages/PrintDmt2";
-import AdminDistributorAgreement from "../pages/AdminDistributorAgreement";
-import AdminAgreement from "../pages/AdminAgreement";
-import RetailerAgreement from "../pages/RetailerAgreement";
-import DistributorAgreement from "../pages/DistributorAgreement";
-import IndemnityLetter from "../pages/IndemnityLetter ";
-import WalletCard from "../components/WalletCard";
-import { WalletLedgers } from "../components/WalletLedgers";
-import MdDashboard from "../pages/MdDashboard";
-import Purposes from "../pages/Purposes";
-import News from "../pages/News";
+ 
+ 
+ 
+// import AdminDistributorAgreement from "../pages/AdminDistributorAgreement";
+// import AdminAgreement from "../pages/AdminAgreement";
+ 
+ 
 
-import { WalletTransfer } from "../pages/WalletTransfer";
+ 
 
-import PrintRecharge from "../pages/PrintRecharge";
-import PrintBbps from "../pages/PrintBbps";
-import PrintPayout from "../pages/PrintPayout";
-import PrintIrctc from "../pages/PrintIrctc";
-import PrintW2W from "../pages/PrintW2W";
-import { DiMdLedgers } from "../pages/DIMdLedgers";
-import WebHooks from "../pages/WebHooks";
-import { BbpsOffline } from "../pages/BbpsOffline";
-import PrintAeps from "../pages/PrintAeps";
+ 
+ 
 import OnBoarding from "../components/OnBoarding";
-import PrintCreditCard from "../pages/PrintCreditCard";
+ 
 import BankStatementDesign from "../components/AEPS/BankStatementDesign";
-import AepsReceipt from "../pages/AepsReceipt";
+ 
 import Terms from "../pages/Terms";
 import DownloadExcel from "../pages/DownloadExcel";
 import UploadExcel from "../pages/UploadExcel";
+import Unclaimed from "../pages/Unclaimed";
 
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated, loading, user } = useContext(AuthContext);
@@ -132,11 +101,11 @@ export default function AppRoutes() {
           <Route path="landingpageintro2" element={<LandingPageIntro2 />} />
           <Route path="landingpageintro3" element={<LandingPageIntro3 />} /> */}
 
-        <Route path="/aepsReceipt" element={<AepsReceipt />} />
+        {/* <Route path="/aepsReceipt" element={<AepsReceipt />} /> */}
 
         <Route path="/qrLogin" element={<QrLoginPage />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/print-receipt" element={<DmtReceipt1 />} />
+        {/* <Route path="/print-receipt" element={<DmtReceipt1 />} />
         <Route path="/print-dmt" element={<PrintDmt />} />
         <Route path="/print-dmt2" element={<PrintDmt2 />} />
         <Route path="/print-aeps" element={<PrintAeps />} />
@@ -148,20 +117,11 @@ export default function AppRoutes() {
         <Route path="/print-creditCard" element={<PrintCreditCard />} />
         <Route path="/terms-conditions" element={<Terms />} />
         <Route path="/bank-statement" element={<BankStatementDesign />} />
-        <Route path="/adminagreement" element={<AdminAgreement />} />
-        <Route
-          path="/admindistributoragreement"
-          element={<AdminDistributorAgreement />}
-        />
-        <Route path="/retaileragreement" element={<RetailerAgreement />} />
-        <Route
-          path="/distributoragreement"
-          element={<DistributorAgreement />}
-        />
+        <Route path="/adminagreement" element={<AdminAgreement />} /> */}
+       
+      
 
-        <Route path="/indemnityLetter" element={<IndemnityLetter />} />
-
-        <Route path="/print-dmt" element={<PrintDmt />} />
+         
 
         {/* Protected layout */}
         <Route
@@ -180,20 +140,21 @@ export default function AppRoutes() {
           {isAdmin && (
             <>
               <Route path="admin/dashboard" element={<Dashboard />} />
-              <Route path="admin/users" element={<Users />} />
-              <Route path="admin/transactions" element={<Transaction />} />
+              {/* <Route path="admin/users" element={<Users />} /> */}
+              {/* <Route path="admin/transactions" element={<Transaction />} /> */}
               <Route path="admin/notification" element={<Notification />} />
-              <Route path="admin/fund-request" element={<FundRequest />} />
+              {/* <Route path="admin/fund-request" element={<FundRequest />} /> */}
               <Route path="admin/accounts" element={<Accounts />} />
-              <Route path="admin/services" element={<Services />} />
+              {/* <Route path="admin/services" element={<Services />} /> */}
               <Route path="admin/bankings" element={<Banking />} />
-              <Route path="admin/settings" element={<Settings />} />
-              <Route path="admin/templates" element={<Templates />} />
-              <Route path="admin/logs" element={<Logs />} />
+              {/* <Route path="admin/settings" element={<Settings />} /> */}
+              {/* <Route path="admin/templates" element={<Templates />} /> */}
+              {/* <Route path="admin/logs" element={<Logs />} /> */}
               <Route path="admin/profile" element={<ProfilePage />} />
               <Route path="admin/banks" element={<Banks />} />
-              <Route path="admin/wallet-ledger" element={<WalletLedgers />} />
-              <Route path="admin/purpose" element={<Purposes />} />
+                <Route path="admin/unclaimed" element={<Unclaimed />} />
+              {/* <Route path="admin/wallet-ledger" element={<WalletLedgers />} /> */}
+              {/* <Route path="admin/purpose" element={<Purposes />} /> */}
               <Route path="admin/downloadexcel" element={<DownloadExcel />} />
               <Route path="admin/uploadexcel" element={<UploadExcel />} />
               <Route
@@ -204,28 +165,28 @@ export default function AppRoutes() {
                 path="admin/accountstatements"
                 element={<AccountStatement />}
               />
-              <Route
+              {/* <Route
                 path="admin/wallet-transfer"
                 element={<Wallet2WalletTransfer />}
-              />
+              /> */}
               <Route path="admin/layout" element={<Layouts />} />
-              <Route path="admin/commissionrule" element={<CommissionRule />} />
+              {/* <Route path="admin/commissionrule" element={<CommissionRule />} /> */}
               <Route path="admin/sidenav" element={<Navs />} />
-              <Route path="admin/selectlayout" element={<SelectLayout />} />
-              <Route path="admin/aeps" element={<Aeps />} />
+              {/* <Route path="admin/selectlayout" element={<SelectLayout />} /> */}
+              {/* <Route path="admin/aeps" element={<Aeps />} /> */}
               <Route path="admin/selectlayout" element={<Layouts />} />
 
               <Route path="admin/statements" element={<Statements />} />
-              <Route path="admin/complaint" element={<Complaint />} />
-              <Route path="admin/risk" element={<Risk />} />
-              <Route path="admin/news" element={<News />} />
+              {/* <Route path="admin/complaint" element={<Complaint />} /> */}
+              {/* <Route path="admin/risk" element={<Risk />} /> */}
+              {/* <Route path="admin/news" element={<News />} /> */}
 
               <Route
                 path="admin/virtual_accounts"
                 element={<Virtual_Accounts />}
               />
               <Route path="admin/login_history" element={<Login_History />} />
-              <Route path="admin/allServices" element={<AllServices />} />
+              {/* <Route path="admin/allServices" element={<AllServices />} /> */}
               {/* 
               <Route
                 path="admin/*"
@@ -234,127 +195,11 @@ export default function AppRoutes() {
             </>
           )}
 
-          {/* CUSTOMER (ret, dd) */}
-          {isCustomer && (
-            <>
-              <Route path="customer/dashboard" element={<Dashboard />} />
-              <Route path="customer/services" element={<Dashboard />} />
-              <Route path="customer/transfer" element={<Transfer />} />
-              <Route
-                path="customer/account-ledger"
-                element={<AccountLadger />}
-              />
-              <Route path="customer/retailerlogs" element={<RetailerLogs />} />
-              <Route
-                path="customer/money-transfer"
-                element={<MoneyTransfer />}
-              />
+        
+         
+ 
 
-              <Route
-                path="customer/wallet-transfer"
-                element={<WalletTransfer />}
-              />
-              <Route
-                path="customer/wallet-ledger"
-                element={<WalletLedgers />}
-              />
-              <Route path="customer/w2w-transfer" element={<W2wTransfer />} />
-              {/* <Route path="customer/upi-transfer" element={<UpiTransfer />} /> */}
-              <Route path="customer/transactions" element={<Transaction />} />
-              <Route path="customer/recharge-bill" element={<Recharge />} />
-              <Route path="customer/bbps-offline" element={<BbpsOffline />} />
-              <Route path="customer/purchase" element={<MyPurchase />} />
-              <Route path="customer/fund-request" element={<FundRequest />} />
-              <Route path="customer/sale" element={<MySale />} />
-              <Route path="customer/aeps" element={<Aeps />} />
-              <Route path="customer/bbps" element={<Bbps />} />
-              <Route path="customer/profile" element={<ProfilePage />} />
-              <Route path="customer/cms" element={<Cms />} />
-              {/* <Route path="customer/print-dmt" element={<PrintDmt />} /> */}
-              <Route
-                path="customer/login_history"
-                element={<Login_History />}
-              />
-
-              <Route
-                path="customer/*"
-                element={<Navigate to="/customer/dashboard" replace />}
-              />
-              <Route path="customer/accounts" element={<Accounts />} />
-              <Route path="customer/allServices" element={<AllServices />} />
-              <Route path="customer/complaint" element={<Complaint />} />
-              <Route path="customer/risk" element={<Risk />} />
-            </>
-          )}
-          {isDi && (
-            <>
-              <Route path="di/dashboard" element={<Dashboard />} />
-              {/* <Route path="di/dashboard" element={<AdminTransactions />} /> */}
-              <Route path="di/users" element={<Users />} />
-
-              <Route path="di/wallet-ledger" element={<DiMdLedgers />} />
-              <Route path="di/transactions" element={<Transaction />} />
-              <Route path="di/fund-request" element={<FundRequest />} />
-              <Route path="di/risk" element={<Risk />} />
-
-              {/* <Route
-                path="di/wallet-transfer"
-                element={<Wallet2WalletTransfer />}
-              /> */}
-              <Route path="di/login_history" element={<Login_History />} />
-              <Route path="di/wallet-transfer" element={<WalletTransfer />} />
-              <Route path="di/profile" element={<ProfilePage />} />
-            </>
-          )}
-
-          {isAsm && (
-            <>
-              <Route path="asm/dashboard" element={<Dashboard />} />
-              <Route path="asm/users" element={<Users />} />
-              <Route path="asm/transcations" element={<Transaction />} />
-              <Route path="asm/profile" element={<ProfilePage />} />
-              <Route path="asm/wallet-ledger" element={<AccountLadger />} />
-              <Route path="asm/login_history" element={<Login_History />} />
-            </>
-          )}
-
-          {isZsm && (
-            <>
-              <Route path="zsm/dashboard" element={<Dashboard />} />
-              <Route path="zsm/users" element={<Users />} />
-              <Route path="zsm/transcations" element={<Transaction />} />
-              <Route path="zsm/profile" element={<ProfilePage />} />
-              <Route path="zsm/wallet-ledger" element={<AccountLadger />} />
-              <Route path="zsm/login_history" element={<Login_History />} />
-            </>
-          )}
-
-          {isApi && (
-            <>
-              <Route path="api/dashboard" element={<Users />} />
-              <Route path="api/users" element={<Users />} />
-              <Route path="api/transcations" element={<Transaction />} />
-              <Route path="api/profile" element={<ProfilePage />} />
-              <Route path="api/complaint" element={<Complaint />} />
-              <Route path="api/fund-request" element={<FundRequest />} />
-              <Route path="api/wallet-ledger" element={<AccountLadger />} />
-              <Route path="api/profile" element={<ProfilePage />} />
-              <Route path="api/login_history" element={<Login_History />} />
-            </>
-          )}
-
-          {isMd && (
-            <>
-              <Route path="md/dashboard" element={<Dashboard />} />
-              <Route path="md/users" element={<Users />} />
-              <Route path="md/transcations" element={<Transaction />} />
-              <Route path="md/profile" element={<ProfilePage />} />{" "}
-              <Route path="md/fund-request" element={<FundRequest />} />
-              <Route path="md/wallet-transfer" element={<WalletTransfer />} />
-              <Route path="md/wallet-ledger" element={<AccountLadger />} />
-              <Route path="md/login_history" element={<Login_History />} />
-            </>
-          )}
+          
 
           {/* Fallback inside protected area */}
           <Route
