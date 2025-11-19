@@ -100,9 +100,28 @@ export const RoleUserFilter = memo(
     const handleUserChange = (event, newValue) => {
       setSelectedUser(newValue);
 
-      if (onChange) {
-        // 🔥 Send id — correct for your backend
-        onChange(filter.id, newValue?.id || "");
+      // Always update filter id normally
+      // if (onChange) {
+      //   onChange(filter.id, newValue?.id || "");
+      // }
+
+      // When selecting value in filter
+      if (["sadm", "adm", "asm", "zsm", "dd"].includes(role)) {
+        // 👉 Send ONLY user_id
+        onChange("user_id", newValue?.id || "");
+
+        // ❌ Clear receiver_id so it's not sent
+        onChange("receiver_id", "");
+      } else if (["md", "di", "ret"].includes(role)) {
+        // 👉 Send ONLY receiver_id
+        onChange("receiver_id", newValue?.id || "");
+
+        // ❌ Clear user_id so it's not sent
+        onChange("user_id", "");
+      } else {
+        // 👉 For all other roles, clear both
+        onChange("user_id", "");
+        onChange("receiver_id", "");
       }
     };
 
